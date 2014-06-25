@@ -1,0 +1,9 @@
+name: kArcade
+author: KingIngo
+version: 1.0
+main: me.kingingo.karcade.kArcade
+commands:
+  scan:
+    description: none
+  state:
+    description: none
