@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Enum.Text;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
@@ -16,6 +15,7 @@ import me.kingingo.karcade.Game.Games.SurvivalGames;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
