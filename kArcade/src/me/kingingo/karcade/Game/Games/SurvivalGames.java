@@ -20,10 +20,10 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 
@@ -38,7 +38,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 public class SurvivalGames extends TeamGame{
@@ -541,7 +540,22 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void Chat(PlayerChatEvent ev){
 		ev.setCancelled(true);
-		Bukkit.broadcastMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7]"+ev.getPlayer().getDisplayName()+":");
+		Bukkit.broadcastMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7]"+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+	}
+	
+	public Team[] verteilung(){
+		Team[] t = new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
+				,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12};
+		
+		 for(Team team : t){
+      	   team.setPlayer(UtilServer.getPlayers().length/12);
+         }
+		
+		 if (!((UtilServer.getPlayers().length%2) == 0)){
+           t[3].setPlayer(t[3].getPlayer()+1);
+         }
+		
+		return t;
 	}
 	
 	@EventHandler
@@ -557,8 +571,7 @@ public class SurvivalGames extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			plist.add(p);
 		}
-		PlayerVerteilung(new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
-				,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},plist);
+		PlayerVerteilung(verteilung(),plist);
 		
 		for(Player p : getTeamList().keySet()){
 			r=UtilMath.r(list.get(Team.RED.Name()).size());
@@ -573,7 +586,6 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void ChangeState(GameStateChangeEvent ev){
 		if(ev.getState()==GameState.Restart){
-			ev.setCancelled(true);
 			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
 			if(list.size()==1){
 				Player p = list.get(0);

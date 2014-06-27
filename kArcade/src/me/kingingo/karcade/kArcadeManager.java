@@ -179,11 +179,7 @@ public class kArcadeManager implements Listener{
 		return gs==getState();
 	}
 	
-	public void setType(GameType gt){
-		this.typ=gt;
-	}
-	
-	public GameType getType(){
+	public GameType getTyp(){
 		return this.typ;
 	}
 	
@@ -340,7 +336,7 @@ public class kArcadeManager implements Listener{
 			}
 		}else{
 			if(Bukkit.getOnlinePlayers().length>=game.getMin_Players()){
-				Bukkit.getPluginManager().callEvent(new GameStartEvent(getType()));
+				Bukkit.getPluginManager().callEvent(new GameStartEvent(getTyp()));
 			}else{
 				LobbyCount=-1;
 				broadcast(Text.PREFIX.getText()+C.cRed+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");

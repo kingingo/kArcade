@@ -68,6 +68,7 @@ public class Rush extends TeamGame{
 	public Rush(kArcadeManager manager) {
 		super(manager);
 		t = System.currentTimeMillis();
+		manager.setTyp(GameType.Rush);
 		manager.setState(GameState.Laden);
 		manager.setTyp(GameType.Rush);
 		setMin_Players(1);
@@ -580,6 +581,20 @@ public class Rush extends TeamGame{
 		return e;
 	}
 	
+	public Team[] verteilung(){
+		Team[] t = new Team[]{Team.GREEN,Team.YELLOW,Team.RED,Team.BLUE};
+		
+		 for(Team team : t){
+      	   team.setPlayer(UtilServer.getPlayers().length/4);
+         }
+		
+		 if (!((UtilServer.getPlayers().length%2) == 0)){
+           t[3].setPlayer(t[3].getPlayer()+1);
+         }
+		
+		return t;
+	}
+	
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		getManager().setState(GameState.InGame);
@@ -593,7 +608,7 @@ public class Rush extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			plist.add(p);
 		}
-		PlayerVerteilung(new Team[]{Team.GREEN,Team.YELLOW,Team.RED,Team.BLUE},plist);
+		PlayerVerteilung(verteilung(),plist);
 		
 		for(Player p : getTeamList().keySet()){
 			r=UtilMath.r(list.get(getTeamList().get(p).Name()).size());

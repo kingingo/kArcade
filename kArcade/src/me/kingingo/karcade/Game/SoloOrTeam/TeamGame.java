@@ -111,179 +111,193 @@ public class TeamGame extends Game{
 	}
 	
 	public void PlayerVerteilung(Team[] t,ArrayList<Player> list){
-		if(t.length==4){
-			
-			int rCount=0;
-            int gCount=0;
-            int grCount=0;
-            int bCount=0;
-            
-            if (UtilServer.getPlayers().length%2 == 0) {
-                //GERADE
-                rCount= UtilServer.getPlayers().length/4;
-                gCount = UtilServer.getPlayers().length/4;
-                grCount = UtilServer.getPlayers().length/4;
-                bCount= UtilServer.getPlayers().length/4;
-            }else{
-                //UNGERADE
-                rCount = UtilServer.getPlayers().length/4;
-                bCount = UtilServer.getPlayers().length/4;
-                gCount = UtilServer.getPlayers().length/4;
-                grCount = UtilServer.getPlayers().length/4;
-                bCount++;
-            }
-            System.out.println("LIST:"+list.size()+"R:"+rCount+" B:"+bCount+" G:"+gCount+" GR:"+grCount);
-			int r = 0;
-			HashMap<Player,Team> vote = VoteTeam.getVote();
-			TeamList=vote;
-			for(int c = 1; c <= 2000; c++){
-				if(list.isEmpty())break;
-				r=r(list.size());
-				if(TeamList.containsKey(list.get(r))){
-					list.remove(r);
-					continue;
-				}
-				if(rCount==isInTeam(Team.RED)){
-					TeamList.put(list.get(r), Team.RED);
-					list.remove(r);
-				}else if(gCount==isInTeam(Team.YELLOW)){
-					TeamList.put(list.get(r), Team.YELLOW);
-					list.remove(r);
-				}else if(grCount==isInTeam(Team.GREEN)){
-					TeamList.put(list.get(r), Team.GREEN);
-					list.remove(r);
-				}else if(bCount==isInTeam(Team.BLUE)){
-					TeamList.put(list.get(r), Team.BLUE);
-					list.remove(r);
-				}
-			}
-		}else if(t.length==2){
-			
-			int rCount=0;
-            int bCount=0;
-            
-            if (UtilServer.getPlayers().length%2 == 0) {
-                //GERADE
-                rCount= UtilServer.getPlayers().length/2;
-                bCount = UtilServer.getPlayers().length/2;
-            }else{
-                //UNGERADE
-                rCount = UtilServer.getPlayers().length/2;
-                bCount = UtilServer.getPlayers().length/2;
-                bCount++;
-            }
-			int r = 0;
-			HashMap<Player,Team> vote = VoteTeam.getVote();
-			TeamList=vote;
-			for(int c = 1; c <= 2000; c++){
-				if(list.isEmpty())break;
-				r=UtilMath.r(list.size());
-				if(TeamList.containsKey(list.get(r))){
-					list.remove(r);
-					continue;
-				}
-				if(rCount==isInTeam(Team.RED)){
-					TeamList.put(list.get(r), Team.RED);
-					list.remove(r);
-				}else if(bCount==isInTeam(Team.BLUE)){
-					TeamList.put(list.get(r), Team.BLUE);
-					list.remove(r);
-				}
-			}
-		}else if(t.length==12){
-			
-			int dis_1_Count=0;
-            int dis_2_Count=0;
-            int dis_3_Count=0;
-            int dis_4_Count=0;
-            int dis_5_Count=0;
-            int dis_6_Count=0;
-            int dis_7_Count=0;
-            int dis_8_Count=0;
-            int dis_9_Count=0;
-            int dis_10_Count=0;
-            int dis_11_Count=0;
-            int dis_12_Count=0;
-            
-            if (UtilServer.getPlayers().length%2 == 0) {
-                //GERADE
-                dis_1_Count= UtilServer.getPlayers().length/6;
-                dis_2_Count = UtilServer.getPlayers().length/6;
-                dis_3_Count= UtilServer.getPlayers().length/6;
-                dis_4_Count = UtilServer.getPlayers().length/6;
-                dis_5_Count= UtilServer.getPlayers().length/6;
-                dis_6_Count = UtilServer.getPlayers().length/6;
-                dis_7_Count= UtilServer.getPlayers().length/6;
-                dis_8_Count = UtilServer.getPlayers().length/6;
-                dis_9_Count= UtilServer.getPlayers().length/6;
-                dis_10_Count = UtilServer.getPlayers().length/62;
-                dis_11_Count= UtilServer.getPlayers().length/6;
-                dis_12_Count = UtilServer.getPlayers().length/6;
-            }else{
-                //UNGERADE
-            	dis_1_Count= UtilServer.getPlayers().length/6;
-                dis_2_Count = UtilServer.getPlayers().length/6;
-                dis_3_Count= UtilServer.getPlayers().length/6;
-                dis_4_Count = UtilServer.getPlayers().length/6;
-                dis_5_Count= UtilServer.getPlayers().length/6;
-                dis_6_Count = UtilServer.getPlayers().length/6;
-                dis_7_Count= UtilServer.getPlayers().length/6;
-                dis_8_Count = UtilServer.getPlayers().length/6;
-                dis_9_Count= UtilServer.getPlayers().length/6;
-                dis_10_Count = UtilServer.getPlayers().length/6;
-                dis_11_Count= UtilServer.getPlayers().length/6;
-                dis_12_Count = UtilServer.getPlayers().length/6;
-                dis_12_Count--;
-            }
-			int r = 0;
-			HashMap<Player,Team> vote = VoteTeam.getVote();
-			TeamList=vote;
-			for(int c = 1; c <= 2000; c++){
-				if(list.isEmpty())break;
-				r=UtilMath.r(list.size());
-				if(TeamList.containsKey(list.get(r))){
-					list.remove(r);
-					continue;
-				}
-				if(dis_1_Count==isInTeam(Team.DISTRICT_1)){
-					TeamList.put(list.get(r), Team.DISTRICT_1);
-					list.remove(r);
-				}else if(dis_2_Count==isInTeam(Team.DISTRICT_2)){
-					TeamList.put(list.get(r), Team.DISTRICT_2);
-					list.remove(r);
-				}else if(dis_3_Count==isInTeam(Team.DISTRICT_3)){
-					TeamList.put(list.get(r), Team.DISTRICT_3);
-					list.remove(r);
-				}else if(dis_4_Count==isInTeam(Team.DISTRICT_3)){
-					TeamList.put(list.get(r), Team.DISTRICT_3);
-					list.remove(r);
-				}else if(dis_5_Count==isInTeam(Team.DISTRICT_4)){
-					TeamList.put(list.get(r), Team.DISTRICT_4);
-					list.remove(r);
-				}else if(dis_6_Count==isInTeam(Team.DISTRICT_5)){
-					TeamList.put(list.get(r), Team.DISTRICT_5);
-					list.remove(r);
-				}else if(dis_7_Count==isInTeam(Team.DISTRICT_6)){
-					TeamList.put(list.get(r), Team.DISTRICT_6);
-					list.remove(r);
-				}else if(dis_8_Count==isInTeam(Team.DISTRICT_7)){
-					TeamList.put(list.get(r), Team.DISTRICT_7);
-					list.remove(r);
-				}else if(dis_9_Count==isInTeam(Team.DISTRICT_9)){
-					TeamList.put(list.get(r), Team.DISTRICT_9);
-					list.remove(r);
-				}else if(dis_10_Count==isInTeam(Team.DISTRICT_10)){
-					TeamList.put(list.get(r), Team.DISTRICT_10);
-					list.remove(r);
-				}else if(dis_11_Count==isInTeam(Team.DISTRICT_11)){
-					TeamList.put(list.get(r), Team.DISTRICT_11);
-					list.remove(r);
-				}else if(dis_12_Count==isInTeam(Team.DISTRICT_12)){
-					TeamList.put(list.get(r), Team.DISTRICT_12);
-					list.remove(r);
-				}
+		int r;
+		Player p;
+		
+		for(int c = 1; c <= 2000; c++){
+			if(list.isEmpty())break;
+			r=r(list.size());
+			p=list.get(r);
+			if(TeamList.containsKey(p))continue;
+			for(Team team : t){
+				if(isInTeam(team)>=team.getPlayer())continue;
+				TeamList.put(p, team);
 			}
 		}
+		
+//		if(t.length==4){
+//			
+//			int rCount=0;
+//            int gCount=0;
+//            int grCount=0;
+//            int bCount=0;
+//            
+//            if (UtilServer.getPlayers().length%2 == 0) {
+//                //GERADE
+//                rCount= UtilServer.getPlayers().length/4;
+//                gCount = UtilServer.getPlayers().length/4;
+//                grCount = UtilServer.getPlayers().length/4;
+//                bCount= UtilServer.getPlayers().length/4;
+//            }else{
+//                //UNGERADE
+//                rCount = UtilServer.getPlayers().length/4;
+//                bCount = UtilServer.getPlayers().length/4;
+//                gCount = UtilServer.getPlayers().length/4;
+//                grCount = UtilServer.getPlayers().length/4;
+//                bCount++;
+//            }
+//            System.out.println("LIST:"+list.size()+"R:"+rCount+" B:"+bCount+" G:"+gCount+" GR:"+grCount);
+//			int r = 0;
+//			HashMap<Player,Team> vote = VoteTeam.getVote();
+//			TeamList=vote;
+//			for(int c = 1; c <= 2000; c++){
+//				if(list.isEmpty())break;
+//				r=r(list.size());
+//				if(TeamList.containsKey(list.get(r))){
+//					list.remove(r);
+//					continue;
+//				}
+//				if(rCount==isInTeam(Team.RED)){
+//					TeamList.put(list.get(r), Team.RED);
+//					list.remove(r);
+//				}else if(gCount==isInTeam(Team.YELLOW)){
+//					TeamList.put(list.get(r), Team.YELLOW);
+//					list.remove(r);
+//				}else if(grCount==isInTeam(Team.GREEN)){
+//					TeamList.put(list.get(r), Team.GREEN);
+//					list.remove(r);
+//				}else if(bCount==isInTeam(Team.BLUE)){
+//					TeamList.put(list.get(r), Team.BLUE);
+//					list.remove(r);
+//				}
+//			}
+//		}else if(t.length==2){
+//			
+//			int rCount=0;
+//            int bCount=0;
+//            
+//            if (UtilServer.getPlayers().length%2 == 0) {
+//                //GERADE
+//                rCount= UtilServer.getPlayers().length/2;
+//                bCount = UtilServer.getPlayers().length/2;
+//            }else{
+//                //UNGERADE
+//                rCount = UtilServer.getPlayers().length/2;
+//                bCount = UtilServer.getPlayers().length/2;
+//                bCount++;
+//            }
+//			int r = 0;
+//			HashMap<Player,Team> vote = VoteTeam.getVote();
+//			TeamList=vote;
+//			for(int c = 1; c <= 2000; c++){
+//				if(list.isEmpty())break;
+//				r=UtilMath.r(list.size());
+//				if(TeamList.containsKey(list.get(r))){
+//					list.remove(r);
+//					continue;
+//				}
+//				if(rCount==isInTeam(Team.RED)){
+//					TeamList.put(list.get(r), Team.RED);
+//					list.remove(r);
+//				}else if(bCount==isInTeam(Team.BLUE)){
+//					TeamList.put(list.get(r), Team.BLUE);
+//					list.remove(r);
+//				}
+//			}
+//		}else if(t.length==12){
+//			
+//			int dis_1_Count=0;
+//            int dis_2_Count=0;
+//            int dis_3_Count=0;
+//            int dis_4_Count=0;
+//            int dis_5_Count=0;
+//            int dis_6_Count=0;
+//            int dis_7_Count=0;
+//            int dis_8_Count=0;
+//            int dis_9_Count=0;
+//            int dis_10_Count=0;
+//            int dis_11_Count=0;
+//            int dis_12_Count=0;
+//            
+//            if (UtilServer.getPlayers().length%2 == 0) {
+//                //GERADE
+//                dis_1_Count= UtilServer.getPlayers().length/6;
+//                dis_2_Count = UtilServer.getPlayers().length/6;
+//                dis_3_Count= UtilServer.getPlayers().length/6;
+//                dis_4_Count = UtilServer.getPlayers().length/6;
+//                dis_5_Count= UtilServer.getPlayers().length/6;
+//                dis_6_Count = UtilServer.getPlayers().length/6;
+//                dis_7_Count= UtilServer.getPlayers().length/6;
+//                dis_8_Count = UtilServer.getPlayers().length/6;
+//                dis_9_Count= UtilServer.getPlayers().length/6;
+//                dis_10_Count = UtilServer.getPlayers().length/62;
+//                dis_11_Count= UtilServer.getPlayers().length/6;
+//                dis_12_Count = UtilServer.getPlayers().length/6;
+//            }else{
+//                //UNGERADE
+//            	dis_1_Count= UtilServer.getPlayers().length/6;
+//                dis_2_Count = UtilServer.getPlayers().length/6;
+//                dis_3_Count= UtilServer.getPlayers().length/6;
+//                dis_4_Count = UtilServer.getPlayers().length/6;
+//                dis_5_Count= UtilServer.getPlayers().length/6;
+//                dis_6_Count = UtilServer.getPlayers().length/6;
+//                dis_7_Count= UtilServer.getPlayers().length/6;
+//                dis_8_Count = UtilServer.getPlayers().length/6;
+//                dis_9_Count= UtilServer.getPlayers().length/6;
+//                dis_10_Count = UtilServer.getPlayers().length/6;
+//                dis_11_Count= UtilServer.getPlayers().length/6;
+//                dis_12_Count = UtilServer.getPlayers().length/6;
+//                dis_12_Count--;
+//            }
+//			int r = 0;
+//			HashMap<Player,Team> vote = VoteTeam.getVote();
+//			TeamList=vote;
+//			for(int c = 1; c <= 2000; c++){
+//				if(list.isEmpty())break;
+//				r=UtilMath.r(list.size());
+//				if(TeamList.containsKey(list.get(r))){
+//					list.remove(r);
+//					continue;
+//				}
+//				if(dis_1_Count==isInTeam(Team.DISTRICT_1)){
+//					TeamList.put(list.get(r), Team.DISTRICT_1);
+//					list.remove(r);
+//				}else if(dis_2_Count==isInTeam(Team.DISTRICT_2)){
+//					TeamList.put(list.get(r), Team.DISTRICT_2);
+//					list.remove(r);
+//				}else if(dis_3_Count==isInTeam(Team.DISTRICT_3)){
+//					TeamList.put(list.get(r), Team.DISTRICT_3);
+//					list.remove(r);
+//				}else if(dis_4_Count==isInTeam(Team.DISTRICT_3)){
+//					TeamList.put(list.get(r), Team.DISTRICT_3);
+//					list.remove(r);
+//				}else if(dis_5_Count==isInTeam(Team.DISTRICT_4)){
+//					TeamList.put(list.get(r), Team.DISTRICT_4);
+//					list.remove(r);
+//				}else if(dis_6_Count==isInTeam(Team.DISTRICT_5)){
+//					TeamList.put(list.get(r), Team.DISTRICT_5);
+//					list.remove(r);
+//				}else if(dis_7_Count==isInTeam(Team.DISTRICT_6)){
+//					TeamList.put(list.get(r), Team.DISTRICT_6);
+//					list.remove(r);
+//				}else if(dis_8_Count==isInTeam(Team.DISTRICT_7)){
+//					TeamList.put(list.get(r), Team.DISTRICT_7);
+//					list.remove(r);
+//				}else if(dis_9_Count==isInTeam(Team.DISTRICT_9)){
+//					TeamList.put(list.get(r), Team.DISTRICT_9);
+//					list.remove(r);
+//				}else if(dis_10_Count==isInTeam(Team.DISTRICT_10)){
+//					TeamList.put(list.get(r), Team.DISTRICT_10);
+//					list.remove(r);
+//				}else if(dis_11_Count==isInTeam(Team.DISTRICT_11)){
+//					TeamList.put(list.get(r), Team.DISTRICT_11);
+//					list.remove(r);
+//				}else if(dis_12_Count==isInTeam(Team.DISTRICT_12)){
+//					TeamList.put(list.get(r), Team.DISTRICT_12);
+//					list.remove(r);
+//				}
+//			}
+//		}
 	}
 	
 	@EventHandler

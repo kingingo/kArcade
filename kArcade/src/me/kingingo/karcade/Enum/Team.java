@@ -25,15 +25,28 @@ DISTRICT_10("District 10",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1
 DISTRICT_11("District 11",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 11"),C.cAqua),
 DISTRICT_12("District 12",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 12"),C.cAqua),
 
+TRAITOR("Traitor",UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), C.cRed+"Traitor"),C.cRed),
+INOCCENT("Inoccent",UtilItem.RenameItem(new ItemStack(Material.BOW),C.cGray+"Inoccent"), C.cGray),
+DETECTIVE("Detective", UtilItem.RenameItem(new ItemStack(Material.STICK),C.cBlue+"Detective"), C.cBlue),
+
 SOLO("SOLO",null,C.cGray);
 
 private String n;
 private ItemStack i;
 private String c;
+private int player;
 private Team(String n,ItemStack i,String c){
 	this.n=n;
 	this.i=i;
 	this.c=c;
+}
+
+public void setPlayer(int i){
+	player=i;
+}
+
+public int getPlayer(){
+	return player;
 }
 
 public String getColor(){
