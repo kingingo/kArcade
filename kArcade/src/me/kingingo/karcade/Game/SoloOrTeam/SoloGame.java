@@ -23,7 +23,7 @@ public class SoloGame extends Game{
 	
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
-		if(!getManager().isState(GameState.InGame))return;
+		if(getManager().isState(GameState.Restart)||getManager().isState(GameState.LobbyPhase))return;
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
 		if(getGameList().getPlayers(PlayerState.IN).size()<1){
 			getManager().setState(GameState.Restart);

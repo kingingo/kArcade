@@ -3,6 +3,7 @@ package me.kingingo.karcade;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,10 @@ import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Permission.PermissionManager;
+import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -32,6 +36,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -65,18 +72,76 @@ public class kArcadeManager implements Listener{
 	@Getter
 	@Setter
 	private String BungeeCord_Fallback_Server = "falldown";
-	@Getter
-	@Setter
 	private GameType typ = GameType.NONE;
 	@Getter
 	@Setter
-	private Location lobby=new Location(Bukkit.getWorld("world"), -180,87,254);
+	private Location lobby=new Location(Bukkit.getWorld("world"),789.415,29,680.2699);
+	@Getter
+	private HashMap<Integer,Sign> ranking = new HashMap<>();
+	@Getter
+	@Setter
+	private Location loc_stats = new Location(Bukkit.getWorld("world"), 785.54191,23.5,615.49871);
+	@Getter
+	private StatsManager stats;
+	@Getter
+	private MySQL mysql;
 	
-	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager pManager) {
+	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager pManager,MySQL mysql) {
+		this.lobby.setPitch(2);
+		this.lobby.setYaw( (float)179.60071 );
 		this.Instance=plugin;
+		this.mysql=mysql;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
 		this.pManager=pManager;
+		new Location(Bukkit.getWorld("world"),756,23,610).getWorld().loadChunk(new Location(Bukkit.getWorld("world"),756,23,610).getWorld().getChunkAt(new Location(Bukkit.getWorld("world"),756,23,610)));
+		ranking.put(1, ((Sign)new Location(Bukkit.getWorld("world"),756,23,610).getBlock().getState()));
+		ranking.put(2, ((Sign)new Location(Bukkit.getWorld("world"),756,23,609).getBlock().getState()));
+		ranking.put(3, ((Sign)new Location(Bukkit.getWorld("world"),756,23,608).getBlock().getState()));
+		ranking.put(4, ((Sign)new Location(Bukkit.getWorld("world"),756,23,607).getBlock().getState()));
+		ranking.put(5, ((Sign)new Location(Bukkit.getWorld("world"),756,23,606).getBlock().getState()));
+		ranking.put(6, ((Sign)new Location(Bukkit.getWorld("world"),756,21,610).getBlock().getState()));
+		ranking.put(7, ((Sign)new Location(Bukkit.getWorld("world"),756,21,609).getBlock().getState()));
+		ranking.put(8, ((Sign)new Location(Bukkit.getWorld("world"),756,21,608).getBlock().getState()));
+		ranking.put(9, ((Sign)new Location(Bukkit.getWorld("world"),756,21,607).getBlock().getState()));
+		ranking.put(10, ((Sign)new Location(Bukkit.getWorld("world"),756,21,606).getBlock().getState()));
+		setRanking(Stats.WIN);
+	}
+	
+	public void setTyp(GameType typ){
+		if(stats==null)this.stats=new StatsManager(getInstance(),getMysql(),typ);;
+		this.typ=typ;
+	}
+	
+	public Sign getSign(Location loc){
+		Block north = loc.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH);
+		Block west = loc.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.WEST);
+		Block east = loc.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.EAST);
+		Block south = loc.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH);
+		if(north.getState() instanceof Sign){
+			return ((Sign)north.getState());
+		}else if(west.getState() instanceof Sign){
+			return ((Sign)west.getState());
+		}else if(east.getState() instanceof Sign){
+			return ((Sign)east.getState());
+		}else if(south.getState() instanceof Sign){
+			return ((Sign)south.getState());
+		}
+		return null;
+	}
+	
+	public void setRanking(Stats s){
+		HashMap<Integer,String> list = getStats().getRanking(s, 10);
+		Sign sign;
+		for(int i : ranking.keySet()){
+			sign=ranking.get(i);
+			System.out.println("NAME: "+list.get(i));
+			sign.setLine(0, "---- "+C.Bold+"#"+i+"§r ----");
+			sign.setLine(1, list.get(i));
+			sign.setLine(2, "Wins "+getStats().getIntWithString(Stats.WIN, list.get(i)));
+			sign.setLine(3, "K/D "+getStats().getKDR(getStats().getIntWithString(Stats.KILLS, list.get(i)), getStats().getIntWithString(Stats.DEATHS,list.get(i))));
+			sign.update(true);
+		}
 	}
 	
 	public Game Game(String game){
@@ -314,7 +379,7 @@ public class kArcadeManager implements Listener{
 	public void Lobby(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.LobbyPhase)return;
-		if(LobbyCount<0)LobbyCount=20;
+		if(LobbyCount<0)LobbyCount=120;
 		LobbyCount--;
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");
 		if(LobbyCount!=0){

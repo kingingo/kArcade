@@ -11,11 +11,14 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Util.UtilBG;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Egg;
@@ -23,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
@@ -36,6 +40,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -140,7 +145,9 @@ public class Game implements Listener{
 	@Setter
 	@Getter
 	private boolean FoodChange=false;
-
+	@Setter
+	@Getter
+	private boolean solid=false;
 	@Setter
 	private GameList gamelist;
 	
@@ -160,10 +167,12 @@ public class Game implements Listener{
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		ev.setQuitMessage(null);
+		manager.getStats().SaveAllPlayerData(ev.getPlayer());
 	}
 	
 	@EventHandler
 	public void Damage(EntityDamageEvent ev){
+		if(manager.isState(GameState.LobbyPhase))ev.setCancelled(true);
 		if(EntityDamage.contains(ev.getCause())){
 			ev.setCancelled(true);
 		}
@@ -175,6 +184,23 @@ public class Game implements Listener{
 			ev.setCancelled(true);
 		}
 	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event)
+    {
+        if(event.getAction() == Action.PHYSICAL&& (manager.isState(GameState.LobbyPhase)||solid)){
+        	Block block = event.getClickedBlock();
+        	if(block == null)
+        		return;
+        	int blockType = block.getTypeId();
+        	if(blockType == Material.SOIL.getId()){
+            	event.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
+            	event.setCancelled(true);
+        		block.setTypeId(blockType);
+        		block.setData(block.getData());
+        	}
+        }
+    }
 	
 	@EventHandler
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
@@ -233,6 +259,14 @@ public class Game implements Listener{
 		}
 	}
 	
+//	@EventHandler
+//	public void In(PlayerInteractEvent ev){
+//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+//				ev.getPlayer().sendMessage("SIGN: "+ev.getClickedBlock().getLocation());
+//			
+//		}
+//	}
+	
 	@EventHandler
 	public void Drop(PlayerDeathEvent ev){
 		if(!DeathDropItems){
@@ -243,10 +277,13 @@ public class Game implements Listener{
 	}
 	
 	  @EventHandler
-	  public void Join(PlayerJoinEvent ev){
+	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
 		  getManager().Clear(ev.getPlayer());
-		  ev.getPlayer().teleport(getManager().getLobby());
+		  if(getManager().isState(GameState.LobbyPhase)){
+			  getManager().getLobby().getWorld().setStorm(false);
+			  ev.getPlayer().teleport(getManager().getLobby());
+		  }
 	  }
 	  
 	  @EventHandler

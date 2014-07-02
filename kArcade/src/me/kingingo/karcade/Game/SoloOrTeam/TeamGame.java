@@ -305,6 +305,9 @@ public class TeamGame extends Game{
 		if(TeamList.containsKey(ev.getPlayer())){
 			TeamList.remove(ev.getPlayer());
 		}
+		
+		if(getManager().isState(GameState.Restart)||getManager().isState(GameState.LobbyPhase))return;
+		
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
 		if(islastTeam()||getGameList().getPlayers(PlayerState.IN).size()<1){
 			getManager().setState(GameState.Restart);

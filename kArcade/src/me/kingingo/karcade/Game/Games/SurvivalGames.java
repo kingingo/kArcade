@@ -18,6 +18,8 @@ import me.kingingo.karcade.Game.addons.VoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -35,6 +37,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -49,13 +52,14 @@ public class SurvivalGames extends TeamGame{
 	int start=16;
 	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	HashMap<Team,Scoreboard> boards = new HashMap<>();
+	Hologram hm;
 	
 	public SurvivalGames(kArcadeManager manager) {
 		super(manager);
 	long t = System.currentTimeMillis();
 	manager.setState(GameState.Laden);
 	manager.setTyp(GameType.SurvivalGames); 
-	setMin_Players(1);
+	setMin_Players(6);
 	setMax_Players(24);
 	setCompassAddon(true);
 	setDamageTeamSelf(false);
@@ -532,6 +536,9 @@ public class SurvivalGames extends TeamGame{
 		if(ev.getEntity() instanceof Player && ev.getEntity().getKiller() instanceof Player){
 			Player killer = ev.getEntity().getKiller();
 			Player victim = ev.getEntity();
+			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
+			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
+			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			getManager().broadcast(Text.PREFIX.getText()+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
 			getGameList().addPlayer(victim, PlayerState.OUT);
 		}
@@ -540,7 +547,11 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void Chat(PlayerChatEvent ev){
 		ev.setCancelled(true);
-		Bukkit.broadcastMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7]"+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+		if(!getManager().isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
+			Bukkit.broadcastMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7]"+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+		}else{
+			Bukkit.broadcastMessage(ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+		}
 	}
 	
 	public Team[] verteilung(){
@@ -580,7 +591,26 @@ public class SurvivalGames extends TeamGame{
 		}
 		move=new Move(getManager());
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
+		hm.RemoveAllText();
 		getManager().DebugLog(time, 51, this.getClass().getName());
+	}
+	
+	@EventHandler
+	public void JoinHologram(PlayerJoinEvent ev){
+		if(getManager().getState()!=GameState.LobbyPhase)return;
+		if(hm==null)hm=new Hologram(getManager().getInstance());
+		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Stats",
+		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
+		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		" ",
+		"Gespielte Spiele: "+(win+lose),
+		"Gewonnene Spiele: "+win,
+		"Verlorene Spiele: "+lose
+		});
 	}
 	
 	@EventHandler
@@ -589,11 +619,14 @@ public class SurvivalGames extends TeamGame{
 			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
 			if(list.size()==1){
 				Player p = list.get(0);
+				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getManager().broadcast(Text.PREFIX.getText()+Text.GAME_WIN.getText(p.getName()));
 			}else if(list.size()==2){
 				Team t = lastTeam();
 				Player p = list.get(0);
 				Player p1 = list.get(1);
+				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getManager().getStats().setInt(p1, getManager().getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
 				getManager().broadcast(Text.PREFIX.getText()+Text.SURVIVAL_GAMES_DISTRICT_WIN.getText(new String[]{t.Name(),p.getName(),p1.getName()}));
 			}
 		}

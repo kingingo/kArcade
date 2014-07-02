@@ -34,7 +34,7 @@ public class kArcade extends JavaPlugin{
 		c = new Client(getConfig().getInt("Config.Client.Port"),getConfig().getString("Config.Client.Host"),"SERVER/"+Bukkit.getIp()+":"+Bukkit.getPort(),this,updater);
 		mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 		permManager=new PermissionManager(this,mysql);
-		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Game"),permManager);
+		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Game"),permManager,mysql);
 		new MemoryFix(this);
 		manager.DebugLog(time, 21, this.getClass().getName());
 	}
