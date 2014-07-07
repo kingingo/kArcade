@@ -72,17 +72,17 @@ public class VoteTeam implements Listener{
 					p.closeInventory();
 					
 					if(vote.containsKey(p)){
-						p.sendMessage(Text.PREFIX.getText()+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
+						p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
 						vote.remove(p);
 					}
 					
 					for(Team t : list){
 						if(UtilGear.isMat(ev.getCurrentItem(), t.getItem().getType())&&ev.getCurrentItem().getItemMeta().hasDisplayName()&&ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(t.getItem().getItemMeta().getDisplayName())){
 							if(isTeam(t)){
-								p.sendMessage(Text.PREFIX.getText()+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.Name()));
+								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.Name()));
 								vote.put(p, t);
 							}else{
-								p.sendMessage(Text.PREFIX.getText()+t.getColor()+Text.VOTE_TEAM_FULL);
+								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.Name()));
 							}
 							break;
 						}

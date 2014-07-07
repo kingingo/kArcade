@@ -44,9 +44,9 @@ public class SpecCompass implements Listener{
 
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
-		if(!this.Manager.getGame().isCompassAddon()||this.Manager.getGame()==null||this.Manager.getState()!=GameState.InGame)return;
+		if(!this.Manager.getGame().isCompassAddon()||this.Manager.getGame()==null||this.Manager.getState()==GameState.LobbyPhase)return;
 		if(ev.getPlayer().getItemInHand()==null)return;
-		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand().getType()==Material.COMPASS){
+		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand().getType()==Material.COMPASS&&Manager.getGame().getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.getPlayer().openInventory(getCompassInv());
 			ev.setCancelled(true);
 		}

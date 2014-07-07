@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.SoloOrTeam;
+package me.kingingo.karcade.Game.Games;
 
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;

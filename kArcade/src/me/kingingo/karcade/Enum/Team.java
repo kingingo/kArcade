@@ -34,19 +34,10 @@ SOLO("SOLO",null,C.cGray);
 private String n;
 private ItemStack i;
 private String c;
-private int player;
 private Team(String n,ItemStack i,String c){
 	this.n=n;
 	this.i=i;
 	this.c=c;
-}
-
-public void setPlayer(int i){
-	player=i;
-}
-
-public int getPlayer(){
-	return player;
 }
 
 public String getColor(){

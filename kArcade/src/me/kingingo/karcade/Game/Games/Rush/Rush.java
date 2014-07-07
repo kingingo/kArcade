@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games;
+package me.kingingo.karcade.Game.Games.Rush;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
-import me.kingingo.karcade.Game.SoloOrTeam.TeamGame;
+import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.QuadratGrenze;
 import me.kingingo.karcade.Game.addons.VoteTeam;
@@ -105,28 +105,28 @@ public class Rush extends TeamGame{
 				for(Player p : getPlayerFrom(Team.RED)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX.getText()+Text.TEAM_OUT.getText("RED"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("RED"));
 				break;
 			case YELLOW:
 				yellow=null;
 				for(Player p : getPlayerFrom(Team.YELLOW)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX.getText()+Text.TEAM_OUT.getText("YELLOW"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("YELLOW"));
 				break;
 			case GREEN:
 				green=null;
 				for(Player p : getPlayerFrom(Team.GREEN)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX.getText()+Text.TEAM_OUT.getText("GREEN"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("GREEN"));
 				break;
 			case BLUE:
 				blue=null;
 				for(Player p : getPlayerFrom(Team.BLUE)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX.getText()+Text.TEAM_OUT.getText("BLUE"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("BLUE"));
 				break;
 			default:
 				
@@ -378,28 +378,28 @@ public class Rush extends TeamGame{
 	}
 	switch(this.time){
 	   case 15:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 10:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 5:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 4:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 3:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 2:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 1:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
 		   break;
 	   case 0:
-		   getManager().broadcast(Text.PREFIX.getText()+Text.GAME_END.getText());
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
 		   onDisable();
 		   break;
 	   }
@@ -581,18 +581,20 @@ public class Rush extends TeamGame{
 		return e;
 	}
 	
-	public Team[] verteilung(){
+	public HashMap<Team,Integer> verteilung(){
+		HashMap<Team,Integer> list = new HashMap<>();
 		Team[] t = new Team[]{Team.GREEN,Team.YELLOW,Team.RED,Team.BLUE};
+		Integer[] i = new Integer[t.length];
 		
-		 for(Team team : t){
-      	   team.setPlayer(UtilServer.getPlayers().length/4);
+		 for(Team m : t){
+      	   list.put(m,UtilServer.getPlayers().length/t.length);
          }
 		
 		 if (!((UtilServer.getPlayers().length%2) == 0)){
-           t[3].setPlayer(t[3].getPlayer()+1);
+          list.put(t[0], UtilServer.getPlayers().length/t.length+1);
          }
 		
-		return t;
+		return list;
 	}
 	
 	@EventHandler

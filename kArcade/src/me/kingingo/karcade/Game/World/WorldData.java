@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.Team;
@@ -27,12 +28,15 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
 public class WorldData {
-	
+	@Getter
 	kArcadeManager manager;
+	@Getter
 	String gameName;
+	@Getter
 	World world;
 	String folder="map";
-	String MapName;
+	@Getter
+	String MapName="Loading ...";
 	@Setter
 	HashMap<String,ArrayList<Location>> locs = new HashMap<>();
 	
@@ -41,17 +45,24 @@ public class WorldData {
 		this.gameName=gameName;
 	}
 	
-	public World getWorld(){
-		return this.world;
-	}
-	
-	public String getMapName(){
-		return MapName;
+	public HashMap<String,ArrayList<Location>> getLocs(){
+		HashMap<String,ArrayList<Location>> list = new HashMap<>();
+		for(String s : locs.keySet()){
+			list.put(s, new ArrayList<Location>());
+			for(Location l : locs.get(s)){
+				list.get(s).add(l);
+			}
+		}
+		return list;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public HashMap<String,ArrayList<Location>> getLocs(){
-		return (HashMap<String,ArrayList<Location>>)this.locs.clone();
+	public ArrayList<Location> getLocs(String s){
+		ArrayList<Location> list = new ArrayList<>();
+		for(Location l : locs.get(s)){
+			list.add(l);
+		}
+		return list;
 	}
 	
 	public String RandomMap(ArrayList<String> files){

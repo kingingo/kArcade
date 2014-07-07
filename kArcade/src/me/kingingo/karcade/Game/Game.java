@@ -6,15 +6,16 @@ import java.util.HashSet;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.addons.SpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Egg;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -37,8 +39,11 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -76,6 +81,9 @@ public class Game implements Listener{
 	public boolean DamageTeamOther = true;
 	@Getter
 	@Setter
+	public boolean HangingBreak = false;
+	@Getter
+	@Setter
 	public boolean CompassAddon = false;
 	@Getter
 	@Setter
@@ -83,6 +91,9 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	private int Max_Players=50;
+	@Getter
+	@Setter
+	private boolean Explosion=true;
 	@Getter
 	@Setter
 	private boolean Respawn=false;
@@ -106,7 +117,9 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	public boolean ItemPickup = false;
+	@Getter
 	public HashSet<Integer> ItemPickupAllow = new HashSet<>();
+	@Getter
 	public HashSet<Integer> ItemPickupDeny = new HashSet<>();
 	@Getter
 	@Setter
@@ -165,6 +178,16 @@ public class Game implements Listener{
 	}
 	
 	@EventHandler
+	public void InterBack(PlayerInteractEvent ev){
+		if(UtilEvent.isAction(ev, ActionType.R)){
+			if(ev.getPlayer().getItemInHand()==null)return;
+			if(ev.getPlayer().getItemInHand().getTypeId()!=385)return;
+				UtilBG.sendToServer(ev.getPlayer(), getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
+				ev.setCancelled(true);
+			}
+	}
+	
+	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		ev.setQuitMessage(null);
 		manager.getStats().SaveAllPlayerData(ev.getPlayer());
@@ -172,6 +195,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void Damage(EntityDamageEvent ev){
+		if(ev.getEntity() instanceof Player && getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getEntity()))ev.setCancelled(true);
 		if(manager.isState(GameState.LobbyPhase))ev.setCancelled(true);
 		if(EntityDamage.contains(ev.getCause())){
 			ev.setCancelled(true);
@@ -180,9 +204,28 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void Food(FoodLevelChangeEvent ev){
-		if((!getManager().isState(GameState.InGame))||!FoodChange){
+		if(ev.getEntity() instanceof Player && getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getEntity()))ev.setCancelled(true);
+		if((getManager().isState(GameState.LobbyPhase))||!FoodChange){
 			ev.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void ItemFrame(HangingBreakByEntityEvent ev){
+		if(!HangingBreak){
+			ev.setCancelled(true);
+		}else if(ev.getEntity().getType()==EntityType.ITEM_FRAME) {
+			ev.getEntity().remove();
+		}
+	}
+	
+	@EventHandler
+	public void ItemFrameeee(BlockBreakEvent ev){
+		
+		if(ev.getBlock().getType() == Material.ITEM_FRAME && !ev.getPlayer().isOp()){
+			ev.setCancelled(true);
+		}
+		
 	}
 	
 	@EventHandler
@@ -204,18 +247,17 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
-		if(!Damage||!getManager().isState(GameState.InGame)){
+		if((ev.getDamager() instanceof Player &&getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getDamager()))||!Damage||getManager().isState(GameState.LobbyPhase)){
 			ev.setCancelled(true);
 		}else if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)&&!DamagePvP){
 			//P vs P
-			if(((Player)ev.getEntity()).getName().equalsIgnoreCase(((Player)ev.getDamager()).getName()))ev.setCancelled(true);
+			//if(((Player)ev.getEntity()).getName().equalsIgnoreCase(((Player)ev.getDamager()).getName()))ev.setCancelled(true);
 			ev.setCancelled(true);
 		}else if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player)))&&!DamageEvP){
 			//E vs P
 			ev.setCancelled(true);
 		}else if ( ((!(ev.getEntity() instanceof Player) && (ev.getDamager() instanceof Player)))&&!DamagePvE){
 			//P vs E
-			System.out.println("5");
 			ev.setCancelled(true);
 		}else if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&!ProjectileDamage){
 			ev.setCancelled(true);
@@ -224,51 +266,59 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void Place(BlockPlaceEvent ev){
-		if(getManager().getPManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
+		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
 		if((!getManager().isState(GameState.InGame))||BlockPlaceDeny.contains(ev.getBlock().getType()) || (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))){
 			ev.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
+	public void TNT (ExplosionPrimeEvent ev){
+			if(!Explosion){
+				ev.setCancelled(true);
+			}
+	}
+	
+	@EventHandler
 	public void Break(BlockBreakEvent ev){
-		if(getManager().getPManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
-		if((!getManager().isState(GameState.InGame))||BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))){
+		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
+		if((getManager().isState(GameState.LobbyPhase))||BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))){
 			ev.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void PickUp(PlayerPickupItemEvent ev){
-		if((!getManager().isState(GameState.InGame))||!ItemPickup&&!ItemPickupAllow.contains(ev.getItem()) || (ItemPickupDeny.contains(ev.getItem()))){
+		if((getManager().isState(GameState.LobbyPhase))||!ItemPickup&&!ItemPickupAllow.contains(ev.getItem()) || (ItemPickupDeny.contains(ev.getItem()))){
+			ev.setCancelled(true);
+		}else if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void Drop(PlayerDropItemEvent ev){
-		if((!getManager().isState(GameState.InGame)) || ItemDropDeny.contains(ev.getItemDrop()) || (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop()))){
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())||(getManager().isState(GameState.LobbyPhase)) || ItemDropDeny.contains(ev.getItemDrop()) || (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop()))){
 			ev.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
-	public void Respawn(PlayerDeathEvent ev){
+	public void RespawnNow(PlayerDeathEvent ev){
 		if(ev.getEntity()instanceof Player){
 			UtilPlayer.RespawnNow(((Player)ev.getEntity()), getManager().getInstance());
 		}
 	}
 	
-//	@EventHandler
-//	public void In(PlayerInteractEvent ev){
-//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
-//				ev.getPlayer().sendMessage("SIGN: "+ev.getClickedBlock().getLocation());
-//			
-//		}
-//	}
+	@EventHandler
+	public void In(PlayerInteractEvent ev){
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
+	}
 	
 	@EventHandler
-	public void Drop(PlayerDeathEvent ev){
+	public void DropNNN(PlayerDeathEvent ev){
 		if(!DeathDropItems){
 			ev.getDrops().clear();
 			ev.setDroppedExp(0);
@@ -289,11 +339,11 @@ public class Game implements Listener{
 	  @EventHandler
 	  public void Login(PlayerLoginEvent ev){
 		 if(UtilServer.getPlayers().length>=getMax_Players()&&getManager().isState(GameState.LobbyPhase)){
-			  if(getManager().getPManager().hasPermission(ev.getPlayer(), Permission.JOIN_FULL_SERVER)){
+			  if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.JOIN_FULL_SERVER)){
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
-					  if(!getManager().getPManager().hasPermission(p, Permission.JOIN_FULL_SERVER)){
-						  p.sendMessage(Text.PREFIX.getText()+Text.KICKED_BY_PREMIUM.getText());
+					  if(!getManager().getPermManager().hasPermission(p, Permission.JOIN_FULL_SERVER)){
+						  p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KICKED_BY_PREMIUM.getText());
 						  UtilBG.sendToServer(p, getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
 						  b=true;
 						  break;
@@ -307,7 +357,7 @@ public class Game implements Listener{
 				  ev.disallow(Result.KICK_FULL, Text.SERVER_FULL.getText());
 				  return;
 			  }
-		  }else  if(!getManager().isState(GameState.LobbyPhase)){
+		  }else  if(!getManager().isState(GameState.LobbyPhase)&&getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.SERVER_JOIN_SPECTATE)){
 			  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
 			  return;
 		  }

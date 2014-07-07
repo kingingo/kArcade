@@ -54,9 +54,9 @@ public class SphereGrenze {
 							for (Player p : UtilServer.getPlayers()) {
 								if (p.getWorld() == loc.getWorld()) {
 									if (p.getLocation().distance(loc) <= 10) {
-										if (UtilMath.r(1) == 0) {
+										//if (UtilMath.r(1) == 0) {
 											loc.getWorld().playEffect(loc,Effect.SPELL, -30);
-										}
+										//}
 										
 										if(p.getLocation().distance(loc)<=2){
 											p.getPlayer().setVelocity(p.getPlayer().getLocation().getDirection().multiply(-3).setY(0.0D));

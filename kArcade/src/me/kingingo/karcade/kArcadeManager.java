@@ -7,17 +7,23 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
-import me.kingingo.karcade.Game.Games.OneInTheChamber;
-import me.kingingo.karcade.Game.Games.Rush;
-import me.kingingo.karcade.Game.Games.SurvivalGames;
+import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
+import me.kingingo.karcade.Game.Games.Rush.Rush;
+import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.kcore.Client.Client;
+import me.kingingo.kcore.Client.Events.ClientConnectEvent;
+import me.kingingo.kcore.Client.Events.ClientReceiveMessageEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.MySQL.MySQL;
+import me.kingingo.kcore.Packet.PacketManager;
+import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.PlayerStats.StatsManager;
@@ -39,25 +45,27 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class kArcadeManager implements Listener{
 
 	@Getter
-	@Setter
 	private Game game;
 	@Getter
 	@Setter
 	private WorldData worldData;
 	@Getter
 	@Setter
-	private PermissionManager pManager;
+	private PermissionManager permManager;
 	@Getter
 	private GameState state=GameState.NONE;
 	@Getter
@@ -80,20 +88,26 @@ public class kArcadeManager implements Listener{
 	private HashMap<Integer,Sign> ranking = new HashMap<>();
 	@Getter
 	@Setter
-	private Location loc_stats = new Location(Bukkit.getWorld("world"), 785.54191,23.5,615.49871);
+	private Location loc_stats = new Location(Bukkit.getWorld("world"), 785.54191,24.5,615.49871);
 	@Getter
 	private StatsManager stats;
 	@Getter
 	private MySQL mysql;
+	@Getter
+	private Client c;
+	@Getter
+	private PacketManager pManager;
 	
-	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager pManager,MySQL mysql) {
+	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager) {
 		this.lobby.setPitch(2);
 		this.lobby.setYaw( (float)179.60071 );
 		this.Instance=plugin;
 		this.mysql=mysql;
+		this.pManager=pManager;
+		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
-		this.pManager=pManager;
+		this.permManager=permManager;
 		new Location(Bukkit.getWorld("world"),756,23,610).getWorld().loadChunk(new Location(Bukkit.getWorld("world"),756,23,610).getWorld().getChunkAt(new Location(Bukkit.getWorld("world"),756,23,610)));
 		ranking.put(1, ((Sign)new Location(Bukkit.getWorld("world"),756,23,610).getBlock().getState()));
 		ranking.put(2, ((Sign)new Location(Bukkit.getWorld("world"),756,23,609).getBlock().getState()));
@@ -106,6 +120,7 @@ public class kArcadeManager implements Listener{
 		ranking.put(9, ((Sign)new Location(Bukkit.getWorld("world"),756,21,607).getBlock().getState()));
 		ranking.put(10, ((Sign)new Location(Bukkit.getWorld("world"),756,21,606).getBlock().getState()));
 		setRanking(Stats.WIN);
+		setState(GameState.LobbyPhase);
 	}
 	
 	public void setTyp(GameType typ){
@@ -133,14 +148,19 @@ public class kArcadeManager implements Listener{
 	public void setRanking(Stats s){
 		HashMap<Integer,String> list = getStats().getRanking(s, 10);
 		Sign sign;
+		Skull sk;
 		for(int i : ranking.keySet()){
+			if(list.get(i)==null)break;
 			sign=ranking.get(i);
-			System.out.println("NAME: "+list.get(i));
 			sign.setLine(0, "---- "+C.Bold+"#"+i+"§r ----");
 			sign.setLine(1, list.get(i));
 			sign.setLine(2, "Wins "+getStats().getIntWithString(Stats.WIN, list.get(i)));
 			sign.setLine(3, "K/D "+getStats().getKDR(getStats().getIntWithString(Stats.KILLS, list.get(i)), getStats().getIntWithString(Stats.DEATHS,list.get(i))));
 			sign.update(true);
+			sk = (Skull)sign.getLocation().add(0,1,0).getBlock().getState();
+			sk.setOwner(list.get(i));
+			sk.setPlayer(Bukkit.getOfflinePlayer(list.get(i)));
+			sk.update(true);
 		}
 	}
 	
@@ -224,12 +244,40 @@ public class kArcadeManager implements Listener{
 	    ((CraftPlayer)player).getHandle().p(0);
 	}
 	
+	public void updateInfo(int o){
+		SERVER_STATUS ss = new SERVER_STATUS(state,o, getGame().getMax_Players(),getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		pManager.SendPacket("hub", ss);
+	}
+	
+	public void updateInfo(GameState s){
+		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().length, getGame().getMax_Players(),getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		pManager.SendPacket("hub", ss);
+	}
+	
+	public void updateInfo(){
+		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		pManager.SendPacket("hub", ss);
+	}
+	
+	@EventHandler
+	public void ClientC(ClientConnectEvent ev){
+		if(getState()!=GameState.Laden){
+			updateInfo();
+		}
+	}
+	
+	@EventHandler
+	public void Q(PlayerQuitEvent ev){
+		if(state==GameState.LobbyPhase)updateInfo(UtilServer.getPlayers().length-1);
+	}
+	
+	@EventHandler
+	public void J(PlayerJoinEvent ev){
+		if(state==GameState.LobbyPhase)updateInfo();
+	}
+	
 	public void setState(GameState gs){
-//		if(gs==GameState.Restart){
-//			System.out.println("RESTART!!   ");
-//			return;
-//		}
-		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state);
+		GameStateChangeEvent stateEvent = new GameStateChangeEvent(gs);
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		state=gs;
@@ -253,10 +301,11 @@ public class kArcadeManager implements Listener{
 	    {
 	      player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
 
-	      UtilPlayer.message(player, message);
+	      //UtilPlayer.message(player, message);
 	    }
+	    Bukkit.broadcastMessage(message);
 
-	    System.out.println(Text.PREFIX.getText() + message);
+	    System.out.println(Text.PREFIX_GAME.getText(getTyp().string()) + message);
 	}
 	
 	@EventHandler
@@ -285,27 +334,28 @@ public class kArcadeManager implements Listener{
 	     } else if (cmd.equalsIgnoreCase("/tell")) {
 	      event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
-	     } else if (cmd.equalsIgnoreCase("/pl")) {
-	         Bukkit.broadcastMessage("Der Spieler: " + p.getName() + " möchte gerne unsere Plugins sich ansehen...");
+	     } else if (cmd.equalsIgnoreCase("/pl")||cmd.equalsIgnoreCase("/plugins")) {
 
 	       event.setCancelled(true);
 	      p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/about")) {
-	         Bukkit.broadcastMessage("Der Spieler: " + p.getName() + " möchte gerne unsere Plugins sich ansehen...");
 
 	       event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/version")) {
-	         Bukkit.broadcastMessage("Der Spieler: " + p.getName() + " möchte gerne unsere Plugins sich ansehen...");
 
 	     event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/me")) {
 	      event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
+	     } else if (cmd.equalsIgnoreCase("/bukkit:kill")) {
+		      event.setCancelled(true);
+		       p.sendMessage(ChatColor.RED + "Nope :3");
+	     } else if (cmd.equalsIgnoreCase("/bukkit:me")) {
+		      event.setCancelled(true);
+		       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/?")) {
-	         Bukkit.broadcastMessage("Der Spieler: " + p.getName() + " möchte gerne unsere Plugins sich ansehen...");
-
 	       event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/help")) {
@@ -349,26 +399,25 @@ public class kArcadeManager implements Listener{
 		for(Player p : Bukkit.getOnlinePlayers())UtilDisplay.displayTextBar(p, Text.RESTART_IN.getText(RestartCount));
 		
 		switch(RestartCount){
-		case 30:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
-		case 25:
-			broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));
+		case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
+		case 15:
+			broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));
 			for(Player p : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
-		case 15:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
-		case 10:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
-		case 5:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));
+		case 20:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
+		case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
+		case 5:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));
 			for(Player p : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
-		case 4:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
-		case 3:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
-		case 2:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
-		case 1:broadcast(Text.PREFIX.getText()+Text.RESTART_IN.getText(RestartCount));break;
+		case 4:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
+		case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
+		case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
+		case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(RestartCount));break;
 		case 0: 
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			try {
 				Runtime.getRuntime().exec("./start.sh");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			;break;
@@ -379,32 +428,39 @@ public class kArcadeManager implements Listener{
 	public void Lobby(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.LobbyPhase)return;
-		if(LobbyCount<0)LobbyCount=120;
+		if(LobbyCount<0){
+			LobbyCount=120;
+			updateInfo();
+		}
 		LobbyCount--;
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");
+		for(Player p : UtilServer.getPlayers()){
+			UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");
+			if(p.getLocation().getY()<5)p.teleport(lobby);
+		}
 		if(LobbyCount!=0){
 			switch(LobbyCount){
 			case 120:
-				broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");
+				broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");
 				Bukkit.getWorld("world").setWeatherDuration(0);
 				Bukkit.getWorld("world").setStorm(false);
 				
 				break;
-			case 90:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 60:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 30:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 15:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 10:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 3:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 2:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
-			case 1:broadcast(Text.PREFIX.getText()+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 90:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 60:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 15:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
+			case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+LobbyCount+C.cGray+" sekunden.");break;
 			}
 		}else{
 			if(Bukkit.getOnlinePlayers().length>=game.getMin_Players()){
 				Bukkit.getPluginManager().callEvent(new GameStartEvent(getTyp()));
+				updateInfo(GameState.InGame);
 			}else{
 				LobbyCount=-1;
-				broadcast(Text.PREFIX.getText()+C.cRed+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
+				broadcast(Text.PREFIX_GAME.getText(getTyp().string())+C.cRed+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
 			}
 		}
 	}

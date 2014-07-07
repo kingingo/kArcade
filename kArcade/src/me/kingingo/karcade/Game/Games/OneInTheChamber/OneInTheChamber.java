@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games;
+package me.kingingo.karcade.Game.Games.OneInTheChamber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
-import me.kingingo.karcade.Game.SoloOrTeam.SoloGame;
+import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -45,11 +45,11 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	private HashMap<Player,Integer> Life = new HashMap<>();
 	private HashMap<Player,Integer> kills = new HashMap<>();
 	Scoreboard board;
+	ArrayList<Location> list = getManager().getWorldData().getLocs(Team.SOLO.Name());
 	
 	public OneInTheChamber(kArcadeManager manager) {
 		super(manager);
 		manager.setTyp(GameType.OneInTheChamber);
-		manager.setState(GameState.Laden);
 		setMax_Players(16);
 		setMin_Players(4);
 		setCompassAddon(true);
@@ -59,23 +59,22 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		WorldData wd = new WorldData(manager,GameType.OneInTheChamber.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
-		manager.setState(GameState.LobbyPhase);
 	}
 	
 	@EventHandler
 	public void Respawn(PlayerRespawnEvent ev){
 		if((!getManager().isState(GameState.InGame)) || getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
-		ev.setRespawnLocation(getManager().getWorldData().getLocs().get(Team.SOLO.Name()).get(UtilMath.RandomInt(getManager().getWorldData().getLocs().get(Team.SOLO.Name()).size(), 0)));
+		ev.setRespawnLocation(list.get(UtilMath.RandomInt(list.size(), 0)));
 		getSpawnInventory(ev.getPlayer());
 	}
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		getManager().setState(GameState.InGame);
-		HashMap<String,ArrayList<Location>> list = getManager().getWorldData().getLocs();
+		ArrayList<Location> list = getManager().getWorldData().getLocs(Team.SOLO.Name());
 		long time = System.currentTimeMillis();
 		int r=0;
-		board = getGameList().createScoreboard(DisplaySlot.SIDEBAR,"GameInfo");
+		//board = getGameList().createScoreboard(DisplaySlot.SIDEBAR,"GameInfo");
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			Life.put(p, 6);
@@ -83,13 +82,13 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			getGameList().addPlayer(p,PlayerState.IN);
 			getGameList().setPlayerScoreboard(p,board);
 			getSpawnInventory(p);
-			if(list.get(Team.SOLO.Name()).size()==1){
+			if(list.size()==1){
 				r=0;
 			}else{
-				r=UtilMath.RandomInt(list.get(Team.SOLO.Name()).size(), 0);
+				r=UtilMath.RandomInt(list.size(), 0);
 			}
-			p.teleport(list.get(Team.SOLO.Name()).get(r));
-			list.get(Team.SOLO.Name()).remove(r);
+			p.teleport(list.get(r));
+			list.remove(r);
 		}
 		getManager().DebugLog(time, 51, this.getClass().getName());
 	}
@@ -108,11 +107,11 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			kills.put(killer, i);
 			board.getObjective(DisplaySlot.SIDEBAR).getScore(Bukkit.getOfflinePlayer(killer.getName())).setScore(i);
 			Life.put(victim,(Life.get(victim)-1));
-			getManager().broadcast(Text.PREFIX.getText()+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
 			killer.getInventory().addItem(new ItemStack(Material.ARROW));
 			if(Life.get(victim)<=0){
 				getGameList().addPlayer(victim, PlayerState.OUT);
-				getManager().broadcast(Text.PREFIX.getText()+Text.GAME_EXCLUSION.getText(victim.getName()));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_EXCLUSION.getText(victim.getName()));
 			}
 		}
 	}
@@ -138,7 +137,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	
 	public void getSpawnInventory(Player p){
 			getManager().Clear(p);
-			if(getManager().getPManager().hasPermission(p, Permission.OneInTheChamber_KIT)){
+			if(getManager().getPermManager().hasPermission(p, Permission.OneInTheChamber_KIT)){
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.YELLOW));
 				int r = UtilMath.RandomInt(5, 1);
 				switch(r){
@@ -167,24 +166,24 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));
 		
 		switch(this.time){
-		case 185:Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
-		case 184:Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
-		case 183:Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
-		case 182:Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
-		case 181:Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
-		case 180:Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
+		case 185:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
+		case 184:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
+		case 183:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
+		case 182:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
+		case 181:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((time - 180))));break;
+		case 180:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
 		}
 	}else{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(String.valueOf(time)));
 		
 		switch(time){
-		case 5: Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.GAME_END_IN.getText(String.valueOf(time)));break;
-		case 4: Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.GAME_END_IN.getText(String.valueOf(time)));break;
-		case 3: Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.GAME_END_IN.getText(String.valueOf(time)));break;
-		case 2: Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.GAME_END_IN.getText(String.valueOf(time)));break;
-		case 1: Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.GAME_END_IN.getText(String.valueOf(time)));break;
+		case 5: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(time)));break;
+		case 4: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(time)));break;
+		case 3: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(time)));break;
+		case 2: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(time)));break;
+		case 1: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(time)));break;
 		case 0: 
-			Bukkit.broadcastMessage(Text.PREFIX.getText()+Text.GAME_END.getText());
+			Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
 			onDisable();
 		break;
 		}

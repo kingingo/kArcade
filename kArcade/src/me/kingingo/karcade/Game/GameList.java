@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.kcore.Util.C;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -54,14 +55,12 @@ public class GameList implements Listener{
 		
 	}
     
-    public Scoreboard createScoreboard(DisplaySlot typ,String name){
+    public Scoreboard createScoreboard(DisplaySlot typ,Player p,String DisplayName){
     	Scoreboard board;
     	board = Bukkit.getScoreboardManager().getNewScoreboard();
-		Objective obj; 
-	    obj = board.getObjective(name);
-	    obj = board.registerNewObjective(name, "dummy");
+		Objective obj= board.registerNewObjective(typ.name(), "dummy");
+		obj.setDisplayName( DisplayName);
 		obj.setDisplaySlot(typ);
-		
 		return board;
     }
     
