@@ -5,13 +5,9 @@ import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.kcore.Util.UtilFirework;
 import me.kingingo.kcore.Util.UtilMath;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;

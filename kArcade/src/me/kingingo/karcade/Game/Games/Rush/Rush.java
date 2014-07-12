@@ -49,7 +49,6 @@ import org.bukkit.util.Vector;
 
 public class Rush extends TeamGame{
 
-	int time=3601;
 	QuadratGrenze wand;
 	UtilSchematic schematic;
 	Location red;
@@ -76,6 +75,7 @@ public class Rush extends TeamGame{
 		setCompassAddon(true);
 		setDamageTeamSelf(false);
 		setDamagePvE(true);
+		getManager().setStart(3601);
 		setItemDrop(true);
 		setItemPickup(true);
 		getBlockBreakAllow().add(Material.BEDROCK);
@@ -372,31 +372,31 @@ public class Rush extends TeamGame{
 	public void Countdown(UpdateEvent ev){
 	if(ev.getType()!=UpdateType.SEC)return;
 	if(getManager().getState()!=GameState.InGame)return;
-	time--;	
+	getManager().setStart(getManager().getStart()-1);
 	for(Player p : UtilServer.getPlayers()){
-		UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(time));
+		UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(getManager().getStart()));
 	}
-	switch(this.time){
+	switch(getManager().getStart()){
 	   case 15:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 10:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 5:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 4:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 3:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 2:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 1:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(time));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 0:
 		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());

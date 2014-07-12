@@ -38,6 +38,12 @@ public class WorldParser {
 		        		((ArrayList)list.get(Team.SOLO.Name())).add(block.getLocation());
 		        		block.setTypeId(0);
 		        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        	}else if(block.getType()==Material.SKULL){
+		        		if(!list.containsKey(Team.YELLOW.Name())){
+		        			list.put(Team.YELLOW.Name(), new ArrayList<Location>());
+		        		}
+		        		((ArrayList)list.get(Team.YELLOW.Name())).add(block.getLocation());
+		        		block.setTypeId(0);
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
 		        		if(block.getData()==14){
 		        			if(!list.containsKey(Team.RED.Name())){
@@ -51,6 +57,20 @@ public class WorldParser {
 			        			list.put(Team.BLUE.Name(), new ArrayList<Location>());
 			        		}
 			        		((ArrayList)list.get(Team.BLUE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==8){
+		        			if(!list.containsKey(Team.GRAY.Name())){
+			        			list.put(Team.GRAY.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.GRAY.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==15){
+		        			if(!list.containsKey(Team.BLACK.Name())){
+			        			list.put(Team.BLACK.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.BLACK.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==5){
@@ -92,8 +112,16 @@ public class WorldParser {
 				out.write("RED:"+LocListTOStringList(list.get(Team.RED.Name())));
 				out.write("\n");
 			}
+			if(list.containsKey(Team.BLACK.Name())){
+				out.write("BLACK:"+LocListTOStringList(list.get(Team.BLACK.Name())));
+				out.write("\n");
+			}
 			if(list.containsKey(Team.GREEN.Name())){
 				out.write("GREEN:"+LocListTOStringList(list.get(Team.GREEN.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.GRAY.Name())){
+				out.write("GRAY:"+LocListTOStringList(list.get(Team.GRAY.Name())));
 				out.write("\n");
 			}
 			if(list.containsKey(Team.YELLOW.Name())){

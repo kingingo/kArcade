@@ -7,6 +7,7 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
@@ -37,6 +38,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -53,7 +55,6 @@ public class SurvivalGames extends TeamGame{
 	Move move;
 	//BagPack bp;
 	//RandomItemInventory rii;
-	int start=21;
 	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	Hologram hm;
 	boolean jump=true;
@@ -105,7 +106,6 @@ public class SurvivalGames extends TeamGame{
 			,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},18,2));
 	manager.DebugLog(t, 34, this.getClass().getName());
 	}
-	
 	//RED WOOL = SPAWN PLAYER!
 	//BLUE BLOCK = CHEST
 	//YELLOW BLOCK= CENTER
@@ -173,6 +173,11 @@ public class SurvivalGames extends TeamGame{
 		}
 		
 		return i;
+	}
+	
+	@EventHandler
+	public void Ranking(RankingEvent ev){
+		getManager().setRanking(Stats.WIN);
 	}
 	
 	public ItemStack LOWER(){
@@ -263,9 +268,9 @@ public class SurvivalGames extends TeamGame{
 	public void Start_Game(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getManager().getState()!=GameState.StartGame)return;
-		start--;
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_START_IN.getText(start));
-		switch(start){
+		getManager().setStart(getManager().getStart()-1);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_START_IN.getText(getManager().getStart()));
+		switch(getManager().getStart()){
 			case 20:
 				setDamage(false);
 				if(wd.getLocs().containsKey(Team.BLUE.Name())){
@@ -275,15 +280,15 @@ public class SurvivalGames extends TeamGame{
 					}
 				}
 			break;
-			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));break;
-			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));break;
-			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));break;
-			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));break;
-			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));break;
-			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));break;
-			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(start));jump=false;break;
+			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));break;
+			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));break;
+			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));break;
+			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));break;
+			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));break;
+			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));break;
+			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START_IN.getText(getManager().getStart()));jump=false;break;
 			case 0:
-				start=1831;
+				getManager().setStart(1831);
 				getManager().setState(GameState.InGame);
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START.getText());
 				setDamage(true);
@@ -308,26 +313,26 @@ public class SurvivalGames extends TeamGame{
 	public void DeathMatch(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getManager().getState()!=GameState.InGame)return;
-		start--;
+		getManager().setStart(getManager().getStart()-1);
 		
 		if(getGameList().getPlayers(PlayerState.IN).size()<=4&&getManager().getState()==GameState.InGame){
-			if(start>15){
-				start=15;
+			if(getManager().getStart()>15){
+				getManager().setStart(15);
 			}
 		}
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));
-		switch(start){
-			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
-			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
-			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
-			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
-			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
-			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
-			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(start)));break;
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));
+		switch(getManager().getStart()){
+			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 			case 0:
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
-				start=(3*60)+1;
+				getManager().setStart((3*60)+1);
 				
 				ArrayList<Location> list = getManager().getWorldData().getLocs(Team.RED.Name());
 				Location r=null;
@@ -360,34 +365,34 @@ public class SurvivalGames extends TeamGame{
 	public void inGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getManager().getState()!=GameState.DeathMatch)return;
-		start--;
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.DEATHMATCH_END_IN.getText(start));
-		switch(start){
+		getManager().setStart(getManager().getStart()-1);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.DEATHMATCH_END_IN.getText(getManager().getStart()));
+		switch(getManager().getStart()){
 			case 180:
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));
 				SphereGrenze sg = new SphereGrenze(getManager(),Bukkit.getWorld("map"));
 				sg.loadGrenzen(wd.getLocs().get(Team.YELLOW.Name()).get(0), ( (int)wd.getLocs().get(Team.YELLOW.Name()).get(0).distance(wd.getLocs().get(Team.RED.Name()).get(0))+5 ) );
 				sg.start();
 				break;
-			case 179:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 178:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 177:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 176:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 175:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 174:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 173:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 172:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
-			case 171:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(start-170));break;
+			case 179:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()));break;
+			case 178:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 177:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 176:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 175:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 174:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 173:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 172:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
+			case 171:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
 			case 170:
 				setDamage(true);
 				move.setnotMove(false);
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START.getText(start));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START.getText(getManager().getStart()));
 				break;
-			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(start));break;
-			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(start));break;
-			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(start));break;
-			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(start));break;
-			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(start));break;
+			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(getManager().getStart()));break;
+			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(getManager().getStart()));break;
+			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(getManager().getStart()));break;
+			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(getManager().getStart()));break;
+			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END_IN.getText(getManager().getStart()));break;
 			case 0:
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_END.getText());
 				getManager().setState(GameState.Restart);
@@ -549,6 +554,16 @@ public class SurvivalGames extends TeamGame{
 		"Gewonnene Spiele: "+win,
 		"Verlorene Spiele: "+lose
 		});
+	}
+	
+	@EventHandler
+	public void onBreak(BlockBreakEvent ev){
+		
+		if(ev.getBlock().getType() == Material.ITEM_FRAME && !ev.getPlayer().isOp()){
+			ev.setCancelled(true);
+			return;
+		}
+		
 	}
 	
 	@EventHandler

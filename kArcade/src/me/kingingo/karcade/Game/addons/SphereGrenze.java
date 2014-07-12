@@ -6,13 +6,14 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
@@ -45,7 +46,26 @@ public class SphereGrenze {
 		if(shuffle!=null)shuffle.stop();
 	}
 	
+	
+	@EventHandler
+	public void Move(PlayerMoveEvent ev) {
+		if (Grenze) {
+			Location from = ev.getFrom();
+			Location to = ev.getTo();
+			double x = Math.floor(from.getX());
+			double z = Math.floor(from.getZ());
+			if (Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z) {
+				x += .5;
+				z += .5;
+				ev.getPlayer().teleport(
+						new Location(from.getWorld(), x, from.getY(), z, from
+								.getYaw(), from.getPitch()));
+			}
+		}
+	}
+	
 	public void start(){
+		Grenze=true;
 		shuffle = new Thread() {
 			public void run() {
 				while (true) {
@@ -54,13 +74,7 @@ public class SphereGrenze {
 							for (Player p : UtilServer.getPlayers()) {
 								if (p.getWorld() == loc.getWorld()) {
 									if (p.getLocation().distance(loc) <= 10) {
-										//if (UtilMath.r(1) == 0) {
 											loc.getWorld().playEffect(loc,Effect.SPELL, -30);
-										//}
-										
-										if(p.getLocation().distance(loc)<=2){
-											p.getPlayer().setVelocity(p.getPlayer().getLocation().getDirection().multiply(-3).setY(0.0D));
-										}
 									}
 								}
 							}

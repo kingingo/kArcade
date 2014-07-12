@@ -111,7 +111,6 @@ public class WorldData {
 	            world=WorldUtil.LoadWorld(new WorldCreator(getFolder()));
 	            world.setDifficulty(Difficulty.HARD);
 	            LoadWorldConfig();
-	            Bukkit.getPluginManager().callEvent(new WorldLoadEvent(world));
 	          }
 	        });
 	      }
@@ -132,13 +131,17 @@ public class WorldData {
 		    			this.MapName=tokens[1];
 		    		}else if(tokens[0].equalsIgnoreCase(Team.SOLO.Name())){
 		    			locs.put(Team.SOLO.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.BLACK.Name())){
+		    			locs.put(Team.BLACK.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.GRAY.Name())){
+		    			locs.put(Team.GRAY.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.BLUE.Name())){
 		    			locs.put(Team.BLUE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.RED.Name())){
 		    			locs.put(Team.RED.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.YELLOW.Name())){
 		    			locs.put(Team.YELLOW.Name(), WorldParser.StringListTOLocList(tokens[1],world));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.RED.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.GREEN.Name())){
 		    			locs.put(Team.GREEN.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}
 		        }
@@ -153,10 +156,9 @@ public class WorldData {
 		System.out.println("[kArcade] Load Config:");
 		System.out.println("[kArcade] Map Name: "+MapName);
 		for(String t : locs.keySet()){
-			for(Location loc : locs.get(t)){
-				System.out.println("TEAM:"+t+" LOC:"+loc);
-			}
+				System.out.println("TEAM:"+t+" LOC:"+locs.get(t).size());
 		}
+		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld("map")));
 	}
 	
 }

@@ -13,9 +13,9 @@ import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,10 +41,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -220,15 +221,6 @@ public class Game implements Listener{
 	}
 	
 	@EventHandler
-	public void ItemFrameeee(BlockBreakEvent ev){
-		
-		if(ev.getBlock().getType() == Material.ITEM_FRAME && !ev.getPlayer().isOp()){
-			ev.setCancelled(true);
-		}
-		
-	}
-	
-	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event)
     {
         if(event.getAction() == Action.PHYSICAL&& (manager.isState(GameState.LobbyPhase)||solid)){
@@ -310,6 +302,11 @@ public class Game implements Listener{
 		if(ev.getEntity()instanceof Player){
 			UtilPlayer.RespawnNow(((Player)ev.getEntity()), getManager().getInstance());
 		}
+	}
+	
+	@EventHandler
+	public void In(PlayerInteractEntityEvent ev){
+		if(ev.getRightClicked().getType()==EntityType.ITEM_FRAME)ev.setCancelled(true);
 	}
 	
 	@EventHandler

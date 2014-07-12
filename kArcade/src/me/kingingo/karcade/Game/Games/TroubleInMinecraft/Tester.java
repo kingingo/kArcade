@@ -3,17 +3,8 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
-
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
@@ -21,6 +12,14 @@ import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class Tester implements Listener{
 
@@ -67,13 +66,13 @@ public class Tester implements Listener{
 		this.Join=Join;
 		this.Button=Button;
 		int i=0;
-		this.Lampen=new Location[Lampen.size()-1];
+		this.Lampen=new Location[Lampen.size()];
 		for(Location loc : Lampen){
 			this.Lampen[i]=loc;
 			i++;
 		}
 		i=0;
-		this.Glass=new Location[Glass.size()-1];
+		this.Glass=new Location[Glass.size()];
 		for(Location loc : Glass){
 			this.Glass[i]=loc;
 			i++;

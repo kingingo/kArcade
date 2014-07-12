@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.kcore.Util.C;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
