@@ -66,7 +66,7 @@ public class TeamGame extends Game{
 	@EventHandler
 	public void SpectJoin(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase){
-			SetSpectator(ev.getPlayer());
+			SetSpectator(null,ev.getPlayer());
 		}
 	}
 	
@@ -156,19 +156,23 @@ public class TeamGame extends Game{
 	}
 	
 	@EventHandler
-	public void Funk(PlayerRespawnEvent ev){
-		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT){
-			SetSpectator(ev.getPlayer());
+	public void SpectaterAndRespawn(PlayerRespawnEvent ev){
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+			SetSpectator(ev,ev.getPlayer());
 			ev.setRespawnLocation(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
 		}
 	}
 	
-	public void SetSpectator(Player player)
+	public void SetSpectator(PlayerRespawnEvent ev,Player player)
 	  {
 		TeamList.remove(player);
 		getGameList().addPlayer(player, PlayerState.OUT);
 	    getManager().Clear(player);
-	    player.teleport(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+	    if(ev==null){
+	    	player.teleport(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+	    }else{
+	    	ev.setRespawnLocation(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+	    }
 	    player.setGameMode(GameMode.CREATIVE);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);

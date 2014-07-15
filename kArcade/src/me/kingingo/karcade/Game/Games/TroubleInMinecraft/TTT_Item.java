@@ -3,7 +3,6 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 import lombok.Getter;
 import me.kingingo.kcore.Util.UtilItem;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -33,8 +32,8 @@ BOW_SNIPER("FallingDiamond",UtilItem.RenameItem(new ItemStack(Material.BOW), "Sn
 		this.n=n;
 	}
 	
-	public ItemStack getItem(){
-		return item.clone();
+	public ItemStack getItem(){		
+			return item.clone();
 	}
 	
 	public void setBlock(Location l){

@@ -13,32 +13,46 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.TraitorShop;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.NPC.NPC;
+import me.kingingo.kcore.NPC.NPCManager;
+import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
+import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Weapon.Weapon;
+import me.kingingo.kcore.Weapon.WeaponTyp;
+import me.kingingo.kcore.Weapon.Event.WeaponAddPlayerEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
@@ -49,8 +63,12 @@ public class TroubleInMinecraft extends TeamGame{
 	WorldData wd;
 	@Getter
 	private kArcadeManager manager;
+	HashMap<Integer,String> npclist = new HashMap<>();
 	Tester tester;
+	TraitorShop shop;
+	NPCManager npcManager;
 	Hologram hm;
+	//HashMap<Integer,NPC> NPCList = new HashMap<>();
 	
 	public TroubleInMinecraft(kArcadeManager manager) {
 		super(manager);
@@ -62,8 +80,8 @@ public class TroubleInMinecraft extends TeamGame{
 		setMax_Players(12);
 		setDamageTeamSelf(true);
 		setDamageSelf(true);
-		setItemDrop(false);
-		setItemPickup(false);
+		setItemDrop(true);
+		setItemPickup(true);
 		setBlockPlace(false);
 		setBlockBreak(false);
 		setCreatureSpawn(false);
@@ -77,13 +95,55 @@ public class TroubleInMinecraft extends TeamGame{
 		setFoodChange(false);
 		setProjectileDamage(true);
 		setRespawn(true);
+		npcManager= new NPCManager(getManager().getInstance());
+		shop = new TraitorShop(this);
 		wd = new WorldData(manager,GameType.TroubleInMinecraft.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
+		
+//		minigun= new Weapon(manager.getInstance(), WeaponTyp.MACHINE_GUNS,new ItemStack(Material.ARROW),TTT_Item.BOW_MINIGUN.getItem(),TimeSpan.SECOND*5, 500,32,0.1,1,1,"§7MiniGun");
+//		
+//		sniper = new Weapon(manager.getInstance(), WeaponTyp.SNIPER, new ItemStack(Material.ARROW), TTT_Item.BOW_SNIPER.getItem(),TimeSpan.SECOND*5, TimeSpan.SECOND*3,5,0.3,1,4,"§7Sniper");
+//		
+//		shotgun = new Weapon(manager.getInstance(), WeaponTyp.SHOTGUN, new ItemStack(Material.ARROW), TTT_Item.BOW_SHOTGUN.getItem(),TimeSpan.SECOND*5,TimeSpan.SECOND*2,7,0.15,1,1,"§7Shotgun");
+
 		manager.setState(GameState.LobbyPhase);
 		manager.DebugLog(t, 84, this.getClass().getName());
 	}
 
+//	Ein Innocent tötet einen Traitor: +20 Karma
+//	Ein Innocent tötet einen Innocent: -20 Karma
+//	Ein Innocent tötet einen Detective: -50 Karma
+//	Ein Detective tötet einen Traitor: +30 Karma und 2 Detective-Punkte
+//	Ein Detective tötet einen Innocent: -20 Karma
+//	Ein Detective tötet einen Detective: -50 Karma
+//	Ein Traitor tötet einen Innocent: +10 Karma und 2 Traitor-Punkte
+//	Ein Traitor tötet einen Detective: +20 Karma und 4 Traitor-Punkte
+//	Ein Traitor tötet einen Traitor: -50 Karma
+	
+//	Shops:
+	
+//	Traitor-Shop:
+//	Medipack (1 Punkt): Heil 2,5 Herzen
+//	Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
+//	Creeper Arrows (2 Punkte): Aus geschossenen Pfeilen spawnen Creeper
+//	Disguiser (3 Punkte): Versteckt den eigenen Name
+//	Tester-Spoofer (4 Punkte): Traitoren werden zu 75% im Tester also Innocent angezeigt.
+//	Fake-Chest (4 Punkte): Wenn man dieses Fake-Item aufnimmt stirbt man sofort.
+//	Teleporter (4 Punkte): Ermöglicht die einmalige teleportation zu einem vorher festgelegten Punkt.
+//	C4 (5 Punkte): Ein TNT-Block der mit einer Redstone-Fackel aktiviert werden kann.
+//	Knife (6 Punkte): Ermöglicht einmalig das sofortige töten eines Spielers von hinten.
+//	JihadBomb (7 Punkte): Lässt alle Spieler um einen selbst explodieren.
+//	FireGrenade (7 Punkte): Erzeugt ein großes Feuer, nachdem sie explodiert ist.
+//	SmokeGrenade (7 Punkte): Erzeugt eine große Rauchwolke nach der Explosion.
+	
+//	Detective-Shop:
+//	Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
+//	DNA-Test (2 Punkte): Untersucht Leichen auf genauere Informationen.
+//	Healing-Station (2 Punkte): Heilt andere Spieler in der nähe der Heal-Station.
+//	Fluffy (3 Punkte): Ein Hund, der in der Nähe von Traitoren knurrt.
+//	Golden Weapon (5 Punkte): Ein Goldschwert, welches einmalig einen Traitor mit einem Schlag tötet. Bei Innocents zerbricht es sofort.
+	
 	//RED BLOCK = PLAYER SPAWN
 	//BLUE = BUTTON
 	//GREEN = JOIN
@@ -109,32 +169,59 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void Shot(EntityShootBowEvent ev){
-		if(!ev.getBow().hasItemMeta())return;
-		if(!ev.getBow().getItemMeta().hasDisplayName())return;
-		if(ev.getBow().getItemMeta().getDisplayName().equalsIgnoreCase( TTT_Item.BOW_MINIGUN.getItem().getItemMeta().getDisplayName() )){
-			
-		}
+		ev.setCancelled(true);
 	}
+	
+	 @EventHandler
+	  public void onPlayerInteract(PlayerInteractEvent e) {
+	    if (e.getAction() != Action.RIGHT_CLICK_AIR) return;
+
+	    if (e.getItem().getType() != Material.BOW) return;
+	    e.setCancelled(true);
+	    Arrow a = (Arrow)e.getPlayer().launchProjectile(Arrow.class, e.getPlayer().getEyeLocation().getDirection().multiply(5));
+	  }
+	
+	 @EventHandler
+		public void Aufdecken(PlayerInteractNPCEvent ev){
+			NPC npc = ev.getNpc();
+			if(!npc.getName().equalsIgnoreCase("Unidentifiziert"))return;
+			String name = npclist.get(npc.getP().getId());
+			Location loc = npc.getLoc();
+			npclist.remove(npc.getP().getId());
+			npc.remove();
+			
+			npc = npcManager.createNPC( name );
+			npc.spawn(loc);
+			npc.sleep();
+			
+			if(getTeam(ev.getPlayer())==Team.DETECTIVE){
+				getManager().getStats().setInt(ev.getPlayer(),getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, Stats.TTT_DETECTIVE_PUNKTE);	
+			}
+		}
 	
 	@EventHandler
 	public void DeathTTT(PlayerDeathEvent ev){
-		if(ev.getEntity() instanceof Player){
-			getManager().getStats().setInt(((Player)ev.getEntity().getKiller()),getManager().getStats().getInt(Stats.DEATHS, ((Player)ev.getEntity().getKiller()))+1, Stats.DEATHS);
-			delTeam(((Player)ev.getEntity()));
-			
+		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.IN).contains( ((Player)ev.getEntity()) )){
+			getManager().getStats().setInt(((Player)ev.getEntity()),getManager().getStats().getInt(Stats.DEATHS, ((Player)ev.getEntity()))+1, Stats.DEATHS);
+			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.OUT);
+			NPC npc = npcManager.createNPC( "Unidentifiziert" );
+			npc.spawn( ((Player)ev.getEntity()).getLocation() );
+			npc.sleep();
+			npclist.put(npc.getP().getId(), ((Player)ev.getEntity()).getName());
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_DEATH.getText(new String[]{ ((Player)ev.getEntity()).getName(),getTeam(((Player)ev.getEntity())).Name() }));
-			
+			delTeam(((Player)ev.getEntity()));
 			if(ev.getEntity().getKiller() instanceof Player){
 				getManager().getStats().setInt(((Player)ev.getEntity().getKiller()),getManager().getStats().getInt(Stats.KILLS, ((Player)ev.getEntity().getKiller()))+1, Stats.KILLS);
 			}
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Items(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&& !ev.isCancelled() ){
 			if(ev.getClickedBlock().getState() instanceof Skull){
 				TTT_Item t = getSkull(ev.getClickedBlock());
+				if(t==null)return;
 				boolean b = false;
 				Inventory inv = ev.getPlayer().getInventory();
 				ev.getClickedBlock().setType(Material.AIR);
@@ -167,25 +254,6 @@ public class TroubleInMinecraft extends TeamGame{
 							}
 						}
 					}
-					
-//					for(int i = 0 ; i < inv.getSize(); i++){
-//						if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//						if(inv.getItem(i).hasItemMeta()&&inv.getItem(i).getItemMeta().hasDisplayName()){
-//							if(inv.getItem(i).getItemMeta().getDisplayName().equalsIgnoreCase(TTT_Item.SCHWERT_HOLZ.getItem().getItemMeta().getDisplayName())){
-//								inv.setItem(1,t.getItem());
-//								b=true;
-//								TTT_Item.SCHWERT_HOLZ.setBlock(ev.getClickedBlock());
-//							}else if(inv.getItem(i).getItemMeta().getDisplayName().equalsIgnoreCase(TTT_Item.SCHWERT_STONE.getItem().getItemMeta().getDisplayName())){
-//								inv.setItem(1,t.getItem());
-//								b=true;
-//								TTT_Item.SCHWERT_STONE.setBlock(ev.getClickedBlock());
-//							}else if(inv.getItem(i).getItemMeta().getDisplayName().equalsIgnoreCase(TTT_Item.SCHWERT_IRON.getItem().getItemMeta().getDisplayName())){
-//								inv.setItem(1,t.getItem());
-//								b=true;
-//								TTT_Item.SCHWERT_IRON.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}
 				}else if(t.getN().equalsIgnoreCase(TTT_Item.BOW_BOGEN.getN())){
 					if(inv.contains(TTT_Item.BOW_BOGEN.getItem())){
 						for(int i = 0 ; i < inv.getSize(); i++){
@@ -200,7 +268,7 @@ public class TroubleInMinecraft extends TeamGame{
 						for(int i = 0 ; i < inv.getSize(); i++){
 							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
 							if(inv.getItem(i).getType()==TTT_Item.BOW_MINIGUN.getItem().getType()){
-								inv.setItem(i, t.getItem());
+								ev.getPlayer().getInventory().setItem(i,t.getItem());
 								b=true;
 								TTT_Item.BOW_MINIGUN.setBlock(ev.getClickedBlock());
 							}
@@ -209,7 +277,7 @@ public class TroubleInMinecraft extends TeamGame{
 						for(int i = 0 ; i < inv.getSize(); i++){
 							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
 							if(inv.getItem(i).getType()==TTT_Item.BOW_SHOTGUN.getItem().getType()){
-								inv.setItem(i, t.getItem());
+								ev.getPlayer().getInventory().setItem(i,t.getItem());
 								b=true;
 								TTT_Item.BOW_SHOTGUN.setBlock(ev.getClickedBlock());
 							}
@@ -218,7 +286,7 @@ public class TroubleInMinecraft extends TeamGame{
 						for(int i = 0 ; i < inv.getSize(); i++){
 							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
 							if(inv.getItem(i).getType()==TTT_Item.BOW_SNIPER.getItem().getType()){
-								inv.setItem(i, t.getItem());
+								ev.getPlayer().getInventory().setItem(i,t.getItem());
 								b=true;
 								TTT_Item.BOW_SNIPER.setBlock(ev.getClickedBlock());
 							}
@@ -236,6 +304,7 @@ public class TroubleInMinecraft extends TeamGame{
 	public TTT_Item getSkull(Block b){
 		if(b.getState() instanceof Skull){
 			Skull s = (Skull)b.getState();
+			if(!s.hasOwner())return null;
 			switch(s.getOwner()){
 			case "VareidePlays": return TTT_Item.SCHWERT_HOLZ;
 			case "Nottrex": return TTT_Item.SCHWERT_STONE;
@@ -316,7 +385,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void Ranking(RankingEvent ev){
-		getManager().setRanking(Stats.TM_KARMA);
+		getManager().setRanking(Stats.TTT_KARMA);
 	}
 	
 	@EventHandler
@@ -395,7 +464,7 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.5, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.7, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
@@ -404,8 +473,10 @@ public class TroubleInMinecraft extends TeamGame{
 		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		"Karma: "+getManager().getStats().getInt(Stats.TM_KARMA, ev.getPlayer()),
-		"Tests: "+getManager().getStats().getInt(Stats.TM_TESTS, ev.getPlayer()),
+		"Karma: "+getManager().getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()),
+		"Tests: "+getManager().getStats().getInt(Stats.TTT_TESTS, ev.getPlayer()),
+		"Traitor-Punkte: "+getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()),
+		"Detective-Punkte: "+getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,
@@ -445,7 +516,7 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void World(WorldLoadEvent ev){
 		HashMap<String,ArrayList<Location>> list = getManager().getWorldData().getLocs();
-		tester = new Tester(this, list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
+		tester = new Tester(this, shop.getTs(),list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
 		setSkull(list.get(Team.YELLOW.Name()));
 	}
 	

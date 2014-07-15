@@ -2,6 +2,7 @@ package me.kingingo.karcade;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,16 +36,20 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
+import net.minecraft.server.v1_7_R3.WorldServer;
 
+import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -139,6 +144,17 @@ public class kArcadeManager implements Listener{
 			return ((Sign)south.getState());
 		}
 		return null;
+	}
+	
+	public void setWorldUnSave(World w){
+		WorldServer ws = ((CraftWorld)w).getHandle();
+		try{
+			Field field = ws.chunkProvider.getClass().getDeclaredField("CanSave");
+			field.setAccessible(true);
+			field.set(ws.chunkProvider, "false");
+		}catch(Exception e){
+			
+		}
 	}
 	
 	public void setRanking(Stats s){

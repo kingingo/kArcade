@@ -2,7 +2,6 @@ package me.kingingo.karcade;
 
 import java.io.File;
 
-import me.kingingo.karcade.Command.CommandLeiche;
 import me.kingingo.karcade.Command.CommandScan;
 import me.kingingo.karcade.Command.CommandSend;
 import me.kingingo.karcade.Command.CommandStart;
@@ -18,6 +17,8 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.memory.MemoryFix;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,7 +39,7 @@ public class kArcade extends JavaPlugin{
 		FileUtil.DeleteFolder(new File("map"));
 		loadConfig();
 		id=getConfig().getInt("Config.Server.ID");
-		FilePath=getConfig().getString("Config.File.Path");
+		FilePath=getConfig().getString("Config.Server.FilePath");
 		updater=new Updater(this);
 		if(id==-1){
 			c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER",this,updater);
@@ -53,7 +54,6 @@ public class kArcade extends JavaPlugin{
 		cmd.register(CommandScan.class, new CommandScan(permManager));
 		cmd.register(CommandSend.class, new CommandSend(c));
 		cmd.register(CommandStart.class, new CommandStart(manager));
-		cmd.register(CommandLeiche.class, new CommandLeiche(this));
 		new MemoryFix(this);
 		manager.DebugLog(time, 21, this.getClass().getName());
 	}
@@ -61,6 +61,11 @@ public class kArcade extends JavaPlugin{
 	public void onDisable(){
 		for(Player p : UtilServer.getPlayers()){
 			UtilBG.sendToServer(p, manager.getBungeeCord_Fallback_Server(),this);
+		}
+		if(getConfig().getString("Config.Server.World-Save").equalsIgnoreCase("false")){
+			for(World w : Bukkit.getWorlds()){
+				
+			}
 		}
 		mysql.close();
 		updater.stop();
@@ -73,7 +78,8 @@ public class kArcade extends JavaPlugin{
 	  {
 		getConfig().addDefault("Config.Server.ID", 1);
 	    getConfig().addDefault("Config.Server.Game", "OneInTheChamber");
-	    getConfig().addDefault("Config.File.Path", File.separator+"root"+File.separator+"Maps");
+	    getConfig().addDefault("Config.Server.World-Save", false);
+	    getConfig().addDefault("Config.Server.FilePath", File.separator+"root"+File.separator+"Maps");
 		getConfig().addDefault("Config.MySQL.Host", "NONE");
 	    getConfig().addDefault("Config.MySQL.DB", "NONE");
 	    getConfig().addDefault("Config.MySQL.User", "NONE");
