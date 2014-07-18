@@ -19,6 +19,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
+import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -98,12 +99,15 @@ public class kArcadeManager implements Listener{
 	private Client c;
 	@Getter
 	private PacketManager pManager;
+	@Getter
+	private CommandHandler cmd;
 	
-	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager) {
+	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
 		this.lobby.setPitch(2);
 		this.lobby.setYaw( (float)179.60071 );
 		this.Instance=plugin;
 		this.mysql=mysql;
+		this.cmd=cmd;
 		this.pManager=pManager;
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());

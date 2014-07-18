@@ -19,6 +19,7 @@ public class Tester_Spoofer implements Shop{
 	public Tester_Spoofer(){}
 	
 	public boolean Is(Player p){
+		if(!test.contains(p))return false;
 		int r = UtilMath.RandomInt(100, 0);
 		if(r<=75){
 			return true;
@@ -36,7 +37,7 @@ public class Tester_Spoofer implements Shop{
 	}
 	
 	public ItemStack getShopItem(){
-		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.IRON_BLOCK), "§cTester-Spoofer §7("+getPunkte()+" Punkt");
+		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.IRON_BLOCK), "§cTester-Spoofer §7("+getPunkte()+" Punkte)");
 		UtilItem.SetDescriptions(i, new String[]{
 				"§7Traitoren werden zu 75%",
 				"§7im Tester also Innocent angezeigt."

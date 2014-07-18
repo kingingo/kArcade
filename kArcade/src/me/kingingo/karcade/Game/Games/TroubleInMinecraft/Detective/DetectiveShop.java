@@ -1,10 +1,14 @@
-package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor;
+package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective;
 
 import java.util.ArrayList;
 
 import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item.Defibrillator;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item.Golden_Weapon;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item.Healing_Station;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Fake_Chest;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Medipack;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Radar;
@@ -24,7 +28,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 
-public class TraitorShop implements Listener{
+public class DetectiveShop implements Listener{
 
 	@Getter
 	TroubleInMinecraft TTT;
@@ -35,21 +39,19 @@ public class TraitorShop implements Listener{
 	ArrayList<Shop> ShopList = new ArrayList<>();
 	
 	@Getter
-	Medipack mp;
+	Defibrillator db;
 	@Getter
-	Radar r;
+	Golden_Weapon gw;
 	@Getter
-	Fake_Chest fc;
-	@Getter
-	Tester_Spoofer ts;
+	Healing_Station hs;
 	
-	public TraitorShop(TroubleInMinecraft TTT){
+	public DetectiveShop(TroubleInMinecraft TTT){
 		this.TTT=TTT;
-		shop=Bukkit.createInventory(null, 9,"Traitor-Shop:");
-		ShopList.add(ts= new Tester_Spoofer());
-		ShopList.add(r= new Radar(TTT));
-		ShopList.add(fc= new Fake_Chest(TTT));
-		ShopList.add(mp= new Medipack(TTT));
+		shop=Bukkit.createInventory(null, 9,"Detective-Shop:");
+		
+		ShopList.add(db= new Defibrillator(TTT));
+		ShopList.add(gw = new Golden_Weapon(TTT));
+		ShopList.add(hs=new Healing_Station(TTT));
 		
 		for(Shop s : ShopList){
 			shop.addItem(s.getShopItem());
@@ -60,7 +62,7 @@ public class TraitorShop implements Listener{
 	
 	@EventHandler
 	public void OpenShop(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand()!=null&&ev.getPlayer().getItemInHand().getType()==Material.STICK&&TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
+		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand()!=null&&ev.getPlayer().getItemInHand().getType()==Material.STICK&&TTT.getTeam(ev.getPlayer())==Team.DETECTIVE){
 			ev.getPlayer().openInventory(getShop());
 		}
 	}
@@ -68,7 +70,7 @@ public class TraitorShop implements Listener{
 	@EventHandler
 	public void UseShop(InventoryClickEvent ev){
 		if (!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
-		if(ev.getInventory().getName().equalsIgnoreCase("Traitor-Shop:")){
+		if(ev.getInventory().getName().equalsIgnoreCase("Detective-Shop:")){
 			Player p = (Player)ev.getWhoClicked();
 			ev.setCancelled(true);
 			p.closeInventory();
@@ -76,13 +78,13 @@ public class TraitorShop implements Listener{
 			for(Shop s : ShopList){
 				if(UtilItem.ItemNameEquals(ev.getCurrentItem(), s.getShopItem())){
 					int pk = s.getPunkte();
-					int player_punkte = TTT.getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, p);
+					int player_punkte = TTT.getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, p);
 					if(player_punkte>=pk){
-						TTT.getManager().getStats().setInt(p, (player_punkte-pk), Stats.TTT_TRAITOR_PUNKTE);
+						TTT.getManager().getStats().setInt(p, (player_punkte-pk), Stats.TTT_DETECTIVE_PUNKTE);
 						s.add(p);
-						p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TRAITOR_SHOP_BUYED.getText());
+						p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_BUYED.getText());
 					}else{
-						p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TRAITOR_SHOP.getText());
+						p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP.getText());
 					}
 					break;
 				}

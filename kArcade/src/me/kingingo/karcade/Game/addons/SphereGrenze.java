@@ -8,11 +8,15 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.kcore.Util.UtilServer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -20,7 +24,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.patterns.Pattern;
 
-public class SphereGrenze {
+public class SphereGrenze implements Listener {
 	
 	@Getter
 	private ArrayList<Location> grenzen = new ArrayList<>();
@@ -36,6 +40,7 @@ public class SphereGrenze {
 	public SphereGrenze(kArcadeManager manager,World world){
 		this.manager=manager;
 		this.world=world;
+		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	
 	public boolean isAlive(){
@@ -48,18 +53,12 @@ public class SphereGrenze {
 	
 	
 	@EventHandler
-	public void Move(PlayerMoveEvent ev) {
-		if (Grenze) {
-			Location from = ev.getFrom();
-			Location to = ev.getTo();
-			double x = Math.floor(from.getX());
-			double z = Math.floor(from.getZ());
-			if (Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z) {
-				x += .5;
-				z += .5;
-				ev.getPlayer().teleport(
-						new Location(from.getWorld(), x, from.getY(), z, from
-								.getYaw(), from.getPitch()));
+	public void Move(PlayerMoveEvent e) {
+		if(mitte.distance(e.getTo())>=radius){
+			if(e.getPlayer().getGameMode()==GameMode.SURVIVAL){
+		e.getPlayer().teleport(e.getFrom());
+		e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(-2.2).setY(0.3D));
+		e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ZOMBIE_WOODBREAK, 3.5F, 3.5F);
 			}
 		}
 	}

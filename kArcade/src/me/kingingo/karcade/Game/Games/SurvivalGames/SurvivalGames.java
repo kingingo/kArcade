@@ -12,8 +12,11 @@ import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Game.addons.BagPack;
 import me.kingingo.karcade.Game.addons.Move;
+import me.kingingo.karcade.Game.addons.RandomItemInventory;
 import me.kingingo.karcade.Game.addons.SphereGrenze;
+import me.kingingo.karcade.Game.addons.TargetNextPlayer;
 import me.kingingo.karcade.Game.addons.VoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -53,10 +56,11 @@ public class SurvivalGames extends TeamGame{
 
 	WorldData wd;
 	Move move;
-	//BagPack bp;
-	//RandomItemInventory rii;
+	BagPack bp;
+	RandomItemInventory rii;
 	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	Hologram hm;
+	TargetNextPlayer tnp;
 	boolean jump=true;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	
@@ -86,7 +90,9 @@ public class SurvivalGames extends TeamGame{
 	getBlockPlaceAllow().add(Material.CAKE);
 	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
 	getBlockPlaceAllow().add(Material.FIRE);
-	//bp=new BagPack(manager);
+	bp=new BagPack(manager);
+	tnp = new TargetNextPlayer(getTeamList(),getGameList(),getManager());
+	tnp.setRadius(50);
 	ArrayList<Material> itemlist = new ArrayList<>();
 	itemlist.add(Material.STONE_SWORD);
 	itemlist.add(Material.LEATHER_CHESTPLATE);
@@ -101,7 +107,7 @@ public class SurvivalGames extends TeamGame{
 	itemlist.add(Material.WOOD_AXE);
 	itemlist.add(Material.IRON_HELMET);
 	getItemPickupDeny().add(95);
-	//rii=new RandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
+	rii=new RandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
 	setVoteTeam(new VoteTeam(manager,new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
 			,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},18,2));
 	manager.DebugLog(t, 34, this.getClass().getName());
@@ -241,14 +247,15 @@ public class SurvivalGames extends TeamGame{
 	public ItemStack HARD(){
 		ItemStack i = null;
 		
-		switch(UtilMath.RandomInt(4,0)){
+		switch(UtilMath.RandomInt(7,0)){
 		case 0: i=new ItemStack(Material.DIAMOND_AXE);break;
 		case 1: i=new ItemStack(Material.DIAMOND);break;
 		case 2: i=new ItemStack(Material.ENDER_PEARL);break;
 		case 3: i=new ItemStack(Material.GOLDEN_APPLE);break;
-		//case 4: i=rii.getRandomItemInv();break;
-		//case 5: i=bp.getNewBagPack();break;
 		case 4: i=new ItemStack(Material.EXP_BOTTLE,UtilMath.RandomInt(5, 2));break;
+		case 5: i=bp.getNewBagPack();break;
+		case 6: i=rii.getRandomItemInv();break;
+		case 7: i=new ItemStack(Material.COMPASS);break;
 		}
 		
 		return i;
@@ -268,6 +275,7 @@ public class SurvivalGames extends TeamGame{
 	public void Start_Game(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getManager().getState()!=GameState.StartGame)return;
+		if(getManager().getStart()<0)getManager().setStart(21);
 		getManager().setStart(getManager().getStart()-1);
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_START_IN.getText(getManager().getStart()));
 		switch(getManager().getStart()){
@@ -292,6 +300,7 @@ public class SurvivalGames extends TeamGame{
 				getManager().setState(GameState.InGame);
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_START.getText());
 				setDamage(true);
+				tnp.setAktiv(true);
 				move.setnotMove(false);
 			break;
 		}
@@ -343,6 +352,7 @@ public class SurvivalGames extends TeamGame{
 				}
 				move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 				setDamage(false);
+				tnp.setAktiv(false);
 				getManager().setState(GameState.DeathMatch);
 			break;
 		}
@@ -519,7 +529,11 @@ public class SurvivalGames extends TeamGame{
 			ps.setScore(Bukkit.getOfflinePlayer("§aPartner:"), DisplaySlot.SIDEBAR, 9);
 			for(Player p1 : getPlayerFrom(getTeam(p))){
 				if(p==p1)continue;
-				ps.setScore(Bukkit.getOfflinePlayer("§a"+p1.getName()), DisplaySlot.SIDEBAR, 8);
+				if(p1.getName().length()>13){
+					ps.setScore(Bukkit.getOfflinePlayer("§a"+p1.getName().substring(13)), DisplaySlot.SIDEBAR, 8);
+				}else{
+					ps.setScore(Bukkit.getOfflinePlayer("§a"+p1.getName()), DisplaySlot.SIDEBAR, 8);
+				}
 			}
 			ps.setBoard();
 			ps.setScore(Bukkit.getOfflinePlayer("§3"), DisplaySlot.SIDEBAR, 7);

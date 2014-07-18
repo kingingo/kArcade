@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
@@ -35,13 +36,6 @@ public class BagPack implements Listener {
 		UtilItem.SetDescriptions(item, new String[]{String.valueOf(i)});
 		bagpacks.put(i, Bukkit.createInventory(null, 9,"BagPack"));
 		return item;
-	}
-	
-	@EventHandler
-	public void Pickup(PlayerPickupItemEvent ev){
-		if(ev.getItem().getItemStack().getType()==Material.NAME_TAG){
-			if(UtilInv.contains(ev.getPlayer(), Material.NAME_TAG, (Byte) null, 1))ev.setCancelled(true);
-		}
 	}
 	
 	@EventHandler

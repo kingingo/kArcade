@@ -21,6 +21,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,6 +35,8 @@ public class Fake_Chest implements Listener,Shop {
 	
 	public Fake_Chest(TroubleInMinecraft TTT){
 		this.TTT=TTT;
+		TTT.getBlockPlaceAllow().add(Material.SKULL);
+		TTT.getBlockPlaceAllow().add(Material.SKULL_ITEM);
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
@@ -62,14 +67,21 @@ public class Fake_Chest implements Listener,Shop {
 		return i;
 	}
 	
+	@EventHandler
+	public void Damage(EntityDamageEvent ev){
+		if(ev.getEntity() instanceof Player){
+			if(ev.getCause()==DamageCause.BLOCK_EXPLOSION)ev.setDamage(0);
+		}
+	}
+	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Use(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
 			if(list.containsKey(ev.getClickedBlock())&&ev.getClickedBlock().getState() instanceof Skull){
 				if(TTT.getTeam(ev.getPlayer())!=Team.TRAITOR){
-					ev.getClickedBlock().getWorld().createExplosion(ev.getClickedBlock().getLocation(), 1.0F, false);
-					list.get(ev.getClickedBlock()).damage(1000, ev.getPlayer());
 					ev.getClickedBlock().setTypeId(0);
+					ev.getPlayer().damage(50);
+					ev.getClickedBlock().getWorld().createExplosion(ev.getClickedBlock().getLocation(), 1.0F, false);
 				}else{
 					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Diese Chest ist eine Fake-Chest.");
 				}
@@ -79,7 +91,7 @@ public class Fake_Chest implements Listener,Shop {
 	}
 	
 	public ItemStack getShopItem(){
-		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "§cFake-Chest §7("+getPunkte()+" Punkt");
+		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "§cFake-Chest §7("+getPunkte()+" Punkte)");
 		UtilItem.SetDescriptions(i, new String[]{
 				"§7Wenn man dieses Fake-Item",
 				"§7aufnimmt stirbt man sofort."

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Tester_Spoofer;
 import me.kingingo.kcore.Enum.Text;
@@ -17,9 +18,11 @@ import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class Tester implements Listener{
@@ -49,10 +52,14 @@ public class Tester implements Listener{
 	HashMap<Player,Long> last = new HashMap<Player,Long>();
 	@Getter
 	Tester_Spoofer ts;
+	long l=-1;
 	
 	public Tester(TroubleInMinecraft TTT,Tester_Spoofer ts){
 		this.TTT=TTT;
 		this.ts=ts;
+		for(Location l : Lampen){
+			l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
+		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
@@ -63,6 +70,9 @@ public class Tester implements Listener{
 		this.Glass=Glass;
 		this.Join=Join;
 		this.ts=ts;
+		for(Location l : Lampen){
+			l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
+		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
@@ -83,6 +93,9 @@ public class Tester implements Listener{
 			this.Glass[i]=loc;
 			i++;
 		}
+		for(Location l : Lampen){
+			l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
+		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
@@ -97,15 +110,14 @@ public class Tester implements Listener{
 			if(timer==-1)timer=8;
 			timer--;
 			switch(timer){
-			case 7:
-				for(Location l : Glass){
-					l.getBlock().setType(Material.GLASS);
-				}
-				break;
-			case 3:
-				if(TTT.getTeam(p)==Team.TRAITOR){
+			case 1:
+				if(TTT.getTeam(p)==Team.TRAITOR&&!ts.Is(p)){
 					for(Location l : Lampen){
-						l.getBlock().setType(Material.REDSTONE_LAMP_ON);
+						l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)14, true);
+					}
+				}else if(TTT.getTeam(p)==Team.DETECTIVE){
+					for(Location l : Lampen){
+						l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)11, true);
 					}
 				}
 				break;
@@ -114,21 +126,38 @@ public class Tester implements Listener{
 					l.getBlock().setType(Material.AIR);
 				}
 				for(Location l : Lampen){
-					l.getBlock().setType(Material.REDSTONE_LAMP_OFF);
+					l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
 				}
 				last.put(p, System.currentTimeMillis()+TimeSpan.MINUTE);
 				use=false;
 				p=null;
 				timer=-1;
+				l=System.currentTimeMillis()+(TimeSpan.SECOND*3);
 				break;
 			}
 		}
 	}
 	
 	@EventHandler
+	public void onBlockRedstone(BlockRedstoneEvent event) {
+		if (event.getBlock().getType() != Material.REDSTONE_LAMP_ON) return;
+		event.setNewCurrent(50);
+	}
+	
+	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getClickedBlock().getLocation()==Button){
+		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getClickedBlock().getType() == Material.STONE_BUTTON){
+			if(!TTT.getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer()))return;
+			if(Button.getBlockY()!=ev.getClickedBlock().getLocation().getBlockY()||Button.getBlockX()!=ev.getClickedBlock().getLocation().getBlockX()||Button.getBlockZ()!=ev.getClickedBlock().getLocation().getBlockZ())return;
 			ev.setCancelled(true);
+			
+			if(l!=-1){
+				if(l > System.currentTimeMillis()){
+					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_WAS_USED.getText());
+					return;
+				}
+			}
+			
 			if(use){
 				ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_USED.getText());
 			}else{
@@ -138,7 +167,11 @@ public class Tester implements Listener{
 						return;
 					}
 				}
-				
+				for(Location l : Glass){
+					l.getBlock().setType(Material.GLASS);
+				}
+				timer=-1;
+				p=ev.getPlayer();
 				TTT.getManager().broadcast(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_JOIN.getText(ev.getPlayer().getName()));
 				use=true;
 				ev.getPlayer().teleport(Join);

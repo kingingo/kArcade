@@ -32,7 +32,7 @@ public class Medipack implements Listener,Shop{
 	}
 	
 	public ItemStack getShopItem(){
-		ItemStack i = UtilItem.RenameItem(new ItemStack(351,1,(byte)1), "§cMedipack §7("+getPunkte()+" Punkt");
+		ItemStack i = UtilItem.RenameItem(new ItemStack(351,1,(byte)1), "§cMedipack §7("+getPunkte()+" Punkt)");
 		UtilItem.SetDescriptions(i, new String[]{
 				"§7Heilt 2,5 Herzen."
 		});
@@ -43,10 +43,10 @@ public class Medipack implements Listener,Shop{
 	public void Use(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.R)){
 			if(ev.getPlayer().getItemInHand()!=null){
-				if(ev.getPlayer().getItemInHand()==item){
+				if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)){
 					ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
 					if(((CraftPlayer)ev.getPlayer()).getHealth()+5>((CraftPlayer)ev.getPlayer()).getHealth()){
-						ev.getPlayer().setHealth( ((CraftPlayer)ev.getPlayer()).getHealth() );
+						ev.getPlayer().setHealth( ((CraftPlayer)ev.getPlayer()).getMaxHealth() );
 					}else{
 						ev.getPlayer().setHealth( ((CraftPlayer)ev.getPlayer()).getHealth()+5 );
 					}

@@ -36,7 +36,8 @@ public class kArcade extends JavaPlugin{
 	
 	public void onEnable(){
 		long time = System.currentTimeMillis();
-		FileUtil.DeleteFolder(new File("map"));
+		
+		if(FileUtil.existPath(new File("map")))FileUtil.DeleteFolder(new File("map"));
 		loadConfig();
 		id=getConfig().getInt("Config.Server.ID");
 		FilePath=getConfig().getString("Config.Server.FilePath");
@@ -48,10 +49,10 @@ public class kArcade extends JavaPlugin{
 		}
 		mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 		permManager=new PermissionManager(this,mysql);
-		pManager=new PacketManager(this,c);
-		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager);
 		cmd=new CommandHandler(this);
 		cmd.register(CommandScan.class, new CommandScan(permManager));
+		pManager=new PacketManager(this,c);
+		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
 		cmd.register(CommandSend.class, new CommandSend(c));
 		cmd.register(CommandStart.class, new CommandStart(manager));
 		new MemoryFix(this);
