@@ -9,10 +9,6 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item.Defibril
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item.Golden_Weapon;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item.Healing_Station;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Fake_Chest;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Medipack;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Radar;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Tester_Spoofer;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -49,9 +45,9 @@ public class DetectiveShop implements Listener{
 		this.TTT=TTT;
 		shop=Bukkit.createInventory(null, 9,"Detective-Shop:");
 		
-		ShopList.add(db= new Defibrillator(TTT));
 		ShopList.add(gw = new Golden_Weapon(TTT));
 		ShopList.add(hs=new Healing_Station(TTT));
+		ShopList.add(db= new Defibrillator(TTT));
 		
 		for(Shop s : ShopList){
 			shop.addItem(s.getShopItem());

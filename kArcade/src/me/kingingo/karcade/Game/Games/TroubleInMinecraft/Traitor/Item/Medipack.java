@@ -7,13 +7,12 @@ import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Medipack implements Listener,Shop{
 
@@ -45,7 +44,7 @@ public class Medipack implements Listener,Shop{
 			if(ev.getPlayer().getItemInHand()!=null){
 				if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)){
 					ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
-					if(((CraftPlayer)ev.getPlayer()).getHealth()+5>((CraftPlayer)ev.getPlayer()).getHealth()){
+					if(((CraftPlayer)ev.getPlayer()).getHealth()+5>((CraftPlayer)ev.getPlayer()).getMaxHealth()){
 						ev.getPlayer().setHealth( ((CraftPlayer)ev.getPlayer()).getMaxHealth() );
 					}else{
 						ev.getPlayer().setHealth( ((CraftPlayer)ev.getPlayer()).getHealth()+5 );

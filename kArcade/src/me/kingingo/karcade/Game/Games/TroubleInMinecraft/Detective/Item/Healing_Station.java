@@ -2,31 +2,29 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
-
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilParticle;
-import me.kingingo.kcore.Util.UtilParticle.ParticleType;
+import me.kingingo.kcore.Util.UtilMath;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class Healing_Station implements Listener,Shop {
 
 	TroubleInMinecraft TTT;
-	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.BEACON), "§dHealing_Station");
+	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.BEACON), "§dHealing Station");
 	ArrayList<Block> stations = new ArrayList<>();
 	
 	public Healing_Station(TroubleInMinecraft TTT){
@@ -42,7 +40,7 @@ public class Healing_Station implements Listener,Shop {
 
 	@Override
 	public ItemStack getShopItem() {
-		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.BEACON,1,(byte)3), "§dHealing_Station §7("+getPunkte()+" Punkte)");
+		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.BEACON,1,(byte)3), "§dHealing Station §7("+getPunkte()+" Punkte)");
 		UtilItem.SetDescriptions(i, new String[]{
 				"§7Heilt andere Spieler in der nähe der Heal-Station."
 		});
@@ -62,15 +60,15 @@ public class Healing_Station implements Listener,Shop {
 		for(Block b : stations){
 
 			for(int i = 0; i<10; i++){
-				UtilParticle.PlayParticle(ParticleType.HEART,b.getLocation(),2, 2, 2, 5, 2);
+				b.getLocation().getWorld().playEffect(b.getLocation().add(UtilMath.r(4),UtilMath.r(3),UtilMath.r(4)), Effect.HEART, -10);
 			}
 			
 			for(Player p : TTT.getGameList().getPlayers(PlayerState.IN)){
-				if(b.getLocation().distance(p.getLocation()) < 7){
-					if(((CraftPlayer)p).getHealth()+1>((CraftPlayer)p).getHealth()){
+				if(b.getLocation().distance(p.getLocation()) < 3){
+					if(((CraftPlayer)p).getHealth()+0.4>((CraftPlayer)p).getMaxHealth()){
 						p.setHealth( ((CraftPlayer)p).getMaxHealth() );
 					}else{
-						p.setHealth( ((CraftPlayer)p).getHealth()+1 );
+						p.setHealth( ((CraftPlayer)p).getHealth()+0.4 );
 					}
 				}
 			}
@@ -81,7 +79,7 @@ public class Healing_Station implements Listener,Shop {
 	public void Block(BlockPlaceEvent ev){
 		Block b = ev.getBlock();
 		Player p = ev.getPlayer();
-		if(p.getItemInHand()==null||UtilItem.ItemNameEquals(p.getItemInHand(), item))return;
+		if(p.getItemInHand()==null||!UtilItem.ItemNameEquals(p.getItemInHand(), item))return;
 		stations.add(b);
 	}
 	

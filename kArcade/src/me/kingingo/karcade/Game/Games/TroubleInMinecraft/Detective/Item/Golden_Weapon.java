@@ -2,24 +2,18 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item;
 
 import java.util.HashMap;
 
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
-import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.NPC.NPC;
-import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Golden_Weapon implements Listener,Shop{
@@ -55,14 +49,11 @@ public class Golden_Weapon implements Listener,Shop{
 	}
 	
 	@EventHandler
-	public void Interact(EntityDamageByEntityEvent ev){
-		
-		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Player){
-			Player defender = (Player)ev.getEntity();
-			
+	public void Damage(PlayerInteractEntityEvent ev){
+		if(ev.getRightClicked() instanceof Player){
+			Player defender = (Player)ev.getPlayer();
 			if(defender.getItemInHand()==null||!UtilItem.ItemNameEquals(defender.getItemInHand(), item))return;
-			Player attacker = (Player)ev.getDamager();
-			
+			Player attacker = (Player)ev.getRightClicked();
 			defender.getInventory().remove(defender.getItemInHand());
 			defender.playSound(defender.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.0F);
 			if(TTT.getTeam(attacker)==Team.TRAITOR){

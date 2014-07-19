@@ -17,16 +17,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class CommandTraitor implements CommandExecutor, Listener{
+public class CommandDetective implements CommandExecutor, Listener{
 	
 	TroubleInMinecraft TTT;
 	
-	public CommandTraitor(TroubleInMinecraft TTT){
+	public CommandDetective(TroubleInMinecraft TTT){
 		this.TTT=TTT;
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
-	@me.kingingo.kcore.Command.CommandHandler.Command(command = "traitor", sender = Sender.PLAYER)
+	@me.kingingo.kcore.Command.CommandHandler.Command(command = "detective", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		if(TTT.getManager().getState()!=GameState.LobbyPhase){
 			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_LOBBYPHASE.getText());
@@ -38,15 +38,15 @@ public class CommandTraitor implements CommandExecutor, Listener{
 			return false;
 		}
 		
-		int t = TTT.getTraitor();
-		int tt = TTT.isInTeam(Team.TRAITOR);
+		int t = TTT.getDetective();
+		int tt = TTT.isInTeam(Team.DETECTIVE);
 		if(tt>=t){
 			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_MAX_USED.getText());
 			return false;
 		}
 		t_p--;
 		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
-		TTT.addTeam(((Player)cs) , Team.TRAITOR);
+		TTT.addTeam(((Player)cs) , Team.DETECTIVE);
 		((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(t_p));
 		return false;
 	}
@@ -56,7 +56,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 		if(TTT.getManager().getState()!=GameState.LobbyPhase)return;
 		if(TTT.getTeamList().containsKey(ev.getPlayer())){
 			Team t = TTT.getTeamList().get(ev.getPlayer());
-			if(t==Team.TRAITOR){
+			if(t==Team.DETECTIVE){
 				TTT.getTeamList().remove(ev.getPlayer());
 				TTT.getManager().getStats().setInt(ev.getPlayer() ,TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ev.getPlayer())+1, Stats.TTT_PÄSSE);
 			}

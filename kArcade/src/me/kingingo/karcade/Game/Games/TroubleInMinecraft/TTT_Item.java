@@ -2,6 +2,8 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 
 import lombok.Getter;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilReflection;
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,9 +27,12 @@ BOW_SNIPER("FallingDiamond",UtilItem.RenameItem(new ItemStack(Material.BOW), "Sn
 	ItemStack item;
 	@Getter
 	String n;
+	@Getter
+	GameProfile profil;
 	
 	private TTT_Item(String nick,ItemStack item,String n){
 		this.nick=nick;
+		this.profil=profil;
 		this.item=item;
 		this.n=n;
 	}
