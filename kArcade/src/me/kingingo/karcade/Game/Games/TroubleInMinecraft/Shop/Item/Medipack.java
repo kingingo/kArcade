@@ -1,7 +1,7 @@
-package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item;
+package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class Medipack implements Listener,Shop{
+public class Medipack implements Listener,IShop{
 
 	ItemStack item=UtilItem.RenameItem(new ItemStack(351,1,(byte)1), "§cMedipack");
 	

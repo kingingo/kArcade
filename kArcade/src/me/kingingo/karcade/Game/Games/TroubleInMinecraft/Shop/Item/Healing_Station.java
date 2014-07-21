@@ -1,10 +1,10 @@
-package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item;
+package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.ArrayList;
 
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
@@ -21,7 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class Healing_Station implements Listener,Shop {
+public class Healing_Station implements Listener,IShop {
 
 	TroubleInMinecraft TTT;
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.BEACON), "§dHealing Station");

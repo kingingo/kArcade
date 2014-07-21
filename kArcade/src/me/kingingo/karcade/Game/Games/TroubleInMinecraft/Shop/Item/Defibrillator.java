@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.Item;
+package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -23,7 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-public class Defibrillator implements Listener,Shop{
+public class Defibrillator implements Listener,IShop{
 
 	ItemStack item=UtilItem.RenameItem(new ItemStack(Material.REDSTONE), "§7Defibrillator");
 	TroubleInMinecraft TTT;

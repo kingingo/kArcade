@@ -92,7 +92,7 @@ public class SurvivalGames extends TeamGame{
 	getBlockPlaceAllow().add(Material.FIRE);
 	bp=new BagPack(manager);
 	tnp = new TargetNextPlayer(getTeamList(),getGameList(),getManager());
-	tnp.setRadius(50);
+	tnp.setRadius(40);
 	ArrayList<Material> itemlist = new ArrayList<>();
 	itemlist.add(Material.STONE_SWORD);
 	itemlist.add(Material.LEATHER_CHESTPLATE);

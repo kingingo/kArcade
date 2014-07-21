@@ -1,12 +1,13 @@
-package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item;
+package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.HashMap;
 
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilDirection;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
@@ -19,13 +20,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
-public class Radar implements Listener,Shop{
+public class Radar implements Listener,IShop{
 
 	ItemStack item=UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§7Radar");
 	HashMap<Player,Player> list = new HashMap<>();
+	HashMap<Player,UtilDirection> pl = new HashMap<>();
 	TroubleInMinecraft TTT;
-	HashMap<Player,BlockFace> face = new HashMap<>();
 	
 	public Radar(TroubleInMinecraft TTT){
 		this.TTT=TTT;
@@ -49,64 +51,27 @@ public class Radar implements Listener,Shop{
 		return i;
 	}
 	
-	Player r;
 	Location l;
-	BlockFace f;
+	UtilDirection face;
+	Player r;
 	@EventHandler
 	public void Updater(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.FASTER)return;
 		for(Player p : list.keySet()){
 			if(!p.isOnline())continue;
 			r=list.get(p);
-			if(list.get(p)==null){
-				l = p.getCompassTarget();
-				if(face.containsKey(p)){
-					f=face.get(p);
-					
-					if(f==BlockFace.NORTH){
-						f=BlockFace.EAST;
-					}else if(f==BlockFace.EAST){
-						f=BlockFace.SOUTH;
-					}else if(f==BlockFace.SOUTH){
-						f=BlockFace.WEST;
-					}else if(f==BlockFace.WEST){
-						f=BlockFace.NORTH;
-					}
-					l=l.getBlock().getRelative(f).getLocation();
-					
-				}else{
-					f=BlockFace.NORTH;
-					l=l.getBlock().getRelative(f).getLocation();
+			if(r==null||!r.isOnline()){
+				if(!pl.containsKey(p)){
+					pl.put(p, UtilDirection.NORTH);
 				}
-				face.put(p, f);
-				p.setCompassTarget(l);
-				continue;
-			}
-			
-			if(r.isOnline()){
-				p.setCompassTarget(r.getLocation());
+				
+				face=pl.get(p);
+				face=face.nextDirection();
+				pl.remove(p);
+				pl.put(p, face);
+				p.setCompassTarget(face.get(p.getLocation()));
 			}else{
-				l = p.getCompassTarget();
-				if(face.containsKey(p)){
-					f=face.get(p);
-					
-					if(f==BlockFace.NORTH){
-						f=BlockFace.EAST;
-					}else if(f==BlockFace.EAST){
-						f=BlockFace.SOUTH;
-					}else if(f==BlockFace.SOUTH){
-						f=BlockFace.WEST;
-					}else if(f==BlockFace.WEST){
-						f=BlockFace.NORTH;
-					}
-					l=l.getBlock().getRelative(f).getLocation();
-					
-				}else{
-					f=BlockFace.NORTH;
-					l=l.getBlock().getRelative(f).getLocation();
-				}
-				face.put(p, f);
-				p.setCompassTarget(l);
+				p.setCompassTarget(r.getLocation());
 			}
 		}
 	}

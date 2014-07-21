@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item.Tester_Spoofer;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Tester_Spoofer;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -49,37 +50,32 @@ public class Tester implements Listener{
 	int timer=0;
 	@Getter
 	HashMap<Player,Long> last = new HashMap<Player,Long>();
-	@Getter
-	Tester_Spoofer ts;
 	long l=-1;
 	
-	public Tester(TroubleInMinecraft TTT,Tester_Spoofer ts){
+	public Tester(TroubleInMinecraft TTT){
 		this.TTT=TTT;
-		this.ts=ts;
 		for(Location l : Lampen){
 			l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
 		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
-	public Tester(TroubleInMinecraft TTT,Tester_Spoofer ts,Location Button,Location Join, Location[] Lampen, Location[] Glass){
+	public Tester(TroubleInMinecraft TTT,Location Button,Location Join, Location[] Lampen, Location[] Glass){
 		this.TTT=TTT;
 		this.Button=Button;
 		this.Lampen=Lampen;
 		this.Glass=Glass;
 		this.Join=Join;
-		this.ts=ts;
 		for(Location l : Lampen){
 			l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
 		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
-	public Tester(TroubleInMinecraft TTT,Tester_Spoofer ts,Location Button,Location Join, ArrayList<Location> Lampen, ArrayList<Location> Glass){
+	public Tester(TroubleInMinecraft TTT,Location Button,Location Join, ArrayList<Location> Lampen, ArrayList<Location> Glass){
 		this.TTT=TTT;
 		this.Join=Join;
 		this.Button=Button;
-		this.ts=ts;
 		int i=0;
 		this.Lampen=new Location[Lampen.size()];
 		for(Location loc : Lampen){
@@ -110,7 +106,9 @@ public class Tester implements Listener{
 			timer--;
 			switch(timer){
 			case 1:
-				if(TTT.getTeam(p)==Team.TRAITOR&&!ts.Is(p)){
+				TesterSpooferEvent e = new TesterSpooferEvent(p);
+				Bukkit.getPluginManager().callEvent(e);
+				if(TTT.getTeam(p)==Team.TRAITOR&&!e.isCancelled()){
 					for(Location l : Lampen){
 						l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)14, true);
 					}

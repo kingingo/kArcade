@@ -14,8 +14,16 @@ import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandDetective;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandTraitor;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Detective.DetectiveShop;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.TraitorShop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Defibrillator;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Fake_Chest;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Golden_Weapon;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Healing_Station;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Knife;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Medipack;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Radar;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Tester_Spoofer;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.SkullNameTag;
 import me.kingingo.kcore.Enum.GameState;
@@ -38,8 +46,6 @@ import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
-import net.minecraft.server.v1_7_R4.MinecraftServer;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -68,13 +74,15 @@ public class TroubleInMinecraft extends TeamGame{
 	private kArcadeManager manager;
 	HashMap<Integer,String> npclist = new HashMap<>();
 	Tester tester;
-	TraitorShop tshop;
-	DetectiveShop dshop;
+	Shop dshop;
 	NPCManager npcManager;
 	Hologram hm;
 	SkullNameTag snt;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	//HashMap<Integer,NPC> NPCList = new HashMap<>();
+	
+	Shop traitor_shop;
+	Shop detective_shop;
 	
 	public TroubleInMinecraft(kArcadeManager manager) {
 		super(manager);
@@ -104,11 +112,27 @@ public class TroubleInMinecraft extends TeamGame{
 		getManager().getCmd().register(CommandDetective.class, new CommandDetective(this));
 		getManager().getCmd().register(CommandTraitor.class, new CommandTraitor(this));
 		npcManager= new NPCManager(getManager().getInstance());
-		tshop = new TraitorShop(this);
-		dshop = new DetectiveShop(this);
+		Radar r = new Radar(this);
+		
+		traitor_shop= new Shop(this,"Traitor-Shop:",Stats.TTT_TRAITOR_PUNKTE,Team.TRAITOR,new IShop[]{
+				new Fake_Chest(this),
+				new Medipack(this),
+				new Knife(this),
+				r,
+				new Tester_Spoofer(this)
+		});
+		
+		detective_shop= new Shop(this,"Detective-Shop:",Stats.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{
+				new Defibrillator(this),
+				new Golden_Weapon(this),
+				r,
+				new Healing_Station(this)
+		});
+		
 		wd = new WorldData(manager,GameType.TroubleInMinecraft.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
+		System.out.println("MAX:"+Float.MAX_VALUE+" MIN:"+Float.MIN_VALUE);
 		
 //		minigun= new Weapon(manager.getInstance(), WeaponTyp.MACHINE_GUNS,new ItemStack(Material.ARROW),TTT_Item.BOW_MINIGUN.getItem(),TimeSpan.SECOND*5, 500,32,0.1,1,1,"§7MiniGun");
 //		
@@ -568,7 +592,7 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.78, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.4, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
@@ -671,7 +695,7 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void World(WorldLoadEvent ev){
 		HashMap<String,ArrayList<Location>> list = getManager().getWorldData().getLocs();
-		tester = new Tester(this, tshop.getTs(),list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
+		tester = new Tester(this, list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
 		setSkull(list.get(Team.YELLOW.Name()));
 	}
 	

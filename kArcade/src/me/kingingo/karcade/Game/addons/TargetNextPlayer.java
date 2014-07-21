@@ -11,6 +11,8 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.GameList;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilDirection;
+import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,6 +22,7 @@ import org.bukkit.event.Listener;
 
 public class TargetNextPlayer implements Listener {
 
+	HashMap<Player,UtilDirection> pl = new HashMap<>();
 	private HashMap<Player,Team> TeamList;
 	@Getter
 	@Setter
@@ -53,11 +56,12 @@ public class TargetNextPlayer implements Listener {
 	ArrayList<Player> list;
 	Player target=null;
 	Location l;
+	UtilDirection face;
 	double dis=-1;
 	@EventHandler
 	public void Update(UpdateEvent ev){
 		if(UpdateType.FAST!=ev.getType())return;
-		if(!isAktiv())return;
+		if(isAktiv()==false)return;
 		list=GL.getPlayers(PlayerState.IN);
 		for(Player p : list){
 			target=null;
@@ -65,7 +69,8 @@ public class TargetNextPlayer implements Listener {
 			for(Player p1 : list){
 				if(p.getWorld()!=p1.getWorld())continue;
 				if(p==p1)continue;
-				if(p.getLocation().distance(p1.getLocation())<=getRadius()&&dis!=-1&&target!=null&&p.getLocation().distance(p1.getLocation())<dis){
+				if(p.getLocation().distance(p1.getLocation())<=getRadius()){
+					if(dis!=-1&&p.getLocation().distance(p1.getLocation())>dis)continue;
 					dis=p.getLocation().distance(p1.getLocation());
 					target=p1;
 				}
@@ -73,13 +78,15 @@ public class TargetNextPlayer implements Listener {
 			if(target!=null){
 				p.setCompassTarget(target.getLocation());
 			}else{
-				l = p.getCompassTarget();
-				if(l.getYaw()==360){
-					l.setYaw(0);
-				}else{
-					l.setYaw(l.getYaw()+10);
+				if(!pl.containsKey(p)){
+				pl.put(p, UtilDirection.NORTH);
 				}
-				p.setCompassTarget(l);
+			
+			face=pl.get(p);
+			face=face.nextDirection();
+			pl.remove(p);
+			pl.put(p, face);
+			p.setCompassTarget(face.get(p.getLocation()));
 			}
 		}
 	}
