@@ -1,11 +1,11 @@
-package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Item;
+package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.HashMap;
 
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TTT_Item;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Traitor.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -26,7 +26,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class Fake_Chest implements Listener,Shop {
+public class Fake_Chest implements Listener,IShop {
 
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "Fake-Chest");
 	HashMap<Block,Player> list = new HashMap<>();
