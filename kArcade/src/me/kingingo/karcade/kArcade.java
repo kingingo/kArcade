@@ -38,8 +38,8 @@ public class kArcade extends JavaPlugin{
 		long time = System.currentTimeMillis();
 		loadConfig();
 		if(FileUtil.existPath(new File("map")))FileUtil.DeleteFolder(new File("map"));
-		id=getConfig().getInt("Config.Server.ID");
 		FilePath=getConfig().getString("Config.Server.FilePath");
+		id=getConfig().getInt("Config.Server.ID");
 		updater=new Updater(this);
 		if(id==-1){
 			c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER",this,updater);
