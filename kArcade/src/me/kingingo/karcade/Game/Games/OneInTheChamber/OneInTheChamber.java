@@ -49,8 +49,8 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	public OneInTheChamber(kArcadeManager manager) {
 		super(manager);
 		manager.setTyp(GameType.OneInTheChamber);
-		setMax_Players(16);
 		getManager().setStart(186);
+		setMax_Players(16);
 		setMin_Players(4);
 		setCompassAddon(true);
 		setDamagePvE(true);
