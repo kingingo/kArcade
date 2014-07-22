@@ -35,6 +35,7 @@ public class kArcade extends JavaPlugin{
 	public static String FilePath;
 	
 	public void onEnable(){
+		TEST
 		long time = System.currentTimeMillis();
 		loadConfig();
 		if(FileUtil.existPath(new File("map")))FileUtil.DeleteFolder(new File("map"));
