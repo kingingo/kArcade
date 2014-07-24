@@ -8,15 +8,21 @@ import org.bukkit.event.HandlerList;
 
 public class GameStateChangeEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();
-	private GameState state;
+	private GameState from;
+	private GameState to;
 	private boolean cancel=false;
 	
-	public GameStateChangeEvent(GameState state){
-		this.state=state;
+	public GameStateChangeEvent(GameState from,GameState to){
+		this.from=from;
+		this.to=to;
 	}
 	
-	public GameState getState(){
-		return state;
+	public GameState getTo(){
+		return to;
+	}
+	
+	public GameState getFrom(){
+		return from;
 	}
 	
 	@Override

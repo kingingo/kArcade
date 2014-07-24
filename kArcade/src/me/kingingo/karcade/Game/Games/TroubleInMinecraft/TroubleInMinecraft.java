@@ -30,6 +30,8 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.Minecraft.FakeEquipment;
+import me.kingingo.kcore.Minecraft.FakeEquipment.EquipmentSlot;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -46,6 +48,7 @@ import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
+import net.minecraft.server.v1_7_R4.PacketPlayOutEntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -53,6 +56,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -79,7 +84,6 @@ public class TroubleInMinecraft extends TeamGame{
 	Hologram hm;
 	SkullNameTag snt;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
-	//HashMap<Integer,NPC> NPCList = new HashMap<>();
 	
 	Shop traitor_shop;
 	Shop detective_shop;
@@ -673,9 +677,18 @@ public class TroubleInMinecraft extends TeamGame{
 						t1--;
 					}
 				}
+				
 				ps.setBoard();
 				boards.put(p, ps);
 			}
+			
+			for(Player p : t){
+				PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(p.getEntityId(),2, CraftItemStack.asNMSCopy( UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), Color.RED) ));
+				for(Player p1 : t){
+					((CraftPlayer)p1).getHandle().playerConnection.sendPacket(packet);
+				}
+			}
+			
 			ArrayList<Player> i = (ArrayList<Player>) getPlayerFrom(Team.INOCCENT);
 			
 			for(Player p:i){

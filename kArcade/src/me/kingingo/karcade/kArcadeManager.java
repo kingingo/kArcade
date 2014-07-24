@@ -297,7 +297,7 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void setState(GameState gs){
-		GameStateChangeEvent stateEvent = new GameStateChangeEvent(gs);
+		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs);
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		state=gs;
@@ -306,7 +306,7 @@ public class kArcadeManager implements Listener{
 	
 	@EventHandler
 	public void r(GameStateChangeEvent ev){
-		if(ev.getState()==GameState.Restart){
+		if(ev.getTo()==GameState.Restart){
 			setStart(-1);
 		}
 	}

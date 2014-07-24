@@ -582,7 +582,7 @@ public class SurvivalGames extends TeamGame{
 	
 	@EventHandler
 	public void ChangeState(GameStateChangeEvent ev){
-		if(ev.getState()==GameState.Restart){
+		if(ev.getTo()==GameState.Restart){
 			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
 			if(list.size()==1){
 				Player p = list.get(0);

@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
+import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -52,6 +54,13 @@ public class Defibrillator implements Listener,IShop{
 	@Override
 	public void add(Player p) {
 		p.getInventory().addItem(item.clone());
+	}
+	
+	@EventHandler
+	public void Team(GameStateChangeEvent ev){
+		if(ev.getFrom()==GameState.SchutzModus&&ev.getTo()==GameState.InGame){
+			teams=(HashMap<Player,Team>)TTT.getTeamList().clone();
+		}
 	}
 	
 	@EventHandler
