@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games.Rush;
+package me.kingingo.karcade.Game.Games.SheepWars;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class Rush extends TeamGame{
+public class Rush_Example extends TeamGame{
 
 	QuadratGrenze wand;
 	UtilSchematic schematic;
@@ -64,7 +64,7 @@ public class Rush extends TeamGame{
 	PetManager PetManager;
 	long t;
 	
-	public Rush(kArcadeManager manager) {
+	public Rush_Example(kArcadeManager manager) {
 		super(manager);
 		t = System.currentTimeMillis();
 		manager.setTyp(GameType.Rush);

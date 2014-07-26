@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lombok.Getter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
@@ -29,7 +30,8 @@ public class Defibrillator implements Listener,IShop{
 
 	ItemStack item=UtilItem.RenameItem(new ItemStack(Material.REDSTONE), "§7Defibrillator");
 	TroubleInMinecraft TTT;
-	HashMap<Player,Team> teams = new HashMap<>();
+	@Getter
+	HashMap<String,Team> teams = new HashMap<>();
 	ArrayList<Player> l = new ArrayList<>();
 	
 	public Defibrillator(TroubleInMinecraft TTT){
@@ -59,7 +61,9 @@ public class Defibrillator implements Listener,IShop{
 	@EventHandler
 	public void Team(GameStateChangeEvent ev){
 		if(ev.getFrom()==GameState.SchutzModus&&ev.getTo()==GameState.InGame){
-			teams=(HashMap<Player,Team>)TTT.getTeamList().clone();
+			for(Player p : TTT.getTeamList().keySet()){
+				getTeams().put(p.getName().toLowerCase(), TTT.getTeam(p));
+			}
 		}
 	}
 	

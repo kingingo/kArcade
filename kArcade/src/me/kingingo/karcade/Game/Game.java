@@ -328,6 +328,7 @@ public class Game implements Listener{
 		  getManager().Clear(ev.getPlayer());
 		  if(getManager().isState(GameState.LobbyPhase)){
 			  getManager().getLobby().getWorld().setStorm(false);
+			  getManager().getLobby().getWorld().setTime(4000);
 			  ev.getPlayer().teleport(getManager().getLobby());
 		  }
 	  }

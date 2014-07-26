@@ -13,7 +13,8 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
-import me.kingingo.karcade.Game.Games.Rush.Rush;
+import me.kingingo.karcade.Game.Games.SheepWars.Rush_Example;
+import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -51,9 +52,11 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -111,6 +114,13 @@ public class kArcadeManager implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
 		this.permManager=permManager;
+		
+		for(Entity e : getLobby().getWorld().getEntities()){
+			if(!(e instanceof Player)){
+				e.remove();
+			}
+		}
+		
 		new Location(Bukkit.getWorld("world"),756,23,610).getWorld().loadChunk(new Location(Bukkit.getWorld("world"),756,23,610).getWorld().getChunkAt(new Location(Bukkit.getWorld("world"),756,23,610)));
 		ranking.put(1, ((Sign)new Location(Bukkit.getWorld("world"),756,23,610).getBlock().getState()));
 		ranking.put(2, ((Sign)new Location(Bukkit.getWorld("world"),756,23,609).getBlock().getState()));
@@ -180,8 +190,8 @@ public class kArcadeManager implements Listener{
 	public Game Game(String game){
 		if(GameType.OneInTheChamber.string().equalsIgnoreCase(game)){
 			return new OneInTheChamber(this);
-		}else if(GameType.Rush.string().equalsIgnoreCase(game)){
-			return new Rush(this);
+		}else if(GameType.SheepWars.string().equalsIgnoreCase(game)){
+			return new SheepWars(this);
 		}else if(GameType.TroubleInMinecraft.string().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SurvivalGames.string().equalsIgnoreCase(game)){
@@ -289,6 +299,11 @@ public class kArcadeManager implements Listener{
 	@EventHandler
 	public void Q(PlayerQuitEvent ev){
 		if(state==GameState.LobbyPhase)updateInfo(UtilServer.getPlayers().length-1);
+	}
+	
+	@EventHandler
+	public void Mobs(CreatureSpawnEvent ev){
+		if(ev.getLocation().getWorld()==getLobby().getWorld())ev.setCancelled(true);
 	}
 	
 	@EventHandler

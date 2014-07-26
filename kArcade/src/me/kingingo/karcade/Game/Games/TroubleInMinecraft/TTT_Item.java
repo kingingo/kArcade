@@ -16,10 +16,10 @@ SCHWERT_HOLZ("VareidePlays",UtilItem.RenameItem(new ItemStack(Material.WOOD_SWOR
 SCHWERT_STONE("Nottrex",UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "Steinschwert"),"SCHWERT"),
 SCHWERT_IRON("BillTheBuild3r",UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "Eisenschwert"),"SCHWERT"),
 
-BOW_MINIGUN("KlausurThaler144",UtilItem.RenameItem(new ItemStack(Material.BOW), "MiniGun"),"BOW"),
-BOW_SHOTGUN("IntelliJ",UtilItem.RenameItem(new ItemStack(Material.BOW), "Shotgun"),"BOW"),
+BOW_MINIGUN("KlausurThaler144",TroubleInMinecraft.getMinigun().getItem(),"BOW"),
+BOW_SHOTGUN("IntelliJ",TroubleInMinecraft.getShotgun().getItem(),"BOW"),
 BOW_BOGEN("Abmahnung",UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen"),"BOW"),
-BOW_SNIPER("FallingDiamond",UtilItem.RenameItem(new ItemStack(Material.BOW), "Sniper"),"BOW");
+BOW_SNIPER("FallingDiamond",TroubleInMinecraft.getSniper().getItem(),"BOW");
 
 	@Getter
 	String nick;

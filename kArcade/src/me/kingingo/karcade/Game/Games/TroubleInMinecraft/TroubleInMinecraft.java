@@ -24,6 +24,9 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Knife;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Medipack;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Radar;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Tester_Spoofer;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.SkullNameTag;
 import me.kingingo.kcore.Enum.GameState;
@@ -85,6 +88,14 @@ public class TroubleInMinecraft extends TeamGame{
 	SkullNameTag snt;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	
+	@Getter
+	public static Shotgun shotgun;
+	@Getter
+	public static Sniper sniper;
+	@Getter
+	public static Minigun minigun;
+	
+	Defibrillator defi;
 	Shop traitor_shop;
 	Shop detective_shop;
 	
@@ -113,11 +124,14 @@ public class TroubleInMinecraft extends TeamGame{
 		setFoodChange(false);
 		setProjectileDamage(true);
 		setRespawn(true);
+		shotgun=new Shotgun(this);
+		sniper=new Sniper(this);
+		minigun=new Minigun(this);
 		getManager().getCmd().register(CommandDetective.class, new CommandDetective(this));
 		getManager().getCmd().register(CommandTraitor.class, new CommandTraitor(this));
 		npcManager= new NPCManager(getManager().getInstance());
 		Radar r = new Radar(this);
-		
+		defi = new Defibrillator(this);
 		traitor_shop= new Shop(this,"Traitor-Shop:",Stats.TTT_TRAITOR_PUNKTE,Team.TRAITOR,new IShop[]{
 				new Fake_Chest(this),
 				new Medipack(this),
@@ -127,7 +141,7 @@ public class TroubleInMinecraft extends TeamGame{
 		});
 		
 		detective_shop= new Shop(this,"Detective-Shop:",Stats.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{
-				new Defibrillator(this),
+				defi,
 				new Golden_Weapon(this),
 				r,
 				new Healing_Station(this)
@@ -204,35 +218,41 @@ public class TroubleInMinecraft extends TeamGame{
 		return t;
 	}
 	
-	@EventHandler
-	public void Shot(EntityShootBowEvent ev){
-		ev.setCancelled(true);
-	}
+//	@EventHandler
+//	public void Shot(EntityShootBowEvent ev){
+//		ev.setCancelled(true);
+//	}
 	
-	 @EventHandler
-	  public void onPlayerInteract(PlayerInteractEvent e) {
-	    if (e.getAction() != Action.RIGHT_CLICK_AIR) return;
-
-	    if (e.getItem().getType() != Material.BOW) return;
-	    e.setCancelled(true);
-	    Arrow a = (Arrow)e.getPlayer().launchProjectile(Arrow.class, e.getPlayer().getEyeLocation().getDirection().multiply(5));
-	  }
+//	 @EventHandler
+//	  public void onPlayerInteract(PlayerInteractEvent e) {
+//	    if (e.getAction() != Action.RIGHT_CLICK_AIR) return;
+//
+//	    if (e.getItem().getType() != Material.BOW) return;
+//	    e.setCancelled(true);
+//	    Arrow a = (Arrow)e.getPlayer().launchProjectile(Arrow.class, e.getPlayer().getEyeLocation().getDirection().multiply(5));
+//	  }
 	
 	 @EventHandler
 		public void Aufdecken(PlayerInteractNPCEvent ev){
 			NPC npc = ev.getNpc();
-			if(!npc.getName().equalsIgnoreCase("Unidentifiziert"))return;
-			String name = npclist.get(npc.getP().getId());
-			Location loc = npc.getLoc();
-			npclist.remove(npc.getP().getId());
-			npc.remove();
 			
-			npc = npcManager.createNPC( name );
-			npc.spawn(loc);
-			npc.sleep();
-			
-			if(getTeam(ev.getPlayer())==Team.DETECTIVE){
-				getManager().getStats().setInt(ev.getPlayer(),getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, Stats.TTT_DETECTIVE_PUNKTE);	
+			if(npc.getName().equalsIgnoreCase("Unidentifiziert")){
+				String name = npclist.get(npc.getP().getId());
+				Location loc = npc.getLoc();
+				npclist.remove(npc.getP().getId());
+				npc.remove();
+				
+				npc = npcManager.createNPC( name );
+				npc.spawn(loc);
+				npc.sleep();
+				
+				if(getTeam(ev.getPlayer())==Team.DETECTIVE){
+					getManager().getStats().setInt(ev.getPlayer(),getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, Stats.TTT_DETECTIVE_PUNKTE);	
+				}
+			}else{
+				if(defi.getTeams().containsKey(npc.getName().toLowerCase())){
+					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_NPC_CLICKED.getText(new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
+				}
 			}
 		}
 	
@@ -596,7 +616,7 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.4, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.6, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
