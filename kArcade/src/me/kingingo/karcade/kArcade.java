@@ -55,7 +55,7 @@ public class kArcade extends JavaPlugin{
 		cmd.register(CommandSend.class, new CommandSend(c));
 		cmd.register(CommandStart.class, new CommandStart(manager));
 		new MemoryFix(this);
-		manager.DebugLog(time, 21, this.getClass().getName());
+		manager.DebugLog(time, this.getClass().getName());
 	}
 	
 	public void onDisable(){

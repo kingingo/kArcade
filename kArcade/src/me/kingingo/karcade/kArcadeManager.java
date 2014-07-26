@@ -230,10 +230,8 @@ public class kArcadeManager implements Listener{
 	    return maps;
 	  }
 	
-	public void DebugLog(long time,int zeile,String c){
+	public void DebugLog(long time,String c){
 		System.err.println("[DebugMode]: Class: "+c);
-		System.err.println("[DebugMode]: Zeile: "+zeile);
-		//System.err.println("[DebugMode]: Zeit: "+UtilTime.convertString(System.currentTimeMillis() - time, 0, UtilTime.TimeUnit.FIT));
 		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
 	}
 	

@@ -24,7 +24,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.patterns.Pattern;
 
-public class SphereGrenze implements Listener {
+public class AddonSphereGrenze implements Listener {
 	
 	@Getter
 	private ArrayList<Location> grenzen = new ArrayList<>();
@@ -37,7 +37,7 @@ public class SphereGrenze implements Listener {
 	Location mitte;
 	int radius=30;
 	
-	public SphereGrenze(kArcadeManager manager,World world){
+	public AddonSphereGrenze(kArcadeManager manager,World world){
 		this.manager=manager;
 		this.world=world;
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());

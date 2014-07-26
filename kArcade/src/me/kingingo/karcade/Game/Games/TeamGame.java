@@ -10,8 +10,8 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Game;
-import me.kingingo.karcade.Game.addons.SpecCompass;
-import me.kingingo.karcade.Game.addons.VoteTeam;
+import me.kingingo.karcade.Game.addons.AddonSpecCompass;
+import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
@@ -34,7 +34,7 @@ public class TeamGame extends Game{
 	HashMap<Player,Team> TeamList = new HashMap<>();
 	@Getter
 	@Setter
-	private VoteTeam VoteTeam;
+	private AddonVoteTeam VoteTeam;
 	
 	public TeamGame(kArcadeManager manager) {
 		super(manager);
@@ -181,7 +181,7 @@ public class TeamGame extends Game{
 	    for(Player p : UtilServer.getPlayers()){
 	    	p.hidePlayer(player);
 	    }
-	    if(getCompass()==null)setCompass(new SpecCompass(getManager()));
+	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
 	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
 	    if(islastTeam()||getGameList().getPlayers(PlayerState.IN).size()<=1){

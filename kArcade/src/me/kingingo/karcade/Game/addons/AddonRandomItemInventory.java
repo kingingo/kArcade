@@ -19,12 +19,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class RandomItemInventory implements Listener{
+public class AddonRandomItemInventory implements Listener{
 
 	private ArrayList<Material> itemlist;
 	private Material m;
 	
-	public RandomItemInventory(kArcadeManager manager,Material m,ArrayList<Material> itemlist){
+	public AddonRandomItemInventory(kArcadeManager manager,Material m,ArrayList<Material> itemlist){
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 		this.itemlist=itemlist;
 		this.m=m;

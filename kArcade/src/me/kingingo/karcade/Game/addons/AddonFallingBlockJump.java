@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.util.Vector;
 
-public class FallingBlockJump implements Listener{
+public class AddonFallingBlockJump implements Listener{
 
 	kArcadeManager manager;
 	//ArrayList<Material> list;
@@ -37,7 +37,7 @@ public class FallingBlockJump implements Listener{
 	@Setter
 	boolean remove=true;
 	
-	public FallingBlockJump(kArcadeManager manager,Location center,int radius,int spawn){
+	public AddonFallingBlockJump(kArcadeManager manager,Location center,int radius,int spawn){
 		this.manager=manager;
 		this.center=center;
 		this.radius=radius;

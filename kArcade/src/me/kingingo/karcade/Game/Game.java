@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.karcade.Game.addons.SpecCompass;
+import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.Permission;
@@ -153,7 +153,7 @@ public class Game implements Listener{
 	public boolean DeathDropItems = false;
 	@Getter
 	@Setter
-	private SpecCompass compass;
+	private AddonSpecCompass compass;
 	
 	@Setter
 	@Getter

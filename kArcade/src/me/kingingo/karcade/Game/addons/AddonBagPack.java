@@ -16,14 +16,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class BagPack implements Listener {
+public class AddonBagPack implements Listener {
 	
 	private int i = 0;
 	private HashMap<Integer,Inventory> bagpacks = new HashMap<>();
 	@Getter
 	private boolean Only_One_BagPack_in_Inventory = false;
 	
-	public BagPack(kArcadeManager manager){
+	public AddonBagPack(kArcadeManager manager){
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	

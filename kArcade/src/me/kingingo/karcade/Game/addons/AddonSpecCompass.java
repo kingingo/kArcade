@@ -24,12 +24,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpecCompass implements Listener{
+public class AddonSpecCompass implements Listener{
 	
 	public kArcadeManager Manager;
 	public Inventory inv;
 
-	public SpecCompass(kArcadeManager manager) {
+	public AddonSpecCompass(kArcadeManager manager) {
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 		this.Manager=manager;
 	}

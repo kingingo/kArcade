@@ -27,7 +27,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class VoteTeam implements Listener{
+public class AddonVoteTeam implements Listener{
 	
 	private kArcadeManager Manager;
 	private Inventory inv;
@@ -37,7 +37,7 @@ public class VoteTeam implements Listener{
 	@Getter
 	private HashMap<Player,Team> vote = new HashMap<>();
 	
-	public VoteTeam(kArcadeManager manager,Team[] list,int invSize,int MaxInTeam){
+	public AddonVoteTeam(kArcadeManager manager,Team[] list,int invSize,int MaxInTeam){
 		this.Manager=manager;
 		this.list=list;
 		this.MaxInTeam=MaxInTeam;

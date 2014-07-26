@@ -16,14 +16,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class QuadratGrenze implements Listener{
+public class AddonQuadratGrenze implements Listener{
 
 	private ArrayList<Location> list;
 	private Location center;
 	private kArcadeManager manager;
 	private int radius=0;
 	
-	public QuadratGrenze(kArcadeManager manager,Location loc,int radius){
+	public AddonQuadratGrenze(kArcadeManager manager,Location loc,int radius){
 		long time = System.currentTimeMillis();
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 		this.manager=manager;
@@ -31,7 +31,7 @@ public class QuadratGrenze implements Listener{
 		this.center=loc;
 		this.list=new ArrayList<>();
 		scan();
-		manager.DebugLog(time, 26, this.getClass().getName());
+		manager.DebugLog(time, this.getClass().getName());
 	}
 	
 	@EventHandler

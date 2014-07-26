@@ -28,7 +28,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.karcade.Game.addons.SkullNameTag;
+import me.kingingo.karcade.Game.addons.AddonSkullNameTag;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -85,7 +85,7 @@ public class TroubleInMinecraft extends TeamGame{
 	Shop dshop;
 	NPCManager npcManager;
 	Hologram hm;
-	SkullNameTag snt;
+	AddonSkullNameTag snt;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	
 	@Getter
@@ -150,16 +150,8 @@ public class TroubleInMinecraft extends TeamGame{
 		wd = new WorldData(manager,GameType.TroubleInMinecraft.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
-		System.out.println("MAX:"+Float.MAX_VALUE+" MIN:"+Float.MIN_VALUE);
-		
-//		minigun= new Weapon(manager.getInstance(), WeaponTyp.MACHINE_GUNS,new ItemStack(Material.ARROW),TTT_Item.BOW_MINIGUN.getItem(),TimeSpan.SECOND*5, 500,32,0.1,1,1,"§7MiniGun");
-//		
-//		sniper = new Weapon(manager.getInstance(), WeaponTyp.SNIPER, new ItemStack(Material.ARROW), TTT_Item.BOW_SNIPER.getItem(),TimeSpan.SECOND*5, TimeSpan.SECOND*3,5,0.3,1,4,"§7Sniper");
-//		
-//		shotgun = new Weapon(manager.getInstance(), WeaponTyp.SHOTGUN, new ItemStack(Material.ARROW), TTT_Item.BOW_SHOTGUN.getItem(),TimeSpan.SECOND*5,TimeSpan.SECOND*2,7,0.15,1,1,"§7Shotgun");
-
 		manager.setState(GameState.LobbyPhase);
-		manager.DebugLog(t, 84, this.getClass().getName());
+		manager.DebugLog(t, this.getClass().getName());
 	}
 
 //	Ein Innocent tötet einen Traitor: +20 Karma
@@ -737,7 +729,7 @@ public class TroubleInMinecraft extends TeamGame{
 		getManager().setStart(31);
 		getManager().setState(GameState.StartGame);
 		ArrayList<Location> list = getManager().getWorldData().getLocs(Team.RED.Name());
-		snt=new SkullNameTag(getManager(),hm);
+		snt=new AddonSkullNameTag(getManager(),hm);
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);

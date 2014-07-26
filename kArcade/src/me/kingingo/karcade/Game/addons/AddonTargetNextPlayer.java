@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class TargetNextPlayer implements Listener {
+public class AddonTargetNextPlayer implements Listener {
 
 	HashMap<Player,UtilDirection> pl = new HashMap<>();
 	private HashMap<Player,Team> TeamList;
@@ -33,22 +33,22 @@ public class TargetNextPlayer implements Listener {
 	@Getter
 	GameList GL;
 	
-	public TargetNextPlayer(kArcadeManager Manager){
+	public AddonTargetNextPlayer(kArcadeManager Manager){
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
-	public TargetNextPlayer(int radius,kArcadeManager Manager){
+	public AddonTargetNextPlayer(int radius,kArcadeManager Manager){
 		this.radius=radius;
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
-	public TargetNextPlayer(HashMap<Player,Team> TeamList,GameList GL,kArcadeManager Manager){
+	public AddonTargetNextPlayer(HashMap<Player,Team> TeamList,GameList GL,kArcadeManager Manager){
 		this.TeamList=TeamList;
 		this.GL=GL;
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
-	public TargetNextPlayer(HashMap<Player,Team> TeamList,kArcadeManager Manager){
+	public AddonTargetNextPlayer(HashMap<Player,Team> TeamList,kArcadeManager Manager){
 		this.TeamList=TeamList;
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}

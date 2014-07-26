@@ -10,13 +10,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public class SkullNameTag implements Listener{
+public class AddonSkullNameTag implements Listener{
 
 	kArcadeManager Manager;
 	Hologram hm;
 	HashMap<Player,Block> l = new HashMap<>();
 	
-	public SkullNameTag(kArcadeManager manager,Hologram hm){
+	public AddonSkullNameTag(kArcadeManager manager,Hologram hm){
 		this.Manager=manager;
 		this.hm=hm;
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());

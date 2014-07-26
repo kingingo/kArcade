@@ -12,8 +12,8 @@ import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.karcade.Game.addons.QuadratGrenze;
-import me.kingingo.karcade.Game.addons.VoteTeam;
+import me.kingingo.karcade.Game.addons.AddonQuadratGrenze;
+import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Util.UtilSchematic;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -49,7 +49,7 @@ import org.bukkit.util.Vector;
 
 public class Rush_Example extends TeamGame{
 
-	QuadratGrenze wand;
+	AddonQuadratGrenze wand;
 	UtilSchematic schematic;
 	Location red;
 	Location green;
@@ -81,7 +81,7 @@ public class Rush_Example extends TeamGame{
 		getBlockBreakAllow().add(Material.BEDROCK);
 		getAllowSpawnCreature().add(CreatureType.SHEEP);
 		getAllowSpawnCreature().add(CreatureType.VILLAGER);
-		setVoteTeam(new VoteTeam(manager,new Team[]{Team.RED,Team.YELLOW,Team.GREEN,Team.BLUE},9,4));
+		setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.RED,Team.YELLOW,Team.GREEN,Team.BLUE},9,4));
 		wd = new WorldData(manager,GameType.Rush.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
@@ -166,10 +166,10 @@ public class Rush_Example extends TeamGame{
 	@EventHandler
 	public void World(WorldLoadEvent ev){
 		schematic = new UtilSchematic();
-		wand = new QuadratGrenze(getManager(),wd.getLocs().get(Team.SOLO.Name()).get(0),500);
+		wand = new AddonQuadratGrenze(getManager(),wd.getLocs().get(Team.SOLO.Name()).get(0),500);
 		setPlate();
 		getManager().setState(GameState.LobbyPhase);
-		getManager().DebugLog(t, 53, this.getClass().getName());
+		getManager().DebugLog(t, this.getClass().getName());
 	}
 	
 	public void SpawnSheeps(){
@@ -637,7 +637,7 @@ public class Rush_Example extends TeamGame{
 			i=0;
 		}
 		
-		getManager().DebugLog(time, 51, this.getClass().getName());
+		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
 

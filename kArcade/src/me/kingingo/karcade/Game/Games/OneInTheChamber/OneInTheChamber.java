@@ -90,7 +90,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			p.teleport(list.get(r));
 			list.remove(r);
 		}
-		getManager().DebugLog(time, 51, this.getClass().getName());
+		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
 	public void onDisable(){

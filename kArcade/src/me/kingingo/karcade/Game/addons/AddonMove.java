@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class Move implements Listener{
+public class AddonMove implements Listener{
 
 	@Getter
 	private kArcadeManager manager;
 	private boolean notMove = false;
 	private ArrayList<Player> movelist = new ArrayList<>();
 	
-	public Move(kArcadeManager manager){
+	public AddonMove(kArcadeManager manager){
 		this.manager=manager;
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}

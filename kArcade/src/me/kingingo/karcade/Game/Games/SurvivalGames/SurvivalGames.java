@@ -12,12 +12,12 @@ import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.karcade.Game.addons.BagPack;
-import me.kingingo.karcade.Game.addons.Move;
-import me.kingingo.karcade.Game.addons.RandomItemInventory;
-import me.kingingo.karcade.Game.addons.SphereGrenze;
-import me.kingingo.karcade.Game.addons.TargetNextPlayer;
-import me.kingingo.karcade.Game.addons.VoteTeam;
+import me.kingingo.karcade.Game.addons.AddonBagPack;
+import me.kingingo.karcade.Game.addons.AddonMove;
+import me.kingingo.karcade.Game.addons.AddonRandomItemInventory;
+import me.kingingo.karcade.Game.addons.AddonSphereGrenze;
+import me.kingingo.karcade.Game.addons.AddonTargetNextPlayer;
+import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -55,12 +55,12 @@ import org.bukkit.util.Vector;
 public class SurvivalGames extends TeamGame{
 
 	WorldData wd;
-	Move move;
-	BagPack bp;
-	RandomItemInventory rii;
+	AddonMove move;
+	AddonBagPack bp;
+	AddonRandomItemInventory rii;
 	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	Hologram hm;
-	TargetNextPlayer tnp;
+	AddonTargetNextPlayer tnp;
 	boolean jump=true;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	
@@ -90,8 +90,8 @@ public class SurvivalGames extends TeamGame{
 	getBlockPlaceAllow().add(Material.CAKE);
 	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
 	getBlockPlaceAllow().add(Material.FIRE);
-	bp=new BagPack(manager);
-	tnp = new TargetNextPlayer(getTeamList(),getGameList(),getManager());
+	bp=new AddonBagPack(manager);
+	tnp = new AddonTargetNextPlayer(getTeamList(),getGameList(),getManager());
 	tnp.setRadius(40);
 	ArrayList<Material> itemlist = new ArrayList<>();
 	itemlist.add(Material.STONE_SWORD);
@@ -107,10 +107,10 @@ public class SurvivalGames extends TeamGame{
 	itemlist.add(Material.WOOD_AXE);
 	itemlist.add(Material.IRON_HELMET);
 	getItemPickupDeny().add(95);
-	rii=new RandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
-	setVoteTeam(new VoteTeam(manager,new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
+	rii=new AddonRandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
+	setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
 			,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},18,2));
-	manager.DebugLog(t, 34, this.getClass().getName());
+	manager.DebugLog(t, this.getClass().getName());
 	}
 	//RED WOOL = SPAWN PLAYER!
 	//BLUE BLOCK = CHEST
@@ -380,7 +380,7 @@ public class SurvivalGames extends TeamGame{
 		switch(getManager().getStart()){
 			case 180:
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));
-				SphereGrenze sg = new SphereGrenze(getManager(),Bukkit.getWorld("map"));
+				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),Bukkit.getWorld("map"));
 				sg.loadGrenzen(wd.getLocs().get(Team.YELLOW.Name()).get(0), ( (int)wd.getLocs().get(Team.YELLOW.Name()).get(0).distance(wd.getLocs().get(Team.RED.Name()).get(0))+5 ) );
 				sg.start();
 				break;
@@ -540,10 +540,10 @@ public class SurvivalGames extends TeamGame{
 			p.teleport(list.get(r));
 			list.remove(r);
 		}
-		move=new Move(getManager());
+		move=new AddonMove(getManager());
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 		hm.RemoveAllText();
-		getManager().DebugLog(time, 462, this.getClass().getName());
+		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
 	@EventHandler

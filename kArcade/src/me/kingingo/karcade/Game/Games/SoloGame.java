@@ -3,7 +3,7 @@ package me.kingingo.karcade.Game.Games;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
-import me.kingingo.karcade.Game.addons.SpecCompass;
+import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -45,7 +45,7 @@ public class SoloGame extends Game{
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
 	    ((CraftPlayer)player).getHandle().k = false;
-	    if(getCompass()==null)setCompass(new SpecCompass(getManager()));
+	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
 	    
 	    if(getGameList().getPlayers(PlayerState.IN).size()<1){
