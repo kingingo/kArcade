@@ -479,25 +479,6 @@ public class SurvivalGames extends TeamGame{
 		return list;
 	}
 	
-//	Scoreboard board;
-//	@EventHandler
-//	public void RespawnBelow_Name(PlayerRespawnEvent ev){
-//		if(getManager().getState()==GameState.LobbyPhase)return;
-//		if(ev.getPlayer().getScoreboard()!=null){
-//			board = ev.getPlayer().getScoreboard();
-//			board.getObjective(DisplaySlot.BELOW_NAME).setDisplayName("§6Spectator");
-//			for(Player p1 : UtilServer.getPlayers()){
-//				board.getObjective(DisplaySlot.BELOW_NAME).getScore(p1).setScore(Integer.valueOf( 1 ));
-//			}
-//		}else{
-//			board = getGameList().createScoreboard(DisplaySlot.BELOW_NAME, ev.getPlayer(),"§6Spectator");
-//			for(Player p1 : UtilServer.getPlayers()){
-//				board.getObjective(DisplaySlot.BELOW_NAME).getScore(p1).setScore(Integer.valueOf(1));
-//			}
-//		}
-//		ev.getPlayer().setScoreboard(board);
-//	}
-	
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
