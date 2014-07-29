@@ -11,6 +11,8 @@ import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.Util.Coins;
+import me.kingingo.kcore.Util.Tokens;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -166,6 +168,8 @@ public class Game implements Listener{
 	
 	@Getter
 	private ArrayList<DamageCause> EntityDamage = new ArrayList<>();
+	private Tokens tokens;
+	private Coins coins;
 	
 	public Game(kArcadeManager manager) {
 		this.manager=manager;
@@ -175,6 +179,16 @@ public class Game implements Listener{
 	
 	public GameList getGameList(){
 		return this.gamelist;
+	}
+	
+	public Coins getCoins(){
+		if(coins==null)coins=new Coins(getManager().getInstance(),getManager().getMysql());
+		return coins;
+	}
+	
+	public Tokens getTokens(){
+		if(tokens==null)tokens=new Tokens(getManager().getInstance(),getManager().getMysql());
+		return tokens;
 	}
 	
 	@EventHandler

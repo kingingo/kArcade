@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,20 +49,49 @@ public class AddonDropItems implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void Interact(PlayerPickupItemEvent ev){	
+		if(ev.getItem().getItemStack().getType()==Material.CLAY_BRICK){
+			UtilItem.RenameItem(ev.getItem().getItemStack(), "§bBronze");
+		}else if(ev.getItem().getItemStack().getType()==Material.IRON_INGOT){
+			UtilItem.RenameItem(ev.getItem().getItemStack(), "§bSilver");
+		}else if(ev.getItem().getItemStack().getType()==Material.GOLD_INGOT){
+			UtilItem.RenameItem(ev.getItem().getItemStack(), "§bGold");
+		}
+	}
+	
+	public static String Farbe(){
+		int i = UtilMath.RandomInt(4,0);
+		
+		switch(i){
+		case 0:
+			return "§r";
+		case 1:
+			return "§a";
+		case 2:
+			return "§c";
+		case 3:
+			return "§d";
+		case 4:
+			return "§l";
+		}
+		return "§n";
+	}
+	
 	public static void DropItem(Location l,int g,int s){
 		int i = UtilMath.RandomInt(10,0);
 		
-		l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,UtilMath.RandomInt(3,1)), "§bBronze"));
+		l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,UtilMath.RandomInt(3,1)), "§bBronze"+Farbe()));
 		
 		switch(i){
 		case 2:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,1)), "§bSilver"));
+			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,1)), "§bSilver"+Farbe()));
 			break;
 		case 6:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,1)), "§bSilver"));
+			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,1)), "§bSilver"+Farbe()));
 			break;
 		case 4:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.GOLD_INGOT,g), "§bGold"));
+			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.GOLD_INGOT,g), "§bGold"+Farbe()));
 			break;
 		default:
 			break;

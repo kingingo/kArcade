@@ -13,6 +13,9 @@ BLUE("BLUE", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)11), C.cBlu
 GREEN("GREEN",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)5), C.cGreen+"Team - Green"),C.cGreen),
 BLACK("BLACK", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)15), C.cBlack+"Team - Black"),C.cBlack),
 GRAY("GRAY",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)8), C.cGray+"Team - Gray"),C.cGray),
+WHITE("WHITE",UtilItem.RenameItem(new ItemStack(Material.WOOL,1), C.cWhite+"Team - White"),C.cWhite),
+PURPLE("PURPLE",UtilItem.RenameItem(new ItemStack(Material.WOOL, 1,(byte)10),C.cPurple+"Team - Purple"),C.cPurple ),
+ORANGE("ORANGE",UtilItem.RenameItem(new ItemStack(Material.WOOD,1,(byte)1), C.mOrange+"Team - Orange"),C.mOrange),
 
 DISTRICT_1("District 1",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 1"),C.cAqua),
 DISTRICT_2("District 2",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 2"),C.cAqua),

@@ -1,6 +1,8 @@
 package me.kingingo.karcade.Game.addons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
@@ -10,6 +12,7 @@ import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilGear;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
@@ -35,13 +38,15 @@ public class AddonVoteTeam implements Listener{
 	private int invSize=0;
 	private int MaxInTeam=3;
 	@Getter
+	private HashMap<Team,Integer> invslot = new HashMap<>();
+	@Getter
 	private HashMap<Player,Team> vote = new HashMap<>();
 	
-	public AddonVoteTeam(kArcadeManager manager,Team[] list,int invSize,int MaxInTeam){
+	public AddonVoteTeam(kArcadeManager manager,Team[] list,InventorySize size,int MaxInTeam){
 		this.Manager=manager;
 		this.list=list;
 		this.MaxInTeam=MaxInTeam;
-		this.invSize=invSize;
+		this.invSize=size.getSize();
 		Bukkit.getPluginManager().registerEvents(this, this.Manager.getInstance());
 	}
 	
@@ -73,14 +78,17 @@ public class AddonVoteTeam implements Listener{
 					
 					if(vote.containsKey(p)){
 						p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
+						Team t = vote.get(p);
 						vote.remove(p);
+						fixItem(t);
 					}
 					
 					for(Team t : list){
 						if(UtilGear.isMat(ev.getCurrentItem(), t.getItem().getType())&&ev.getCurrentItem().getItemMeta().hasDisplayName()&&ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(t.getItem().getItemMeta().getDisplayName())){
 							if(isTeam(t)){
-								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.Name()));
 								vote.put(p, t);
+								fixItem(t);
+								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.Name()));
 							}else{
 								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.Name()));
 							}
@@ -100,6 +108,26 @@ public class AddonVoteTeam implements Listener{
 		return i;
 	}
 	
+	public ItemStack fixItem(Team t){
+		ItemStack i = inv.getItem(invslot.get(t));
+		List<String> l = new ArrayList<>();
+		l.add("§c"+isVotet(t)+"§7/§c"+MaxInTeam);
+		l.add("§7---------------");
+		inTeam(t, l);
+		UtilItem.SetDescriptions(i, l);
+		return i;
+	}
+	
+	public void inTeam(Team t,List<String> l){
+		int i =1;
+		for(Player p : vote.keySet()){
+			if(vote.get(p)==t){
+				l.add("§6"+i+".§7 "+p.getName());
+				i++;
+			}
+		}
+	}
+	
 	public boolean isTeam(Team t){
        if(isVotet(t) < this.MaxInTeam){
     	   return true;
@@ -111,24 +139,27 @@ public class AddonVoteTeam implements Listener{
 		if(inv==null){
 			inv=Bukkit.createInventory(null, invSize,C.Bold+"Vote:");
 			int slot = 0;
-			if(list.length==4){
-				for(Team t : list){
-					slot++;
-					inv.setItem(slot, t.getItem());
-					slot++;
-				}
-				
-			}else if(list.length==2){
+			if(list.length==2){
 				slot=2;
 				for(Team t: list){
-					inv.setItem(slot, t.getItem());
+					invslot.put(t, slot);
+					inv.setItem(slot, UtilItem.SetDescriptions(t.getItem(), new String[]{"§c0§7/§c"+MaxInTeam}));
 					slot=6;
 				}
 				
-			}else if(list.length==12){
+			}else if(list.length==4){
+				for(Team t : list){
+					slot++;
+					invslot.put(t, slot);
+					inv.setItem(slot, UtilItem.SetDescriptions(t.getItem(), new String[]{"§c0§7/§c"+MaxInTeam}));
+					slot++;
+				}
+				
+			}else{
 				slot=0;
 				for(Team t: list){
-					inv.setItem(slot, t.getItem());
+					invslot.put(t, slot);
+					inv.setItem(slot, UtilItem.SetDescriptions(t.getItem(), new String[]{"§c0§7/§c"+MaxInTeam}));
 					slot++;
 				}
 			}

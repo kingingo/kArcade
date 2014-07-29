@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
 import me.kingingo.karcade.Game.Games.SheepWars.Rush_Example;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
+import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -28,6 +29,7 @@ import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Permission.PermissionManager;
+import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Update.UpdateType;
@@ -102,10 +104,12 @@ public class kArcadeManager implements Listener{
 	private PacketManager pManager;
 	@Getter
 	private CommandHandler cmd;
+	private PetManager pet;
 	
 	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
 		this.lobby.setPitch(2);
 		this.lobby.setYaw( (float)179.60071 );
+		this.permManager=permManager;
 		this.Instance=plugin;
 		this.mysql=mysql;
 		this.cmd=cmd;
@@ -113,7 +117,6 @@ public class kArcadeManager implements Listener{
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
-		this.permManager=permManager;
 		
 		for(Entity e : getLobby().getWorld().getEntities()){
 			if(!(e instanceof Player)){
@@ -169,6 +172,11 @@ public class kArcadeManager implements Listener{
 		}
 	}
 	
+	public PetManager getPetManager(){
+		if(pet==null)pet=new PetManager(getInstance());
+		return pet;
+	}
+	
 	public void setRanking(Stats s){
 		HashMap<Integer,String> list = getStats().getRanking(s, 10);
 		Sign sign;
@@ -190,8 +198,14 @@ public class kArcadeManager implements Listener{
 	public Game Game(String game){
 		if(GameType.OneInTheChamber.string().equalsIgnoreCase(game)){
 			return new OneInTheChamber(this);
-		}else if(GameType.SheepWars.string().equalsIgnoreCase(game)){
-			return new SheepWars(this);
+		}else if((GameType.SheepWars.string()+"_2").equalsIgnoreCase(game)){
+			return new SheepWars(this,SheepWarsType._2);
+		}else if((GameType.SheepWars.string()+"_4").equalsIgnoreCase(game)){
+			return new SheepWars(this,SheepWarsType._4);
+		}else if((GameType.SheepWars.string()+"_6").equalsIgnoreCase(game)){
+			return new SheepWars(this,SheepWarsType._6);
+		}else if((GameType.SheepWars.string()+"_8").equalsIgnoreCase(game)){
+			return new SheepWars(this,SheepWarsType._8);
 		}else if(GameType.TroubleInMinecraft.string().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SurvivalGames.string().equalsIgnoreCase(game)){

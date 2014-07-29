@@ -27,6 +27,7 @@ import me.kingingo.kcore.ScoreboardManager.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -109,7 +110,7 @@ public class SurvivalGames extends TeamGame{
 	getItemPickupDeny().add(95);
 	rii=new AddonRandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
 	setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
-			,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},18,2));
+			,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},InventorySize._18,2));
 	manager.DebugLog(t, this.getClass().getName());
 	}
 	//RED WOOL = SPAWN PLAYER!

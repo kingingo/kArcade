@@ -22,6 +22,7 @@ import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
@@ -81,7 +82,7 @@ public class Rush_Example extends TeamGame{
 		getBlockBreakAllow().add(Material.BEDROCK);
 		getAllowSpawnCreature().add(CreatureType.SHEEP);
 		getAllowSpawnCreature().add(CreatureType.VILLAGER);
-		setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.RED,Team.YELLOW,Team.GREEN,Team.BLUE},9,4));
+		setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.RED,Team.YELLOW,Team.GREEN,Team.BLUE},InventorySize._9,4));
 		wd = new WorldData(manager,GameType.Rush.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
