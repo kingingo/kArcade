@@ -167,7 +167,8 @@ public class AddonVoteTeam implements Listener{
 			for(int i = 0 ; i < inv.getSize(); i++){
 				if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR){
 					if(inv.getItem(i)==null)inv.setItem(i, new ItemStack(Material.IRON_FENCE));
-					inv.getItem(i).setType(Material.IRON_FENCE);
+					inv.getItem(i).setType(Material.STAINED_GLASS_PANE);
+					inv.getItem(i).setDurability((byte)7);
 					ItemMeta im = inv.getItem(i).getItemMeta();
 					im.setDisplayName(" ");
 					inv.getItem(i).setItemMeta(im);

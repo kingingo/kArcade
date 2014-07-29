@@ -9,6 +9,7 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
@@ -163,6 +164,11 @@ public class SheepWars extends TeamGame{
 				ev.getPlayer().openInventory(kitshop.getInventory());
 			}
 		}
+	}
+	
+	@EventHandler
+	public void Ranking(RankingEvent ev){
+		getManager().setRanking(Stats.WIN);
 	}
 	
 	ArrayList<Location> l;
