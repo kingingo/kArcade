@@ -10,7 +10,7 @@ public enum Team {
 RED("RED", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)14), C.cRed+"Team - Rot"),C.cRed),
 YELLOW("YELLOW", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)4), C.cYellow+"Team - Gelb"),C.cYellow),
 BLUE("BLUE", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)11), C.cBlue+"Team - Blau"),C.cBlue),
-GREEN("GREEN",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)5), C.cGreen+"Team - Günn"),C.cGreen),
+GREEN("GREEN",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)5), C.cGreen+"Team - Grün"),C.cGreen),
 BLACK("BLACK", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)15), C.cBlack+"Team - Schwarz"),C.cBlack),
 GRAY("GRAY",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)8), C.cGray+"Team - Gray"),C.cGray),
 WHITE("WHITE",UtilItem.RenameItem(new ItemStack(Material.WOOL,1), C.cWhite+"Team - White"),C.cWhite),
