@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Game.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.addons.AddonEntityKing;
 import me.kingingo.karcade.Game.addons.AddonNight;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
@@ -91,6 +92,7 @@ public class SheepWars extends TeamGame{
 	WorldData wd;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	Hologram hm;
+	AddonEnterhacken aeh;
 	AddonEntityKing aek;
 	AddonNight an;
 	AddonDropItems adi;
@@ -266,8 +268,12 @@ public class SheepWars extends TeamGame{
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));
 		switch(getManager().getStart()){
 			case 1795: 
+				HashMap<Player,String> l= new HashMap<>();
+				for(Player p : getTeamList().keySet()){
+					l.put(p, getTeamList().get(p).getColor());
+				}
 				for(Kit kit : kitshop.getKits()){
-				kit.disguise();
+				kit.disguise(l);
 				} 
 				break; 
 			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
@@ -284,19 +290,28 @@ public class SheepWars extends TeamGame{
 		}
 	}
 	
-	public HashMap<Team,Integer> verteilung(){
+	public HashMap<Team,Integer> verteilung(Team[] t){
 		HashMap<Team,Integer> list = new HashMap<>();
 		Player[] l = UtilServer.getPlayers();
-
-        list.put(Team.RED, l.length/2);
-        list.put(Team.BLUE, l.length/2);
-        list.put(Team.YELLOW, l.length/2);
+	
+		for(Team team : t){
+			list.put(team, l.length/t.length);
+		}
 		
-         if (l.length%2!= 0) {
-        	 list.put(Team.GREEN, (l.length/2)+1);
-         }else{
-        	 list.put(Team.GREEN, l.length/2);
-         }
+		if(l.length%t.length!=0){
+			list.remove(t[0]);
+			list.put(t[0], (l.length/t.length)+1);
+		}
+		
+//        list.put(Team.RED, l.length/t.length);
+//        list.put(Team.BLUE, l.length/t.length);
+//        list.put(Team.YELLOW, l.length/2);
+//		
+//         if (l.length%2!= 0) {
+//        	 list.put(Team.GREEN, (l.length/2)+1);
+//         }else{
+//        	 list.put(Team.GREEN, l.length/2);
+//         }
 		return list;
 	}
 
@@ -310,6 +325,51 @@ public class SheepWars extends TeamGame{
 	
 	public ItemStack Bronze(int i){
 		return UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,i), "§bBronze");
+	}
+	
+	public void setSpezialVillager(Location l){
+		VillagerShop v = new VillagerShop(getManager().getInstance(),"Spezial-Shop",l,InventorySize._27);
+		
+		Merchant rustung = new Merchant();
+		ItemStack r1 = UtilItem.RenameItem(new ItemStack(Material.IRON_CHESTPLATE), "Spezial Eisenhemd Lvl 1");
+		r1.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
+		r1.addEnchantment(Enchantment.PROTECTION_FIRE, 2);
+		r1.addEnchantment(Enchantment.DURABILITY, 1);
+		rustung.addOffer(new MerchantOffer(Gold(15),r1));
+		ItemStack r2 = UtilItem.RenameItem(new ItemStack(Material.IRON_CHESTPLATE), "Spezial Eisenhemd Lvl 2");
+		r2.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4);
+		r2.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
+		r2.addEnchantment(Enchantment.DURABILITY, 1);
+		rustung.addOffer(new MerchantOffer(Gold(30),r2));
+		ItemStack r3 = UtilItem.RenameItem(new ItemStack(Material.DIAMOND_CHESTPLATE), "Diamanthemd");
+		r3.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+		rustung.addOffer(new MerchantOffer(Gold(50),r3));
+		v.addShop(UtilItem.Item(new ItemStack(Material.DIAMOND_CHESTPLATE), new String[]{"§aSpezial Schutz!"}, "§cRüstung"), rustung, 10);
+		
+		Merchant schwert = new Merchant();
+		ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "Spezial Schwert Lvl 1");
+		s1.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+		s1.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+		schwert.addOffer(new MerchantOffer(Gold(20),s1));
+		ItemStack s2 = UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "Spezial Schwert Lvl 2");
+		s2.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+		s2.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+		schwert.addOffer(new MerchantOffer(Gold(40),s2));
+		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"§aLehre deinen Gegner Schmerz!"}, "§cSchwerter"), schwert, 12);
+		
+		Merchant trank = new Merchant();
+		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8229), "Heilung II")));
+		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8225), "Regeneration II")));
+		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8233), "Stärke II")));
+		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mir mir Drogen nehmen?"}, "§cTränke"), trank, 14);
+		
+		Merchant gold = new Merchant();
+		gold.addOffer(new MerchantOffer(Gold(30), aek.getItem().clone()));
+		gold.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldener Apfel")));
+		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
+		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aRette dich in größter Not!"}, "§cGoldener Apfel"), gold, 16);
+		
+		v.finish();
 	}
 	
 	public void setVillager(Location l,Team t){
@@ -484,7 +544,7 @@ public class SheepWars extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			plist.add(p);
 		}
-		PlayerVerteilung(verteilung(), plist);
+		PlayerVerteilung(verteilung(typ.getTeam()), plist);
 		
 		Team[] teams = getTyp().getTeam();
 		ArrayList<Location> list;
@@ -510,7 +570,7 @@ public class SheepWars extends TeamGame{
 							}else if(b.getRelative(BlockFace.UP).getType()==Material.EMERALD_BLOCK){
 								b.setType(Material.AIR);
 								b.getRelative(BlockFace.UP).setType(Material.AIR);
-								setVillager(b.getLocation().add(0, 0.3, 0), t);
+								setVillager(b.getLocation().add(0, 0.5, 0), t);
 							}
 						}
 					}
@@ -522,14 +582,21 @@ public class SheepWars extends TeamGame{
 		
 		adi= new AddonDropItems(getManager().getInstance(),tt);
 		aek=new AddonEntityKing(getManager(), teams,this, EntityType.SHEEP,sheeps);
-		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance());
+		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		an= new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+		aeh=new AddonEnterhacken(getManager().getInstance());
 		aek.setDamagePvE(true);
+		getManager().getWorldData().getWorld().setStorm(false);
 		for(Team t: aek.getTeams().keySet()){
 			Sheep s = (Sheep)aek.getTeams().get(t);
 			s.setColor(cd(t.getColor()));
 			s.setCustomName(t.getColor()+"Schaf ");
 		}
+		
+		for(Location loc : getManager().getWorldData().getLocs(Team.BLACK.Name())){
+			setSpezialVillager(loc);
+		}
+		
 		hm.RemoveAllText();
 		getManager().DebugLog(time, this.getClass().getName());
 	}
@@ -603,10 +670,12 @@ public class SheepWars extends TeamGame{
 		ev.setCancelled(true);
 		if(!getManager().isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
 			if(ev.getMessage().toCharArray()[0]=='#'){
-				Bukkit.broadcastMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage().subSequence(1, ev.getMessage().length()));
+				Team t = getTeam(ev.getPlayer());
+				Bukkit.broadcastMessage("§7["+t.getColor()+t.Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage().subSequence(1, ev.getMessage().length()));
 			}else{
+				Team t = getTeam(ev.getPlayer());
 				for(Player p : getPlayerFrom(getTeam(ev.getPlayer()))){
-					p.sendMessage("§cTeam-Chat "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+					p.sendMessage(t.getColor()+"Team-Chat "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 				}
 			}
 		}else if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){

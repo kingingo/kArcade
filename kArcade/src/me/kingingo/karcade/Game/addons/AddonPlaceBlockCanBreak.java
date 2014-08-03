@@ -1,10 +1,13 @@
 package me.kingingo.karcade.Game.addons;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,34 +22,59 @@ public class AddonPlaceBlockCanBreak implements Listener{
 	@Getter
 	JavaPlugin instance;
 	@Getter
-	ArrayList<Block> blocks = new ArrayList<>();
+	ArrayList<Location> blocks = new ArrayList<>();
+	@Getter
+	ArrayList<Material> ausnahmen;
+	
+	public AddonPlaceBlockCanBreak(JavaPlugin instance,Material[] ausnahmen){
+		this.instance=instance;
+		this.ausnahmen=new ArrayList<>();
+		for(Material m : ausnahmen){
+			this.ausnahmen.add(m);
+		}
+		Bukkit.getPluginManager().registerEvents(this, getInstance());
+	}
 	
 	public AddonPlaceBlockCanBreak(JavaPlugin instance){
 		this.instance=instance;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void Explose(EntityExplodeEvent ev){
-		for(int i=0;i<ev.blockList().size();i++){
-			if(!getBlocks().contains(ev.blockList().get(i))){
-				ev.blockList().remove(i);
+		if(getBlocks().isEmpty()){
+			ev.blockList().clear();
+			return;
+		}
+		List<Block> list = new ArrayList<>();
+		for(Block b : ev.blockList()){
+			if(getBlocks().contains(b.getLocation())){
+				list.add(b);
+				getBlocks().remove(b.getLocation());
 			}
+		}
+		ev.blockList().clear();
+		for(Block b : list){
+			ev.blockList().add(b);
 		}
 	}
 	
 	@EventHandler
 	public void Break(BlockBreakEvent ev){
-		if(getBlocks().contains(ev.getBlock())){
-			getBlocks().remove(ev.getBlock());
+		if(getBlocks().contains(ev.getBlock().getLocation())){
+			getBlocks().remove(ev.getBlock().getLocation());
 		}else{
+			if(getAusnahmen().contains(ev.getBlock().getType())){
+				ev.getBlock().setType(Material.AIR);
+				return;
+			}
 			ev.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void Place(BlockPlaceEvent ev){
-		getBlocks().add(ev.getBlock());
+		getBlocks().add(ev.getBlock().getLocation());
 	}
 	
 }

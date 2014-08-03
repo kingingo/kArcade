@@ -190,7 +190,7 @@ public class TeamGame extends Game{
 	    
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.NORMAL)
 	public void TeamDamage(EntityDamageByEntityEvent ev){
 		if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)){
 			if(!DamageTeamSelf&&getTeam((Player)ev.getDamager())==getTeam((Player)ev.getEntity())){

@@ -29,6 +29,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -250,7 +251,7 @@ public class Game implements Listener{
         }
     }
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGH)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
 		if((ev.getDamager() instanceof Player &&getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getDamager()))||!Damage||getManager().isState(GameState.LobbyPhase)){
 			ev.setCancelled(true);

@@ -9,9 +9,11 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
+import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
@@ -27,6 +29,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class AddonEntityKing implements Listener {
@@ -59,6 +63,8 @@ public class AddonEntityKing implements Listener {
 	HashMap<Entity, NameTagMessage> NameTagMessage = new HashMap<>();
 	@Getter
 	TeamGame team;
+	@Getter
+	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.GOLD_NUGGET), "§bSchaf-Heiler");
 	
 	public AddonEntityKing(kArcadeManager manager,Team[] teams,TeamGame team,EntityType type,HashMap<Team, Location> sheeps){
 		this.manager=manager;
@@ -122,6 +128,16 @@ public class AddonEntityKing implements Listener {
 	}
 	
 	@EventHandler
+	public void Click(PlayerInteractEntityEvent ev){
+		if(is(ev.getRightClicked())){
+			if(UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())){
+				ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
+				setHealt(ev.getRightClicked(),20);
+			}
+		}
+	}
+	
+	@EventHandler
 	public void TargetLivingEntity(EntityTargetLivingEntityEvent ev){
 		if(is(ev.getEntity())){
 			if(!move)ev.setCancelled(true);
@@ -154,11 +170,11 @@ public class AddonEntityKing implements Listener {
 		}
 		
 		
-		if(is(ev.getEntity())){
+		if(is(ev.getEntity())&&ev.getDamager()instanceof Player){
 			if(getEntity(getTeam().getTeam( ((Player)ev.getDamager()) )).getEntityId() != ev.getEntity().getEntityId()){
 				ev.setCancelled(false);
 				h = getHealt(ev.getEntity());
-				h=h-4;
+				h=h-getD( ((Player)ev.getDamager()).getItemInHand() );
 				if(h<=0.0){
 					ev.setDamage(50);
 				}else{
@@ -171,6 +187,17 @@ public class AddonEntityKing implements Listener {
                     }
                 }, 1L);
 			}
+		}
+	}
+	
+	public int getD(ItemStack i){
+		switch(i.getType()){
+		case WOOD_SWORD:return 5;
+		case IRON_SWORD:return 6;
+		case DIAMOND_SWORD:return 7;
+		case GOLD_SWORD:return 5;
+		default:
+			return 4;
 		}
 	}
 	

@@ -28,8 +28,8 @@ public class AddonNight implements Listener {
 	long time;
 	@EventHandler
 	public void Night(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.FAST)return;
-		if(getWorld().getTime()<0&&getWorld().getTime()>12000){
+		if(ev.getType()!=UpdateType.FASTEST)return;
+		if(getWorld().getTime()<24000&&getWorld().getTime()>12000){
 			time=getWorld().getTime();
 			time+=80;
 			getWorld().setTime(time);
