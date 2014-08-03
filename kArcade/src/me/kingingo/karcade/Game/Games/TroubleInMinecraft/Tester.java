@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Tester_Spoofer;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;

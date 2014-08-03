@@ -13,7 +13,6 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
-import me.kingingo.karcade.Game.Games.SheepWars.Rush_Example;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
@@ -22,6 +21,7 @@ import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Command.CommandHandler;
+import me.kingingo.kcore.Disguise.DisguiseManager;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -105,6 +105,7 @@ public class kArcadeManager implements Listener{
 	@Getter
 	private CommandHandler cmd;
 	private PetManager pet;
+	private DisguiseManager disguiseManager;
 	
 	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
 		this.lobby.setPitch(2);
@@ -137,6 +138,11 @@ public class kArcadeManager implements Listener{
 		ranking.put(10, ((Sign)new Location(Bukkit.getWorld("world"),756,21,606).getBlock().getState()));
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
 		setState(GameState.LobbyPhase);
+	}
+	
+	public DisguiseManager getDisguiseManager(){
+		if(disguiseManager==null)disguiseManager=new DisguiseManager(getInstance());
+		return disguiseManager;
 	}
 	
 	public void setTyp(GameType typ){

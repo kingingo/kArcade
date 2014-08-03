@@ -20,6 +20,7 @@ import me.kingingo.karcade.Game.addons.AddonNight;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
+import me.kingingo.kcore.Disguise.DisguiseType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -28,10 +29,18 @@ import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
 import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
+import me.kingingo.kcore.Kit.Perks.PerkDeathDropOnly;
 import me.kingingo.kcore.Kit.Perks.PerkHeal;
+import me.kingingo.kcore.Kit.Perks.PerkNoDropsByDeath;
+import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
+import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
 import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
 import me.kingingo.kcore.Kit.Perks.PerkPoisen;
+import me.kingingo.kcore.Kit.Perks.PerkPotionByDeath;
+import me.kingingo.kcore.Kit.Perks.PerkRespawnBuff;
 import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
+import me.kingingo.kcore.Kit.Perks.PerkSpawnByDeath;
+import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
@@ -73,6 +82,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class SheepWars extends TeamGame{
 
@@ -121,33 +132,83 @@ public class SheepWars extends TeamGame{
 		setMax_Players(getTyp().getMax());
 		avt=new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,4);
 		
-		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._36, new Kit[]{
-			new Kit(getManager().getInstance(), "TestKit", UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "TestKit"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.STARTER,10,new Perk[]{
-				new PerkSneakDamage(3.0)
+//		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._36, new Kit[]{
+//			new Kit( "TestKit", UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "TestKit"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.STARTER,10,new Perk[]{
+//				new PerkSneakDamage(3.0)
+//			}),
+//			new Kit( "TestKit1", UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD), "TestKit1"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN,10,new Perk[]{
+//				new PerkArrowFire(5)
+//			}),
+//			new Kit( "TestKit2", UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "TestKit2"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN_COINS,10,new Perk[]{
+//				new PerkPoisen(1,1)
+//			}),
+//			new Kit( "TestKit3", UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "TestKit3"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN_TOKENS,10,new Perk[]{
+//				new PerkNoKnockback()
+//			}),
+//			new Kit( "TestKit4", UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "TestKit4"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.PREMIUM,10,new Perk[]{
+//				new PerkHeal(3.0)
+//			})
+//			
+//		});
+		
+		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+			new Kit( "§aStarter", new ItemStack(Material.WOOD_SWORD),Permission.SHEEPRUSH_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkNoHunger()
 			}),
-			new Kit(getManager().getInstance(), "TestKit1", UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD), "TestKit1"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN,10,new Perk[]{
-				new PerkArrowFire(5)
+			new Kit( "§eArrowMan", new ItemStack(Material.ARROW),Permission.SHEEPRUSH_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
+				new PerkArrowFire(30)
 			}),
-			new Kit(getManager().getInstance(), "TestKit2", UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "TestKit2"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN_COINS,10,new Perk[]{
-				new PerkPoisen(1,1)
+			new Kit( "§eItemStealer", new ItemStack(Material.SHEARS),Permission.SHEEPRUSH_KIT_ITEMSTEALER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkDeathDropOnly(10)
 			}),
-			new Kit(getManager().getInstance(), "TestKit3", UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "TestKit3"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN_TOKENS,10,new Perk[]{
+			new Kit( "§eHealer", new ItemStack(Material.APPLE),Permission.SHEEPRUSH_KIT_HEALER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkHeal(10)
+			}),
+			new Kit( "§eDropper", new ItemStack(Material.DROPPER),Permission.SHEEPRUSH_KIT_DROPPER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkNoDropsByDeath()
+			}),
+			new Kit( "§eAnker", new ItemStack(Material.ANVIL),Permission.SHEEPRUSH_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoKnockback()
 			}),
-			new Kit(getManager().getInstance(), "TestKit4", UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "TestKit4"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.PREMIUM,10,new Perk[]{
-				new PerkHeal(3.0)
+			new Kit( "§ePerker", new ItemStack(Material.TORCH),Permission.SHEEPRUSH_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkStopPerk(10)
+			}),
+			new Kit( "§eTNTer", new ItemStack(Material.TNT),Permission.SHEEPRUSH_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
+			}),
+			new Kit( "§eBuffer", new ItemStack(Material.POTION),Permission.SHEEPRUSH_KIT_BUFFER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,1,20),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,1,20)})
+			}),
+			new Kit( "§eKnight", new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPRUSH_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
+				new PerkSneakDamage(1.0)
+			}),
+			new Kit( "§eTheDeath", new ItemStack(Material.IRON_SWORD),Permission.SHEEPRUSH_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
+				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,1,5),"Blindheit")
+			}),
+			new Kit( "§eSpringer", new ItemStack(Material.FEATHER),Permission.SHEEPRUSH_KIT_SPRINGER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkNoFalldamage()
+			}),
+			
+			new Kit("§6Blaze", new ItemStack(Material.BLAZE_ROD), Permission.SHEEPRUSH_KIT_BLAZE,DisguiseType.BLAZE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
+				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,1,15), new PotionEffect(PotionEffectType.REGENERATION,1,10)})
+			}),
+			new Kit("§6Enderman", new ItemStack(Material.ENDER_PEARL), Permission.SHEEPRUSH_KIT_ENDERMAN, DisguiseType.ENDERMAN,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
+				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
+			}),
+			new Kit("§6Zombie", new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPRUSH_KIT_ZOMBIE, DisguiseType.ZOMBIE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
+				new PerkPoisen(3,11)
 			})
 			
 		});
 		
-		wd=new WorldData(manager,GameType.SheepWars.name());
+		wd=new WorldData(manager,GameType.SheepWars.name()+typ.getName());
 		wd.Initialize();
 		manager.setWorldData(wd);
 		manager.DebugLog(t, this.getClass().getName());
 		manager.setState(GameState.LobbyPhase);
 	}
 	
-	//EMERALD_BLOCK&SPONGE = SHEEP PLACE
+	//EMERALD_BLOCK&MELON_BLOCK||SPONGE = SHEEP PLACE
 	//EMERALD_BLOCK&BEDROCK = DROP
 	//EMERALD_BLOCK&EMERALD_BLOCK VILLAGER
 	//TEAM RED
@@ -197,6 +258,11 @@ public class SheepWars extends TeamGame{
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));
 		switch(getManager().getStart()){
+			case 1795: 
+				for(Kit kit : kitshop.getKits()){
+				kit.disguise();
+				} 
+				break; 
 			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
@@ -426,7 +492,7 @@ public class SheepWars extends TeamGame{
 					List<Block> blist = UtilLocation.getScans(20,l);
 					for(Block b : blist){
 						if(b.getType()==Material.EMERALD_BLOCK){
-							if(b.getRelative(BlockFace.UP).getType()==Material.SPONGE){
+							if(b.getRelative(BlockFace.UP).getType()==Material.SPONGE||b.getRelative(BlockFace.UP).getType()==Material.MELON_BLOCK){
 								sheeps.put(t, b.getLocation());
 								b.setType(Material.AIR);
 								b.getRelative(BlockFace.UP).setType(Material.AIR);
@@ -470,7 +536,7 @@ public class SheepWars extends TeamGame{
 			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KILL_BY.getText(new String[]{t.getClass()+victim.getName(),getTeam(killer).getColor()+killer.getName()}));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KILL_BY.getText(new String[]{t.getColor()+victim.getName(),getTeam(killer).getColor()+killer.getName()}));
 			
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);

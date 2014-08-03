@@ -288,7 +288,7 @@ public class Game implements Listener{
 	@EventHandler
 	public void Break(BlockBreakEvent ev){
 		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
-		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()) || !ev.getBlock().getWorld().getName().equalsIgnoreCase(getManager().getWorldData().getWorld().getName()))ev.setCancelled(true);
 		if((getManager().isState(GameState.LobbyPhase))||BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))){
 			ev.setCancelled(true);
 		}

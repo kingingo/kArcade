@@ -1,7 +1,6 @@
 package me.kingingo.karcade.Game.addons;
 
 import java.util.HashMap;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,20 +8,14 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
-import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
-import me.kingingo.kcore.Update.UpdateType;
-import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Snowball;
@@ -34,7 +27,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 public class AddonEntityKing implements Listener {
