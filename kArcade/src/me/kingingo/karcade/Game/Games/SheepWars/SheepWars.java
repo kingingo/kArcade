@@ -31,6 +31,7 @@ import me.kingingo.kcore.Kit.Perk;
 import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
 import me.kingingo.kcore.Kit.Perks.PerkDeathDropOnly;
 import me.kingingo.kcore.Kit.Perks.PerkHeal;
+import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkNoDropsByDeath;
 import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
@@ -189,14 +190,20 @@ public class SheepWars extends TeamGame{
 				new PerkNoFalldamage()
 			}),
 			
-			new Kit("§6Blaze", new ItemStack(Material.BLAZE_ROD), Permission.SHEEPRUSH_KIT_BLAZE,DisguiseType.BLAZE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6PigZombie", new ItemStack(Material.RAW_BEEF), Permission.SHEEPRUSH_KIT_PIGZOMBIE,DisguiseType.PIG_ZOMBIE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,1,15), new PotionEffect(PotionEffectType.REGENERATION,1,10)})
 			}),
-			new Kit("§6Enderman", new ItemStack(Material.ENDER_PEARL), Permission.SHEEPRUSH_KIT_ENDERMAN, DisguiseType.ENDERMAN,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6Creeper", new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPRUSH_KIT_CREEPER, DisguiseType.CREEPER,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
 			new Kit("§6Zombie", new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPRUSH_KIT_ZOMBIE, DisguiseType.ZOMBIE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
 				new PerkPoisen(3,11)
+			}),
+			new Kit("§cIronGolem", new ItemStack(Material.IRON_BLOCK), Permission.SHEEPRUSH_KIT_IRONGOLEM, DisguiseType.IRON_GOLEM,getManager().getDisguiseManager(),KitType.ADMIN,0,new Perk[]{
+				new PerkPoisen(3,11),
+				new PerkNoHunger(),
+				new PerkNoKnockback(),
+				new PerkHealByHit(10,4)
 			})
 			
 		});
