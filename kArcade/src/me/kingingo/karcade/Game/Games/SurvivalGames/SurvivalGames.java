@@ -452,6 +452,7 @@ public class SurvivalGames extends TeamGame{
 	
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
+		if(ev.isCancelled())return;
 		ev.setCancelled(true);
 		if(!getManager().isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
 			Bukkit.broadcastMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());

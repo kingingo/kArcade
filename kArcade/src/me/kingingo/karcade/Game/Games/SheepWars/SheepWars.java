@@ -71,12 +71,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -367,12 +369,13 @@ public class SheepWars extends TeamGame{
 		gold.addOffer(new MerchantOffer(Gold(30), aek.getItem().clone()));
 		gold.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldener Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aRette dich in größter Not!"}, "§cGoldener Apfel"), gold, 16);
+		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in größter Not!"}, "§cGoldener Apfel"), gold, 16);
 		
 		v.finish();
 	}
 	
 	public void setVillager(Location l,Team t){
+		l=l.add(0.5,0.3,0.5);
 		VillagerShop v = new VillagerShop(getManager().getInstance(),"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
@@ -593,8 +596,10 @@ public class SheepWars extends TeamGame{
 			s.setCustomName(t.getColor()+"Schaf ");
 		}
 		
-		for(Location loc : getManager().getWorldData().getLocs(Team.BLACK.Name())){
-			setSpezialVillager(loc);
+		if(getManager().getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getManager().getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
+			for(Location loc : getManager().getWorldData().getLocs(Team.BLACK.Name())){
+				setSpezialVillager(loc);
+			}
 		}
 		
 		hm.RemoveAllText();
@@ -650,9 +655,18 @@ public class SheepWars extends TeamGame{
 		}
 	}
 	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void arrow_damage(EntityDamageByEntityEvent ev){
+		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
+			System.out.println("ARROW: "+ev.isCancelled()+" DAMAGE"+ev.getDamage());
+			ev.setCancelled(false);
+		}
+	}
+	
 	@EventHandler
 	public void SheepDeath(AddonEntityKingDeathEvent ev){
 		Team t = getTeam(ev.getKiller());
+		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		adi.getDrops().remove(ev.getTeam());
@@ -667,6 +681,7 @@ public class SheepWars extends TeamGame{
 	
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
+		if(ev.isCancelled())return;
 		ev.setCancelled(true);
 		if(!getManager().isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
 			if(ev.getMessage().toCharArray()[0]=='#'){

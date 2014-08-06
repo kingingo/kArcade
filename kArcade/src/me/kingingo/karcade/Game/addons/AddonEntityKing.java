@@ -152,7 +152,7 @@ public class AddonEntityKing implements Listener {
 	}
 	
 	double h;
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.LOW)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
 		if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player))&& is(ev.getDamager()))&&!DamageEvP){
 			//E vs P

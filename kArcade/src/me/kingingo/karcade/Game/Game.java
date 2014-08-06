@@ -251,7 +251,7 @@ public class Game implements Listener{
         }
     }
 	
-	@EventHandler(priority=EventPriority.HIGH)
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
 		if((ev.getDamager() instanceof Player &&getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getDamager()))||!Damage||getManager().isState(GameState.LobbyPhase)){
 			ev.setCancelled(true);

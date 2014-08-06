@@ -7,6 +7,7 @@ import me.kingingo.karcade.Command.CommandSend;
 import me.kingingo.karcade.Command.CommandStart;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
+import me.kingingo.kcore.Command.Admin.CommandMuteAll;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
@@ -54,6 +55,7 @@ public class kArcade extends JavaPlugin{
 		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
 		cmd.register(CommandSend.class, new CommandSend(c));
 		cmd.register(CommandStart.class, new CommandStart(manager));
+		cmd.register(CommandMuteAll.class, new CommandMuteAll(permManager));
 		new MemoryFix(this);
 		manager.DebugLog(time, this.getClass().getName());
 	}

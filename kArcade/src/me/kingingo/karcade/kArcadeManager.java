@@ -140,6 +140,14 @@ public class kArcadeManager implements Listener{
 		setState(GameState.LobbyPhase);
 	}
 	
+	public boolean isDisguiseManagerEnable(){
+		if(disguiseManager==null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
 	public DisguiseManager getDisguiseManager(){
 		if(disguiseManager==null)disguiseManager=new DisguiseManager(getInstance());
 		return disguiseManager;

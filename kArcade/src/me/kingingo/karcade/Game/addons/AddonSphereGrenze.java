@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
@@ -61,6 +63,11 @@ public class AddonSphereGrenze implements Listener {
 		e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ZOMBIE_WOODBREAK, 3.5F, 3.5F);
 			}
 		}
+	}
+	
+	@EventHandler
+	public void Teleport(PlayerTeleportEvent ev){
+		if(Grenze&&ev.getCause()==TeleportCause.ENDER_PEARL)ev.setCancelled(true);
 	}
 	
 	public void start(){
