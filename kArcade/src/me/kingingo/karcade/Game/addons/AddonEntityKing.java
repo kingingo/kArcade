@@ -152,7 +152,7 @@ public class AddonEntityKing implements Listener {
 	}
 	
 	double h;
-	@EventHandler(priority=EventPriority.LOW)
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
 		if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player))&& is(ev.getDamager()))&&!DamageEvP){
 			//E vs P
@@ -171,11 +171,12 @@ public class AddonEntityKing implements Listener {
 		
 		
 		if(is(ev.getEntity())&&ev.getDamager()instanceof Player){
-			if(getEntity(getTeam().getTeam( ((Player)ev.getDamager()) )).getEntityId() != ev.getEntity().getEntityId()){
+			Team t = getTeam().getTeam( ((Player)ev.getDamager()) );
+			if(getEntity(t).getEntityId() != ev.getEntity().getEntityId()){
 				ev.setCancelled(false);
 				h = getHealt(ev.getEntity());
 				h=h-getD( ((Player)ev.getDamager()).getItemInHand() );
-				if(h<=0.0){
+				if(h<=0){
 					ev.setDamage(50);
 				}else{
 					ev.setDamage(0);

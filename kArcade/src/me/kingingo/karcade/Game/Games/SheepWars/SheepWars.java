@@ -17,10 +17,10 @@ import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.addons.AddonEntityKing;
-import me.kingingo.karcade.Game.addons.AddonNight;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
+import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Disguise.DisguiseType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -71,14 +71,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -99,7 +99,6 @@ public class SheepWars extends TeamGame{
 	AddonNight an;
 	AddonDropItems adi;
 	AddonPlaceBlockCanBreak apbcb;
-	AddonVoteTeam avt;
 	@Getter
 	HashMap<Team,Boolean> teams = new HashMap<>();
 	KitShop kitshop;
@@ -119,7 +118,9 @@ public class SheepWars extends TeamGame{
 		getAllowSpawnCreature().add(CreatureType.VILLAGER);
 		setBlockBurn(false);
 		setBlockSpread(false);
+		setDeathDropItems(true);
 		setCompassAddon(true);
+		getManager().getPermManager().setSetAllowTab(false);
 		setDamage(true);
 		setDamageEvP(false);
 		setDamagePvE(true);
@@ -135,26 +136,7 @@ public class SheepWars extends TeamGame{
 		setBlockPlace(true);
 		setMin_Players(getTyp().getMin());
 		setMax_Players(getTyp().getMax());
-		avt=new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,4);
-		
-//		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._36, new Kit[]{
-//			new Kit( "TestKit", UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "TestKit"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.STARTER,10,new Perk[]{
-//				new PerkSneakDamage(3.0)
-//			}),
-//			new Kit( "TestKit1", UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD), "TestKit1"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN,10,new Perk[]{
-//				new PerkArrowFire(5)
-//			}),
-//			new Kit( "TestKit2", UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "TestKit2"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN_COINS,10,new Perk[]{
-//				new PerkPoisen(1,1)
-//			}),
-//			new Kit( "TestKit3", UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "TestKit3"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.KAUFEN_TOKENS,10,new Perk[]{
-//				new PerkNoKnockback()
-//			}),
-//			new Kit( "TestKit4", UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "TestKit4"),Permission.SHEEPRUSH_KIT_TESTKIT,KitType.PREMIUM,10,new Perk[]{
-//				new PerkHeal(3.0)
-//			})
-//			
-//		});
+		setVoteTeam(new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,4));
 		
 		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aStarter", new ItemStack(Material.WOOD_SWORD),Permission.SHEEPRUSH_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
@@ -276,7 +258,7 @@ public class SheepWars extends TeamGame{
 				}
 				for(Kit kit : kitshop.getKits()){
 				kit.disguise(l);
-				} 
+				}
 				break; 
 			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
@@ -304,16 +286,7 @@ public class SheepWars extends TeamGame{
 			list.remove(t[0]);
 			list.put(t[0], (l.length/t.length)+1);
 		}
-		
-//        list.put(Team.RED, l.length/t.length);
-//        list.put(Team.BLUE, l.length/t.length);
-//        list.put(Team.YELLOW, l.length/2);
-//		
-//         if (l.length%2!= 0) {
-//        	 list.put(Team.GREEN, (l.length/2)+1);
-//         }else{
-//        	 list.put(Team.GREEN, l.length/2);
-//         }
+
 		return list;
 	}
 
@@ -330,6 +303,7 @@ public class SheepWars extends TeamGame{
 	}
 	
 	public void setSpezialVillager(Location l){
+		l=l.add(0.5,0.5,0.5);
 		VillagerShop v = new VillagerShop(getManager().getInstance(),"Spezial-Shop",l,InventorySize._27);
 		
 		Merchant rustung = new Merchant();
@@ -582,7 +556,13 @@ public class SheepWars extends TeamGame{
 				list.remove(0);
 			}
 		}
-		
+        
+		for(Entity e : getManager().getWorldData().getWorld().getEntities()){
+			if(!(e instanceof Player)&&!(e instanceof Villager)){
+				e.remove();
+			}
+		}
+		TeamTab(typ.getTeam());
 		adi= new AddonDropItems(getManager().getInstance(),tt);
 		aek=new AddonEntityKing(getManager(), teams,this, EntityType.SHEEP,sheeps);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
@@ -652,14 +632,6 @@ public class SheepWars extends TeamGame{
 				}
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_WIN.getText(t.getColor()+t.Name()));
 			}
-		}
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void arrow_damage(EntityDamageByEntityEvent ev){
-		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
-			System.out.println("ARROW: "+ev.isCancelled()+" DAMAGE"+ev.getDamage());
-			ev.setCancelled(false);
 		}
 	}
 	

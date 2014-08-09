@@ -17,8 +17,10 @@ import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,6 +29,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class TeamGame extends Game{
 	
@@ -35,6 +38,9 @@ public class TeamGame extends Game{
 	@Getter
 	@Setter
 	private AddonVoteTeam VoteTeam;
+	@Getter
+	@Setter
+	private Scoreboard board;
 	
 	public TeamGame(kArcadeManager manager) {
 		super(manager);
@@ -118,6 +124,22 @@ public class TeamGame extends Game{
 		return UtilMath.RandomInt(i, 0);
 	}
 	
+	public void TeamTab(Team[] teams){
+		setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
+		for(Team team : teams){
+			org.bukkit.scoreboard.Team s = getBoard().registerNewTeam(team.Name());
+			s.setPrefix(team.getColor());
+			for(Player p : getTeamList().keySet()){
+				if(getTeamList().get(p)==team){
+					s.addPlayer(p);
+				}
+			}
+		}
+		for(Player p : UtilServer.getPlayers()){
+			p.setScoreboard(getBoard());
+		}
+	}
+	
 	public void PlayerVerteilung(HashMap<Team,Integer> t,ArrayList<Player> list){
 		int r;
 		Player p;
@@ -188,6 +210,18 @@ public class TeamGame extends Game{
 			getManager().setState(GameState.Restart);
 		}
 	    
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void arrow_damage(EntityDamageByEntityEvent ev){
+		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
+			Arrow a = (Arrow)ev.getDamager();
+			if(!(a.getShooter() instanceof Player))return;
+			Player d = (Player)a.getShooter();
+			Player v = (Player)ev.getEntity();
+			if(!DamageTeamSelf&&getTeam(d)==getTeam(v))return;
+			ev.setCancelled(false);
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.NORMAL)
