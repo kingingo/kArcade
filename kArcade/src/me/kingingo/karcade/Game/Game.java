@@ -46,6 +46,8 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -166,7 +168,8 @@ public class Game implements Listener{
 	private boolean solid=false;
 	@Setter
 	private GameList gamelist;
-	
+	@Getter
+	private ArrayList<InventoryType> InventoryTypDisallow = new ArrayList<>(); 
 	@Getter
 	private ArrayList<DamageCause> EntityDamage = new ArrayList<>();
 	private Tokens tokens;
@@ -190,6 +193,13 @@ public class Game implements Listener{
 	public Tokens getTokens(){
 		if(tokens==null)tokens=new Tokens(getManager().getInstance(),getManager().getMysql());
 		return tokens;
+	}
+	
+	@EventHandler
+	public void OpenInventory(InventoryOpenEvent ev){
+		if(!InventoryTypDisallow.isEmpty()&&InventoryTypDisallow.contains(ev.getInventory().getType())){
+			ev.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
@@ -369,10 +379,16 @@ public class Game implements Listener{
 				  ev.disallow(Result.KICK_FULL, Text.SERVER_FULL.getText());
 				  return;
 			  }
-		  }else  if(!getManager().isState(GameState.LobbyPhase)&&getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.SERVER_JOIN_SPECTATE)){
+		  }else  if(!getManager().isState(GameState.LobbyPhase)&&!getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.SERVER_JOIN_SPECTATE)){
 			  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
 			  return;
 		  }
+	  }
+	  
+	  @EventHandler(priority=EventPriority.HIGHEST)
+	  public void BreakBlockLobby(BlockBreakEvent ev){
+		  if(getManager().getState()==GameState.LobbyPhase)ev.setCancelled(true);
+		  if(!ev.getBlock().getWorld().getName().equalsIgnoreCase(getManager().getWorldData().getWorld().getName()))ev.setCancelled(true);
 	  }
 	
 	  @EventHandler

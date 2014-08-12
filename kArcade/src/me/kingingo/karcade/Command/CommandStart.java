@@ -25,7 +25,7 @@ public class CommandStart implements CommandExecutor{
 	
 	@me.kingingo.kcore.Command.CommandHandler.Command(command = "start", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
-		if((Manager.getPermManager().hasPermission(((Player)cs), Permission.ALL_PERMISSION)||((Player)cs).isOp())){
+		if((Manager.getPermManager().hasPermission(((Player)cs), Permission.START_SERVER)||((Player)cs).isOp())){
 			final Player p = (Player)cs;
 			AnvilGUI gui = new AnvilGUI( p,new AnvilGUI.AnvilClickEventHandler(){
 

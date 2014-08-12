@@ -64,7 +64,7 @@ public class AddonEntityKing implements Listener {
 	@Getter
 	TeamGame team;
 	@Getter
-	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.GOLD_NUGGET), "§bSchaf-Heiler");
+	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SUGAR), "§bSchaf-Heiler");
 	
 	public AddonEntityKing(kArcadeManager manager,Team[] teams,TeamGame team,EntityType type,HashMap<Team, Location> sheeps){
 		this.manager=manager;
@@ -172,6 +172,7 @@ public class AddonEntityKing implements Listener {
 		
 		if(is(ev.getEntity())&&ev.getDamager()instanceof Player){
 			Team t = getTeam().getTeam( ((Player)ev.getDamager()) );
+			if(!teams.containsKey(t))return;
 			if(getEntity(t).getEntityId() != ev.getEntity().getEntityId()){
 				ev.setCancelled(false);
 				h = getHealt(ev.getEntity());

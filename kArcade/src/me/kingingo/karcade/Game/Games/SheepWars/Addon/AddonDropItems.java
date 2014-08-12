@@ -34,7 +34,7 @@ public class AddonDropItems implements Listener {
 		this.teams=teams;
 		for(Team t : teams.keySet()){
 			drops.put(t, true);
-			chance.put(t, new Integer[]{1,2});
+			chance.put(t, new Integer[]{2,3});
 		}
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 	}
@@ -79,16 +79,16 @@ public class AddonDropItems implements Listener {
 	}
 	
 	public static void DropItem(Location l,int g,int s){
-		int i = UtilMath.RandomInt(10,0);
+		int i = UtilMath.RandomInt(14,0);
 		
 		l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,UtilMath.RandomInt(3,1)), "§bBronze"+Farbe()));
 		
 		switch(i){
 		case 2:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,1)), "§bSilver"+Farbe()));
+			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,2)), "§bSilver"+Farbe()));
 			break;
 		case 6:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,1)), "§bSilver"+Farbe()));
+			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,2)), "§bSilver"+Farbe()));
 			break;
 		case 4:
 			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.GOLD_INGOT,g), "§bGold"+Farbe()));

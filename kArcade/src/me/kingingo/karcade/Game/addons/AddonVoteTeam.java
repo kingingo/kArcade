@@ -27,6 +27,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -184,6 +185,15 @@ public class AddonVoteTeam implements Listener{
 		}
 		
 		return inv;
+	}
+	
+	@EventHandler
+	public void Quit(PlayerQuitEvent ev){
+		if(getVote().containsKey(ev.getPlayer())){
+			Team t = vote.get(ev.getPlayer());
+			vote.remove(ev.getPlayer());
+			fixItem(t);
+		}
 	}
 	
 	@EventHandler

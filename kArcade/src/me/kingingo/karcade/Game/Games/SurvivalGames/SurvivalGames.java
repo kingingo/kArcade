@@ -58,7 +58,7 @@ public class SurvivalGames extends TeamGame{
 	WorldData wd;
 	AddonMove move;
 	AddonBagPack bp;
-	AddonRandomItemInventory rii;
+	//AddonRandomItemInventory rii;
 	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	Hologram hm;
 	AddonTargetNextPlayer tnp;
@@ -108,7 +108,7 @@ public class SurvivalGames extends TeamGame{
 	itemlist.add(Material.WOOD_AXE);
 	itemlist.add(Material.IRON_HELMET);
 	getItemPickupDeny().add(95);
-	rii=new AddonRandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
+	//rii=new AddonRandomItemInventory(manager,Material.BLAZE_POWDER,itemlist);
 	setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
 			,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},InventorySize._18,2));
 	manager.DebugLog(t, this.getClass().getName());
@@ -248,15 +248,15 @@ public class SurvivalGames extends TeamGame{
 	public ItemStack HARD(){
 		ItemStack i = null;
 		
-		switch(UtilMath.RandomInt(7,0)){
+		switch(UtilMath.RandomInt(6,0)){
 		case 0: i=new ItemStack(Material.DIAMOND_AXE);break;
 		case 1: i=new ItemStack(Material.DIAMOND);break;
 		case 2: i=new ItemStack(Material.ENDER_PEARL);break;
 		case 3: i=new ItemStack(Material.GOLDEN_APPLE);break;
 		case 4: i=new ItemStack(Material.EXP_BOTTLE,UtilMath.RandomInt(5, 2));break;
 		case 5: i=bp.getNewBagPack();break;
-		case 6: i=rii.getRandomItemInv();break;
-		case 7: i=new ItemStack(Material.COMPASS);break;
+		//case 7: i=rii.getRandomItemInv();break;
+		case 6: i=new ItemStack(Material.COMPASS);break;
 		}
 		
 		return i;
@@ -353,6 +353,7 @@ public class SurvivalGames extends TeamGame{
 				}
 				move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 				setDamage(false);
+				setProjectileDamage(false);
 				tnp.setAktiv(false);
 				getManager().setState(GameState.DeathMatch);
 			break;
@@ -396,6 +397,7 @@ public class SurvivalGames extends TeamGame{
 			case 171:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));break;
 			case 170:
 				setDamage(true);
+				setProjectileDamage(true);
 				move.setnotMove(false);
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATHMATCH_START.getText(getManager().getStart()));
 				break;
@@ -537,7 +539,7 @@ public class SurvivalGames extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0,0.5,0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: SurvivalGames §a"+kArcade.id,
 		"Map: "+wd.getMapName(),

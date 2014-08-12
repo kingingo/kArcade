@@ -40,6 +40,7 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilServer;
 import net.minecraft.server.v1_7_R4.WorldServer;
+import net.minecraft.util.com.mojang.authlib.exceptions.AuthenticationException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -212,14 +213,10 @@ public class kArcadeManager implements Listener{
 	public Game Game(String game){
 		if(GameType.OneInTheChamber.string().equalsIgnoreCase(game)){
 			return new OneInTheChamber(this);
-		}else if((GameType.SheepWars.string()+"_2").equalsIgnoreCase(game)){
+		}else if((GameType.SheepWars8.string()).equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType._2);
-		}else if((GameType.SheepWars.string()+"_4").equalsIgnoreCase(game)){
+		}else if((GameType.SheepWars16.string()).equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType._4);
-		}else if((GameType.SheepWars.string()+"_6").equalsIgnoreCase(game)){
-			return new SheepWars(this,SheepWarsType._6);
-		}else if((GameType.SheepWars.string()+"_8").equalsIgnoreCase(game)){
-			return new SheepWars(this,SheepWarsType._8);
 		}else if(GameType.TroubleInMinecraft.string().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SurvivalGames.string().equalsIgnoreCase(game)){
@@ -324,7 +321,7 @@ public class kArcadeManager implements Listener{
 	
 	@EventHandler
 	public void Q(PlayerQuitEvent ev){
-		if(state==GameState.LobbyPhase)updateInfo(UtilServer.getPlayers().length-1);
+		/*if(state==GameState.LobbyPhase)*/updateInfo(UtilServer.getPlayers().length-1);
 	}
 	
 	@EventHandler
