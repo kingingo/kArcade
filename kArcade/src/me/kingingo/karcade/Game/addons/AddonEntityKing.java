@@ -1,5 +1,6 @@
 package me.kingingo.karcade.Game.addons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import lombok.Getter;
@@ -9,6 +10,8 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
+import me.kingingo.kcore.Update.UpdateType;
+import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
@@ -105,6 +108,23 @@ public class AddonEntityKing implements Listener {
 		return false;
 	}
 	
+	ArrayList<Team> list = new ArrayList<>();
+	@EventHandler
+	public void Testeer(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.MIN_005)return;
+		for(Team t : teams.keySet()){
+			if(teams.get(t).isDead()){
+				list.add(t);
+				AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(t,teams.get(t),null);
+				Bukkit.getPluginManager().callEvent(e);
+			}
+		}
+		for(Team t : list){
+			teams.remove(t);
+		}
+		list.clear();
+	}
+	
 	@EventHandler
 	public void Death(EntityDeathEvent ev){
 		if(is(ev.getEntity())){
@@ -115,6 +135,7 @@ public class AddonEntityKing implements Listener {
 					break;
 				}
 			}
+			teams.remove(t);
 			AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(t,ev.getEntity(),ev.getEntity().getKiller());
 			Bukkit.getPluginManager().callEvent(e);
 		}

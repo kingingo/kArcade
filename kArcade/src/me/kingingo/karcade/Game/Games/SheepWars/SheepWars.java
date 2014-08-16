@@ -81,6 +81,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -117,16 +118,23 @@ public class SheepWars extends TeamGame{
 		manager.setTyp(typ.getType());
 		setItemDrop(true);
 		setItemPickup(true);
+		setReplace_Water(true);
 		setCreatureSpawn(false);
 		getAllowSpawnCreature().add(CreatureType.SHEEP);
 		getAllowSpawnCreature().add(CreatureType.VILLAGER);
 		setBlockBurn(false);
 		setBlockSpread(false);
 		setDeathDropItems(true);
-		getInventoryTypDisallow().add(InventoryType.CRAFTING);
+		getInventoryTypDisallow().add(InventoryType.WORKBENCH);
 		getInventoryTypDisallow().add(InventoryType.DISPENSER);
 		getInventoryTypDisallow().add(InventoryType.BEACON);
 		getItemPickupDeny().add(Material.CACTUS.getId());
+		getInteractDeny().add(Material.getMaterial(43));
+		getInteractDeny().add(Material.GLOWSTONE);
+		getInteractDeny().add(Material.ENDER_STONE);
+		setReplace_Fire(true);
+		setReplace_Lava(true);
+		setReplace_Water(true);
 		setCompassAddon(true);
 		getManager().getPermManager().setSetAllowTab(false);
 		setDamage(true);
@@ -163,7 +171,7 @@ public class SheepWars extends TeamGame{
 				new PerkNoDropsByDeath()
 			}),
 			new Kit( "§eAnker", new ItemStack(Material.ANVIL),Permission.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkNoKnockback()
+				new PerkNoKnockback(getManager().getInstance())
 			}),
 			new Kit( "§ePerker", new ItemStack(Material.TORCH),Permission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkStopPerk(10)
@@ -172,7 +180,7 @@ public class SheepWars extends TeamGame{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
 			new Kit( "§eBuffer", new ItemStack(Material.POTION),Permission.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)},getManager().getInstance())
+				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)})
 			}),
 			new Kit( "§eKnight", new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSneakDamage(1.0)
@@ -184,7 +192,7 @@ public class SheepWars extends TeamGame{
 				new PerkNoFalldamage()
 			}),
 			new Kit("§6PigZombie", new ItemStack(Material.RAW_BEEF), Permission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
-				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,15*20,1), new PotionEffect(PotionEffectType.REGENERATION,10*20,1)},getManager().getInstance())
+				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,15*20,1), new PotionEffect(PotionEffectType.REGENERATION,10*20,1)})
 			}),
 			new Kit("§6Creeper", new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPWARS_KIT_CREEPER, KitType.PREMIUM,0,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
@@ -342,7 +350,14 @@ public class SheepWars extends TeamGame{
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));
 		switch(getManager().getStart()){
-			case 1795: 
+			case 3597: 
+				for(Player p : UtilServer.getPlayers()){
+					if(getTeamList().containsKey(p))continue;
+					Team t = littleTeam();
+					addTeam(p, t);
+					p.teleport(getManager().getWorldData().getLocs(t.Name()).get(0));
+				}
+				
 				HashMap<Player,String> l= new HashMap<>();
 				for(Player p : getTeamList().keySet()){
 					l.put(p, getTeamList().get(p).getColor());
@@ -350,6 +365,8 @@ public class SheepWars extends TeamGame{
 				for(Kit kit : kitshop.getKits()){
 				kit.StartGame(l);
 				}
+				
+				TeamTab(typ.getTeam());
 				break; 
 			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
@@ -653,7 +670,7 @@ public class SheepWars extends TeamGame{
 				e.remove();
 			}
 		}
-		TeamTab(typ.getTeam());
+		
 		adi= new AddonDropItems(getManager().getInstance(),tt);
 		aek=new AddonEntityKing(getManager(), teams,this, EntityType.SHEEP,sheeps);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
@@ -686,21 +703,21 @@ public class SheepWars extends TeamGame{
 			getCoins().addCoins(killer, false, 4,getManager().getTyp());
 			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KILL_BY.getText(new String[]{t.getColor()+victim.getName(),getTeam(killer).getColor()+killer.getName()}));
 			
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
+				getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			}
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
 			Team t = getTeam(victim);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATH.getText(new String[]{t.getColor()+victim.getName()}));
 
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
+				getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			}
 		}
 	}
@@ -719,22 +736,6 @@ public class SheepWars extends TeamGame{
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_WIN.getText(t.getColor()+t.Name()));
 		
 			}
-//			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
-//			if(list.size()==1){
-//				Player p = list.get(0);
-//				getCoins().addCoins(p, false, 2);
-//				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-//				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_WIN.getText(p.getName()));
-//			}else if(list.size()==2){
-//				Team t = lastTeam();
-//				for(Player p : getPlayerFrom(t)){
-//					if(getGameList().isPlayerState(p)==PlayerState.IN){
-//						getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-//						getCoins().addCoins(p, false, 2);
-//					}
-//				}
-//				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_WIN.getText(t.getColor()+t.Name()));
-//			}
 		}
 	}
 	
@@ -784,7 +785,7 @@ public class SheepWars extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.1, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.4, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: SheepWars §a"+kArcade.id,
 		"Map: "+wd.getMapName(),

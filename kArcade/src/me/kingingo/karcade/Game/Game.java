@@ -35,6 +35,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -159,7 +160,17 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	private AddonSpecCompass compass;
-	
+	@Getter
+	@Setter
+	private boolean Replace_Water=false;
+	@Getter
+	@Setter
+	private boolean Replace_Lava=false;
+	@Getter
+	@Setter
+	private boolean Replace_Fire=false;
+	@Getter
+	private ArrayList<Material> InteractDeny = new ArrayList<>();
 	@Setter
 	@Getter
 	private boolean FoodChange=false;
@@ -168,6 +179,7 @@ public class Game implements Listener{
 	private boolean solid=false;
 	@Setter
 	private GameList gamelist;
+	
 	@Getter
 	private ArrayList<InventoryType> InventoryTypDisallow = new ArrayList<>(); 
 	@Getter
@@ -183,6 +195,14 @@ public class Game implements Listener{
 	
 	public GameList getGameList(){
 		return this.gamelist;
+	}
+	
+	public boolean isTokensAktiv(){
+		return tokens!=null;
+	}
+	
+	public boolean isCoinsAktiv(){
+		return coins!=null;
 	}
 	
 	public Coins getCoins(){
@@ -280,8 +300,19 @@ public class Game implements Listener{
 		}
 	}
 	
+//	@EventHandler(priority=EventPriority.HIGHEST)
+//	public void InteractBlockWater(PlayerInteractEvent ev){
+//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getPlayer().getItemInHand()!=null){
+//			if(InteractDeny.contains(ev.getPlayer().getItemInHand().getType())){
+//				if(Replace_Water&&ev.getClickedBlock().getTypeId()==8||ev.getClickedBlock().getTypeId()==9)ev.setCancelled(true);
+//				if(Replace_Lava&&ev.getClickedBlock().getTypeId()==10||ev.getClickedBlock().getTypeId()==11)ev.setCancelled(true);
+//				if(Replace_Fire&&ev.getClickedBlock().getTypeId()==51)ev.setCancelled(true);
+//			}
+//		}
+//	}
+	
 	@EventHandler
-	public void Place(BlockPlaceEvent ev){
+	public void PlaceBlockInMap(BlockPlaceEvent ev){
 		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
 		if((!getManager().isState(GameState.InGame))||BlockPlaceDeny.contains(ev.getBlock().getType()) || (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))){
@@ -297,7 +328,7 @@ public class Game implements Listener{
 	}
 	
 	@EventHandler
-	public void Break(BlockBreakEvent ev){
+	public void BreakBlockInMap(BlockBreakEvent ev){
 		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()) || !ev.getBlock().getWorld().getName().equalsIgnoreCase(getManager().getWorldData().getWorld().getName()))ev.setCancelled(true);
 		if((getManager().isState(GameState.LobbyPhase))||BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))){
@@ -306,8 +337,8 @@ public class Game implements Listener{
 	}
 	
 	@EventHandler
-	public void PickUp(PlayerPickupItemEvent ev){
-		if((getManager().isState(GameState.LobbyPhase))||!ItemPickup&&!ItemPickupAllow.contains(ev.getItem()) || (ItemPickupDeny.contains(ev.getItem()))){
+	public void PickUpItemsFromGround(PlayerPickupItemEvent ev){
+		if((getManager().isState(GameState.LobbyPhase))||!ItemPickup&&!ItemPickupAllow.contains(ev.getItem().getItemStack().getTypeId()) || (ItemPickupDeny.contains(ev.getItem().getItemStack().getTypeId()))){
 			ev.setCancelled(true);
 		}else if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
@@ -316,7 +347,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void Drop(PlayerDropItemEvent ev){
-		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())||(getManager().isState(GameState.LobbyPhase)) || ItemDropDeny.contains(ev.getItemDrop()) || (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop()))){
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())||(getManager().isState(GameState.LobbyPhase)) || ItemDropDeny.contains(ev.getItemDrop().getItemStack().getTypeId()) || (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop().getItemStack().getTypeId()))){
 			ev.setCancelled(true);
 		}
 	}

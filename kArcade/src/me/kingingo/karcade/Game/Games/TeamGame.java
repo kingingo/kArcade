@@ -49,6 +49,35 @@ public class TeamGame extends Game{
 	public void addTeam(Player p, Team t){
 		TeamList.put(p, t);
 	}
+	
+	public Team littleTeam(){
+		Team t = null;
+		ArrayList<Team> all = new ArrayList<>();
+		
+		for(Player p : TeamList.keySet()){
+			if(!all.contains(TeamList.get(p)))all.add(TeamList.get(p));
+		}
+		
+		for(Team team : all){
+			t=team;
+			int i = isInTeam(t);
+			for(Team team1 : all){
+				if(i>isInTeam(t)){
+					t=null;
+					break;
+				}
+			}
+			if(t!=null){
+				break;
+			}
+		}
+		
+		if(t==null){
+			t=Team.RED;
+		}
+		
+		return t;
+	}
 
 	public void delTeam(Player p){
 		if(!TeamList.containsKey(p)){

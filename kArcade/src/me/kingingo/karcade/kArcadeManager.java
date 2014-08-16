@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
+import me.kingingo.karcade.Game.Games.SkyPvP.SkyPvP;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -58,6 +59,7 @@ import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -219,6 +221,8 @@ public class kArcadeManager implements Listener{
 			return new SheepWars(this,SheepWarsType._4);
 		}else if(GameType.TroubleInMinecraft.string().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
+		}else if(GameType.SkyPvP.string().equalsIgnoreCase(game)){
+			return new SkyPvP(this);
 		}else if(GameType.SurvivalGames.string().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
 		}else{
@@ -454,6 +458,14 @@ public class kArcadeManager implements Listener{
 	    	 
 	     }
 	   }
+	
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void GameStateForCoins(GameStateChangeEvent ev){
+		if(ev.getTo()==GameState.Restart){
+			if(getGame().isCoinsAktiv())getGame().getCoins().SaveAll();
+			if(getGame().isTokensAktiv())getGame().getTokens().SaveAll();
+		}
+	}
 	
 	@EventHandler
 	public void Restart(UpdateEvent ev){
