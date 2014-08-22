@@ -254,6 +254,10 @@ public class TroubleInMinecraft extends TeamGame{
 		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.IN).contains( ((Player)ev.getEntity()) )){
 			getManager().getStats().setInt(((Player)ev.getEntity()),getManager().getStats().getInt(Stats.DEATHS, ((Player)ev.getEntity()))+1, Stats.DEATHS);
 			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.OUT);
+			for(ItemStack item : ev.getDrops()){
+				new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4),0.2,UtilMath.RandomDouble(-0.4, 0.4)),item,getManager().getInstance());
+			}
+			ev.getDrops().clear();
 			NPC npc = npcManager.createNPC( "Unidentifiziert" );
 			npc.spawn( ((Player)ev.getEntity()).getLocation() );
 			npc.sleep();
@@ -347,7 +351,7 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void DropItemFake(PlayerDropItemEvent ev){
 		if(ev.getItemDrop().getItemStack().getType()==Material.WOOD_SWORD||ev.getItemDrop().getItemStack().getType()==Material.STONE_SWORD||ev.getItemDrop().getItemStack().getType()==Material.IRON_SWORD||ev.getItemDrop().getItemStack().getType()==Material.BOW){
-			new ItemFake(ev.getItemDrop());
+			new ItemFake(ev.getItemDrop(),getManager().getInstance());
 		}
 	}
 	
@@ -530,38 +534,38 @@ public class TroubleInMinecraft extends TeamGame{
 			if(list.isEmpty())break;
 			r=UtilMath.r(list.size());
 			if(s_h!=0){
-				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
+				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				s_h--;
 			}else if(s_s!=0){
-				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r));
+				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				s_s--;
 			}else if(s_i!=0){
-				TTT_Item.SCHWERT_IRON.setItemFake(list.get(r));
+				TTT_Item.SCHWERT_IRON.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				s_i--;
 			}else if(b_mg!=0){
-				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r));
+				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				b_mg--;
 			}else if(b_s!=0){
-				TTT_Item.BOW_SHOTGUN.setItemFake(list.get(r));
+				TTT_Item.BOW_SHOTGUN.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				b_s--;
 			}else if(b_b!=0){
-				TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
+				TTT_Item.BOW_BOGEN.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				b_b--;
 			}else if(b_sn!=0){
-				TTT_Item.BOW_SNIPER.setItemFake(list.get(r));
+				TTT_Item.BOW_SNIPER.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				b_sn--;
 			}else{
 				if(UtilMath.r(1)==0){
-					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
+					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r),getManager().getInstance());
 				}else{
-					TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
+					TTT_Item.BOW_BOGEN.setItemFake(list.get(r),getManager().getInstance());
 				}
 				list.remove(r);
 			}
@@ -666,7 +670,7 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.6, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.7, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),

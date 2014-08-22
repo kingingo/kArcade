@@ -11,6 +11,7 @@ import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public enum TTT_Item {
 SCHWERT_HOLZ(UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "Holzschwert"),"SCHWERT"),
@@ -35,8 +36,8 @@ BOW_SNIPER(TroubleInMinecraft.getSniper().getItem(),"BOW");
 			return item.clone();
 	}
 	
-	public ItemFake setItemFake(Location l){
-		return new ItemFake(l,getItem());
+	public ItemFake setItemFake(Location l,JavaPlugin plugin){
+		return new ItemFake(l,getItem(),plugin);
 	 }
 	
 }

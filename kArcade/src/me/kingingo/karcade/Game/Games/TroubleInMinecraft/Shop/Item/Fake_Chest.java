@@ -7,6 +7,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TTT_Item;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.ItemFake.ItemFake;
 import me.kingingo.kcore.ItemFake.Events.ItemFakePickupEvent;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -31,7 +32,7 @@ import org.bukkit.inventory.ItemStack;
 public class Fake_Chest implements Listener,IShop {
 
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "Fake-Chest");
-	HashMap<Block,Player> list = new HashMap<>();
+	HashMap<ItemFake,Player> list = new HashMap<>();
 	TroubleInMinecraft TTT;
 	
 	public Fake_Chest(TroubleInMinecraft TTT){
@@ -51,8 +52,8 @@ public class Fake_Chest implements Listener,IShop {
 			TTT_Item i = getSkull();
 			ev.setCancelled(true);
 			ev.getPlayer().getItemInHand().setType(Material.AIR);
-			i.setItemFake(ev.getBlock().getLocation());
-			list.put(ev.getBlock(),ev.getPlayer());
+			ItemFake k = i.setItemFake(ev.getBlock().getLocation(),TTT.getManager().getInstance());
+			list.put(k,ev.getPlayer());
 		}
 	}
 	
@@ -109,6 +110,11 @@ public class Fake_Chest implements Listener,IShop {
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void PickupItemFake(ItemFakePickupEvent ev){
+		if(!list.containsKey(ev.getItemfake()))return;
+		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
+			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Dieses Item ist ein Fake-Item.");
+			return;
+		}
 		TTT_Item t = getItemFake(ev.getItem());
 		boolean b = false;
 		
@@ -128,13 +134,9 @@ public class Fake_Chest implements Listener,IShop {
 			}
 			
 			if(!b){
-				if(TTT.getTeam(ev.getPlayer())!=Team.TRAITOR){
 					ev.getItemfake().remove();
 					ev.getPlayer().damage(50);
 					ev.getItemfake().getLocation().getWorld().createExplosion(ev.getItemfake().getLocation(), 1.0F, false);
-				}else{
-					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Diese Chest ist eine Fake-Chest.");
-				}
 			}
 		}else if(t.getTyp().equalsIgnoreCase("BOW")){
 			for(ItemStack i : ev.getPlayer().getInventory()){
@@ -146,13 +148,9 @@ public class Fake_Chest implements Listener,IShop {
 			}
 			
 			if(!b){
-				if(TTT.getTeam(ev.getPlayer())!=Team.TRAITOR){
 					ev.getItemfake().remove();
 					ev.getPlayer().damage(50);
 					ev.getItemfake().getLocation().getWorld().createExplosion(ev.getItemfake().getLocation(), 1.0F, false);
-				}else{
-					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Diese Chest ist eine Fake-Chest.");
-				}
 			}
 		}
 	}
