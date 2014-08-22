@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.Getter;
 import me.kingingo.karcade.kArcade;
@@ -33,6 +34,8 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.ItemFake.ItemFake;
+import me.kingingo.kcore.ItemFake.Events.ItemFakePickupEvent;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -46,6 +49,7 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
@@ -59,11 +63,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
@@ -338,112 +344,169 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 	}
 	
+	@EventHandler
+	public void DropItemFake(PlayerDropItemEvent ev){
+		if(ev.getItemDrop().getItemStack().getType()==Material.WOOD_SWORD||ev.getItemDrop().getItemStack().getType()==Material.STONE_SWORD||ev.getItemDrop().getItemStack().getType()==Material.IRON_SWORD||ev.getItemDrop().getItemStack().getType()==Material.BOW){
+			new ItemFake(ev.getItemDrop());
+		}
+	}
 	
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void Items(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&& !ev.isCancelled() ){
-			if(ev.getClickedBlock().getState() instanceof Skull){
-				TTT_Item t = getSkull(ev.getClickedBlock());
-				if(t==null)return;
-				boolean b = false;
-				Inventory inv = ev.getPlayer().getInventory();
-				ev.getClickedBlock().setType(Material.AIR);
-				if(t.getN().equalsIgnoreCase(TTT_Item.SCHWERT_HOLZ.getN())){
-					if(inv.contains(TTT_Item.SCHWERT_HOLZ.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_HOLZ.getItem().getType()){
-								inv.setItem(i, t.getItem());
-								b=true;
-								TTT_Item.SCHWERT_HOLZ.setBlock(ev.getClickedBlock());
-							}
-						}
-					}else if(inv.contains(TTT_Item.SCHWERT_IRON.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_IRON.getItem().getType()){
-								inv.setItem(i, t.getItem());
-								b=true;
-								TTT_Item.SCHWERT_IRON.setBlock(ev.getClickedBlock());
-							}
-						}
-					}else if(inv.contains(TTT_Item.SCHWERT_STONE.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_STONE.getItem().getType()){
-								inv.setItem(i, t.getItem());
-								b=true;
-								TTT_Item.SCHWERT_STONE.setBlock(ev.getClickedBlock());
-							}
-						}
-					}
-				}else if(t.getN().equalsIgnoreCase(TTT_Item.BOW_BOGEN.getN())){
-					if(inv.contains(TTT_Item.BOW_BOGEN.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.BOW_BOGEN.getItem().getType()){
-								inv.setItem(i, t.getItem());
-								b=true;
-								TTT_Item.BOW_BOGEN.setBlock(ev.getClickedBlock());
-							}
-						}
-					}else if(inv.contains(TTT_Item.BOW_MINIGUN.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.BOW_MINIGUN.getItem().getType()){
-								ev.getPlayer().getInventory().setItem(i,t.getItem());
-								b=true;
-								TTT_Item.BOW_MINIGUN.setBlock(ev.getClickedBlock());
-							}
-						}
-					}if(inv.contains(TTT_Item.BOW_SHOTGUN.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.BOW_SHOTGUN.getItem().getType()){
-								ev.getPlayer().getInventory().setItem(i,t.getItem());
-								b=true;
-								TTT_Item.BOW_SHOTGUN.setBlock(ev.getClickedBlock());
-							}
-						}
-					}if(inv.contains(TTT_Item.BOW_SNIPER.getItem())){
-						for(int i = 0 ; i < inv.getSize(); i++){
-							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-							if(inv.getItem(i).getType()==TTT_Item.BOW_SNIPER.getItem().getType()){
-								ev.getPlayer().getInventory().setItem(i,t.getItem());
-								b=true;
-								TTT_Item.BOW_SNIPER.setBlock(ev.getClickedBlock());
-							}
-						}
-					}
+	@EventHandler
+	public void PickupItemFake(ItemFakePickupEvent ev){
+		TTT_Item t = getItemFake(ev.getItem());
+		boolean b = false;
+		
+		if(t.getTyp().equalsIgnoreCase("SCHWERT")){
+			for(ItemStack i : ev.getPlayer().getInventory()){
+				if(i==null||i.getType()==Material.AIR)continue;
+				if(i.getType()==Material.WOOD_SWORD){
+					b=true;
+					break;
+				}else if(i.getType()==Material.STONE_SWORD){
+					b=true;
+					break;
+				}else if(i.getType()==Material.IRON_SWORD){
+					b=true;
+					break;
 				}
-				
-				
-				if(!b)ev.getPlayer().getInventory().addItem(t.getItem());
-				ev.getPlayer().updateInventory();
 			}
-		}
-	}
-	
-	public TTT_Item getSkull(Block b){
-		if(b.getState() instanceof Skull){
-			Skull s = (Skull)b.getState();
-			if(!s.hasOwner())return null;
-			switch(s.getOwner()){
-			case "VareidePlays": return TTT_Item.SCHWERT_HOLZ;
-			case "Nottrex": return TTT_Item.SCHWERT_STONE;
-			case "BillTheBuild3r": return TTT_Item.SCHWERT_IRON;
 			
-			case "KlausurThaler144":return TTT_Item.BOW_MINIGUN;
-			case "IntelliJ":return TTT_Item.BOW_SHOTGUN;
-			case "Abmahnung":return TTT_Item.BOW_BOGEN;
-			case "FallingDiamond":return TTT_Item.BOW_SNIPER;
+			if(!b){
+				ev.getItemfake().remove();
+				ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
+			}
+		}else if(t.getTyp().equalsIgnoreCase("BOW")){
+			for(ItemStack i : ev.getPlayer().getInventory()){
+				if(i==null||i.getType()==Material.AIR)continue;
+				if(i.getType()==Material.BOW){
+					b=true;
+					break;
+				}
+			}
+			
+			if(!b){
+				ev.getItemfake().remove();
+				ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
 			}
 		}
-		return null;
 	}
 	
-	public void setSkull(ArrayList<Location> list){
+//	@EventHandler(priority=EventPriority.HIGHEST)
+//	public void Items(PlayerInteractEvent ev){
+//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&& !ev.isCancelled() ){
+//			if(ev.getClickedBlock().getState() instanceof Skull){
+//				TTT_Item t = getSkull(ev.getClickedBlock());
+//				if(t==null)return;
+//				boolean b = false;
+//				Inventory inv = ev.getPlayer().getInventory();
+//				ev.getClickedBlock().setType(Material.AIR);
+//				if(t.getN().equalsIgnoreCase(TTT_Item.SCHWERT_HOLZ.getN())){
+//					if(inv.contains(TTT_Item.SCHWERT_HOLZ.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_HOLZ.getItem().getType()){
+//								inv.setItem(i, t.getItem());
+//								b=true;
+//								TTT_Item.SCHWERT_HOLZ.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}else if(inv.contains(TTT_Item.SCHWERT_IRON.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_IRON.getItem().getType()){
+//								inv.setItem(i, t.getItem());
+//								b=true;
+//								TTT_Item.SCHWERT_IRON.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}else if(inv.contains(TTT_Item.SCHWERT_STONE.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_STONE.getItem().getType()){
+//								inv.setItem(i, t.getItem());
+//								b=true;
+//								TTT_Item.SCHWERT_STONE.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}
+//				}else if(t.getN().equalsIgnoreCase(TTT_Item.BOW_BOGEN.getN())){
+//					if(inv.contains(TTT_Item.BOW_BOGEN.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.BOW_BOGEN.getItem().getType()){
+//								inv.setItem(i, t.getItem());
+//								b=true;
+//								TTT_Item.BOW_BOGEN.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}else if(inv.contains(TTT_Item.BOW_MINIGUN.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.BOW_MINIGUN.getItem().getType()){
+//								ev.getPlayer().getInventory().setItem(i,t.getItem());
+//								b=true;
+//								TTT_Item.BOW_MINIGUN.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}if(inv.contains(TTT_Item.BOW_SHOTGUN.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.BOW_SHOTGUN.getItem().getType()){
+//								ev.getPlayer().getInventory().setItem(i,t.getItem());
+//								b=true;
+//								TTT_Item.BOW_SHOTGUN.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}if(inv.contains(TTT_Item.BOW_SNIPER.getItem())){
+//						for(int i = 0 ; i < inv.getSize(); i++){
+//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
+//							if(inv.getItem(i).getType()==TTT_Item.BOW_SNIPER.getItem().getType()){
+//								ev.getPlayer().getInventory().setItem(i,t.getItem());
+//								b=true;
+//								TTT_Item.BOW_SNIPER.setBlock(ev.getClickedBlock());
+//							}
+//						}
+//					}
+//				}
+//				
+//				
+//				if(!b)ev.getPlayer().getInventory().addItem(t.getItem());
+//				ev.getPlayer().updateInventory();
+//			}
+//		}
+//	}
+	
+	public TTT_Item getItemFake(Item item){
+//		if(b.getState() instanceof Skull){
+//			Skull s = (Skull)b.getState();
+//			if(!s.hasOwner())return null;
+//			switch(s.getOwner()){
+//			case "VareidePlays": return TTT_Item.SCHWERT_HOLZ;
+//			case "Nottrex": return TTT_Item.SCHWERT_STONE;
+//			case "BillTheBuild3r": return TTT_Item.SCHWERT_IRON;
+//			
+//			case "KlausurThaler144":return TTT_Item.BOW_MINIGUN;
+//			case "IntelliJ":return TTT_Item.BOW_SHOTGUN;
+//			case "Abmahnung":return TTT_Item.BOW_BOGEN;
+//			case "FallingDiamond":return TTT_Item.BOW_SNIPER;
+//			}
+//		}
+//		return null;
+		
+		switch(item.getItemStack().getItemMeta().getDisplayName()){
+		case "Holzschwert":return TTT_Item.SCHWERT_HOLZ;
+		case "Steinschwert":return TTT_Item.SCHWERT_STONE;
+		case "Eisenschwert":return TTT_Item.SCHWERT_IRON;
+		case "Bogen":return TTT_Item.BOW_BOGEN;
+		case "§cMinigun":return TTT_Item.BOW_MINIGUN;
+		case "§aShotgun":return TTT_Item.BOW_SHOTGUN;
+		case "§eSniper":return TTT_Item.BOW_SNIPER;
+		default:
+			return TTT_Item.SCHWERT_HOLZ;
+		}
+	}
+	
+	public void setItemFake(ArrayList<Location> list){
 		int s_h=(int)(list.size()*0.2);// 20 %
 		int s_s=(int)(list.size()*0.15);// 15 %
 		int s_i=(int)(list.size()*0.05);// 5 %
@@ -467,38 +530,38 @@ public class TroubleInMinecraft extends TeamGame{
 			if(list.isEmpty())break;
 			r=UtilMath.r(list.size());
 			if(s_h!=0){
-				TTT_Item.SCHWERT_HOLZ.setBlock(list.get(r));
+				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				list.remove(r);
 				s_h--;
 			}else if(s_s!=0){
-				TTT_Item.SCHWERT_STONE.setBlock(list.get(r));
+				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r));
 				list.remove(r);
 				s_s--;
 			}else if(s_i!=0){
-				TTT_Item.SCHWERT_IRON.setBlock(list.get(r));
+				TTT_Item.SCHWERT_IRON.setItemFake(list.get(r));
 				list.remove(r);
 				s_i--;
 			}else if(b_mg!=0){
-				TTT_Item.BOW_MINIGUN.setBlock(list.get(r));
+				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r));
 				list.remove(r);
 				b_mg--;
 			}else if(b_s!=0){
-				TTT_Item.BOW_SHOTGUN.setBlock(list.get(r));
+				TTT_Item.BOW_SHOTGUN.setItemFake(list.get(r));
 				list.remove(r);
 				b_s--;
 			}else if(b_b!=0){
-				TTT_Item.BOW_BOGEN.setBlock(list.get(r));
+				TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
 				list.remove(r);
 				b_b--;
 			}else if(b_sn!=0){
-				TTT_Item.BOW_SNIPER.setBlock(list.get(r));
+				TTT_Item.BOW_SNIPER.setItemFake(list.get(r));
 				list.remove(r);
 				b_sn--;
 			}else{
 				if(UtilMath.r(1)==0){
-					TTT_Item.SCHWERT_HOLZ.setBlock(list.get(r));
+					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				}else{
-					TTT_Item.BOW_BOGEN.setBlock(list.get(r));
+					TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
 				}
 				list.remove(r);
 			}
@@ -716,7 +779,6 @@ public class TroubleInMinecraft extends TeamGame{
 	public void World(WorldLoadEvent ev){
 		HashMap<String,ArrayList<Location>> list = getManager().getWorldData().getLocs();
 		tester = new Tester(this, list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
-		setSkull(list.get(Team.YELLOW.Name()));
 	}
 	
 	@EventHandler
@@ -733,6 +795,8 @@ public class TroubleInMinecraft extends TeamGame{
 			list.remove(r);
 			getGameList().addPlayer(p,PlayerState.IN);
 		}
+		
+		setItemFake(getManager().getWorldData().getLocs(Team.YELLOW.Name()));
 	}
 
 	public HashMap<Team,Integer> verteilung(){

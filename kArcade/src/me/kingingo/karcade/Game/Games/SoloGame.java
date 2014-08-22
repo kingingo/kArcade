@@ -4,6 +4,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
+import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class SoloGame extends Game{
+	
+	AddonSpectator spec=null;
 	
 	public SoloGame(kArcadeManager manager) {
 		super(manager);
@@ -37,8 +40,8 @@ public class SoloGame extends Game{
 		}
 	}
 	
-	public void SetSpectator(Player player)
-	  {
+	public void SetSpectator(Player player){
+		if(spec==null)spec=new AddonSpectator(getManager());
 	    getManager().Clear(player);
 	    player.teleport(UtilServer.getPlayers()[UtilMath.RandomInt(UtilServer.getPlayers().length, 0)].getLocation().add(0.0D,3.5D,0.0D));
 	    player.setGameMode(GameMode.CREATIVE);
@@ -47,11 +50,9 @@ public class SoloGame extends Game{
 	    ((CraftPlayer)player).getHandle().k = false;
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
-	    
 	    if(getGameList().getPlayers(PlayerState.IN).size()<1){
 			getManager().setState(GameState.Restart);
 		}
-	    
 	  }
 	
 }

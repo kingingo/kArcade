@@ -123,6 +123,7 @@ public class SheepWars extends TeamGame{
 		getAllowSpawnCreature().add(CreatureType.SHEEP);
 		getAllowSpawnCreature().add(CreatureType.VILLAGER);
 		setBlockBurn(false);
+		setPlayerShearEntity(true);
 		setBlockSpread(false);
 		setDeathDropItems(true);
 		getInventoryTypDisallow().add(InventoryType.WORKBENCH);

@@ -35,7 +35,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -57,6 +56,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 
 public class Game implements Listener{
 	@Getter
@@ -179,6 +179,9 @@ public class Game implements Listener{
 	private boolean solid=false;
 	@Setter
 	private GameList gamelist;
+	@Getter
+	@Setter
+	private boolean PlayerShearEntity=false;
 	
 	@Getter
 	private ArrayList<InventoryType> InventoryTypDisallow = new ArrayList<>(); 
@@ -195,6 +198,11 @@ public class Game implements Listener{
 	
 	public GameList getGameList(){
 		return this.gamelist;
+	}
+	
+	@EventHandler
+	public void PlayerShearEntity(PlayerShearEntityEvent ev){
+		if(PlayerShearEntity)ev.setCancelled(true);
 	}
 	
 	public boolean isTokensAktiv(){
@@ -315,6 +323,10 @@ public class Game implements Listener{
 	public void PlaceBlockInMap(BlockPlaceEvent ev){
 		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
+		if(getManager().isState(GameState.DeathMatch)){
+			ev.setCancelled(false);
+			return;
+		}
 		if((!getManager().isState(GameState.InGame))||BlockPlaceDeny.contains(ev.getBlock().getType()) || (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))){
 			ev.setCancelled(true);
 		}

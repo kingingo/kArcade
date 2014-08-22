@@ -38,13 +38,6 @@ public class WorldParser {
 		        		((ArrayList)list.get(Team.SOLO.Name())).add(block.getLocation());
 		        		block.setTypeId(0);
 		        		block.getRelative(BlockFace.UP).setTypeId(0);
-		        	}else if(block.getType()==Material.SKULL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
-		        		if(!list.containsKey(Team.YELLOW.Name())){
-		        			list.put(Team.YELLOW.Name(), new ArrayList<Location>());
-		        		}
-		        		((ArrayList)list.get(Team.YELLOW.Name())).add(block.getLocation());
-		        		block.setTypeId(0);
-		        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
 		        		if(block.getData()==14){
 		        			if(!list.containsKey(Team.RED.Name())){

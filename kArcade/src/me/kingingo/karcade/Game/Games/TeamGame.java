@@ -11,6 +11,7 @@ import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
+import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Util.UtilItem;
@@ -41,6 +42,7 @@ public class TeamGame extends Game{
 	@Getter
 	@Setter
 	private Scoreboard board;
+	AddonSpectator spec=null;
 	
 	public TeamGame(kArcadeManager manager) {
 		super(manager);
@@ -99,7 +101,7 @@ public class TeamGame extends Game{
 		return t;
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void SpectJoin(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase){
 			SetSpectator(null,ev.getPlayer());
@@ -217,6 +219,7 @@ public class TeamGame extends Game{
 	
 	public void SetSpectator(PlayerRespawnEvent ev,Player player)
 	  {
+		if(spec==null)spec=new AddonSpectator(getManager());
 		TeamList.remove(player);
 		getGameList().addPlayer(player, PlayerState.OUT);
 	    getManager().Clear(player);

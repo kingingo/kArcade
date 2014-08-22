@@ -12,6 +12,7 @@ import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -19,6 +20,8 @@ import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
+import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
+import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
@@ -26,23 +29,28 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
+import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SkyPvP extends SoloGame{
 
 	KitShop kitshop;
+	HashMap<Player,Location> island = new HashMap<>();
 	HashMap<Player,Integer> life = new HashMap<>();
 	Hologram hm;
 	
@@ -52,7 +60,7 @@ public class SkyPvP extends SoloGame{
 		getManager().setState(GameState.Laden);
 		getManager().setTyp(GameType.SkyPvP);
 		setMax_Players(24);
-		setMin_Players(6);
+		setMin_Players(1);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageSelf(true);
@@ -64,13 +72,16 @@ public class SkyPvP extends SoloGame{
 		setFoodChange(true);
 		setItemPickup(true);
 		setItemDrop(true);
-		kitshop=new KitShop(manager.getInstance(),getCoins(),getTokens(),getManager().getPermManager(),"Shop",InventorySize._27,new Kit[]{
-			new Kit("NAME",new ItemStack(Material.DIAMOND_SWORD),new ItemStack[]{},Permission.NONE,KitType.STARTER,2000,new Perk[]{}),
-			new Kit("NAME",new ItemStack(Material.DIAMOND_SWORD),new ItemStack[]{},Permission.NONE,KitType.STARTER,2000,new Perk[]{}),
-			new Kit("NAME",new ItemStack(Material.DIAMOND_SWORD),new ItemStack[]{},Permission.NONE,KitType.STARTER,2000,new Perk[]{}),
-			new Kit("NAME",new ItemStack(Material.DIAMOND_SWORD),new ItemStack[]{},Permission.NONE,KitType.STARTER,2000,new Perk[]{}),
-			new Kit("NAME",new ItemStack(Material.DIAMOND_SWORD),new ItemStack[]{},Permission.NONE,KitType.STARTER,2000,new Perk[]{}),
-			new Kit("NAME",new ItemStack(Material.DIAMOND_SWORD),new ItemStack[]{},Permission.NONE,KitType.STARTER,2000,new Perk[]{}),
+		kitshop=new KitShop(manager.getInstance(),getCoins(),getTokens(),getManager().getPermManager(),"Shop",InventorySize._18,new Kit[]{
+			new Kit("Ankerman",new ItemStack(Material.ANVIL),new ItemStack[]{new ItemStack(Material.STONE_SWORD)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkNoKnockback(manager.getInstance())}),
+			new Kit("Panzer",new ItemStack(Material.DIAMOND_CHESTPLATE),new ItemStack[]{},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkSneakDamage(1.0)}),
+			new Kit("Man of Steel",new ItemStack(Material.IRON_SWORD),new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.POTION,1,(byte)8265)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+			new Kit("Heiler",new ItemStack(Material.POTION,1,(byte)8229),new ItemStack[]{new ItemStack(Material.POTION,4,(byte)8229)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+			new Kit("Rusher",new ItemStack(Material.IRON_CHESTPLATE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_CHESTPLATE), new String[]{Enchantment.PROTECTION_PROJECTILE.getName()+":1",Enchantment.DURABILITY.getName()+":1"})},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+			new Kit("RockMan",new ItemStack(Material.WOOD_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD), Enchantment.DAMAGE_ALL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_PICKAXE), Enchantment.DURABILITY.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SPADE), Enchantment.DURABILITY.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+			new Kit("Looter",new ItemStack(Material.COBBLESTONE),new ItemStack[]{new ItemStack(Material.COBBLESTONE,32),new ItemStack(Material.WOOD,16)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+			new Kit("Berserker",new ItemStack(Material.LEATHER_HELMET),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.LEATHER_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.LEATHER_LEGGINGS), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+			new Kit("Miner",new ItemStack(Material.IRON_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.DIG_SPEED.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
 		});
 		setRespawn(true);
 		WorldData wd=new WorldData(manager,GameType.SkyPvP.name());
@@ -91,21 +102,26 @@ public class SkyPvP extends SoloGame{
 		}
 	}
 	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void RespawnLocation(PlayerRespawnEvent ev){
+		if(island.containsKey(ev.getPlayer()))ev.setRespawnLocation(island.get(ev.getPlayer()));
+	}
+	
 	@EventHandler
 	public void inGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getManager().getState()!=GameState.InGame)return;
 		getManager().setStart(getManager().getStart()-1);
-		
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())), p);
 		switch(getManager().getStart()){
-		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
-		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(getManager().getStart()) );break;
+		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
 		case 0:
 			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END.getText() );
 			getManager().setState(GameState.Restart);
@@ -117,6 +133,18 @@ public class SkyPvP extends SoloGame{
 	public void DeathSkyPvP(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player){
 			Player v = (Player)ev.getEntity();
+			boolean b = false;
+			int i = life.get(v);
+			i--;
+			if(i<=0){
+				getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
+				getGameList().addPlayer(v, PlayerState.OUT);
+				b=true;
+			}else{
+				life.remove(v);
+				life.put(v, i);
+			}
+			
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getManager().getStats().setInt(a, getManager().getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
@@ -124,16 +152,7 @@ public class SkyPvP extends SoloGame{
 				return;
 			}
 			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.DEATH.getText(v.getName()) );
-			int i = life.get(v);
-			i--;
-			if(i<=0){
-				getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
-				getGameList().addPlayer(v, PlayerState.OUT);
-				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
-			}else{
-				life.remove(v);
-				life.put(v, i);
-			}
+			if(b)getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
 			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 		}
 	}
@@ -191,8 +210,10 @@ public class SkyPvP extends SoloGame{
 				life.put(p, 3);
 			}
 			p.teleport(locs.get(0));
+			island.put(p, locs.get(0));
 			locs.remove(0);
 		}
+		new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
 		getManager().setStart((60*30)+1);
 		getManager().setState(GameState.InGame);
 	}
