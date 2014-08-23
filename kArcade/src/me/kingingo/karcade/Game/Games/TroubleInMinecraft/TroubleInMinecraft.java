@@ -35,6 +35,7 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.ItemFake.ItemFake;
+import me.kingingo.kcore.ItemFake.ItemFakeManager;
 import me.kingingo.kcore.ItemFake.Events.ItemFakePickupEvent;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
@@ -88,7 +89,8 @@ public class TroubleInMinecraft extends TeamGame{
 	Hologram hm;
 	AddonSkullNameTag snt;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
-	
+	@Getter
+	ItemFakeManager ifm;
 	@Getter
 	public static Shotgun shotgun;
 	@Getter
@@ -147,7 +149,6 @@ public class TroubleInMinecraft extends TeamGame{
 				r,
 				new Healing_Station(this)
 		});
-		
 		wd = new WorldData(manager,GameType.TroubleInMinecraft.name());
 		wd.Initialize();
 		manager.setWorldData(wd);
@@ -357,6 +358,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void PickupItemFake(ItemFakePickupEvent ev){
+		if(ev.isCancelled())return;
 		TTT_Item t = getItemFake(ev.getItem());
 		boolean b = false;
 		
@@ -670,7 +672,7 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.7, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.59, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
@@ -757,7 +759,7 @@ public class TroubleInMinecraft extends TeamGame{
 			}
 			
 			for(Player p : t){
-				PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(p.getEntityId(),2, CraftItemStack.asNMSCopy( UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), Color.RED) ));
+				PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(p.getEntityId(),2, CraftItemStack.asNMSCopy( UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.RED) ));
 				for(Player p1 : t){
 					((CraftPlayer)p1).getHandle().playerConnection.sendPacket(packet);
 				}
@@ -799,7 +801,7 @@ public class TroubleInMinecraft extends TeamGame{
 			list.remove(r);
 			getGameList().addPlayer(p,PlayerState.IN);
 		}
-		
+		ifm=new ItemFakeManager(getManager().getInstance(),hm);
 		setItemFake(getManager().getWorldData().getLocs(Team.YELLOW.Name()));
 	}
 

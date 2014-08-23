@@ -113,6 +113,7 @@ public class Fake_Chest implements Listener,IShop {
 		if(!list.containsKey(ev.getItemfake()))return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
 			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Dieses Item ist ein Fake-Item.");
+			ev.setCancelled(true);
 			return;
 		}
 		TTT_Item t = getItemFake(ev.getItem());
@@ -134,9 +135,9 @@ public class Fake_Chest implements Listener,IShop {
 			}
 			
 			if(!b){
-					ev.getItemfake().remove();
 					ev.getPlayer().damage(50);
 					ev.getItemfake().getLocation().getWorld().createExplosion(ev.getItemfake().getLocation(), 1.0F, false);
+					ev.getItemfake().remove();
 			}
 		}else if(t.getTyp().equalsIgnoreCase("BOW")){
 			for(ItemStack i : ev.getPlayer().getInventory()){
@@ -148,9 +149,9 @@ public class Fake_Chest implements Listener,IShop {
 			}
 			
 			if(!b){
-					ev.getItemfake().remove();
 					ev.getPlayer().damage(50);
 					ev.getItemfake().getLocation().getWorld().createExplosion(ev.getItemfake().getLocation(), 1.0F, false);
+					ev.getItemfake().remove();
 			}
 		}
 	}

@@ -14,9 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public enum TTT_Item {
-SCHWERT_HOLZ(UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "Holzschwert"),"SCHWERT"),
-SCHWERT_STONE(UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "Steinschwert"),"SCHWERT"),
-SCHWERT_IRON(UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "Eisenschwert"),"SCHWERT"),
+SCHWERT_HOLZ(UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "§7Holzschwert"),"SCHWERT"),
+SCHWERT_STONE(UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "§8Steinschwert"),"SCHWERT"),
+SCHWERT_IRON(UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "§bEisenschwert"),"SCHWERT"),
 
 BOW_MINIGUN(TroubleInMinecraft.getMinigun().getItem(),"BOW"),
 BOW_SHOTGUN(TroubleInMinecraft.getShotgun().getItem(),"BOW"),
