@@ -10,6 +10,8 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Game;
+import me.kingingo.karcade.Game.Events.TeamAddEvent;
+import me.kingingo.karcade.Game.Events.TeamDelEvent;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
@@ -50,6 +52,7 @@ public class TeamGame extends Game{
 	
 	public void addTeam(Player p, Team t){
 		TeamList.put(p, t);
+		Bukkit.getPluginManager().callEvent(new TeamAddEvent(p,t));
 	}
 	
 	public Team littleTeam(){
@@ -82,7 +85,8 @@ public class TeamGame extends Game{
 	}
 
 	public void delTeam(Player p){
-		if(!TeamList.containsKey(p)){
+		if(TeamList.containsKey(p)){
+			Bukkit.getPluginManager().callEvent(new TeamDelEvent(p,getTeam(p)));
 			TeamList.remove(p);
 		}
 	}
@@ -251,8 +255,9 @@ public class TeamGame extends Game{
 			if(!(a.getShooter() instanceof Player))return;
 			Player d = (Player)a.getShooter();
 			Player v = (Player)ev.getEntity();
-			if(!DamageTeamSelf&&getTeam(d)==getTeam(v))return;
-			ev.setCancelled(false);
+			if(!DamageTeamSelf&&getTeam(d)==getTeam(v)){
+				ev.setCancelled(true);
+			}
 		}
 	}
 	

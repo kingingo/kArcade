@@ -68,6 +68,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -87,7 +89,6 @@ public class TroubleInMinecraft extends TeamGame{
 	Shop dshop;
 	NPCManager npcManager;
 	Hologram hm;
-	AddonSkullNameTag snt;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	@Getter
 	ItemFakeManager ifm;
@@ -198,6 +199,11 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void Chat(PlayerChatEvent ev){
 		ev.setCancelled(true);
+		if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+			ev.setCancelled(true);
+			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			return;
+		}
 		Bukkit.broadcastMessage(C.cGray+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 	}
 	
@@ -255,8 +261,15 @@ public class TroubleInMinecraft extends TeamGame{
 		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.IN).contains( ((Player)ev.getEntity()) )){
 			getManager().getStats().setInt(((Player)ev.getEntity()),getManager().getStats().getInt(Stats.DEATHS, ((Player)ev.getEntity()))+1, Stats.DEATHS);
 			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.OUT);
+			boolean b = false;
 			for(ItemStack item : ev.getDrops()){
-				new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4),0.2,UtilMath.RandomDouble(-0.4, 0.4)),item,getManager().getInstance());
+				for(TTT_Item ii : TTT_Item.values()){
+					if(UtilItem.ItemNameEquals(ii.getItem(), item)){
+						b=true;
+						break;
+					}
+				}
+				if(b)new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4),0.2,UtilMath.RandomDouble(-0.4, 0.4)),item,getManager().getInstance());
 			}
 			ev.getDrops().clear();
 			NPC npc = npcManager.createNPC( "Unidentifiziert" );
@@ -270,42 +283,42 @@ public class TroubleInMinecraft extends TeamGame{
 				int k = getManager().getStats().getInt(Stats.TTT_KARMA, (Player)ev.getEntity().getKiller());
 				int d=-1;
 				int tr=-1;
-				if(t==Team.TRAITOR){
-					if(t1==Team.TRAITOR){
+				if(t1==Team.TRAITOR){
+					if(t==Team.TRAITOR){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
-					}else if(t1==Team.INOCCENT){
+					}else if(t==Team.INOCCENT){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+10, Stats.TTT_KARMA);
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_TRAITOR_PUNKTE);
 						k=10;
 						tr=2;
-					}else if(t1==Team.DETECTIVE){
+					}else if(t==Team.DETECTIVE){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+4, Stats.TTT_TRAITOR_PUNKTE);
 						k=20;
 						tr=4;
 					}
-				}else if(t==Team.INOCCENT){
-					if(t1==Team.TRAITOR){
+				}else if(t1==Team.INOCCENT){
+					if(t==Team.TRAITOR){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
 						k=20;
-					}else if(t1==Team.INOCCENT){
+					}else if(t==Team.INOCCENT){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, Stats.TTT_KARMA);
 						k=-20;
-					}else if(t1==Team.DETECTIVE){
+					}else if(t==Team.DETECTIVE){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
 					}
-				}else if(t==Team.DETECTIVE){
-					if(t1==Team.TRAITOR){
+				}else if(t1==Team.DETECTIVE){
+					if(t==Team.TRAITOR){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+30, Stats.TTT_KARMA);
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_DETECTIVE_PUNKTE);
 						k=30;
 						d=2;
-					}else if(t1==Team.INOCCENT){
+					}else if(t==Team.INOCCENT){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, Stats.TTT_KARMA);
 						k=-20;
-					}else if(t1==Team.DETECTIVE){
+					}else if(t==Team.DETECTIVE){
 						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
 					}
@@ -313,33 +326,33 @@ public class TroubleInMinecraft extends TeamGame{
 			
 				if(d!=-1){
 					if(k>0){
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,2,0), 3, new String[]{
+						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							"§aDu hast §e"+k+" Karma§a erhalten.",
-							"§bDu hast §e"+tr+" Detective-Punke§b erhalten."
+							"§bDu hast §e"+d+" Detective-Punke§b erhalten."
 						});
 					}else{
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,2,0), 3, new String[]{
+						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							 "§cDu hast §e"+k+" Karma§c verloren.",
-							 "§bDu hast §e"+tr+" Detective-Punke§b erhalten."
+							 "§bDu hast §e"+d+" Detective-Punke§b erhalten."
 						});
 					}
 				}else if(tr!=-1){
 					if(k>0){
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,2,0), 3, new String[]{
+						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							"§aDu hast §e"+k+" Karma§a erhalten.",
 							"§bDu hast §e"+tr+" Traitor-Punke§b erhalten."
 						});
 					}else{
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,2,0), 3, new String[]{
+						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							 "§cDu hast §e"+k+" Karma§c verloren.",
 							 "§bDu hast §e"+tr+" Traitor-Punke§b erhalten."
 						});
 					}
 				}else{
 					if(k>0){
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,2,0), 3, "§aDu hast §e"+k+" Karma§a erhalten.");
+						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§aDu hast §e"+k+" Karma§a erhalten.");
 					}else{
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,2,0), 3, "§cDu hast §e"+k+" Karma§c verloren.");
+						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§cDu hast §e"+k+" Karma§c verloren.");
 					}
 				}
 				
@@ -359,7 +372,12 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void PickupItemFake(ItemFakePickupEvent ev){
 		if(ev.isCancelled())return;
+		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
 		TTT_Item t = getItemFake(ev.getItem());
+		if(t==null){
+			ev.getItemfake().remove();
+			return;
+		}
 		boolean b = false;
 		
 		if(t.getTyp().equalsIgnoreCase("SCHWERT")){
@@ -397,107 +415,9 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 	}
 	
-//	@EventHandler(priority=EventPriority.HIGHEST)
-//	public void Items(PlayerInteractEvent ev){
-//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&& !ev.isCancelled() ){
-//			if(ev.getClickedBlock().getState() instanceof Skull){
-//				TTT_Item t = getSkull(ev.getClickedBlock());
-//				if(t==null)return;
-//				boolean b = false;
-//				Inventory inv = ev.getPlayer().getInventory();
-//				ev.getClickedBlock().setType(Material.AIR);
-//				if(t.getN().equalsIgnoreCase(TTT_Item.SCHWERT_HOLZ.getN())){
-//					if(inv.contains(TTT_Item.SCHWERT_HOLZ.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_HOLZ.getItem().getType()){
-//								inv.setItem(i, t.getItem());
-//								b=true;
-//								TTT_Item.SCHWERT_HOLZ.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}else if(inv.contains(TTT_Item.SCHWERT_IRON.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_IRON.getItem().getType()){
-//								inv.setItem(i, t.getItem());
-//								b=true;
-//								TTT_Item.SCHWERT_IRON.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}else if(inv.contains(TTT_Item.SCHWERT_STONE.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.SCHWERT_STONE.getItem().getType()){
-//								inv.setItem(i, t.getItem());
-//								b=true;
-//								TTT_Item.SCHWERT_STONE.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}
-//				}else if(t.getN().equalsIgnoreCase(TTT_Item.BOW_BOGEN.getN())){
-//					if(inv.contains(TTT_Item.BOW_BOGEN.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.BOW_BOGEN.getItem().getType()){
-//								inv.setItem(i, t.getItem());
-//								b=true;
-//								TTT_Item.BOW_BOGEN.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}else if(inv.contains(TTT_Item.BOW_MINIGUN.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.BOW_MINIGUN.getItem().getType()){
-//								ev.getPlayer().getInventory().setItem(i,t.getItem());
-//								b=true;
-//								TTT_Item.BOW_MINIGUN.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}if(inv.contains(TTT_Item.BOW_SHOTGUN.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.BOW_SHOTGUN.getItem().getType()){
-//								ev.getPlayer().getInventory().setItem(i,t.getItem());
-//								b=true;
-//								TTT_Item.BOW_SHOTGUN.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}if(inv.contains(TTT_Item.BOW_SNIPER.getItem())){
-//						for(int i = 0 ; i < inv.getSize(); i++){
-//							if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)continue;
-//							if(inv.getItem(i).getType()==TTT_Item.BOW_SNIPER.getItem().getType()){
-//								ev.getPlayer().getInventory().setItem(i,t.getItem());
-//								b=true;
-//								TTT_Item.BOW_SNIPER.setBlock(ev.getClickedBlock());
-//							}
-//						}
-//					}
-//				}
-//				
-//				
-//				if(!b)ev.getPlayer().getInventory().addItem(t.getItem());
-//				ev.getPlayer().updateInventory();
-//			}
-//		}
-//	}
-	
 	public TTT_Item getItemFake(Item item){
-//		if(b.getState() instanceof Skull){
-//			Skull s = (Skull)b.getState();
-//			if(!s.hasOwner())return null;
-//			switch(s.getOwner()){
-//			case "VareidePlays": return TTT_Item.SCHWERT_HOLZ;
-//			case "Nottrex": return TTT_Item.SCHWERT_STONE;
-//			case "BillTheBuild3r": return TTT_Item.SCHWERT_IRON;
-//			
-//			case "KlausurThaler144":return TTT_Item.BOW_MINIGUN;
-//			case "IntelliJ":return TTT_Item.BOW_SHOTGUN;
-//			case "Abmahnung":return TTT_Item.BOW_BOGEN;
-//			case "FallingDiamond":return TTT_Item.BOW_SNIPER;
-//			}
-//		}
-//		return null;
+		if(!item.getItemStack().hasItemMeta())return null;
+		if(!item.getItemStack().getItemMeta().hasDisplayName())return null;
 		
 		switch(item.getItemStack().getItemMeta().getDisplayName()){
 		case "Holzschwert":return TTT_Item.SCHWERT_HOLZ;
@@ -735,6 +655,8 @@ public class TroubleInMinecraft extends TeamGame{
 				boards.put(p, ps);
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE));
 				p.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.STICK), "Detective-Shop"));
+				setDamage(true);
+				setProjectileDamage(true);
 			}
 			ArrayList<Player> t = (ArrayList<Player>)getPlayerFrom(Team.TRAITOR);
 			for(Player p : t){
@@ -788,14 +710,19 @@ public class TroubleInMinecraft extends TeamGame{
 	}
 	
 	@EventHandler
+	public void Regen(EntityRegainHealthEvent ev){
+		if(manager.getState()==GameState.LobbyPhase)return;
+		if(ev.getRegainReason()==RegainReason.SATIATED)ev.setCancelled(true);
+	}
+	
+	@EventHandler
 	public void Start(GameStartEvent ev){
-		getManager().setStart(31);
-		getManager().setState(GameState.StartGame);
 		ArrayList<Location> list = getManager().getWorldData().getLocs(Team.RED.Name());
-		snt=new AddonSkullNameTag(getManager(),hm);
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
+			p.setMaxHealth(40);
+			p.setHealth(40);
 			r=UtilMath.r(list.size());
 			p.teleport(list.get(r));
 			list.remove(r);
@@ -803,6 +730,10 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 		ifm=new ItemFakeManager(getManager().getInstance(),hm);
 		setItemFake(getManager().getWorldData().getLocs(Team.YELLOW.Name()));
+		setDamage(false);
+		setProjectileDamage(false);
+		getManager().setStart(31);
+		getManager().setState(GameState.StartGame);
 	}
 
 	public HashMap<Team,Integer> verteilung(){

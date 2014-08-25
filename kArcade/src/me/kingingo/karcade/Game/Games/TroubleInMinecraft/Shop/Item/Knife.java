@@ -13,12 +13,13 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Knife implements Listener,IShop{
 
-	ItemStack item=UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD), "§eKnife");
+	ItemStack item=UtilItem.RenameItem(new ItemStack(Material.SHEARS), "§eKnife");
 	TroubleInMinecraft TTT;
 	HashMap<Player,Team> teams = new HashMap<>();
 	
@@ -34,11 +35,10 @@ public class Knife implements Listener,IShop{
 
 	@Override
 	public ItemStack getShopItem() {
-		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD,1,(byte)3), "§eKnife §7("+getPunkte()+" Punkte)");
+		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SHEARS,1), "§eKnife §7("+getPunkte()+" Punkte)");
 		UtilItem.SetDescriptions(i, new String[]{
 				"§7Ermöglicht einmalig das ",
-				"§7sofortige töten eines",
-				"§7Spielers von hinten."
+				"§7sofortige töten eines Spieler's."
 		});
 		return i;
 	}
@@ -49,14 +49,14 @@ public class Knife implements Listener,IShop{
 	}
 	
 	@EventHandler
-	public void Damage(PlayerInteractEntityEvent ev){
-		if(ev.getRightClicked() instanceof Player){
-			Player defender = (Player)ev.getPlayer();
-			if(defender.getItemInHand()==null||!UtilItem.ItemNameEquals(defender.getItemInHand(), item))return;
-			Player attacker = (Player)ev.getRightClicked();
-			defender.getInventory().remove(defender.getItemInHand());
-			defender.playSound(defender.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.0F);
-			attacker.damage(50, defender);
+	public void Damage(EntityDamageByEntityEvent ev){
+		if(ev.getEntity() instanceof Player&&ev.getDamager() instanceof Player){
+			Player attacker = (Player)ev.getDamager();
+			if(attacker.getItemInHand()==null||!UtilItem.ItemNameEquals(attacker.getItemInHand(), item))return;
+			Player defender = (Player)ev.getEntity();
+			attacker.getInventory().remove(attacker.getItemInHand());
+			attacker.playSound(defender.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.0F);
+			ev.setDamage(50);
 		}
 		
 	}

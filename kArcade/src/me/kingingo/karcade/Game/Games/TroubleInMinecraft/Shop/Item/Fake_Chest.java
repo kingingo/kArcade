@@ -50,8 +50,7 @@ public class Fake_Chest implements Listener,IShop {
 	public void set(BlockPlaceEvent ev){
 		if(ev.getBlock().getType()==Material.SKULL){
 			TTT_Item i = getSkull();
-			ev.setCancelled(true);
-			ev.getPlayer().getItemInHand().setType(Material.AIR);
+			ev.getBlock().setTypeId(0);
 			ItemFake k = i.setItemFake(ev.getBlock().getLocation(),TTT.getManager().getInstance());
 			list.put(k,ev.getPlayer());
 		}
@@ -72,22 +71,6 @@ public class Fake_Chest implements Listener,IShop {
 	}
 	
 	public TTT_Item getItemFake(Item item){
-//		if(b.getState() instanceof Skull){
-//			Skull s = (Skull)b.getState();
-//			if(!s.hasOwner())return null;
-//			switch(s.getOwner()){
-//			case "VareidePlays": return TTT_Item.SCHWERT_HOLZ;
-//			case "Nottrex": return TTT_Item.SCHWERT_STONE;
-//			case "BillTheBuild3r": return TTT_Item.SCHWERT_IRON;
-//			
-//			case "KlausurThaler144":return TTT_Item.BOW_MINIGUN;
-//			case "IntelliJ":return TTT_Item.BOW_SHOTGUN;
-//			case "Abmahnung":return TTT_Item.BOW_BOGEN;
-//			case "FallingDiamond":return TTT_Item.BOW_SNIPER;
-//			}
-//		}
-//		return null;
-		
 		switch(item.getItemStack().getItemMeta().getDisplayName()){
 		case "Holzschwert":return TTT_Item.SCHWERT_HOLZ;
 		case "Steinschwert":return TTT_Item.SCHWERT_STONE;
@@ -155,22 +138,6 @@ public class Fake_Chest implements Listener,IShop {
 			}
 		}
 	}
-	
-//	@EventHandler(priority=EventPriority.LOWEST)
-//	public void Use(PlayerInteractEvent ev){
-//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
-//			if(list.containsKey(ev.getClickedBlock())&&ev.getClickedBlock().getState() instanceof Skull){
-//				if(TTT.getTeam(ev.getPlayer())!=Team.TRAITOR){
-//					ev.getClickedBlock().setTypeId(0);
-//					ev.getPlayer().damage(50);
-//					ev.getClickedBlock().getWorld().createExplosion(ev.getClickedBlock().getLocation(), 1.0F, false);
-//				}else{
-//					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Diese Chest ist eine Fake-Chest.");
-//				}
-//				ev.setCancelled(true);
-//			}
-//		}
-//	}
 	
 	public ItemStack getShopItem(){
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "§cFake-Chest §7("+getPunkte()+" Punkte)");

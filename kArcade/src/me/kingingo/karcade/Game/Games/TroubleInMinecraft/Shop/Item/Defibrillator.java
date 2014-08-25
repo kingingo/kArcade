@@ -7,6 +7,7 @@ import lombok.Getter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
+import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.GameState;
@@ -23,7 +24,9 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Defibrillator implements Listener,IShop{
@@ -53,18 +56,19 @@ public class Defibrillator implements Listener,IShop{
 		return i;
 	}
 
+	@EventHandler
+	public void AddTeam(TeamAddEvent ev){
+		teams.put(ev.getPlayer().getName().toLowerCase(), ev.getTeam());
+	}
+	
 	@Override
 	public void add(Player p) {
 		p.getInventory().addItem(item.clone());
 	}
 	
-	@EventHandler
-	public void Team(GameStateChangeEvent ev){
-		if(ev.getFrom()==GameState.SchutzModus&&ev.getTo()==GameState.InGame){
-			for(Player p : TTT.getTeamList().keySet()){
-				getTeams().put(p.getName().toLowerCase(), TTT.getTeam(p));
-			}
-		}
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void Place(BlockPlaceEvent ev){
+		if(ev.getBlock().getType()==item.getType())ev.setCancelled(true);
 	}
 	
 	@EventHandler
@@ -113,6 +117,8 @@ public class Defibrillator implements Listener,IShop{
 				l.add(r);
 				p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
 				r.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
+			}else{
+				
 			}
 		}else{
 			p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());

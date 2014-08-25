@@ -34,20 +34,20 @@ public class CommandTraitor implements CommandExecutor, Listener{
 		}
 		int t_p = TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
 		if(!(t_p>0)){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_KEINE.getText());
+			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_KEINE.getText("Traitor"));
 			return false;
 		}
 		
 		int t = TTT.getTraitor();
 		int tt = TTT.isInTeam(Team.TRAITOR);
 		if(tt>=t){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_MAX_USED.getText());
+			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_MAX_USED.getText("Traitor"));
 			return false;
 		}
 		t_p--;
 		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
 		TTT.addTeam(((Player)cs) , Team.TRAITOR);
-		((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(t_p));
+		((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(new String[]{"Traitor",String.valueOf(t_p)}));
 		return false;
 	}
 	

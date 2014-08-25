@@ -34,20 +34,20 @@ public class CommandDetective implements CommandExecutor, Listener{
 		}
 		int t_p = TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
 		if(!(t_p>0)){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_KEINE.getText());
+			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_KEINE.getText("Detective"));
 			return false;
 		}
 		
 		int t = TTT.getDetective();
 		int tt = TTT.isInTeam(Team.DETECTIVE);
 		if(tt>=t){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_MAX_USED.getText());
+			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_MAX_USED.getText("Detective"));
 			return false;
 		}
 		t_p--;
 		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
 		TTT.addTeam(((Player)cs) , Team.DETECTIVE);
-		((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(t_p));
+		((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(new String[]{"Detective",String.valueOf(t_p)}));
 		return false;
 	}
 	
