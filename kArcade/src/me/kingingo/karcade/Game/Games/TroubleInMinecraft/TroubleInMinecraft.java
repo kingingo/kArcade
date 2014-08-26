@@ -218,20 +218,6 @@ public class TroubleInMinecraft extends TeamGame{
 		return t;
 	}
 	
-//	@EventHandler
-//	public void Shot(EntityShootBowEvent ev){
-//		ev.setCancelled(true);
-//	}
-	
-//	 @EventHandler
-//	  public void onPlayerInteract(PlayerInteractEvent e) {
-//	    if (e.getAction() != Action.RIGHT_CLICK_AIR) return;
-//
-//	    if (e.getItem().getType() != Material.BOW) return;
-//	    e.setCancelled(true);
-//	    Arrow a = (Arrow)e.getPlayer().launchProjectile(Arrow.class, e.getPlayer().getEyeLocation().getDirection().multiply(5));
-//	  }
-	
 	 @EventHandler
 		public void Aufdecken(PlayerInteractNPCEvent ev){
 			NPC npc = ev.getNpc();
@@ -412,6 +398,9 @@ public class TroubleInMinecraft extends TeamGame{
 				ev.getItemfake().remove();
 				ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
 			}
+		}else if(t.getTyp().equalsIgnoreCase("ARROW")){
+			ev.getItemfake().remove();
+			ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
 		}
 	}
 	
@@ -420,15 +409,16 @@ public class TroubleInMinecraft extends TeamGame{
 		if(!item.getItemStack().getItemMeta().hasDisplayName())return null;
 		
 		switch(item.getItemStack().getItemMeta().getDisplayName()){
-		case "Holzschwert":return TTT_Item.SCHWERT_HOLZ;
-		case "Steinschwert":return TTT_Item.SCHWERT_STONE;
-		case "Eisenschwert":return TTT_Item.SCHWERT_IRON;
+		case "§7Holzschwert":return TTT_Item.SCHWERT_HOLZ;
+		case "§8Steinschwert":return TTT_Item.SCHWERT_STONE;
+		case "§bEisenschwert":return TTT_Item.SCHWERT_IRON;
+		case "§7Pfeile":return TTT_Item.ARROW;
 		case "Bogen":return TTT_Item.BOW_BOGEN;
 		case "§cMinigun":return TTT_Item.BOW_MINIGUN;
 		case "§aShotgun":return TTT_Item.BOW_SHOTGUN;
 		case "§eSniper":return TTT_Item.BOW_SNIPER;
 		default:
-			return TTT_Item.SCHWERT_HOLZ;
+			return null;
 		}
 	}
 	
@@ -437,15 +427,17 @@ public class TroubleInMinecraft extends TeamGame{
 		int s_s=(int)(list.size()*0.15);// 15 %
 		int s_i=(int)(list.size()*0.05);// 5 %
 		
+		int arrow=(int)(list.size()*0.1);// 10%
 		int b_mg=(int)(list.size()*0.1);// 10%
 		int b_s=(int)(list.size()*0.15);// 15%
-		int b_b=(int)(list.size()*0.25);// 25%
+		int b_b=(int)(list.size()*0.25);// 15%
 		int b_sn=(int)(list.size()*0.10);// 10%
 		
 		System.out.println("S_H "+s_h);
 		System.out.println("S_s "+s_s);
 		System.out.println("S_i "+s_i);
-		
+
+		System.out.println("ARROW "+arrow);
 		System.out.println("b_mg "+b_mg);
 		System.out.println("b_s "+b_s);
 		System.out.println("b_b "+b_b);
@@ -459,6 +451,10 @@ public class TroubleInMinecraft extends TeamGame{
 				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				s_h--;
+			}else if(arrow!=0){
+				TTT_Item.ARROW.setItemFake(list.get(r),getManager().getInstance());
+				list.remove(r);
+				arrow--;
 			}else if(s_s!=0){
 				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);

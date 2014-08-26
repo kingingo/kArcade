@@ -8,6 +8,7 @@ import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
+import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -143,7 +144,7 @@ public class Tester implements Listener{
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getClickedBlock().getType() == Material.STONE_BUTTON){
-			if(!TTT.getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer()))return;
+			if(TTT.getManager().getState()!=GameState.InGame||!TTT.getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer()))return;
 			if(Button.getBlockY()!=ev.getClickedBlock().getLocation().getBlockY()||Button.getBlockX()!=ev.getClickedBlock().getLocation().getBlockX()||Button.getBlockZ()!=ev.getClickedBlock().getLocation().getBlockZ())return;
 			ev.setCancelled(true);
 			

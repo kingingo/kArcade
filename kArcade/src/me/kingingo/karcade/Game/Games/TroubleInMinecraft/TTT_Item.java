@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 import lombok.Getter;
 import me.kingingo.kcore.ItemFake.ItemFake;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilMath;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Location;
@@ -18,6 +19,7 @@ SCHWERT_HOLZ(UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "§7Holzschw
 SCHWERT_STONE(UtilItem.RenameItem(new ItemStack(Material.STONE_SWORD), "§8Steinschwert"),"SCHWERT"),
 SCHWERT_IRON(UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "§bEisenschwert"),"SCHWERT"),
 
+ARROW(UtilItem.RenameItem(new ItemStack(Material.ARROW), "§7Pfeile"),"ARROW"),
 BOW_MINIGUN(TroubleInMinecraft.getMinigun().getItem(),"BOW"),
 BOW_SHOTGUN(TroubleInMinecraft.getShotgun().getItem(),"BOW"),
 BOW_BOGEN(UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen"),"BOW"),
@@ -37,7 +39,13 @@ BOW_SNIPER(TroubleInMinecraft.getSniper().getItem(),"BOW");
 	}
 	
 	public ItemFake setItemFake(Location l,JavaPlugin plugin){
-		return new ItemFake(l,getItem(),plugin);
+		if(getTyp().equalsIgnoreCase("ARROW")){
+			ItemStack ite = getItem().clone();
+			ite.setAmount(UtilMath.RandomInt(13, 5));
+			return new ItemFake(l,ite,plugin);
+		}else{
+			return new ItemFake(l,getItem(),plugin);
+		}
 	 }
 	
 }

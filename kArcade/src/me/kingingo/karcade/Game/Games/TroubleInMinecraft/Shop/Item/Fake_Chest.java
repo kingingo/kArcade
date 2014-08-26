@@ -71,16 +71,20 @@ public class Fake_Chest implements Listener,IShop {
 	}
 	
 	public TTT_Item getItemFake(Item item){
+		if(!item.getItemStack().hasItemMeta())return null;
+		if(!item.getItemStack().getItemMeta().hasDisplayName())return null;
+		
 		switch(item.getItemStack().getItemMeta().getDisplayName()){
-		case "Holzschwert":return TTT_Item.SCHWERT_HOLZ;
-		case "Steinschwert":return TTT_Item.SCHWERT_STONE;
-		case "Eisenschwert":return TTT_Item.SCHWERT_IRON;
+		case "§7Holzschwert":return TTT_Item.SCHWERT_HOLZ;
+		case "§8Steinschwert":return TTT_Item.SCHWERT_STONE;
+		case "§bEisenschwert":return TTT_Item.SCHWERT_IRON;
+		case "§7Pfeile":return TTT_Item.ARROW;
 		case "Bogen":return TTT_Item.BOW_BOGEN;
 		case "§cMinigun":return TTT_Item.BOW_MINIGUN;
 		case "§aShotgun":return TTT_Item.BOW_SHOTGUN;
 		case "§eSniper":return TTT_Item.BOW_SNIPER;
 		default:
-			return TTT_Item.SCHWERT_HOLZ;
+			return null;
 		}
 	}
 	
