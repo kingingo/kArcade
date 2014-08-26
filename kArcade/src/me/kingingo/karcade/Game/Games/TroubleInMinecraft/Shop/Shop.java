@@ -6,6 +6,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 
@@ -71,9 +72,9 @@ public class Shop implements Listener{
 					if(player_punkte>=pk){
 						TTT.getManager().getStats().setInt(p, (player_punkte-pk), getPunkte());
 						s.add(p);
-						p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_SHOP_BUYED.getText());
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_SHOP_BUYED.getText());
 					}else{
-						p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_SHOP.getText());
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_SHOP.getText());
 					}
 					break;
 				}

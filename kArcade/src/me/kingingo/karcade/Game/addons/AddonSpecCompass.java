@@ -64,7 +64,7 @@ public class AddonSpecCompass implements Listener{
 
 	    event.setCancelled(true);
 
-	    UtilPlayer.message(event.getPlayer(), F.main("Game", "You cannot drop " + F.item("Target Compass") + "."));
+	    UtilPlayer.sendMessage(event.getPlayer(), F.main("Game", "You cannot drop " + F.item("Target Compass") + "."));
 	  }
 	
 	@EventHandler

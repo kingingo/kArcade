@@ -2,7 +2,6 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import lombok.Getter;
 import me.kingingo.karcade.kArcade;
@@ -29,7 +28,6 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.karcade.Game.addons.AddonSkullNameTag;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -47,35 +45,27 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
-import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import net.minecraft.server.v1_7_R4.PacketPlayOutEntityEquipment;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
@@ -201,10 +191,10 @@ public class TroubleInMinecraft extends TeamGame{
 		ev.setCancelled(true);
 		if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.SPECTATOR_CHAT_CANCEL.getText());
 			return;
 		}
-		Bukkit.broadcastMessage(C.cGray+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+		UtilServer.broadcast(C.cGray+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 	}
 	
 	public Team getHaveWinTeam(){
@@ -237,7 +227,7 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 			}else{
 				if(defi.getTeams().containsKey(npc.getName().toLowerCase())){
-					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_NPC_CLICKED.getText(new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
+					UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_NPC_CLICKED.getText(new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
 				}
 			}
 		}

@@ -166,24 +166,24 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));
 		
 		switch(this.getManager().getStart()){
-		case 185:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 184:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 183:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 182:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 181:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 180:Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
+		case 185:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 184:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 183:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 182:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 181:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 180:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
 		}
 	}else{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));
 		
 		switch(getManager().getStart()){
-		case 5: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 4: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 3: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 2: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 1: Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
 		case 0: 
-			Bukkit.broadcastMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
 			onDisable();
 		break;
 		}

@@ -13,6 +13,7 @@ import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -99,7 +100,7 @@ public class Fake_Chest implements Listener,IShop {
 	public void PickupItemFake(ItemFakePickupEvent ev){
 		if(!list.containsKey(ev.getItemfake()))return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
-			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Dieses Item ist ein Fake-Item.");
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);
 			return;
 		}

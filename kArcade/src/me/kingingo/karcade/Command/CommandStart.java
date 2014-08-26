@@ -7,6 +7,7 @@ import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Util.AnvilGUI;
 import me.kingingo.kcore.Util.AnvilGUI.AnvilClickEvent;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -35,9 +36,9 @@ public class CommandStart implements CommandExecutor{
 				        try{
 				        	Integer i = Integer.valueOf(ev.getName());
 				        	Manager.setStart(i);
-				        	p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+"Die Zeit wurde zu "+i+" geändert!");
+				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().string())+"Die Zeit wurde zu "+i+" geändert!");
 				        }catch(NumberFormatException e){
-				        	p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+"Das ist keine Zahl "+ev.getName());
+				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().string())+"Das ist keine Zahl "+ev.getName());
 				        }
 					}
 				}

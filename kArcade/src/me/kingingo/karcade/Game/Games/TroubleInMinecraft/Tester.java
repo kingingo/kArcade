@@ -14,6 +14,7 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 
 import org.bukkit.Bukkit;
@@ -150,7 +151,7 @@ public class Tester implements Listener{
 			
 			if(l!=-1){
 				if(l > System.currentTimeMillis()){
-					ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_WAS_USED.getText());
+					UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_WAS_USED.getText());
 					return;
 				}
 			}
@@ -160,7 +161,7 @@ public class Tester implements Listener{
 			}else{
 				if(last.containsKey(ev.getPlayer())){
 					if(last.get(ev.getPlayer()) > System.currentTimeMillis()){
-						ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_TIME.getText());
+						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_TIME.getText());
 						return;
 					}
 				}

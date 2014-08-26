@@ -6,6 +6,7 @@ import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,12 +30,12 @@ public class CommandTraitor implements CommandExecutor, Listener{
 	@me.kingingo.kcore.Command.CommandHandler.Command(command = "traitor", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		if(TTT.getManager().getState()!=GameState.LobbyPhase){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_LOBBYPHASE.getText());
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_LOBBYPHASE.getText());
 			return false;
 		}
 		int t_p = TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
 		if(!(t_p>0)){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_KEINE.getText("Traitor"));
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_KEINE.getText("Traitor"));
 			return false;
 		}
 		
@@ -47,7 +48,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 		t_p--;
 		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
 		TTT.addTeam(((Player)cs) , Team.TRAITOR);
-		((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(new String[]{"Traitor",String.valueOf(t_p)}));
+		UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+ Text.TTT_PÄSSE_USE.getText(new String[]{"Traitor",String.valueOf(t_p)}));
 		return false;
 	}
 	

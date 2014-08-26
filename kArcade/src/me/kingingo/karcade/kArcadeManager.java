@@ -367,15 +367,8 @@ public class kArcadeManager implements Listener{
 	
 	public void broadcast(String message){
 		if(UtilServer.getPlayers().length==0)return;
-	    for (Player player : UtilServer.getPlayers())
-	    {
-	      player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
-
-	      //UtilPlayer.message(player, message);
-	    }
-	    Bukkit.broadcastMessage(message);
-
-	   // System.out.println(Text.PREFIX_GAME.getText(getTyp().string()) + message);
+	    for (Player player : UtilServer.getPlayers())player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
+	    UtilServer.broadcast(message);
 	}
 	
 	@EventHandler

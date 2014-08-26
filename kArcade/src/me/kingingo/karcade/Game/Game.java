@@ -408,7 +408,7 @@ public class Game implements Listener{
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
 					  if(!getManager().getPermManager().hasPermission(p, Permission.JOIN_FULL_SERVER)){
-						  p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KICKED_BY_PREMIUM.getText());
+						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KICKED_BY_PREMIUM.getText());
 						  UtilBG.sendToServer(p, getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
 						  b=true;
 						  break;

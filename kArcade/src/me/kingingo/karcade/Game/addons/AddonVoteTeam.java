@@ -16,6 +16,7 @@ import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilGear;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
@@ -79,12 +80,12 @@ public class AddonVoteTeam implements Listener{
 					p.closeInventory();
 					
 					if(UtilServer.getPlayers().length<=Manager.getGame().getMin_Players()){
-						p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+Text.VOTE_TEAM_MIN_PLAYER.getText(Manager.getGame().getMin_Players()+1));
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().string())+Text.VOTE_TEAM_MIN_PLAYER.getText(Manager.getGame().getMin_Players()+1));
 						return;
 					}
 					
 					if(vote.containsKey(p)){
-						p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().string())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
 						Team t = vote.get(p);
 						vote.remove(p);
 						fixItem(t);
@@ -96,9 +97,9 @@ public class AddonVoteTeam implements Listener{
 								int a = isVotet(t);
 								vote.put(p, t);
 								fixItem(t);
-								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
+								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
 							}else{
-								p.sendMessage(Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.getColor()+t.Name()));
+								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().string())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.getColor()+t.Name()));
 							}
 							break;
 						}

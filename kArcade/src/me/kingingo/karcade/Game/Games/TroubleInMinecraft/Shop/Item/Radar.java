@@ -9,6 +9,7 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilDirection;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,7 +98,7 @@ public class Radar implements Listener,IShop{
 		if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)&&ev.getRightClicked() instanceof Player){
 			Player r = (Player)ev.getRightClicked();
 			list.put(ev.getPlayer(), r);
-			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TRAITOR_SHOP_RADAR_CHANGE.getText(r.getName()));
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TRAITOR_SHOP_RADAR_CHANGE.getText(r.getName()));
 		}
 	}
 	
