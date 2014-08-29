@@ -28,6 +28,8 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.kcore.Disguise.DisguiseManager;
+import me.kingingo.kcore.Disguise.DisguiseType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -52,6 +54,7 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import net.minecraft.server.v1_7_R4.PacketPlayOutEntityEquipment;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -144,6 +147,7 @@ public class TroubleInMinecraft extends TeamGame{
 		wd.Initialize();
 		manager.setWorldData(wd);
 		manager.setState(GameState.LobbyPhase);
+		manager.getPermManager().setSetAllowTab(false);
 		manager.DebugLog(t, this.getClass().getName());
 	}
 
@@ -217,7 +221,7 @@ public class TroubleInMinecraft extends TeamGame{
 				Location loc = npc.getLoc();
 				npclist.remove(npc.getP().getId());
 				npc.remove();
-				
+
 				npc = npcManager.createNPC( name );
 				npc.spawn(loc);
 				npc.sleep();
@@ -637,12 +641,28 @@ public class TroubleInMinecraft extends TeamGame{
 						t--;
 					}
 				}
+				
+				org.bukkit.scoreboard.Team s = ps.getBoard().registerNewTeam(Team.INOCCENT.Name());
+				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.TRAITOR||getTeamList().get(p1)==Team.INOCCENT){
+						s.addPlayer(p1);
+					}
+				}
+				
+				s = ps.getBoard().registerNewTeam(Team.DETECTIVE.Name());
+				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.DETECTIVE){
+						s.addPlayer(p1);
+					}
+				}
+				
 				ps.setBoard();
 				boards.put(p, ps);
+				
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE));
 				p.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.STICK), "Detective-Shop"));
-				setDamage(true);
-				setProjectileDamage(true);
 			}
 			ArrayList<Player> t = (ArrayList<Player>)getPlayerFrom(Team.TRAITOR);
 			for(Player p : t){
@@ -659,6 +679,30 @@ public class TroubleInMinecraft extends TeamGame{
 						if(p1==p)continue;
 						ps.setScore(p1.getName(), DisplaySlot.SIDEBAR, t1);
 						t1--;
+					}
+				}
+				
+				org.bukkit.scoreboard.Team s = ps.getBoard().registerNewTeam(Team.INOCCENT.Name());
+				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.INOCCENT){
+						s.addPlayer(p1);
+					}
+				}
+				
+				s = ps.getBoard().registerNewTeam(Team.TRAITOR.Name());
+				s.setPrefix(Team.TRAITOR.getColor()+"[T] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.TRAITOR){
+						s.addPlayer(p1);
+					}
+				}
+				
+				s = ps.getBoard().registerNewTeam(Team.DETECTIVE.Name());
+				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.DETECTIVE){
+						s.addPlayer(p1);
 					}
 				}
 				
@@ -679,10 +723,26 @@ public class TroubleInMinecraft extends TeamGame{
 				PlayerScoreboard ps = new PlayerScoreboard(p);
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cRed+"InnocentBoard");
 				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
+				org.bukkit.scoreboard.Team s = ps.getBoard().registerNewTeam(Team.INOCCENT.Name());
+				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.TRAITOR||getTeamList().get(p1)==Team.INOCCENT){
+						s.addPlayer(p1);
+					}
+				}
+				
+				s = ps.getBoard().registerNewTeam(Team.DETECTIVE.Name());
+				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)==Team.DETECTIVE){
+						s.addPlayer(p1);
+					}
+				}
 				ps.setBoard();
 				boards.put(p, ps);
 			}
-			
+			setDamage(true);
+			setProjectileDamage(true);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.SCHUTZZEIT_END.getText());
 			getManager().setState(GameState.InGame);
 			break;

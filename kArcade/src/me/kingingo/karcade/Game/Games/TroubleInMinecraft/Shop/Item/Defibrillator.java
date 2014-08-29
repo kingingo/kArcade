@@ -119,7 +119,7 @@ public class Defibrillator implements Listener,IShop{
 				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
 				UtilPlayer.sendMessage(r,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
 			}else{
-				
+				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
 			}
 		}else{
 			UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());

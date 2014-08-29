@@ -84,6 +84,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -92,6 +93,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -235,6 +237,7 @@ public class SheepWars extends TeamGame{
 		wd.Initialize();
 		manager.setWorldData(wd);
 		manager.DebugLog(t, this.getClass().getName());
+		
 		manager.setState(GameState.LobbyPhase);
 	}
 	
@@ -691,7 +694,6 @@ public class SheepWars extends TeamGame{
 				setSpezialVillager(loc);
 			}
 		}
-		
 		hm.RemoveAllText();
 		getManager().DebugLog(time, this.getClass().getName());
 	}

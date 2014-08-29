@@ -540,7 +540,7 @@ public class SurvivalGames extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0,0.5,0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0,0.5,0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: SurvivalGames §a"+kArcade.id,
 		"Map: "+wd.getMapName(),

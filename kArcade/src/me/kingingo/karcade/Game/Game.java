@@ -305,6 +305,8 @@ public class Game implements Listener{
 			ev.setCancelled(true);
 		}else if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&!ProjectileDamage){
 			ev.setCancelled(true);
+		}else{
+			ev.setCancelled(false);
 		}
 	}
 	

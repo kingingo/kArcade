@@ -248,7 +248,7 @@ public class TeamGame extends Game{
 	    
 	}
 	
-	@EventHandler(priority=EventPriority.HIGH)
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void arrow_damage(EntityDamageByEntityEvent ev){
 		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
 			Arrow a = (Arrow)ev.getDamager();
@@ -257,6 +257,10 @@ public class TeamGame extends Game{
 			Player v = (Player)ev.getEntity();
 			if(!DamageTeamSelf&&getTeam(d)==getTeam(v)){
 				ev.setCancelled(true);
+			}else if(!DamageTeamOther&&getTeam(d)!=getTeam(v)){
+				ev.setCancelled(true);
+			}else{
+				ev.setCancelled(false);
 			}
 		}
 	}
