@@ -35,10 +35,8 @@ public class Shotgun implements Listener {
 	public void Bow(EntityShootBowEvent ev){
 		if(ev.getEntity() instanceof Player&&UtilItem.ItemNameEquals(item, ev.getBow())){
 			p=(Player)ev.getEntity();
-			loc=ev.getProjectile().getLocation();
 			v = Location(p.getEyeLocation());
 			//v = v.multiply(3);
-			
 			for(int i=0; i<7; i++){
 				a = (Arrow)p.getWorld().spawn(p.getEyeLocation(),Arrow.class);
 				a.setShooter(p);
@@ -64,6 +62,7 @@ public class Shotgun implements Listener {
 				}
 				a.setVelocity(v);
 			}
+			
 		}
 	}
 	

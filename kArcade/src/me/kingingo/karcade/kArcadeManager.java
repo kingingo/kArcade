@@ -27,7 +27,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.MySQL.MySQL;
-import me.kingingo.kcore.NickManager.NickManager;
+import me.kingingo.kcore.Nick.NickManager;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Permission.PermissionManager;
@@ -121,7 +121,7 @@ public class kArcadeManager implements Listener{
 		this.mysql=mysql;
 		this.cmd=cmd;
 		this.pManager=pManager;
-		this.nManager=new NickManager(cmd,permManager);
+		//this.nManager=new NickManager(cmd,permManager);
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);

@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class Shop implements Listener{
 
@@ -25,7 +26,8 @@ public class Shop implements Listener{
 	TroubleInMinecraft TTT;
 	@Getter
 	Inventory shop;
-	
+	@Getter
+	ItemStack shop_item;
 	@Getter
 	IShop[] ShopList;
 	@Getter
@@ -35,8 +37,9 @@ public class Shop implements Listener{
 	@Getter
 	Team t;
 	
-	public Shop(TroubleInMinecraft TTT,String Name,Stats punkte,Team t,IShop[] ShopList){
+	public Shop(TroubleInMinecraft TTT,ItemStack shop_item,String Name,Stats punkte,Team t,IShop[] ShopList){
 		this.TTT=TTT;
+		this.shop_item=shop_item;
 		this.t=t;
 		this.punkte=punkte;
 		this.Name=Name;
@@ -52,7 +55,7 @@ public class Shop implements Listener{
 	
 	@EventHandler
 	public void OpenShop(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand()!=null&&ev.getPlayer().getItemInHand().getType()==Material.STICK&&TTT.getTeam(ev.getPlayer())==t){
+		if(UtilEvent.isAction(ev, ActionType.R)&&UtilItem.ItemNameEquals(ev.getItem(), shop_item)&&TTT.getTeam(ev.getPlayer())==t){
 			ev.getPlayer().openInventory(getShop());
 		}
 	}

@@ -41,7 +41,7 @@ BOW_SNIPER(TroubleInMinecraft.getSniper().getItem(),"BOW");
 	public ItemFake setItemFake(Location l,JavaPlugin plugin){
 		if(getTyp().equalsIgnoreCase("ARROW")){
 			ItemStack ite = getItem().clone();
-			ite.setAmount(UtilMath.RandomInt(13, 5));
+			ite.setAmount(UtilMath.RandomInt(17, 8));
 			return new ItemFake(l,ite,plugin);
 		}else{
 			return new ItemFake(l,getItem(),plugin);

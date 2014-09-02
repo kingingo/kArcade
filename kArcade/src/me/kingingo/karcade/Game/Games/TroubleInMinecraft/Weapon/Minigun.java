@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
@@ -28,17 +29,30 @@ public class Minigun implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
-	Location loc;
 	Player p;
 	Arrow a;
-	Vector v;
 	@EventHandler
 	public void Bow(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.R)){
-			if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(),item)){
-				ev.getPlayer().shootArrow();
+			if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(),item)&&UtilInv.contains(ev.getPlayer(), Material.ARROW, (byte) 0, 1)){
+				UtilInv.remove(ev.getPlayer(), Material.ARROW, (byte) 0, 1);
+				p=ev.getPlayer();
+				a=p.launchProjectile(Arrow.class);
+				a.setShooter(p);
 			}
 		}
+	}
+	
+	public Vector Location(Location l){
+		double pitch = ((l.getPitch() + 90) * Math.PI) / 180;
+		double yaw  = ((l.getYaw() + 90)  * Math.PI) / 180;
+		
+		double x = Math.sin(pitch) * Math.cos(yaw);
+		double y = Math.sin(pitch) * Math.sin(yaw);
+		double z = Math.cos(pitch);
+		
+		Vector vector = new Vector(x, z, y);
+		return vector;
 	}
 	
 }

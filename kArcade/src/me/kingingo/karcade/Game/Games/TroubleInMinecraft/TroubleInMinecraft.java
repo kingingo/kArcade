@@ -28,8 +28,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.kcore.Disguise.DisguiseManager;
-import me.kingingo.kcore.Disguise.DisguiseType;
+import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -42,7 +41,7 @@ import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.PlayerStats.Event.PlayerStatsChangeEvent;
-import me.kingingo.kcore.ScoreboardManager.PlayerScoreboard;
+import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -54,7 +53,6 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import net.minecraft.server.v1_7_R4.PacketPlayOutEntityEquipment;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,6 +64,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -102,12 +101,12 @@ public class TroubleInMinecraft extends TeamGame{
 		long t = System.currentTimeMillis();
 		manager.setState(GameState.Laden);
 		manager.setTyp(GameType.TroubleInMinecraft);
-		setMin_Players(1);
+		setMin_Players(3);
 		setMax_Players(12);
 		setDamageTeamSelf(true);
 		setDamageSelf(true);
 		setItemDrop(true);
-		setItemPickup(true);
+		setItemPickup(false);
 		setBlockPlace(false);
 		setBlockBreak(false);
 		setCreatureSpawn(false);
@@ -129,7 +128,7 @@ public class TroubleInMinecraft extends TeamGame{
 		npcManager= new NPCManager(getManager().getInstance());
 		Radar r = new Radar(this);
 		defi = new Defibrillator(this);
-		traitor_shop= new Shop(this,"Traitor-Shop:",Stats.TTT_TRAITOR_PUNKTE,Team.TRAITOR,new IShop[]{
+		traitor_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§cTraitorShop"),"Traitor-Shop:",Stats.TTT_TRAITOR_PUNKTE,Team.TRAITOR,new IShop[]{
 				new Fake_Chest(this),
 				new Medipack(this),
 				new Knife(this),
@@ -137,7 +136,7 @@ public class TroubleInMinecraft extends TeamGame{
 				new Tester_Spoofer(this)
 		});
 		
-		detective_shop= new Shop(this,"Detective-Shop:",Stats.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{
+		detective_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§1DetectiveShop"),"Detective-Shop:",Stats.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{
 				defi,
 				new Golden_Weapon(this),
 				r,
@@ -253,7 +252,7 @@ public class TroubleInMinecraft extends TeamGame{
 			}
 			ev.getDrops().clear();
 			NPC npc = npcManager.createNPC( "Unidentifiziert" );
-			npc.spawn( ((Player)ev.getEntity()).getLocation() );
+			npc.spawn( ((Player)ev.getEntity()).getLocation().add(0, 1, 0) );
 			npc.sleep();
 			npclist.put(npc.getP().getId(), ((Player)ev.getEntity()).getName());
 			if(ev.getEntity().getKiller() instanceof Player){
@@ -344,8 +343,13 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void DropItemFake(PlayerDropItemEvent ev){
-		if(ev.getItemDrop().getItemStack().getType()==Material.WOOD_SWORD||ev.getItemDrop().getItemStack().getType()==Material.STONE_SWORD||ev.getItemDrop().getItemStack().getType()==Material.IRON_SWORD||ev.getItemDrop().getItemStack().getType()==Material.BOW){
-			new ItemFake(ev.getItemDrop(),getManager().getInstance());
+		ev.setCancelled(true);
+		for(TTT_Item t : TTT_Item.values()){
+			if(UtilItem.ItemNameEquals(t.getItem(), ev.getItemDrop().getItemStack())){
+				new ItemFake(ev.getItemDrop(),getManager().getInstance());
+				ev.setCancelled(false);
+				break;
+			}
 		}
 	}
 	
@@ -357,7 +361,11 @@ public class TroubleInMinecraft extends TeamGame{
 		if(t==null){
 			ev.getItemfake().remove();
 			return;
+		}else if(t==TTT_Item.SCHWERT_IRON&&getManager().getState()!=GameState.InGame){
+			ev.setCancelled(true);
+			return;
 		}
+		
 		boolean b = false;
 		
 		if(t.getTyp().equalsIgnoreCase("SCHWERT")){
@@ -417,25 +425,30 @@ public class TroubleInMinecraft extends TeamGame{
 	}
 	
 	public void setItemFake(ArrayList<Location> list){
-		int s_h=(int)(list.size()*0.2);// 20 %
-		int s_s=(int)(list.size()*0.15);// 15 %
-		int s_i=(int)(list.size()*0.05);// 5 %
 		
-		int arrow=(int)(list.size()*0.1);// 10%
+		if(!list.isEmpty()){
+			Location loc = list.get(UtilMath.r(list.size()));
+			TTT_Item.SCHWERT_IRON.setItemFake(loc, getManager().getInstance());
+			list.remove(loc);
+		}
+		
+		int s_h=(int)(list.size()*0.15);// 15 %
+		int s_s=(int)(list.size()*0.10);// 10 %
+		
+		int arrow=(int)(list.size()*0.25);// 25%
 		int b_mg=(int)(list.size()*0.1);// 10%
 		int b_s=(int)(list.size()*0.15);// 15%
-		int b_b=(int)(list.size()*0.25);// 15%
+		int b_b=(int)(list.size()*0.15);// 15%
 		int b_sn=(int)(list.size()*0.10);// 10%
 		
-		System.out.println("S_H "+s_h);
-		System.out.println("S_s "+s_s);
-		System.out.println("S_i "+s_i);
-
-		System.out.println("ARROW "+arrow);
-		System.out.println("b_mg "+b_mg);
-		System.out.println("b_s "+b_s);
-		System.out.println("b_b "+b_b);
-		System.out.println("b_sn "+b_sn);	
+		System.out.println("INSGESAMT: "+list.size());
+		System.out.println("Holz Schwert:"+s_h);
+		System.out.println("Stein Schwert: "+s_s);
+		System.out.println("Arrow:"+arrow);
+		System.out.println("Minigun:"+b_mg);
+		System.out.println("Shotgun:"+b_s);
+		System.out.println("Bow:"+b_b);
+		System.out.println("Sniper:"+b_sn);	
 		
 		int r;
 		for(int i=0; i < 20000; i++){
@@ -453,10 +466,6 @@ public class TroubleInMinecraft extends TeamGame{
 				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
 				s_s--;
-			}else if(s_i!=0){
-				TTT_Item.SCHWERT_IRON.setItemFake(list.get(r),getManager().getInstance());
-				list.remove(r);
-				s_i--;
 			}else if(b_mg!=0){
 				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r),getManager().getInstance());
 				list.remove(r);
@@ -496,31 +505,31 @@ public class TroubleInMinecraft extends TeamGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getManager().getState()!=GameState.InGame)return;
 		getManager().setStart(getManager().getStart()-1);
-//		if(isInTeam(Team.INOCCENT)==0&&isInTeam(Team.DETECTIVE)==0){
-//			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_WIN.getText(Team.INOCCENT.Name()));
-//			
-//			for(Player p : getTeamList().keySet()){
-//				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-//					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-//				}else{
-//					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
-//				}
-//			}
-//			
-//			getManager().setState(GameState.Restart);	
-//		}else if(isInTeam(Team.TRAITOR)==0){
-//			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_WIN.getText(Team.TRAITOR.Name()));
-//			
-//			for(Player p : getTeamList().keySet()){
-//				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-//					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-//				}else{
-//					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
-//				}
-//			}
-//			
-//			getManager().setState(GameState.Restart);
-//		}
+		if(isInTeam(Team.INOCCENT)==0&&isInTeam(Team.DETECTIVE)==0){
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_WIN.getText(Team.INOCCENT.Name()));
+			
+			for(Player p : getTeamList().keySet()){
+				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
+					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				}else{
+					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
+				}
+			}
+			
+			getManager().setState(GameState.Restart);	
+		}else if(isInTeam(Team.TRAITOR)==0){
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TTT_WIN.getText(Team.TRAITOR.Name()));
+			
+			for(Player p : getTeamList().keySet()){
+				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
+					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				}else{
+					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
+				}
+			}
+			
+			getManager().setState(GameState.Restart);
+		}
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));
 		switch(getManager().getStart()){
@@ -582,7 +591,7 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.59, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.7, 0),new String[]{
 		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
@@ -662,11 +671,11 @@ public class TroubleInMinecraft extends TeamGame{
 				boards.put(p, ps);
 				
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE));
-				p.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.STICK), "Detective-Shop"));
+				p.getInventory().addItem(detective_shop.getShop_item());
 			}
 			ArrayList<Player> t = (ArrayList<Player>)getPlayerFrom(Team.TRAITOR);
 			for(Player p : t){
-				p.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.STICK), "Traitor-Shop"));
+				p.getInventory().addItem(traitor_shop.getShop_item());
 				PlayerScoreboard ps = new PlayerScoreboard(p);
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cDRed+"TraitorBoard");
 				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
@@ -767,8 +776,6 @@ public class TroubleInMinecraft extends TeamGame{
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
-			p.setMaxHealth(40);
-			p.setHealth(40);
 			r=UtilMath.r(list.size());
 			p.teleport(list.get(r));
 			list.remove(r);
@@ -776,6 +783,7 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 		ifm=new ItemFakeManager(getManager().getInstance(),hm);
 		setItemFake(getManager().getWorldData().getLocs(Team.YELLOW.Name()));
+		new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
 		setDamage(false);
 		setProjectileDamage(false);
 		getManager().setStart(31);

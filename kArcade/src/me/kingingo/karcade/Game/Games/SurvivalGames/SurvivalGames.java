@@ -23,7 +23,7 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.PlayerStats.Stats;
-import me.kingingo.kcore.ScoreboardManager.PlayerScoreboard;
+import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
