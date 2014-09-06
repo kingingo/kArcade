@@ -97,7 +97,7 @@ public class SkyPvP extends SoloGame{
 		ev.setCancelled(true);
 		if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -178,11 +178,11 @@ public class SkyPvP extends SoloGame{
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.3, 0),new String[]{
-		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
+		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SkyPvP §a"+kArcade.id,
 		"Map: "+getManager().getWorldData().getMapName(),
 		" ",
-		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Stats",
+		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
 		"Coins: "+getCoins().getCoins(ev.getPlayer()),
 		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),

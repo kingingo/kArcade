@@ -10,6 +10,7 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.TimeSpan;
@@ -126,7 +127,7 @@ public class Tester implements Listener{
 				for(Location l : Lampen){
 					l.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), (byte)8, true);
 				}
-				last.put(p, System.currentTimeMillis()+TimeSpan.MINUTE);
+				last.put(p, System.currentTimeMillis()+TimeSpan.SECOND*20);
 				use=false;
 				p=null;
 				timer=-1;
@@ -151,17 +152,17 @@ public class Tester implements Listener{
 			
 			if(l!=-1){
 				if(l > System.currentTimeMillis()){
-					UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_WAS_USED.getText());
+					UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_TESTER_WAS_USED.getText());
 					return;
 				}
 			}
 			
 			if(use){
-				ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_USED.getText());
+				ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_TESTER_USED.getText());
 			}else{
 				if(last.containsKey(ev.getPlayer())){
 					if(last.get(ev.getPlayer()) > System.currentTimeMillis()){
-						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_TIME.getText());
+						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_TESTER_TIME.getText());
 						return;
 					}
 				}
@@ -170,7 +171,8 @@ public class Tester implements Listener{
 				}
 				timer=-1;
 				p=ev.getPlayer();
-				TTT.getManager().broadcast(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TESTER_JOIN.getText(ev.getPlayer().getName()));
+				TTT.getManager().getStats().setInt(ev.getPlayer(), TTT.getManager().getStats().getInt(Stats.TTT_TESTS, ev.getPlayer())+1, Stats.TTT_TESTS);
+				TTT.getManager().broadcast(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_TESTER_JOIN.getText(ev.getPlayer().getName()));
 				use=true;
 				ev.getPlayer().teleport(Join);
 			}

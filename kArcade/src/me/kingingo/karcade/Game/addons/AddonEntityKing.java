@@ -45,15 +45,15 @@ public class AddonEntityKing implements Listener {
 	@Getter
 	@Setter
 	boolean move=false;
-	@Getter
-	@Setter
-	boolean DamageEvP=false;
-	@Getter
-	@Setter
-	boolean DamagePvE=false;
-	@Getter
-	@Setter
-	boolean DamageEvE=false;
+//	@Getter
+//	@Setter
+//	boolean DamageEvP=false;
+//	@Getter
+//	@Setter
+//	boolean DamagePvE=false;
+//	@Getter
+//	@Setter
+//	boolean DamageEvE=false;
 	@Getter
 	@Setter
 	boolean Damage=false;
@@ -175,23 +175,23 @@ public class AddonEntityKing implements Listener {
 	double h;
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
-		if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player))&& is(ev.getDamager()))&&!DamageEvP){
-			//E vs P
-			ev.setCancelled(true);
-			return;
-		}else if ( ((!(ev.getEntity() instanceof Player) && (ev.getDamager() instanceof Player))&&is(ev.getEntity()))&&!DamagePvE){
-			//P vs E
-			ev.setCancelled(true);
-			return;
-		}
+//		if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player))&& is(ev.getDamager()))&&!DamageEvP){
+//			//E vs P
+//			ev.setCancelled(true);
+//			return;
+//		}else if ( ((!(ev.getEntity() instanceof Player) && (ev.getDamager() instanceof Player))&&is(ev.getEntity()))&&!DamagePvE){
+//			//P vs E
+//			ev.setCancelled(true);
+//			return;
+//		}
+//		
+//		if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&is(ev.getEntity())&&!ProjectileDamage){
+//			ev.setCancelled(true);
+//			return;
+//		}
 		
-		if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&is(ev.getEntity())&&!ProjectileDamage){
-			ev.setCancelled(true);
-			return;
-		}
-		
-		
-		if(is(ev.getEntity())&&ev.getDamager()instanceof Player){
+		if(!(ev.getDamager() instanceof Player))return;
+		if(is(ev.getEntity())){
 			Team t = getTeam().getTeam( ((Player)ev.getDamager()) );
 			if(!teams.containsKey(t))return;
 			if(getEntity(t).getEntityId() != ev.getEntity().getEntityId()){
@@ -206,7 +206,7 @@ public class AddonEntityKing implements Listener {
 				setHealt(ev.getEntity(), h);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getManager().getInstance(), new Runnable() {
                     public void run() {
-                        ev.getEntity().setVelocity(new Vector()); //Sets the velocity a tick after getting damaged, else it won't work
+                        ev.getEntity().setVelocity(new Vector());
                     }
                 }, 1L);
 			}

@@ -13,9 +13,12 @@ import me.kingingo.kcore.Util.UtilItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +31,7 @@ public class Sniper implements Listener {
 	ArrayList<Player> l = new ArrayList<>();
 	@Getter
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.BOW), "§eSniper");
+	ArrayList<Arrow> shot = new ArrayList<>();
 	
 	public Sniper(TroubleInMinecraft TTT){
 		this.TTT=TTT;
@@ -43,16 +47,27 @@ public class Sniper implements Listener {
 			if(isZoom(p)){
 				Zoom(p);
 			}
-			ev.getProjectile().setVelocity(ev.getProjectile().getVelocity().multiply(4));
+			shot.add(((Arrow)ev.getProjectile()));
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true)
 	public void Interact(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.R)&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(),item)){
 			if(!isZoom(ev.getPlayer())){
 				Zoom(ev.getPlayer());
 				l.add(ev.getPlayer());
+			}
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void Damage(EntityDamageByEntityEvent ev){
+		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
+			Arrow a = (Arrow)ev.getDamager();
+			if(shot.contains(a)){
+				ev.setDamage(20.0);
+				shot.remove(a);
 			}
 		}
 	}

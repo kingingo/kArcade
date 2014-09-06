@@ -98,7 +98,7 @@ public class Radar implements Listener,IShop{
 		if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)&&ev.getRightClicked() instanceof Player){
 			Player r = (Player)ev.getRightClicked();
 			list.put(ev.getPlayer(), r);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_TRAITOR_SHOP_RADAR_CHANGE.getText(r.getName()));
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_TRAITOR_SHOP_RADAR_CHANGE.getText(r.getName()));
 		}
 	}
 	

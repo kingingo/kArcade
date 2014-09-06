@@ -1,6 +1,7 @@
 package me.kingingo.karcade.Game.Games;
 
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
@@ -29,7 +30,7 @@ public class SoloGame extends Game{
 		if(getManager().isState(GameState.Restart)||getManager().isState(GameState.LobbyPhase))return;
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
 		if(getGameList().getPlayers(PlayerState.IN).size()<1){
-			getManager().setState(GameState.Restart);
+			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
 	}
 	
@@ -51,7 +52,7 @@ public class SoloGame extends Game{
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
 	    if(getGameList().getPlayers(PlayerState.IN).size()<1){
-			getManager().setState(GameState.Restart);
+			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
 	  }
 	

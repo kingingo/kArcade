@@ -123,8 +123,6 @@ public class SheepWars extends TeamGame{
 		setItemPickup(true);
 		setReplace_Water(true);
 		setCreatureSpawn(false);
-		getAllowSpawnCreature().add(CreatureType.SHEEP);
-		getAllowSpawnCreature().add(CreatureType.VILLAGER);
 		setBlockBurn(false);
 		setPlayerShearEntity(true);
 		setBlockSpread(false);
@@ -198,7 +196,7 @@ public class SheepWars extends TeamGame{
 			new Kit("§6PigZombie", new ItemStack(Material.RAW_BEEF), Permission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,15*20,1), new PotionEffect(PotionEffectType.REGENERATION,10*20,1)})
 			}),
-			new Kit("§6Creeper", new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPWARS_KIT_CREEPER, KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6Creeper", new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPWARS_KIT_CREEPER,KitType.PREMIUM,0,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
 			new Kit("§6Zombie", new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPWARS_KIT_ZOMBIE, KitType.PREMIUM,0,new Perk[]{
@@ -349,7 +347,7 @@ public class SheepWars extends TeamGame{
 		
 		if(game_end()){
 			getManager().setState(GameState.Restart);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END.getText());
 			return;
 		}
 		
@@ -373,15 +371,15 @@ public class SheepWars extends TeamGame{
 				
 				TeamTab(typ.getTeam());
 				break; 
-			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 5:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 4:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 3:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 2:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+			case 1:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 			case 0:
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END.getText());
 				getManager().setState(GameState.Restart);
 			break;
 		}
@@ -681,7 +679,6 @@ public class SheepWars extends TeamGame{
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		an= new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
 		aeh=new AddonEnterhacken(getManager().getInstance());
-		aek.setDamagePvE(true);
 		getManager().getWorldData().getWorld().setStorm(false);
 		for(Team t: aek.getTeams().keySet()){
 			Sheep s = (Sheep)aek.getTeams().get(t);
@@ -707,7 +704,7 @@ public class SheepWars extends TeamGame{
 			getCoins().addCoins(killer, false, 4,getManager().getTyp());
 			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KILL_BY.getText(new String[]{t.getColor()+victim.getName(),getTeam(killer).getColor()+killer.getName()}));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{t.getColor()+victim.getName(),getTeam(killer).getColor()+killer.getName()}));
 			
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
@@ -717,7 +714,7 @@ public class SheepWars extends TeamGame{
 			Player victim = ev.getEntity();
 			Team t = getTeam(victim);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.DEATH.getText(new String[]{t.getColor()+victim.getName()}));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.DEATH.getText(new String[]{t.getColor()+victim.getName()}));
 
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
@@ -737,7 +734,7 @@ public class SheepWars extends TeamGame{
 						getCoins().addCoins(p, false, 10,getManager().getTyp());
 					}
 				}
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_WIN.getText(t.getColor()+t.Name()));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TEAM_WIN.getText(t.getColor()+t.Name()));
 		
 			}
 		}
@@ -775,7 +772,7 @@ public class SheepWars extends TeamGame{
 			}
 		}else if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -790,11 +787,11 @@ public class SheepWars extends TeamGame{
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.4, 0),new String[]{
-		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Info",
+		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SheepWars §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
 		" ",
-		C.cGreen+getManager().getTyp().string()+C.mOrange+C.Bold+" Stats",
+		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
 		"Coins: "+getCoins().getCoins(ev.getPlayer()),
 		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),

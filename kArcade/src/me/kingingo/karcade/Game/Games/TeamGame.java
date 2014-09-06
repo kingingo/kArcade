@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Game;
@@ -208,8 +209,10 @@ public class TeamGame extends Game{
 		if(getManager().isState(GameState.Restart)||getManager().isState(GameState.LobbyPhase))return;
 		
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
-		if(islastTeam()||getGameList().getPlayers(PlayerState.IN).size()<=1){
-			getManager().setState(GameState.Restart);
+		if(islastTeam()&&getManager().getState()==GameState.InGame){
+			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
+		}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
+			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
 	}
 	
@@ -242,13 +245,15 @@ public class TeamGame extends Game{
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
 	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
-	    if(islastTeam()||getGameList().getPlayers(PlayerState.IN).size()<=1){
-			getManager().setState(GameState.Restart);
+	    if(islastTeam()&&getManager().getState()==GameState.InGame){
+			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
+		}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
+			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
 	    
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.NORMAL,ignoreCancelled=true)
 	public void arrow_damage(EntityDamageByEntityEvent ev){
 		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
 			Arrow a = (Arrow)ev.getDamager();
@@ -256,21 +261,23 @@ public class TeamGame extends Game{
 			Player d = (Player)a.getShooter();
 			Player v = (Player)ev.getEntity();
 			if(!DamageTeamSelf&&getTeam(d)==getTeam(v)){
+				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf Projectile");
 				ev.setCancelled(true);
 			}else if(!DamageTeamOther&&getTeam(d)!=getTeam(v)){
+				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther Projectile");
 				ev.setCancelled(true);
-			}else{
-				ev.setCancelled(false);
 			}
 		}
 	}
 	
-	@EventHandler(priority=EventPriority.NORMAL)
+	@EventHandler(priority=EventPriority.NORMAL,ignoreCancelled=true)
 	public void TeamDamage(EntityDamageByEntityEvent ev){
 		if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)){
 			if(!DamageTeamSelf&&getTeam((Player)ev.getDamager())==getTeam((Player)ev.getEntity())){
+				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf");
 				ev.setCancelled(true);
 			}else if(!DamageTeamOther&&getTeam((Player)ev.getDamager())!=getTeam((Player)ev.getEntity())){
+				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther");
 				ev.setCancelled(true);
 			}
 		}

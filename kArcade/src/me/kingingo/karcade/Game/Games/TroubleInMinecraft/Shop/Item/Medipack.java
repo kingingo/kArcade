@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 
@@ -43,7 +44,7 @@ public class Medipack implements Listener,IShop{
 		if(UtilEvent.isAction(ev, ActionType.R)){
 			if(ev.getPlayer().getItemInHand()!=null){
 				if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)){
-					ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
+					UtilInv.remove(ev.getPlayer(),ev.getPlayer().getItemInHand().getType(),ev.getPlayer().getItemInHand().getData().getData(), 1);
 					if(((CraftPlayer)ev.getPlayer()).getHealth()+5>((CraftPlayer)ev.getPlayer()).getMaxHealth()){
 						ev.getPlayer().setHealth( ((CraftPlayer)ev.getPlayer()).getMaxHealth() );
 					}else{

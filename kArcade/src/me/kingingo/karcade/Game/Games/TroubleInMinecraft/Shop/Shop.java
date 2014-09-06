@@ -14,7 +14,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -53,10 +56,15 @@ public class Shop implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void OpenShop(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)&&UtilItem.ItemNameEquals(ev.getItem(), shop_item)&&TTT.getTeam(ev.getPlayer())==t){
+		if(ev.getAction()==Action.PHYSICAL)return;
+		if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), getShop_item())){
+			if(TTT.getTeam(ev.getPlayer())!=t){
+				return;
+			}
 			ev.getPlayer().openInventory(getShop());
+			ev.setCancelled(true);
 		}
 	}
 	
@@ -75,9 +83,9 @@ public class Shop implements Listener{
 					if(player_punkte>=pk){
 						TTT.getManager().getStats().setInt(p, (player_punkte-pk), getPunkte());
 						s.add(p);
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_SHOP_BUYED.getText());
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_SHOP_BUYED.getText());
 					}else{
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_SHOP.getText());
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_SHOP.getText());
 					}
 					break;
 				}

@@ -16,6 +16,7 @@ import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
@@ -114,15 +115,15 @@ public class Defibrillator implements Listener,IShop{
 			}
 			
 			if(r!=null){
-				p.getInventory().remove(p.getItemInHand());
+				UtilInv.remove(p, p.getItemInHand().getType(), p.getItemInHand().getData().getData(), 1);
 				l.add(r);
-				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
-				UtilPlayer.sendMessage(r,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
+				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
+				UtilPlayer.sendMessage(r,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
 			}else{
-				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
+				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
 			}
 		}else{
-			UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
+			UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
 		}
 		
 	}

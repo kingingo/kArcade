@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
@@ -23,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
@@ -39,6 +41,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -182,7 +185,9 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	private boolean PlayerShearEntity=false;
-	
+	@Getter
+	@Setter
+	private boolean InventoryTyp=true;
 	@Getter
 	private ArrayList<InventoryType> InventoryTypDisallow = new ArrayList<>(); 
 	@Getter
@@ -225,6 +230,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void OpenInventory(InventoryOpenEvent ev){
+		if(!InventoryTyp)ev.setCancelled(true);
 		if(!InventoryTypDisallow.isEmpty()&&InventoryTypDisallow.contains(ev.getInventory().getType())){
 			ev.setCancelled(true);
 		}
@@ -243,6 +249,7 @@ public class Game implements Listener{
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		ev.setQuitMessage(null);
+		if(getManager().getState()==GameState.Restart)return;
 		manager.getStats().SaveAllPlayerData(ev.getPlayer());
 	}
 	
@@ -250,6 +257,7 @@ public class Game implements Listener{
 	public void Damage(EntityDamageEvent ev){
 		if(ev.getEntity() instanceof Player && getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getEntity()))ev.setCancelled(true);
 		if(manager.isState(GameState.LobbyPhase))ev.setCancelled(true);
+		if(!Damage)ev.setCancelled(true);
 		if(EntityDamage.contains(ev.getCause())){
 			ev.setCancelled(true);
 		}
@@ -289,24 +297,36 @@ public class Game implements Listener{
         }
     }
 	
+	@EventHandler
+	public void StartGameGame(GameStartEvent ev){
+		if(getManager().getWorldData()!=null){
+			if(getManager().getWorldData().getWorld()!=null){
+				getManager().getWorldData().getWorld().setStorm(false);
+			}
+		}
+	}
+	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
 		if((ev.getDamager() instanceof Player &&getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getDamager()))||!Damage||getManager().isState(GameState.LobbyPhase)){
+			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei Damage");
 			ev.setCancelled(true);
 		}else if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)&&!DamagePvP){
 			//P vs P
 			//if(((Player)ev.getEntity()).getName().equalsIgnoreCase(((Player)ev.getDamager()).getName()))ev.setCancelled(true);
+			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamagePvP");
 			ev.setCancelled(true);
-		}else if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player)))&&!DamageEvP){
+		}else if(((ev.getEntity() instanceof Player && ev.getDamager() instanceof Creature))&&!DamageEvP){
 			//E vs P
+			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamageEvP");
 			ev.setCancelled(true);
-		}else if ( ((!(ev.getEntity() instanceof Player) && (ev.getDamager() instanceof Player)))&&!DamagePvE){
+		}else if ( ((ev.getDamager() instanceof Player && ev.getEntity() instanceof Creature))&&!DamagePvE){
+			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamagePvE");
 			//P vs E
 			ev.setCancelled(true);
 		}else if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&!ProjectileDamage){
+			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei ProjectileDamage");
 			ev.setCancelled(true);
-		}else{
-			ev.setCancelled(false);
 		}
 	}
 	
@@ -410,7 +430,7 @@ public class Game implements Listener{
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
 					  if(!getManager().getPermManager().hasPermission(p, Permission.JOIN_FULL_SERVER)){
-						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.KICKED_BY_PREMIUM.getText());
+						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KICKED_BY_PREMIUM.getText());
 						  UtilBG.sendToServer(p, getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
 						  b=true;
 						  break;
@@ -471,6 +491,7 @@ public class Game implements Listener{
 	  @EventHandler
 	  public void MobSpawn(CreatureSpawnEvent ev)
 	  {
+		if(ev.getSpawnReason()==SpawnReason.CUSTOM)return;
 	    if ((!CreatureSpawn||!getManager().isState(GameState.InGame)) && !AllowSpawnCreature.contains(ev.getCreatureType())){
 		      ev.setCancelled(true);
 	    }

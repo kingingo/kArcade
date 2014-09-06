@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
@@ -19,6 +20,7 @@ import me.kingingo.karcade.Game.Games.SkyPvP.SkyPvP;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Service.CommandService;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Command.CommandHandler;
@@ -54,6 +56,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
@@ -62,6 +65,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -112,6 +119,8 @@ public class kArcadeManager implements Listener{
 	private DisguiseManager disguiseManager;
 	@Getter
 	private NickManager nManager;
+	@Getter
+	private CommandService service;
 	
 	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
 		this.lobby.setPitch(2);
@@ -121,11 +130,12 @@ public class kArcadeManager implements Listener{
 		this.mysql=mysql;
 		this.cmd=cmd;
 		this.pManager=pManager;
-		//this.nManager=new NickManager(cmd,permManager);
+		this.nManager=new NickManager(cmd,permManager);
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
-		
+		this.service=new CommandService(permManager);
+		cmd.register(CommandService.class, this.service);
 		for(Entity e : getLobby().getWorld().getEntities()){
 			if(!(e instanceof Player)){
 				e.remove();
@@ -145,6 +155,18 @@ public class kArcadeManager implements Listener{
 		ranking.put(10, ((Sign)new Location(Bukkit.getWorld("world"),756,21,606).getBlock().getState()));
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
 		setState(GameState.LobbyPhase);
+	}
+
+	public void setNewGame(GameType typ){
+		getInstance().getConfig().set("Config.Server.Game", typ.getTyp());
+		if(UtilServer.getPlayers().length!=0)for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+		try {
+			Runtime.getRuntime().exec("./start.sh");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public boolean isDisguiseManagerEnable(){
@@ -193,6 +215,26 @@ public class kArcadeManager implements Listener{
 		}
 	}
 	
+	@EventHandler
+	  public void BlockPlaceArcadeManager(BlockPlaceEvent ev){
+	    if(ev.getBlock().getWorld().getName().equalsIgnoreCase("world")&&!ev.getPlayer().isOp())ev.setCancelled(true);
+	  }
+
+	  @EventHandler
+	  public void BlockBreakArcadeManager(BlockBreakEvent ev){
+		  if(ev.getBlock().getWorld().getName().equalsIgnoreCase("world")&&!ev.getPlayer().isOp())ev.setCancelled(true);
+	  }
+	
+	 @EventHandler
+	  public void BlockBurnArcadeManager(BlockBurnEvent ev){
+	    if(ev.getBlock().getWorld().getName().equalsIgnoreCase("world"))ev.setCancelled(true);
+	  }
+
+	  @EventHandler
+	  public void BlockSpreadArcadeManager(BlockSpreadEvent ev){
+		  if(ev.getBlock().getWorld().getName().equalsIgnoreCase("world"))ev.setCancelled(true);
+	  }
+	
 	public PetManager getPetManager(){
 		if(pet==null)pet=new PetManager(getInstance());
 		return pet;
@@ -217,17 +259,17 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public Game Game(String game){
-		if(GameType.OneInTheChamber.string().equalsIgnoreCase(game)){
+		if(GameType.OneInTheChamber.getTyp().equalsIgnoreCase(game)){
 			return new OneInTheChamber(this);
-		}else if((GameType.SheepWars8.string()).equalsIgnoreCase(game)){
+		}else if((GameType.SheepWars8.getTyp()).equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType._2);
-		}else if((GameType.SheepWars16.string()).equalsIgnoreCase(game)){
+		}else if((GameType.SheepWars16.getTyp()).equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType._4);
-		}else if(GameType.TroubleInMinecraft.string().equalsIgnoreCase(game)){
+		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
-		}else if(GameType.SkyPvP.string().equalsIgnoreCase(game)){
+		}else if(GameType.SkyPvP.getTyp().equalsIgnoreCase(game)){
 			return new SkyPvP(this);
-		}else if(GameType.SurvivalGames.string().equalsIgnoreCase(game)){
+		}else if(GameType.SurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
 		}else{
 			return new OneInTheChamber(this);
@@ -343,11 +385,15 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void setState(GameState gs){
-		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs);
+		setState(gs, GameStateChangeReason.CUSTOM);
+	}
+	
+	public void setState(GameState gs,GameStateChangeReason reason){
+		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs,reason);
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		state=gs;
-		System.out.println("["+this.typ.string()+"] GameState wurde zu "+state.string()+" geändert.");
+		System.out.println("["+this.typ.getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
 	}
 	
 	@EventHandler
@@ -469,25 +515,29 @@ public class kArcadeManager implements Listener{
 	public void Restart(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.Restart)return;
-		if(start<0)start=30;
+		if(start<0){
+			getGame().setDamage(false);
+			start=35;
+		}
 		start--;
-		for(Player p : Bukkit.getOnlinePlayers())UtilDisplay.displayTextBar(p, Text.RESTART_IN.getText(start));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.RESTART_IN.getText(start));
 		
 		switch(start){
-		case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
-		case 15:
-			broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));
-			for(Player p : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+		case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 25:
+			broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
+			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
-		case 20:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
-		case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
-		case 5:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));
-			for(Player p : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+		case 23:getStats().SaveAllData();break;
+		case 20:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
+		for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
-		case 4:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
-		case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
-		case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
-		case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+Text.RESTART_IN.getText(start));break;
+		case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 5:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
+		case 4:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 0: 
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			try {
@@ -515,27 +565,27 @@ public class kArcadeManager implements Listener{
 		if(start!=0){
 			switch(start){
 			case 120:
-				broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
+				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
 				Bukkit.getWorld("world").setWeatherDuration(0);
 				Bukkit.getWorld("world").setStorm(false);
 				
 				break;
-			case 90:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 60:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 15:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().string())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 90:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 60:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 15:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			}
 		}else{
-			if(Bukkit.getOnlinePlayers().length>=game.getMin_Players()){
+			if(UtilServer.getPlayers().length>=game.getMin_Players()){
 				Bukkit.getPluginManager().callEvent(new GameStartEvent(getTyp()));
 				updateInfo(GameState.InGame);
 			}else{
 				start=-1;
-				broadcast(Text.PREFIX_GAME.getText(getTyp().string())+C.cRed+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
+				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+C.cRed+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
 			}
 		}
 	}

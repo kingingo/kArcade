@@ -106,28 +106,28 @@ public class Rush_Example extends TeamGame{
 				for(Player p : getPlayerFrom(Team.RED)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("RED"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TEAM_OUT.getText("RED"));
 				break;
 			case YELLOW:
 				yellow=null;
 				for(Player p : getPlayerFrom(Team.YELLOW)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("YELLOW"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TEAM_OUT.getText("YELLOW"));
 				break;
 			case GREEN:
 				green=null;
 				for(Player p : getPlayerFrom(Team.GREEN)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("GREEN"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TEAM_OUT.getText("GREEN"));
 				break;
 			case BLUE:
 				blue=null;
 				for(Player p : getPlayerFrom(Team.BLUE)){
 					getGameList().addPlayer(p, PlayerState.OUT);
 				}
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.TEAM_OUT.getText("BLUE"));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TEAM_OUT.getText("BLUE"));
 				break;
 			default:
 				
@@ -379,28 +379,28 @@ public class Rush_Example extends TeamGame{
 	}
 	switch(getManager().getStart()){
 	   case 15:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 10:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 5:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 4:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 3:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 2:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 1:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END_IN.getText(getManager().getStart()));
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(getManager().getStart()));
 		   break;
 	   case 0:
-		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().string())+Text.GAME_END.getText());
+		   getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END.getText());
 		   onDisable();
 		   break;
 	   }

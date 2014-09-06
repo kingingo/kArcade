@@ -18,7 +18,7 @@ public class GameStartEvent  extends Event{
 	}
 	
 	public String getGameTypeName(){
-		return this.type.string();
+		return this.type.getTyp();
 	}
 	
 	@Override

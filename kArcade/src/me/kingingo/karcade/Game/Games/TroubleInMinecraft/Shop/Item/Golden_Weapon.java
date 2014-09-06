@@ -5,6 +5,7 @@ import java.util.HashMap;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
@@ -56,7 +57,7 @@ public class Golden_Weapon implements Listener,IShop{
 			Player attacker = (Player)ev.getDamager();
 			if(attacker.getItemInHand()==null||!UtilItem.ItemNameEquals(attacker.getItemInHand(), item))return;
 			Player defender = (Player)ev.getEntity();
-			attacker.getInventory().remove(attacker.getItemInHand());
+			UtilInv.remove(attacker,attacker.getItemInHand().getType(), attacker.getItemInHand().getData().getData(), 1);
 			attacker.updateInventory();
 			attacker.playSound(defender.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.0F);
 			if(TTT.getTeam(defender)==Team.TRAITOR){

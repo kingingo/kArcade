@@ -1,5 +1,7 @@
 package me.kingingo.karcade.Game.Events;
 
+import lombok.Getter;
+import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameState;
 
 import org.bukkit.event.Cancellable;
@@ -11,10 +13,13 @@ public class GameStateChangeEvent extends Event implements Cancellable{
 	private GameState from;
 	private GameState to;
 	private boolean cancel=false;
+	@Getter
+	private GameStateChangeReason reason;
 	
-	public GameStateChangeEvent(GameState from,GameState to){
+	public GameStateChangeEvent(GameState from,GameState to,GameStateChangeReason reason){
 		this.from=from;
 		this.to=to;
+		this.reason=reason;
 	}
 	
 	public GameState getTo(){

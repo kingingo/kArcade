@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.addons;
 
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.kcore.Permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,6 +26,8 @@ public class AddonSpectator implements Listener {
 	public void Move(PlayerMoveEvent ev){
 		Player p = ev.getPlayer();
 			if(manager.getGame().getGameList().isPlayerState(p)==PlayerState.OUT){
+				if(manager.getPermManager().hasPermission(p, Permission.SERVER_JOIN_SPECTATE))return;
+				
 				for (Player s : manager.getGame().getGameList().getPlayers(PlayerState.IN)) {
 					if(!s.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()))continue;
 					ploc = s.getLocation();
@@ -35,6 +38,7 @@ public class AddonSpectator implements Listener {
 				}
 			}else if(manager.getGame().getGameList().isPlayerState(p)==PlayerState.IN){
 				for (Player s : manager.getGame().getGameList().getPlayers(PlayerState.OUT)) {
+					if(manager.getPermManager().hasPermission(s, Permission.SERVER_JOIN_SPECTATE))continue;
 					if(!s.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()))continue;
 					ploc = s.getLocation();
 					if (p.getLocation().distance(ploc) <= 5) {

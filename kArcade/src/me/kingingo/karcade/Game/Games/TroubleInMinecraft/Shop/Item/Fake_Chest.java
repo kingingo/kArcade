@@ -63,7 +63,7 @@ public class Fake_Chest implements Listener,IShop {
 		case 0:i=TTT_Item.SCHWERT_HOLZ;
 		case 1:i=TTT_Item.SCHWERT_IRON;
 		case 2:i=TTT_Item.SCHWERT_STONE;
-		case 3:i=TTT_Item.BOW_BOGEN;
+		//case 3:i=TTT_Item.BOW_BOGEN;
 		case 4:i=TTT_Item.BOW_MINIGUN;
 		case 5:i=TTT_Item.BOW_SHOTGUN;
 		case 6:i=TTT_Item.BOW_SNIPER;
@@ -80,7 +80,7 @@ public class Fake_Chest implements Listener,IShop {
 		case "§8Steinschwert":return TTT_Item.SCHWERT_STONE;
 		case "§bEisenschwert":return TTT_Item.SCHWERT_IRON;
 		case "§7Pfeile":return TTT_Item.ARROW;
-		case "Bogen":return TTT_Item.BOW_BOGEN;
+		//case "§7Bogen":return TTT_Item.BOW_BOGEN;
 		case "§cMinigun":return TTT_Item.BOW_MINIGUN;
 		case "§aShotgun":return TTT_Item.BOW_SHOTGUN;
 		case "§eSniper":return TTT_Item.BOW_SNIPER;
@@ -100,7 +100,7 @@ public class Fake_Chest implements Listener,IShop {
 	public void PickupItemFake(ItemFakePickupEvent ev){
 		if(!list.containsKey(ev.getItemfake()))return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().string())+"Dieses Item ist ein Fake-Item.");
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);
 			return;
 		}

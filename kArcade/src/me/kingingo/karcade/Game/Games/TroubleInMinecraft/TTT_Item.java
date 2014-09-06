@@ -22,7 +22,7 @@ SCHWERT_IRON(UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "§bEisensch
 ARROW(UtilItem.RenameItem(new ItemStack(Material.ARROW), "§7Pfeile"),"ARROW"),
 BOW_MINIGUN(TroubleInMinecraft.getMinigun().getItem(),"BOW"),
 BOW_SHOTGUN(TroubleInMinecraft.getShotgun().getItem(),"BOW"),
-BOW_BOGEN(UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen"),"BOW"),
+//BOW_BOGEN(UtilItem.RenameItem(new ItemStack(Material.BOW), "§7Bogen"),"BOW"),
 BOW_SNIPER(TroubleInMinecraft.getSniper().getItem(),"BOW");
 
 	ItemStack item;
@@ -41,7 +41,7 @@ BOW_SNIPER(TroubleInMinecraft.getSniper().getItem(),"BOW");
 	public ItemFake setItemFake(Location l,JavaPlugin plugin){
 		if(getTyp().equalsIgnoreCase("ARROW")){
 			ItemStack ite = getItem().clone();
-			ite.setAmount(UtilMath.RandomInt(17, 8));
+			ite.setAmount(UtilMath.RandomInt(20, 5));
 			return new ItemFake(l,ite,plugin);
 		}else{
 			return new ItemFake(l,getItem(),plugin);
