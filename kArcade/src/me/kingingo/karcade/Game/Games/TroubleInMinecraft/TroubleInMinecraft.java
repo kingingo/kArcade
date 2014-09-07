@@ -18,6 +18,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandDetectiv
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandTraitor;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Shop;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Defibrillator;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Fake_Chest;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.Golden_Weapon;
@@ -40,6 +41,7 @@ import me.kingingo.kcore.Hologram.wrapper.WrapperPlayServerEntityEquipment;
 import me.kingingo.kcore.ItemFake.ItemFake;
 import me.kingingo.kcore.ItemFake.ItemFakeManager;
 import me.kingingo.kcore.ItemFake.Events.ItemFakePickupEvent;
+import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -109,6 +111,8 @@ public class TroubleInMinecraft extends TeamGame{
 	Defibrillator defi;
 	Shop traitor_shop;
 	Shop detective_shop;
+	@Getter
+	private LaunchItemManager ilManager;
 	
 	public TroubleInMinecraft(kArcadeManager manager) {
 		super(manager);
@@ -133,7 +137,7 @@ public class TroubleInMinecraft extends TeamGame{
 		setCreatureSpawn(false);
 		setHangingBreak(false);
 		setBlockSpread(false);
-		setExplosion(false);
+		setExplosion(true);
 		setDeathDropItems(true);
 		setFoodChange(false);
 		setRespawn(true);
@@ -145,13 +149,15 @@ public class TroubleInMinecraft extends TeamGame{
 		npcManager= new NPCManager(getManager().getInstance());
 		magnet=new MagnetStab(npcManager);
 		Radar r = new Radar(this);
+		ilManager=new LaunchItemManager(getManager().getInstance());
 		defi = new Defibrillator(this);
 		traitor_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§cTraitorShop"),"Traitor-Shop:",Stats.TTT_TRAITOR_PUNKTE,Team.TRAITOR,new IShop[]{
 				new Fake_Chest(this),
 				new Medipack(this),
 				new Knife(this),
 				r,
-				new Tester_Spoofer(this)
+				new Tester_Spoofer(this),
+				new CreeperSpawner(this),
 		});
 		
 		detective_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§1DetectiveShop"),"Detective-Shop:",Stats.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{

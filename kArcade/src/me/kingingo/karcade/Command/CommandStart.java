@@ -45,8 +45,7 @@ public class CommandStart implements CommandExecutor{
 					}
 				}
 				
-    		}, Manager.getInstance()
-    		);
+    		}, Manager.getInstance());
     		
 				 ItemStack renamed = UtilItem.RenameItem(new ItemStack(Material.NAME_TAG), "Zahl");
 				 gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, renamed);
