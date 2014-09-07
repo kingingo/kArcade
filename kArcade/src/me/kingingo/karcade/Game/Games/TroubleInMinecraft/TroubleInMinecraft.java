@@ -85,7 +85,7 @@ public class TroubleInMinecraft extends TeamGame{
 	WorldData wd;
 	@Getter
 	private kArcadeManager manager;
-	HashMap<Integer,Player> npclist = new HashMap<>();
+	HashMap<Integer,String> npclist = new HashMap<>();
 	ArrayList<Player> arrow =new ArrayList<>();
 	Tester tester;
 	Shop dshop;
@@ -225,7 +225,7 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
 		ev.setCancelled(true);
-		if(manager.getState()==GameState.LobbyPhase){
+		if(manager.getState()!=GameState.InGame){
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}else{
 			if(ev.getMessage().substring(0, 1).equalsIgnoreCase("#")){
@@ -278,11 +278,11 @@ public class TroubleInMinecraft extends TeamGame{
 		 	if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
 		 		NPC npc = ev.getNpc();
 				if(npc.getName().equalsIgnoreCase("Unidentifiziert")){
-					Player name = npclist.get(npc.getP().getId());
+					String name = npclist.get(npc.getP().getId());
 					Location loc = npc.getLoc();
 					npclist.remove(npc.getP().getId());
 					npc.remove();
-//					Team t = defi.getTeams().get(name);
+					Team t = defi.getTeams().get(name);
 //					if(t==Team.TRAITOR){
 //						for(Player p : getGameList().getPlayers(PlayerState.IN)){
 //							if(getTeam(p)==t){
@@ -297,10 +297,10 @@ public class TroubleInMinecraft extends TeamGame{
 //						for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+name.getName(), p, false);
 //					}
 					
-					npc = npcManager.createNPC( name.getName() );
+					npc = npcManager.createNPC( name );
 					npc.spawn(loc);
 					npc.sleep();
-					
+					manager.broadcast(Text.PREFIX_GAME.getText(manager.getTyp().getTyp())+Text.TTT_LEICHE_IDENTIFIZIERT.getText(new String[]{t.getColor()+name,t.getColor()+t.Name()}));
 					if(getTeam(ev.getPlayer())==Team.DETECTIVE){
 						getManager().getStats().setInt(ev.getPlayer(),getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+2, Stats.TTT_DETECTIVE_PUNKTE);	
 					}else if(getTeam(ev.getPlayer())==Team.TRAITOR){
@@ -348,7 +348,7 @@ public class TroubleInMinecraft extends TeamGame{
 //			}else if(t==Team.INOCCENT){
 //				for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+((Player)ev.getEntity()).getName(), p, true);
 //			}
-			npclist.put(npc.getP().getId(), ((Player)ev.getEntity()));
+			npclist.put(npc.getP().getId(), ((Player)ev.getEntity()).getName());
 			if(ev.getEntity().getKiller() instanceof Player){
 				getManager().getStats().setInt(((Player)ev.getEntity().getKiller()),getManager().getStats().getInt(Stats.KILLS, ((Player)ev.getEntity().getKiller()))+1, Stats.KILLS);
 				
