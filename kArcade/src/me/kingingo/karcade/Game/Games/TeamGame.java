@@ -194,7 +194,7 @@ public class TeamGame extends Game{
 			if(TeamList.containsKey(p))continue;
 			for(Team team : t.keySet()){
 				if(isInTeam(team)>=t.get(team))continue;
-				TeamList.put(p, team);
+				addTeam(p, team);
 				list.remove(r);
 				break;
 			}

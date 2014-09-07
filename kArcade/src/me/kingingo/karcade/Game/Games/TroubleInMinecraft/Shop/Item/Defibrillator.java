@@ -60,6 +60,7 @@ public class Defibrillator implements Listener,IShop{
 
 	@EventHandler
 	public void AddTeam(TeamAddEvent ev){
+		if(teams.containsKey(ev.getPlayer().getName().toLowerCase()));
 		teams.put(ev.getPlayer().getName().toLowerCase(), ev.getTeam());
 	}
 	
@@ -79,9 +80,13 @@ public class Defibrillator implements Listener,IShop{
 		if(l.isEmpty())return;
 		
 		for(Player r : l){
+			TTT.getGameList().RemovePlayer(r);
 			TTT.getGameList().addPlayer(r, PlayerState.IN);
 			TTT.getManager().Clear(r);
 			r.setGameMode(GameMode.SURVIVAL);
+			r.setMaxHealth(40);
+			r.setHealth(40);
+			r.getInventory().addItem(TTT.getMagnet().getStab());
 			for(Player a : UtilServer.getPlayers()){
 				a.showPlayer(r);
 			}
@@ -91,7 +96,7 @@ public class Defibrillator implements Listener,IShop{
 			for(Player a1 : TTT.getGameList().getPlayers(PlayerState.OUT)){
 				r.hidePlayer(a1);
 			}
-			Team t = teams.get(r);
+			Team t = teams.get(r.getName().toLowerCase());
 			TTT.addTeam(r, t);
 		}
 		
@@ -103,9 +108,8 @@ public class Defibrillator implements Listener,IShop{
 		if(p.getItemInHand()==null||!UtilItem.ItemNameEquals(p.getItemInHand(), item))return;
 		NPC npc = ev.getNpc();
 		
-		if(!npc.getName().equalsIgnoreCase("Unidentifiziert")){
+		if(!TTT.getNpclist().containsKey(npc.getP().getId())){
 			String name = npc.getName();
-			npc.remove();
 			Player r=null;
 			for(Player p1 : TTT.getGameList().getPlayers(PlayerState.OUT)){
 				if(p1.getName().equalsIgnoreCase(name)){
@@ -117,6 +121,7 @@ public class Defibrillator implements Listener,IShop{
 			if(r!=null){
 				UtilInv.remove(p, p.getItemInHand().getType(), p.getItemInHand().getData().getData(), 1);
 				l.add(r);
+				npc.remove();
 				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
 				UtilPlayer.sendMessage(r,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
 			}else{
