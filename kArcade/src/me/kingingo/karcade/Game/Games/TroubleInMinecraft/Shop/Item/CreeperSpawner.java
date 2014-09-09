@@ -89,6 +89,7 @@ public class CreeperSpawner extends kListener implements IShop{
 	public void Launch(final PlayerInteractEvent event){
 		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase("§aCreeper Spawner")){
+				event.setCancelled(true);
 				LaunchItem item = new LaunchItem(event.getPlayer(),4,new LaunchItem.LaunchItemEventHandler(){
 					@Override
 					public void onLaunchItem(LaunchItemEvent ev) {

@@ -1,7 +1,9 @@
 package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TTT_Item;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
@@ -9,6 +11,8 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.ItemFake.ItemFake;
 import me.kingingo.kcore.ItemFake.Events.ItemFakePickupEvent;
+import me.kingingo.kcore.LaunchItem.LaunchItem;
+import me.kingingo.kcore.LaunchItem.LaunchItemEvent;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
@@ -19,6 +23,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,14 +54,32 @@ public class Fake_Chest implements Listener,IShop {
 	}
 	
 	@EventHandler
-	public void set(BlockPlaceEvent ev){
-		if(ev.getBlock().getType()==Material.SKULL){
-			TTT_Item i = getSkull();
-			ev.getBlock().setTypeId(0);
-			ItemFake k = i.setItemFake(ev.getBlock().getLocation(),TTT.getManager().getInstance());
-			list.put(k,ev.getPlayer());
+	public void Launch(final PlayerInteractEvent event){
+		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase("Fake-Chest")){
+				event.setCancelled(true);
+				LaunchItem item = new LaunchItem(event.getPlayer(),4,new LaunchItem.LaunchItemEventHandler(){
+					@Override
+					public void onLaunchItem(LaunchItemEvent ev) {
+						TTT_Item i = getSkull();
+						ItemFake k = i.setItemFake(ev.getItem().getDroppedItem().getLocation(), TTT.getManager().getInstance());
+						list.put(k, ev.getItem().getPlayer());
+					}
+				});
+				TTT.getIlManager().LaunchItem(item);
+			}
 		}
 	}
+	
+//	@EventHandler
+//	public void set(BlockPlaceEvent ev){
+//		if(ev.getBlock().getType()==Material.SKULL){
+//			TTT_Item i = getSkull();
+//			ev.getBlock().setTypeId(0);
+//			ItemFake k = i.setItemFake(ev.getBlock().getLocation(),TTT.getManager().getInstance());
+//			list.put(k,ev.getPlayer());
+//		}
+//	}
 	
 	public TTT_Item getSkull(){
 		TTT_Item i = null;
@@ -99,6 +123,7 @@ public class Fake_Chest implements Listener,IShop {
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void PickupItemFake(ItemFakePickupEvent ev){
 		if(!list.containsKey(ev.getItemfake()))return;
+		if(TTT.getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
 			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);

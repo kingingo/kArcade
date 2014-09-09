@@ -66,7 +66,7 @@ public class Sniper implements Listener {
 		if(ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow){
 			Arrow a = (Arrow)ev.getDamager();
 			if(shot.contains(a)){
-				ev.setDamage(20.0);
+				ev.setDamage(10.0);
 				shot.remove(a);
 			}
 		}
