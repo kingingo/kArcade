@@ -80,8 +80,6 @@ public class Defibrillator implements Listener,IShop{
 		if(l.isEmpty())return;
 		
 		for(Player r : l){
-			TTT.getGameList().RemovePlayer(r);
-			TTT.getGameList().addPlayer(r, PlayerState.IN);
 			TTT.getManager().Clear(r);
 			r.setGameMode(GameMode.SURVIVAL);
 			r.setMaxHealth(40);
@@ -98,6 +96,7 @@ public class Defibrillator implements Listener,IShop{
 			}
 			Team t = teams.get(r.getName().toLowerCase());
 			TTT.addTeam(r, t);
+			TTT.getGameList().addPlayer(r, PlayerState.IN);
 		}
 		
 	}

@@ -38,7 +38,7 @@ public class kArcade extends JavaPlugin{
 	public void onEnable(){
 		long time = System.currentTimeMillis();
 		loadConfig();
-		if(FileUtil.existPath(new File("map")))FileUtil.DeleteFolder(new File("map"));
+		FileUtil.DeleteFolder(new File("map"));
 		id=getConfig().getInt("Config.Server.ID");
 		FilePath=getConfig().getString("Config.Server.FilePath");
 		updater=new Updater(this);

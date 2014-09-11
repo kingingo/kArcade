@@ -16,6 +16,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandDetective;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandTraitor;
+import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command.CommandTraitorChat;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Shop;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item.CreeperSpawner;
@@ -147,6 +148,7 @@ public class TroubleInMinecraft extends TeamGame{
 		shotgun=new Shotgun(this);
 		sniper=new Sniper(this);
 		minigun=new Minigun(this);
+		getManager().getCmd().register(CommandTraitorChat.class, new CommandTraitorChat(this));
 		getManager().getCmd().register(CommandDetective.class, new CommandDetective(this));
 		getManager().getCmd().register(CommandTraitor.class, new CommandTraitor(this));
 		npcManager= new NPCManager(getManager().getInstance());
@@ -164,7 +166,6 @@ public class TroubleInMinecraft extends TeamGame{
 		});
 		
 		detective_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§1DetectiveShop"),"Detective-Shop:",Stats.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{
-				defi,
 				new Golden_Weapon(this),
 				r,
 				new Healing_Station(this),
@@ -252,15 +253,6 @@ public class TroubleInMinecraft extends TeamGame{
 		if(manager.getState()!=GameState.InGame){
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}else{
-			if(ev.getMessage().substring(0, 1).equalsIgnoreCase("#")){
-				Team t = getTeam(ev.getPlayer());
-				if(t==Team.TRAITOR){
-					for(Player p : getPlayerFrom(t)){
-						p.sendMessage("§cTraitor-Chat§8 |§c "+ev.getPlayer().getName()+":§7 "+ev.getMessage().substring(1, ev.getMessage().length()));
-					}
-					return;
-				}
-			}
 				if(manager.getGame().getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
 					Team t = getTeam(ev.getPlayer());
 					if(t==null){
@@ -782,7 +774,7 @@ public class TroubleInMinecraft extends TeamGame{
 			for(Player p : d){
 				PlayerScoreboard ps = new PlayerScoreboard(p);
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cBlue+"DetectiveBoard");
-				ps.setScore(C.cGreen+"Karma", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
+				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
 				ps.setScore(C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, p));
 				if(d.size()!=1){
 					ps.setScore("§7", DisplaySlot.SIDEBAR, -1);
