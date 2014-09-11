@@ -227,7 +227,7 @@ public class TeamGame extends Game{
 	public void SetSpectator(PlayerRespawnEvent ev,Player player)
 	  {
 		if(spec==null)spec=new AddonSpectator(getManager());
-		TeamList.remove(player);
+		delTeam(player);
 		getGameList().addPlayer(player, PlayerState.OUT);
 	    getManager().Clear(player);
 	    if(ev==null){
@@ -238,7 +238,7 @@ public class TeamGame extends Game{
 	    player.setGameMode(GameMode.CREATIVE);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
-	    ((CraftPlayer)player).getHandle().k = false;
+	    //((CraftPlayer)player).getHandle().k = false;
 	    for(Player p : UtilServer.getPlayers()){
 	    	p.hidePlayer(player);
 	    }

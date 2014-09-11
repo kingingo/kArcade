@@ -42,6 +42,7 @@ public class GameList implements Listener{
     }
     
     public void addPlayer(Player player,PlayerState ps){
+    	if(players.containsKey(player))players.remove(player);
 		players.put(player, ps);
 //		for (Player other : getPlayers(ps))
 //	    {
