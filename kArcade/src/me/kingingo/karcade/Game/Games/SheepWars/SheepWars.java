@@ -638,6 +638,7 @@ public class SheepWars extends TeamGame{
 		ArrayList<Location> list;
 		HashMap<Team,Location> sheeps = new HashMap<>();
 		HashMap<Team,Location> tt = new HashMap<>();
+		int i = 0;
 		for(Team t : teams){
 			getTeams().put(t, true);
 			list = getManager().getWorldData().getLocs(t.Name());
@@ -663,8 +664,9 @@ public class SheepWars extends TeamGame{
 						}
 					}
 				}
-				p.teleport(list.get(0));
-				list.remove(0);
+				p.teleport(list.get(i));
+				i++;
+				if(i==list.size())i=0;
 			}
 		}
         
@@ -786,7 +788,7 @@ public class SheepWars extends TeamGame{
 		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.4, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.4, 0),new String[]{
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SheepWars §a"+kArcade.id,
 		"Map: "+wd.getMapName(),

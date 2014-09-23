@@ -99,6 +99,13 @@ public class AddonEntityKing implements Listener {
 		return teams.get(t);
 	}
 	
+	public Team get(Entity e){
+		for(Team team : getTeams().keySet()){
+			if(getTeams().get(team).getEntityId()==e.getEntityId())return team;
+		}
+		return null;
+	}
+	
 	public boolean is(Entity e){
 		for(Entity entity : getTeams().values()){
 			if(entity.getEntityId()==e.getEntityId()){
@@ -192,9 +199,11 @@ public class AddonEntityKing implements Listener {
 		
 		if(!(ev.getDamager() instanceof Player))return;
 		if(is(ev.getEntity())){
-			Team t = getTeam().getTeam( ((Player)ev.getDamager()) );
-			if(!teams.containsKey(t))return;
-			if(getEntity(t).getEntityId() != ev.getEntity().getEntityId()){
+			Team t = get(ev.getEntity());
+			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t){
+				ev.setCancelled(true);
+				return;
+			}
 				ev.setCancelled(false);
 				h = getHealt(ev.getEntity());
 				h=h-getD( ((Player)ev.getDamager()).getItemInHand() );
@@ -209,7 +218,6 @@ public class AddonEntityKing implements Listener {
                         ev.getEntity().setVelocity(new Vector());
                     }
                 }, 1L);
-			}
 		}
 	}
 	
