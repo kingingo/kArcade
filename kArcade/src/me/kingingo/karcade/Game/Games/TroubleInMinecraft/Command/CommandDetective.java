@@ -35,25 +35,25 @@ public class CommandDetective implements CommandExecutor, Listener{
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		
 		if(TTT.getManager().getState()!=GameState.LobbyPhase){
-			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_LOBBYPHASE.getText());
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_LOBBYPHASE.getText());
 			return false;
 		}
 		int t_p = TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
 		if(!(t_p>0)){
-			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_KEINE.getText("Detective"));
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_KEINE.getText("Detective"));
 			return false;
 		}
 		
 		int t = TTT.getDetective();
 		int tt = TTT.isInTeam(Team.DETECTIVE);
 		if(tt>=t){
-			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_MAX_USED.getText("Detective"));
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_MAX_USED.getText("Detective"));
 			return false;
 		}
 		t_p=t_p-1;
 		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
 		TTT.addTeam(((Player)cs) , Team.DETECTIVE);
-		UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_USE.getText(new String[]{"Detective",String.valueOf(t_p)}));
+		UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_USE.getText(new String[]{"Detective",String.valueOf(t_p)}));
 		return false;
 	}
 	

@@ -30,25 +30,25 @@ public class CommandTraitor implements CommandExecutor, Listener{
 	@me.kingingo.kcore.Command.CommandHandler.Command(command = "traitor", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		if(TTT.getManager().getState()!=GameState.LobbyPhase){
-			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_LOBBYPHASE.getText());
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_LOBBYPHASE.getText());
 			return false;
 		}
 		int t_p = TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
 		if(!(t_p>0)){
-			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_KEINE.getText("Traitor"));
+			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_KEINE.getText("Traitor"));
 			return false;
 		}
 		
 		int t = TTT.getTraitor();
 		int tt = TTT.isInTeam(Team.TRAITOR);
 		if(tt>=t){
-			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_MAX_USED.getText("Traitor"));
+			((Player)cs).sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_MAX_USED.getText("Traitor"));
 			return false;
 		}
 		t_p=t_p-1;
 		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
 		TTT.addTeam(((Player)cs) , Team.TRAITOR);
-		UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PÄSSE_USE.getText(new String[]{"Traitor",String.valueOf(t_p)}));
+		UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_USE.getText(new String[]{"Traitor",String.valueOf(t_p)}));
 		return false;
 	}
 	
