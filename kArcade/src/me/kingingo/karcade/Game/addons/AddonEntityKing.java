@@ -6,6 +6,7 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
@@ -200,7 +201,7 @@ public class AddonEntityKing implements Listener {
 		if(!(ev.getDamager() instanceof Player))return;
 		if(is(ev.getEntity())){
 			Team t = get(ev.getEntity());
-			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t){
+			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t || manager.getGame().getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
 				ev.setCancelled(true);
 				return;
 			}

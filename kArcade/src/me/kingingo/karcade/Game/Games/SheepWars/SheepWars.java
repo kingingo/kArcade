@@ -185,7 +185,7 @@ public class SheepWars extends TeamGame{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)})
 			}),
 			new Kit( "§eKnight", new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
-				new PerkSneakDamage(1.0)
+				new PerkSneakDamage(3.0)
 			}),
 			new Kit( "§eTheDeath", new ItemStack(Material.IRON_SWORD),Permission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,20*5,1),"Blindheit")
