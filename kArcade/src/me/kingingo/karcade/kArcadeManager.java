@@ -39,6 +39,7 @@ import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
@@ -568,12 +569,14 @@ public class kArcadeManager implements Listener{
 				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
 				Bukkit.getWorld("world").setWeatherDuration(0);
 				Bukkit.getWorld("world").setStorm(false);
-				
 				break;
 			case 90:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 60:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 15:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 15:
+				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
+				for(Player p : UtilServer.getPlayers())Title.sendTitle(p, "§aMap:§6 "+getWorldData().getMapName());
+				break;
 			case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
