@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 
@@ -19,6 +20,7 @@ import org.bukkit.scoreboard.Scoreboard;
 public class GameList implements Listener{
 
 	private Game game;
+	@Getter
 	private HashMap<Player, PlayerState> players = new HashMap<>();
     private ArrayList<Location> spawns;
     private kArcadeManager manager;

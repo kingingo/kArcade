@@ -22,10 +22,13 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.WorldUtil;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 
 public class WorldData {
 	@Getter
@@ -36,9 +39,13 @@ public class WorldData {
 	World world;
 	String folder="map";
 	@Getter
+	@Setter
 	String MapName="Loading ...";
 	@Setter
 	HashMap<String,ArrayList<Location>> locs = new HashMap<>();
+	@Getter
+	@Setter
+	HashMap<String,Location> biomes = null;
 	
 	public WorldData(kArcadeManager manager,String gameName){
 		this.manager=manager;
@@ -92,10 +99,52 @@ public class WorldData {
 		 return folder;
 	 }
 	 
+	 public void loadBiomes(){
+		 biomes=new HashMap<String, Location>();
+		 Location start = world.getSpawnLocation().clone();
+		 for(int i=0;i<150.000;i++){
+				start.add(0,0,i);
+		        world.loadChunk(start.getChunk());
+			}
+		start=world.getSpawnLocation().clone();
+		for(int i=0;i<150.000;i++){
+				start.add(i,0,0);
+				world.loadChunk(start.getChunk());
+			}
+		for(Chunk c : world.getLoadedChunks()){
+			int bx = c.getX()<<4;
+			int bz = c.getZ()<<4;
+			for(int xx = bx; xx < bx+16; xx++) {
+			    for(int zz = bz; zz < bz+16; zz++) {
+			        for(int yy = 0; yy < 128; yy++) {
+			        	Block b = world.getBlockAt(xx, yy, zz);
+			        	Biome bio = world.getBiome(b.getLocation().getBlockX(), b.getLocation().getBlockZ());
+						if(!biomes.containsKey(bio.name())){
+							biomes.put(bio.name(),b.getLocation());
+						}
+						break;
+			        }
+			    }
+			}
+		}
+	 }
+	 
 	 public void Uninitialize(){
 		UtilMap.UnloadWorld(manager.getInstance(), world);
 		FileUtil.DeleteFolder(new File(world.getName()));
 		world=null;
+	 }
+	 
+	 public void createWorld(){
+		 world=Bukkit.createWorld(new WorldCreator("map"));
+	 }
+	 
+	 public void removeWorld(){
+		 if(Bukkit.getWorld("map")!=null||world!=null){
+			 Bukkit.unloadWorld("map", false);
+			 FileUtil.DeleteFolder(new File("map"));
+			 world=null;
+		 }
 	 }
 	 
 	public void Initialize(){

@@ -2,6 +2,8 @@ package me.kingingo.karcade.Game.addons;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Update.UpdateType;
@@ -21,6 +23,8 @@ public class AddonQuadratGrenze implements Listener{
 	private ArrayList<Location> list;
 	private Location center;
 	private kArcadeManager manager;
+	@Getter
+	@Setter
 	private int radius=0;
 	
 	public AddonQuadratGrenze(kArcadeManager manager,Location loc,int radius){
@@ -42,8 +46,7 @@ public class AddonQuadratGrenze implements Listener{
 				if (p.getWorld() == loc.getWorld()) {
 					if (p.getLocation().distance(loc) <= 10) {
 						if (UtilMath.r(1) == 0) {
-							loc.getWorld().playEffect(loc,
-									Effect.SPELL, -30);
+							loc.getWorld().playEffect(loc,Effect.SPELL, -30);
 						}
 					}
 				}
@@ -52,6 +55,7 @@ public class AddonQuadratGrenze implements Listener{
 	}
 	
 	public void scan() {
+		ArrayList<Location> list1 = new ArrayList<Location>();
 		int MaxX = MaxX();
 		int MaxZ = MaxZ();
 		int MinX = MinX();
@@ -61,27 +65,31 @@ public class AddonQuadratGrenze implements Listener{
 			for (int z = MinZ; z < MaxZ; z++) {
 				Location l = new Location(center.getWorld(), MaxX, y, z);
 				if (l.getBlock().getType() == Material.AIR)
-					list.add(l);
+					list1.add(l);
 			}
 
 			for (int x = MaxX; x > MinX; x--) {
 				Location l = new Location(center.getWorld(), x, y, MaxZ);
 				if (l.getBlock().getType() == Material.AIR)
-					list.add(l);
+					list1.add(l);
 			}
 
 			for (int z = MaxZ; z > MinZ; z--) {
 				Location l = new Location(center.getWorld(), MinX, y, z);
 				if (l.getBlock().getType() == Material.AIR)
-					list.add(l);
+					list1.add(l);
 			}
 
 			for (int x = MinX; x < MaxX; x++) {
 				Location l = new Location(center.getWorld(), x, y, MinZ);
 				if (l.getBlock().getType() == Material.AIR)
-					list.add(l);
+					list1.add(l);
 			}
 		}
+		list.clear();
+		list=(ArrayList<Location>)list1.clone();
+		list1.clear();
+		list1=null;
 	}
 	
 	public int MaxY(){
