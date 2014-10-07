@@ -13,6 +13,7 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
+import me.kingingo.karcade.Game.Games.EnderGames.EnderGames;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
@@ -270,6 +271,8 @@ public class kArcadeManager implements Listener{
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SkyPvP.getTyp().equalsIgnoreCase(game)){
 			return new SkyPvP(this);
+		}else if(GameType.EnderGames.getTyp().equalsIgnoreCase(game)){
+			return new EnderGames(this);
 		}else if(GameType.SurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
 		}else{

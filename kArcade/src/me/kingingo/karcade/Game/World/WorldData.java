@@ -136,6 +136,7 @@ public class WorldData {
 	 }
 	 
 	 public void createWorld(){
+		 removeWorld();
 		 world=Bukkit.createWorld(new WorldCreator("map"));
 	 }
 	 

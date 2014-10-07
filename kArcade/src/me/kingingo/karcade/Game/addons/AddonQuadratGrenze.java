@@ -40,11 +40,12 @@ public class AddonQuadratGrenze implements Listener{
 	
 	@EventHandler
 	public void Update(UpdateEvent ev){
-		if(manager.getState()!=GameState.InGame||ev.getType()!=UpdateType.SEC)return;
+		if(manager.getState()!=GameState.InGame||ev.getType()!=UpdateType.FASTER)return;
 		for (Location loc : list) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (p.getWorld() == loc.getWorld()) {
 					if (p.getLocation().distance(loc) <= 10) {
+						if(p.getLocation().distance(loc) <= 2)p.setVelocity(p.getLocation().getDirection().multiply(-1.2).setY(0.3D));
 						if (UtilMath.r(1) == 0) {
 							loc.getWorld().playEffect(loc,Effect.SPELL, -30);
 						}
