@@ -33,22 +33,19 @@ public class AddonTargetNextPlayer implements Listener {
 	GameList GL;
 	
 	public AddonTargetNextPlayer(kArcadeManager Manager){
+		this.GL=Manager.getGame().getGameList();
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
 	public AddonTargetNextPlayer(int radius,kArcadeManager Manager){
 		this.radius=radius;
-		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
-	}
-	
-	public AddonTargetNextPlayer(HashMap<Player,Team> TeamList,GameList GL,kArcadeManager Manager){
-		this.TeamList=TeamList;
-		this.GL=GL;
+		this.GL=Manager.getGame().getGameList();
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
 	public AddonTargetNextPlayer(HashMap<Player,Team> TeamList,kArcadeManager Manager){
 		this.TeamList=TeamList;
+		this.GL=Manager.getGame().getGameList();
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	

@@ -229,15 +229,24 @@ public class TeamGame extends Game{
 		delTeam(player);
 		getGameList().addPlayer(player, PlayerState.OUT);
 	    getManager().Clear(player);
-	    if(ev==null){
-	    	player.teleport(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+	    List<Player> l = getGameList().getPlayers(PlayerState.IN);
+	    if(l.size()>1){
+	    	if(ev==null){
+		    	player.teleport(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));
+	    	}else{
+	    		ev.setRespawnLocation(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));
+	    	}
 	    }else{
-	    	ev.setRespawnLocation(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+	    	if(ev==null){
+	    		player.teleport(getManager().getLobby());
+	    	}else{
+	    		ev.setRespawnLocation(getManager().getLobby());
+	    	}
+	    	getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 	    }
 	    player.setGameMode(GameMode.CREATIVE);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
-	    //((CraftPlayer)player).getHandle().k = false;
 	    for(Player p : UtilServer.getPlayers()){
 	    	p.hidePlayer(player);
 	    }

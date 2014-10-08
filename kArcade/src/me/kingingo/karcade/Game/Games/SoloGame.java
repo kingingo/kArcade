@@ -1,5 +1,7 @@
 package me.kingingo.karcade.Game.Games;
 
+import java.util.List;
+
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
@@ -37,23 +39,37 @@ public class SoloGame extends Game{
 	@EventHandler
 	public void Funk(PlayerRespawnEvent ev){
 		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT){
-			SetSpectator(ev.getPlayer());
+			SetSpectator(ev,ev.getPlayer());
 		}
 	}
 	
-	public void SetSpectator(Player player){
+	public void SetSpectator(PlayerRespawnEvent ev,Player player){
 		if(spec==null)spec=new AddonSpectator(getManager());
 	    getManager().Clear(player);
-	    player.teleport(UtilServer.getPlayers()[UtilMath.RandomInt(UtilServer.getPlayers().length, 0)].getLocation().add(0.0D,3.5D,0.0D));
+	    List<Player> l = getGameList().getPlayers(PlayerState.IN);
+	    if(l.size()>1){
+	    	if(ev==null){
+		    	player.teleport(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));
+	    	}else{
+	    		ev.setRespawnLocation(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));
+	    	}
+	    }else{
+	    	if(ev==null){
+	    		player.teleport(getManager().getLobby());
+	    	}else{
+	    		ev.setRespawnLocation(getManager().getLobby());
+	    	}
+	    	getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
+	    }
+	    for(Player p : UtilServer.getPlayers()){
+	    	p.hidePlayer(player);
+	    }
 	    player.setGameMode(GameMode.CREATIVE);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
 	    ((CraftPlayer)player).getHandle().k = false;
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
-	    if(getGameList().getPlayers(PlayerState.IN).size()<1){
-			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
-		}
 	  }
 	
 }

@@ -11,6 +11,9 @@ import org.bukkit.event.EventHandler;
 
 import com.google.common.collect.Lists;
 
+import lombok.Getter;
+import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.karcade.Events.PlayerStateChangeEvent;
 import me.kingingo.karcade.Game.Games.EnderGames.EnderGames;
 import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.Enum.GameState;
@@ -35,6 +38,12 @@ public class AddonPlayerTeleport extends kListener{
 	public AddonPlayerTeleport(EnderGames instance){
 		super(instance.getManager().getInstance(),"[AddonPlayerTeleport]");
 		this.instance=instance;
+	}
+	
+	@EventHandler
+	public void State(PlayerStateChangeEvent ev){
+		if(ev.getPlayerState()==PlayerState.IN)tplist.add(ev.getPlayer());
+		if(ev.getPlayerState()==PlayerState.OUT)tplist.remove(ev.getPlayer());
 	}
 	
 	@EventHandler

@@ -92,7 +92,7 @@ public class SurvivalGames extends TeamGame{
 	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
 	getBlockPlaceAllow().add(Material.FIRE);
 	bp=new AddonBagPack(manager);
-	tnp = new AddonTargetNextPlayer(getTeamList(),getGameList(),getManager());
+	tnp = new AddonTargetNextPlayer(getTeamList(),getManager());
 	tnp.setRadius(40);
 	ArrayList<Material> itemlist = new ArrayList<>();
 	itemlist.add(Material.STONE_SWORD);

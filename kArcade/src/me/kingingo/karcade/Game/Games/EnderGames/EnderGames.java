@@ -13,6 +13,7 @@ import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.Games.EnderGames.Addon.AddonPlayerTeleport;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonQuadratGrenze;
+import me.kingingo.karcade.Game.addons.AddonTargetNextPlayer;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -59,6 +60,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
@@ -116,8 +118,10 @@ public class EnderGames extends SoloGame{
 		setBlockBreak(true);
 		setBlockPlace(true);
 		setItemDrop(true);
+		getBlockBreakDeny().add(Material.ENDER_CHEST);
 		setFoodChange(true);
 		setCompassAddon(true);
+		setItemPickup(true);
 		getWorldData().createWorld();
 		getWorldData().loadBiomes();
 		getWorldData().setMapName( ((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.r(getWorldData().getBiomes().size())]) );
@@ -160,7 +164,6 @@ public class EnderGames extends SoloGame{
 				new PerkNoHunger()
 			}),
 		});
-		new AddonPlayerTeleport(this);
 		manager.setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
@@ -248,19 +251,37 @@ public class EnderGames extends SoloGame{
 		for (int ii = 0; ii < UtilMath.r(3) + 2; ii++) {
 			if (UtilMath.r(15) == 1) {
 				ItemStack added = selten.get(UtilMath.r(selten.size()));
-				inv.addItem(added);
+				inv.setItem(UtilMath.r(26), added);
 				is[ii] = added;
 			} else if (UtilMath.r(5) == 3 || UtilMath.r(5) == 1) {
 				ItemStack added = medium.get(UtilMath.r(medium.size()));
-				inv.addItem(added);
+				inv.setItem(UtilMath.r(26), added);
 				is[ii] = added;
 			} else {
 				ItemStack added = normal.get(UtilMath.r(normal.size()));
-				inv.addItem(added);
+				inv.setItem(UtilMath.r(26), added);
 				is[ii] = added;
 			}
 		}
 		return inv;
+	}
+	
+	@EventHandler
+	public void Death(PlayerDeathEvent ev){
+		if(ev.getEntity() instanceof Player){
+			Player v = (Player)ev.getEntity();
+			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
+			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
+			getGameList().addPlayer(v, PlayerState.OUT);
+			if(ev.getEntity().getKiller() instanceof Player){
+				Player a = (Player)ev.getEntity().getKiller();
+				getManager().getStats().setInt(a, getManager().getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
+				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
+				return;
+			}else{
+				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.DEATH.getText(v.getName()) );
+			}
+		}
 	}
 	
 	@EventHandler
@@ -288,7 +309,7 @@ public class EnderGames extends SoloGame{
 		for(int i = 0; i < chest_time.size(); i++){
 			loc=(Location)chest_time.keySet().toArray()[i];
 			time=chest_time.get(loc);
-			if( (time+(TimeSpan.SECOND*45)<System.currentTimeMillis()) ){
+			if( ((time+(TimeSpan.SECOND*30))<System.currentTimeMillis()) ){
 				if(chest.get(loc)!=null)for (HumanEntity en : chest.get(loc).getViewers())en.closeInventory();
 				loc.getBlock().setType(Material.AIR);
 				loc.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, -2);
@@ -303,21 +324,13 @@ public class EnderGames extends SoloGame{
 	public void Open(PlayerInteractEvent ev){
 		if(getManager().getState()!=GameState.InGame)return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
-		System.err.println("1");
 		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
-			System.err.println("2");
 			if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
-				System.err.println("3");
 				ev.getPlayer().closeInventory();
 				if(chest.containsKey(ev.getClickedBlock().getLocation())){
-					System.err.println("4");
-					if(chest.get(ev.getClickedBlock().getLocation())==null){
-						System.err.println("5");
-						chest.remove(ev.getClickedBlock().getLocation());
-						chest.put(ev.getClickedBlock().getLocation(), setupInv());
-					}
-					System.err.println("6");
+					if(chest.get(ev.getClickedBlock().getLocation())==null)chest.put(ev.getClickedBlock().getLocation(), setupInv());
 					ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
+					ev.setCancelled(true);
 				}
 			}
 		}
@@ -350,7 +363,7 @@ public class EnderGames extends SoloGame{
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())), p);
 		switch(getManager().getStart()){
 		case 895: for(Player p : getGameList().getPlayers(PlayerState.IN))p.setPassenger(p.getWorld().spawnEntity(p.getLocation(),EntityType.CHICKEN));break;
-		case 850: setDamage(true);
+		case 870: setDamage(true);
 		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
 		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
 		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
@@ -390,11 +403,11 @@ public class EnderGames extends SoloGame{
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
 		getWorldData().getWorld().setStorm(false);
-		chest_anzahl=UtilServer.getPlayers().length*10;
+		chest_anzahl=UtilServer.getPlayers().length*5;
 		grenze.setRadius( (UtilServer.getPlayers().length*20) );
 		grenze.scan();
 		
@@ -404,13 +417,15 @@ public class EnderGames extends SoloGame{
 		maxX=grenze.MaxX()-5;
 		System.err.println("X: MAX:"+maxX+" MIN:"+minX);
 		System.err.println("Z: MAX:"+maxZ+" MIN:"+minZ);
-		
+		new AddonPlayerTeleport(this);
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomInt(maxX, minX), 255, UtilMath.RandomInt(maxZ, minZ)) );
+			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 		}
-		
+		AddonTargetNextPlayer a = new AddonTargetNextPlayer(50,getManager());
+		a.setAktiv(true);
 		getManager().setStart(60*15);
 		getManager().setState(GameState.InGame);
 		getManager().DebugLog(time, this.getClass().getName());

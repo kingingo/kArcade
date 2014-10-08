@@ -6,6 +6,7 @@ import java.util.HashMap;
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.karcade.Events.PlayerStateChangeEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,6 +47,7 @@ public class GameList implements Listener{
     public void addPlayer(Player player,PlayerState ps){
     	if(players.containsKey(player))players.remove(player);
 		players.put(player, ps);
+		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,ps));
 //		for (Player other : getPlayers(ps))
 //	    {
 //	      if (!other.equals(player))
@@ -77,6 +79,7 @@ public class GameList implements Listener{
 	public void SetPlayerState(Player player, PlayerState state){
 		if(player==null)return;
 		players.put(player, state);
+		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,state));
 	}
 	
 	public int GetSize(){
@@ -89,6 +92,7 @@ public class GameList implements Listener{
 	
 	public void RemovePlayer(Player player) {
 		players.remove(player);
+		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,PlayerState.OUT));
     }
 	
 	public ArrayList<Location> getSpawns(){
