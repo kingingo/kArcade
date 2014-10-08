@@ -2,25 +2,47 @@ package me.kingingo.karcade.Game.Games.EnderGames;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.Getter;
+import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
-import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
+import me.kingingo.karcade.Game.Games.EnderGames.Addon.AddonPlayerTeleport;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonQuadratGrenze;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.Kit.Kit;
+import me.kingingo.kcore.Kit.KitType;
+import me.kingingo.kcore.Kit.Perk;
+import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
+import me.kingingo.kcore.Kit.Perks.PerkEquipment;
+import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
+import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
+import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
+import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
+import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
+import me.kingingo.kcore.Kit.Perks.PerkPoisen;
+import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
+import me.kingingo.kcore.Kit.Perks.PerkTNT;
+import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.C;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -30,18 +52,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import com.google.common.collect.Lists;
 
 public class EnderGames extends SoloGame{
 
@@ -61,6 +85,10 @@ public class EnderGames extends SoloGame{
 	private ArrayList<ItemStack> selten = new ArrayList<>();
 	private ArrayList<ItemStack> medium = new ArrayList<>();
 	private ArrayList<ItemStack> normal = new ArrayList<>();
+	
+	private KitShop kitShop;
+	
+	private Hologram hm;
 	
 	private int minZ;
 	private int maxZ;
@@ -95,8 +123,56 @@ public class EnderGames extends SoloGame{
 		getWorldData().setMapName( ((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.r(getWorldData().getBiomes().size())]) );
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
 		grenze=new AddonQuadratGrenze(manager,getCenter(),0);
+		this.kitShop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkArrowFire(30),
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW,1),new ItemStack(Material.ARROW,4)})
+			}),
+			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkNoKnockback(manager.getInstance())
+			}),
+			new Kit( "§aBerserker",new String[]{"Der Berserker startet mit","einem Gold Schwert und","Gold Chestplate."}, new ItemStack(Material.IRON_SWORD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.GOLD_SWORD,1), new ItemStack(Material.GOLD_CHESTPLATE)})
+			}),
+			new Kit( "§aBomber",new String[]{"Der Bomber bekommt kein Explosion Schaden und","TNT zündet direkt beim setzten."}, new ItemStack(Material.TNT),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkNoExplosionDamage(),
+				new PerkTNT()
+			}),
+			new Kit( "§aRitter",new String[]{"Der Ritter startet mit,","einen Holzschwert und ","einer Workbench"}, new ItemStack(Material.WOOD_SWORD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.WOOD_SWORD,1),new ItemStack(Material.WORKBENCH,1)}),
+			}),
+			new Kit( "§aFireman",new String[]{"Der Fireman bekommt kein Feuerschaden."}, new ItemStack(Material.FIRE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkNoFiredamage()
+			}),
+			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkHolzfäller()
+			}),
+			new Kit( "§aPanzer",new String[]{"Der Panzer bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkSneakDamage(2)
+			}),
+			new Kit( "§aSkorpion",new String[]{"Der Skorpion hat die 30% Chance","wenn er einen Spieler","schlägt das dieser Vergift ist","5 sekunden lang."}, new ItemStack(Material.POTION),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkPoisen(5, 30)
+			}),
+			new Kit( "§aSoldat",new String[]{"Der Soldat startet mit","einem Holzschwert und einer Lederrüstung"}, new ItemStack(Material.LEATHER_HELMET),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.WOOD_SWORD,1), new ItemStack(Material.LEATHER_HELMET,1), new ItemStack(Material.LEATHER_CHESTPLATE,1), new ItemStack(Material.LEATHER_LEGGINGS,1), new ItemStack(Material.LEATHER_BOOTS)})
+			}),
+			new Kit( "§aVersorger",new String[]{"Der Versorger bekommt kein Hunger."}, new ItemStack(Material.BAKED_POTATO),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkNoHunger()
+			}),
+		});
+		new AddonPlayerTeleport(this);
 		manager.setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
+	}
+	
+	@EventHandler
+	public void ShopOpen(PlayerInteractEvent ev){
+		if(getManager().getState()!=GameState.LobbyPhase)return;
+		if(UtilEvent.isAction(ev, ActionType.R)){
+			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
+				ev.getPlayer().openInventory(kitShop.getInventory());
+			}
+		}
 	}
 	
 	private void setupItems(){
@@ -167,7 +243,7 @@ public class EnderGames extends SoloGame{
 	}
 	
 	public Inventory setupInv() {
-		Inventory inv = Bukkit.createInventory(null, 9 * 3, "");
+		Inventory inv = Bukkit.createInventory(null, 9 * 3, "EnderGames");
 		ItemStack[] is = new ItemStack[9 * 3];
 		for (int ii = 0; ii < UtilMath.r(3) + 2; ii++) {
 			if (UtilMath.r(15) == 1) {
@@ -199,7 +275,7 @@ public class EnderGames extends SoloGame{
 	public void spawnChest(){
 		Location loc = UtilLocation.getLowestBlock(new Location(getWorldData().getWorld(), UtilMath.RandomInt(maxX, minX), 200, UtilMath.RandomInt(maxZ, minZ)));
 		loc.getBlock().setType(Material.ENDER_CHEST);
-		chest.put(loc, setupInv());
+		chest.put(loc, null);
 		chest_time.put(loc, System.currentTimeMillis());
 	}
 	
@@ -213,7 +289,7 @@ public class EnderGames extends SoloGame{
 			loc=(Location)chest_time.keySet().toArray()[i];
 			time=chest_time.get(loc);
 			if( (time+(TimeSpan.SECOND*45)<System.currentTimeMillis()) ){
-				for (HumanEntity en : chest.get(loc).getViewers())en.closeInventory();
+				if(chest.get(loc)!=null)for (HumanEntity en : chest.get(loc).getViewers())en.closeInventory();
 				loc.getBlock().setType(Material.AIR);
 				loc.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, -2);
 				chest.remove(loc);
@@ -225,19 +301,26 @@ public class EnderGames extends SoloGame{
 	
 	@EventHandler
 	public void Open(PlayerInteractEvent ev){
+		if(getManager().getState()!=GameState.InGame)return;
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
+		System.err.println("1");
 		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+			System.err.println("2");
 			if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
+				System.err.println("3");
 				ev.getPlayer().closeInventory();
 				if(chest.containsKey(ev.getClickedBlock().getLocation())){
+					System.err.println("4");
+					if(chest.get(ev.getClickedBlock().getLocation())==null){
+						System.err.println("5");
+						chest.remove(ev.getClickedBlock().getLocation());
+						chest.put(ev.getClickedBlock().getLocation(), setupInv());
+					}
+					System.err.println("6");
 					ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
 				}
 			}
 		}
-	}
-	
-	@EventHandler
-	public void Teleport(UpdateEvent ev){
-		
 	}
 	
 	@EventHandler
@@ -281,6 +364,30 @@ public class EnderGames extends SoloGame{
 			getManager().setState(GameState.Restart);
 			break;
 		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void JoinHologram(PlayerJoinEvent ev){
+		if(getManager().getState()!=GameState.LobbyPhase)return;
+		if(hm==null)hm=new Hologram(getManager().getInstance());
+
+		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.1, 0),new String[]{
+		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
+		"Server: EnderGames §a"+kArcade.id,
+		"Biom: "+getWorldData().getMapName(),
+		" ",
+		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
+		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		" ",
+		"Gespielte Spiele: "+(win+lose),
+		"Gewonnene Spiele: "+win,
+		"Verlorene Spiele: "+lose
+		});
+		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
 	@EventHandler

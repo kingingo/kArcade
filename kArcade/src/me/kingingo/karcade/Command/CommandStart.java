@@ -3,7 +3,6 @@ package me.kingingo.karcade.Command;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Util.AnvilGUI;
 import me.kingingo.kcore.Util.AnvilGUI.AnvilClickEvent;

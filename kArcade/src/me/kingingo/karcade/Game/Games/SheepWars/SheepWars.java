@@ -10,7 +10,6 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.RankingEvent;
-import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
@@ -21,10 +20,9 @@ import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Addons.AddonNight;
-import me.kingingo.kcore.Disguise.DisguiseType;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
@@ -32,7 +30,6 @@ import me.kingingo.kcore.Kit.Perk;
 import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
 import me.kingingo.kcore.Kit.Perks.PerkDeathDropOnly;
 import me.kingingo.kcore.Kit.Perks.PerkHeal;
-import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkNoDropsByDeath;
 import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
@@ -65,7 +62,6 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Villager.VillagerShop;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -73,7 +69,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -82,9 +77,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -93,7 +86,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -157,74 +149,52 @@ public class SheepWars extends TeamGame{
 		setVoteTeam(new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,4));
 		
 		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
-			new Kit( "§aStarter", new ItemStack(Material.WOOD_SWORD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoHunger()
 			}),
-			new Kit( "§eArrowMan", new ItemStack(Material.ARROW),Permission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eArrowMan",new String[]{"Der ArrowMan besitzt die 30% Chance","das seine Pfeile brennen."}, new ItemStack(Material.ARROW),Permission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
 				new PerkArrowFire(30)
 			}),
-			new Kit( "§eItemStealer", new ItemStack(Material.SHEARS),Permission.SHEEPWARS_KIT_ITEMSTEALER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eItemStealer",new String[]{"Der ItemStealer hat nach seinem"," Tod 10 sekunden um seine","Sachen aufzuheben solange","kann er sie nur aufheben."}, new ItemStack(Material.SHEARS),Permission.SHEEPWARS_KIT_ITEMSTEALER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkDeathDropOnly(10)
 			}),
-			new Kit( "§eHealer", new ItemStack(Material.APPLE),Permission.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eHealer",new String[]{"Der Healer heilt schneller."}, new ItemStack(Material.APPLE),Permission.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkHeal(10)
 			}),
-			new Kit( "§eDropper", new ItemStack(Material.DROPPER),Permission.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eDropper",new String[]{"Der Dropper lässt seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),Permission.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoDropsByDeath()
 			}),
-			new Kit( "§eAnker", new ItemStack(Material.ANVIL),Permission.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoKnockback(getManager().getInstance())
 			}),
-			new Kit( "§ePerker", new ItemStack(Material.TORCH),Permission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),Permission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkStopPerk(10)
 			}),
-			new Kit( "§eTNTer", new ItemStack(Material.TNT),Permission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eTNTer",new String[]{"Der TNT hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.TNT),Permission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
-			new Kit( "§eBuffer", new ItemStack(Material.POTION),Permission.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eBuffer",new String[]{"Der Buffer bekommt wenn er Respawn","Feuerresistance und Schadenresistance."}, new ItemStack(Material.POTION),Permission.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)})
 			}),
-			new Kit( "§eKnight", new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eKnight",new String[]{"Der Knight bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSneakDamage(3.0)
 			}),
-			new Kit( "§eTheDeath", new ItemStack(Material.IRON_SWORD),Permission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eTheDeath",new String[]{"Der TheDeath drop beim Tod","ein Blindheits Trank."}, new ItemStack(Material.IRON_SWORD),Permission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,20*5,1),"Blindheit")
 			}),
-			new Kit( "§eSpringer", new ItemStack(Material.FEATHER),Permission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eSpringer",new String[]{"Der Springer bekommt kein Fallschaden."}, new ItemStack(Material.FEATHER),Permission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoFalldamage()
 			}),
-			new Kit("§6PigZombie", new ItemStack(Material.RAW_BEEF), Permission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6PigZombie",new String[]{"Der PigZombie bekommt beim Respawnen","Speed und Regeneration"}, new ItemStack(Material.RAW_BEEF), Permission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,15*20,1), new PotionEffect(PotionEffectType.REGENERATION,10*20,1)})
 			}),
-			new Kit("§6Creeper", new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPWARS_KIT_CREEPER,KitType.PREMIUM,0,new Perk[]{
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
+			new Kit("§6Creeper",new String[]{"Der Creeper hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPWARS_KIT_CREEPER,KitType.PREMIUM,0,new Perk[]{
+				new PerkSpawnByDeath(EntityType.PRIMED_TNT,30)
 			}),
-			new Kit("§6Zombie", new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPWARS_KIT_ZOMBIE, KitType.PREMIUM,0,new Perk[]{
-				new PerkPoisen(3,11)
+			new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","für 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPWARS_KIT_ZOMBIE, KitType.PREMIUM,0,new Perk[]{
+				new PerkPoisen(3,30)
 			}),
-//p.addPotionEffect(new PotionEffect(PotionEffectType type, int duration, int amplifier));
-//			new Kit("§cIronGolem", new ItemStack(Material.IRON_BLOCK), Permission.SHEEPWARS_KIT_IRONGOLEM, KitType.ADMIN,0,new Perk[]{
-//				new PerkPoisen(3,11),
-//				new PerkNoHunger(),
-//				new PerkNoKnockback(),
-//				new PerkHealByHit(10,4)
-//			}),
-//			new Kit("§6PigZombie", new ItemStack(Material.RAW_BEEF), Permission.SHEEPWARS_KIT_PIGZOMBIE,DisguiseType.PIG_ZOMBIE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
-//				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,1,15), new PotionEffect(PotionEffectType.REGENERATION,1,10)})
-//			}),
-//			new Kit("§6Creeper", new ItemStack(Material.SKULL_ITEM,1,(byte)4), Permission.SHEEPWARS_KIT_CREEPER, DisguiseType.CREEPER,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
-//				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
-//			}),
-//			new Kit("§6Zombie", new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPWARS_KIT_ZOMBIE, DisguiseType.ZOMBIE,getManager().getDisguiseManager(),KitType.PREMIUM,0,new Perk[]{
-//				new PerkPoisen(3,11)
-//			}),
-//			new Kit("§cIronGolem", new ItemStack(Material.IRON_BLOCK), Permission.SHEEPWARS_KIT_IRONGOLEM, DisguiseType.IRON_GOLEM,getManager().getDisguiseManager(),KitType.ADMIN,0,new Perk[]{
-//				new PerkPoisen(3,11),
-//				new PerkNoHunger(),
-//				new PerkNoKnockback(),
-//				new PerkHealByHit(10,4)
-//			}),
-			new Kit( "§cOldRush", new ItemStack(Material.BED), Permission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{
+			new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","5% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), Permission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{
 				new PerkNoFiredamage(),
 				new PerkArrowFire(15),
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,5)

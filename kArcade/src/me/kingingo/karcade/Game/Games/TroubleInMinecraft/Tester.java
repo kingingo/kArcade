@@ -15,8 +15,8 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

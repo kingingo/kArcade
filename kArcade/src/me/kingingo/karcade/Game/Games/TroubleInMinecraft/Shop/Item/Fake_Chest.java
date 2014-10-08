@@ -1,7 +1,6 @@
 package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
@@ -21,16 +20,11 @@ import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;

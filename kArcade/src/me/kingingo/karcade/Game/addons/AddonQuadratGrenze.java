@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.util.Vector;
 
 public class AddonQuadratGrenze implements Listener{
 
@@ -38,6 +39,34 @@ public class AddonQuadratGrenze implements Listener{
 		manager.DebugLog(time, this.getClass().getName());
 	}
 	
+	public Vector calculateVector(Location from, Location to) {
+		Location a = from, b = to;
+		
+		//calculate the distance between the locations (a => from || b => to)
+		double dX = a.getX() - b.getX();
+		double dY = a.getY() - b.getY();
+		double dZ = a.getZ() - b.getZ();
+		// -------------------------
+		
+		//calculate the yaw
+		double yaw = Math.atan2(dZ, dX);
+		// -------------------------
+		
+		//calculate the pitch
+		double pitch = Math.atan2(Math.sqrt(dZ * dZ + dX * dX), dY) + Math.PI;
+		// -------------------------
+		
+		//calculate and create the new vector
+		double x = Math.sin(pitch) * Math.cos(yaw);
+		double y = Math.sin(pitch) * Math.sin(yaw);
+		double z = Math.cos(pitch);
+		
+		Vector vector = new Vector(x, z, y);
+		// -------------------------
+		
+		return vector;
+	}
+	
 	@EventHandler
 	public void Update(UpdateEvent ev){
 		if(manager.getState()!=GameState.InGame||ev.getType()!=UpdateType.FASTER)return;
@@ -45,7 +74,7 @@ public class AddonQuadratGrenze implements Listener{
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (p.getWorld() == loc.getWorld()) {
 					if (p.getLocation().distance(loc) <= 10) {
-						if(p.getLocation().distance(loc) <= 2)p.setVelocity(p.getLocation().getDirection().multiply(-1.2).setY(0.3D));
+						if(p.getLocation().distance(loc) <= 2)p.setVelocity(calculateVector(p.getLocation(), center).multiply(8).setY(0.4));
 						if (UtilMath.r(1) == 0) {
 							loc.getWorld().playEffect(loc,Effect.SPELL, -30);
 						}

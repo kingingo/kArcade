@@ -4,13 +4,9 @@ import lombok.Getter;
 import me.kingingo.kcore.ItemFake.ItemFake;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
-import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 

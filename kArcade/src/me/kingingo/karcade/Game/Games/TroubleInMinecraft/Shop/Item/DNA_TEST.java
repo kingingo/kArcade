@@ -2,13 +2,6 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.HashMap;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import lombok.Getter;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
@@ -17,6 +10,12 @@ import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class DNA_TEST extends kListener implements IShop{
 

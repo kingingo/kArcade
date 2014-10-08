@@ -23,7 +23,6 @@ import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

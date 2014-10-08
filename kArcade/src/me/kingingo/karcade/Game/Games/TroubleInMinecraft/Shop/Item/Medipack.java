@@ -3,8 +3,8 @@ package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.Item;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;

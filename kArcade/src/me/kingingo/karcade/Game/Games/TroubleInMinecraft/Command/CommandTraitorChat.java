@@ -1,27 +1,16 @@
 package me.kingingo.karcade.Game.Games.TroubleInMinecraft.Command;
 
 import me.kingingo.karcade.Enum.Team;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TTT_Item;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.NPC.NPC;
-import me.kingingo.kcore.PlayerStats.Stats;
-import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilPlayer;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class CommandTraitorChat implements CommandExecutor, Listener{
 	

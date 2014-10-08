@@ -8,7 +8,6 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.RankingEvent;
-import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -16,6 +15,7 @@ import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
@@ -35,7 +35,6 @@ import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -73,17 +72,17 @@ public class SkyPvP extends SoloGame{
 		setFoodChange(true);
 		setItemPickup(true);
 		setItemDrop(true);
-		kitshop=new KitShop(manager.getInstance(),getCoins(),getTokens(),getManager().getPermManager(),"Shop",InventorySize._18,new Kit[]{
-			new Kit("Ankerman",new ItemStack(Material.ANVIL),new ItemStack[]{new ItemStack(Material.STONE_SWORD)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkNoKnockback(manager.getInstance())}),
-			new Kit("Panzer",new ItemStack(Material.DIAMOND_CHESTPLATE),new ItemStack[]{},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkSneakDamage(1.0)}),
-			new Kit("Man of Steel",new ItemStack(Material.IRON_SWORD),new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.POTION,1,(byte)8265)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-			new Kit("Heiler",new ItemStack(Material.POTION,1,(byte)8229),new ItemStack[]{new ItemStack(Material.POTION,4,(byte)8229)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-			new Kit("Rusher",new ItemStack(Material.IRON_CHESTPLATE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_CHESTPLATE), new String[]{Enchantment.PROTECTION_PROJECTILE.getName()+":1",Enchantment.DURABILITY.getName()+":1"})},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-			new Kit("RockMan",new ItemStack(Material.WOOD_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD), Enchantment.DAMAGE_ALL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_PICKAXE), Enchantment.DURABILITY.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SPADE), Enchantment.DURABILITY.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-			new Kit("Looter",new ItemStack(Material.COBBLESTONE),new ItemStack[]{new ItemStack(Material.COBBLESTONE,32),new ItemStack(Material.WOOD,16)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-			new Kit("Berserker",new ItemStack(Material.LEATHER_HELMET),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.LEATHER_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.LEATHER_LEGGINGS), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-			new Kit("Miner",new ItemStack(Material.IRON_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.DIG_SPEED.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-		});
+//		kitshop=new KitShop(manager.getInstance(),getCoins(),getTokens(),getManager().getPermManager(),"Shop",InventorySize._18,new Kit[]{
+//			new Kit("Ankerman",new ItemStack(Material.ANVIL),new ItemStack[]{new ItemStack(Material.STONE_SWORD)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkNoKnockback(manager.getInstance())}),
+//			new Kit("Panzer",new ItemStack(Material.DIAMOND_CHESTPLATE),new ItemStack[]{},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkSneakDamage(1.0)}),
+//			new Kit("Man of Steel",new ItemStack(Material.IRON_SWORD),new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.POTION,1,(byte)8265)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//			new Kit("Heiler",new ItemStack(Material.POTION,1,(byte)8229),new ItemStack[]{new ItemStack(Material.POTION,4,(byte)8229)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//			new Kit("Rusher",new ItemStack(Material.IRON_CHESTPLATE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_CHESTPLATE), new String[]{Enchantment.PROTECTION_PROJECTILE.getName()+":1",Enchantment.DURABILITY.getName()+":1"})},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//			new Kit("RockMan",new ItemStack(Material.WOOD_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD), Enchantment.DAMAGE_ALL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_PICKAXE), Enchantment.DURABILITY.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SPADE), Enchantment.DURABILITY.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//			new Kit("Looter",new ItemStack(Material.COBBLESTONE),new ItemStack[]{new ItemStack(Material.COBBLESTONE,32),new ItemStack(Material.WOOD,16)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//			new Kit("Berserker",new ItemStack(Material.LEATHER_HELMET),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.LEATHER_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.LEATHER_LEGGINGS), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//			new Kit("Miner",new ItemStack(Material.IRON_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.DIG_SPEED.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
+//		});
 		setRespawn(true);
 		WorldData wd=new WorldData(manager,GameType.SkyPvP.name());
 		wd.Initialize();

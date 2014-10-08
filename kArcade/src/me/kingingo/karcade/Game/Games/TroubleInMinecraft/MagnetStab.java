@@ -1,17 +1,16 @@
 package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import lombok.Getter;
 import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.Util.UtilItem;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class MagnetStab extends kListener{
 	
