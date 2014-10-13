@@ -417,7 +417,7 @@ public class Game implements Listener{
 	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
 		  TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+manager.getTyp().getTyp(), "§eShop.EpicPvP.de");
-		  ev.getPlayer().sendMessage("§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
+		  ev.getPlayer().sendMessage(Text.PREFIX.getText()+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
 		  if(getManager().isState(GameState.LobbyPhase)){
 			  getManager().getLobby().getWorld().setStorm(false);

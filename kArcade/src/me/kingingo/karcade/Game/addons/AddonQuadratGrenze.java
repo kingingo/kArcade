@@ -14,19 +14,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 public class AddonQuadratGrenze implements Listener{
 
 	private ArrayList<Location> list;
+	@Getter
 	private Location center;
 	private kArcadeManager manager;
 	@Getter
 	@Setter
 	private int radius=0;
+	@Getter
+	private int MaxX;
+	@Getter
+	private int MinX;
+	@Getter
+	private int MaxZ;
+	@Getter
+	private int MinZ;
 	
 	public AddonQuadratGrenze(kArcadeManager manager,Location loc,int radius){
 		long time = System.currentTimeMillis();
@@ -69,14 +81,16 @@ public class AddonQuadratGrenze implements Listener{
 	
 	@EventHandler
 	public void Update(UpdateEvent ev){
-		if(manager.getState()!=GameState.InGame||ev.getType()!=UpdateType.FASTER)return;
-		for (Location loc : list) {
-			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (p.getWorld() == loc.getWorld()) {
-					if (p.getLocation().distance(loc) <= 10) {
-						if(p.getLocation().distance(loc) <= 2)p.setVelocity(calculateVector(p.getLocation(), center).multiply(8).setY(0.4));
-						if (UtilMath.r(1) == 0) {
-							loc.getWorld().playEffect(loc,Effect.SPELL, -30);
+		if(ev.getType()!=UpdateType.FASTER)return;
+		if(manager.getState()==GameState.InGame||manager.getState()==GameState.SchutzModus){
+			for (Location loc : list) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.getWorld() == loc.getWorld()) {
+						if (p.getLocation().distance(loc) <= 13) {
+							if(p.getLocation().distance(loc) <= 3)p.setVelocity(calculateVector(p.getLocation(), center).multiply(3).setY(0.4));
+							if (UtilMath.r(5) == 0) {
+								loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, -30);
+							}
 						}
 					}
 				}
@@ -84,17 +98,30 @@ public class AddonQuadratGrenze implements Listener{
 		}
 	}
 	
+	public boolean isInGrenze(Location loc){
+		if(loc.getX() < MaxX() && loc.getX() > MinX() && loc.getZ() > MinZ() && loc.getZ() < MaxZ())return true;
+		return false;
+	}
+	
+	@EventHandler
+	public void Teleport(PlayerTeleportEvent ev){
+		if(ev.getCause()==TeleportCause.ENDER_PEARL){
+			if(!ev.getTo().getWorld().getName().equalsIgnoreCase(center.getWorld().getName()))return;
+			if(!isInGrenze(ev.getTo()))ev.setCancelled(true);
+		}
+	}
+	
 	public void scan() {
 		ArrayList<Location> list1 = new ArrayList<Location>();
-		int MaxX = MaxX();
-		int MaxZ = MaxZ();
-		int MinX = MinX();
-		int MinZ = MinZ();
+		MaxX = MaxX();
+		MaxZ = MaxZ();
+		MinX = MinX();
+		MinZ = MinZ();
 
 		for (int y = MinY(); y < MaxY(); y++) {
 			for (int z = MinZ; z < MaxZ; z++) {
 				Location l = new Location(center.getWorld(), MaxX, y, z);
-				if (l.getBlock().getType() == Material.AIR)
+				if (l.getBlock().getType() == Material.AIR||l.getBlock().getType().toString().contains("WATER"))
 					list1.add(l);
 			}
 
@@ -106,13 +133,13 @@ public class AddonQuadratGrenze implements Listener{
 
 			for (int z = MaxZ; z > MinZ; z--) {
 				Location l = new Location(center.getWorld(), MinX, y, z);
-				if (l.getBlock().getType() == Material.AIR)
+				if (l.getBlock().getType() == Material.AIR||l.getBlock().getType().toString().contains("WATER"))
 					list1.add(l);
 			}
 
 			for (int x = MinX; x < MaxX; x++) {
 				Location l = new Location(center.getWorld(), x, y, MinZ);
-				if (l.getBlock().getType() == Material.AIR)
+				if (l.getBlock().getType() == Material.AIR||l.getBlock().getType().toString().contains("WATER"))
 					list1.add(l);
 			}
 		}

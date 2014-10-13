@@ -16,6 +16,8 @@ import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -31,8 +33,16 @@ public class SoloGame extends Game{
 	public void Quit(PlayerQuitEvent ev){
 		if(getManager().isState(GameState.Restart)||getManager().isState(GameState.LobbyPhase))return;
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
-		if(getGameList().getPlayers(PlayerState.IN).size()<1){
+		if(getGameList().getPlayers(PlayerState.IN).size()<=1){
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void SpectJoin(PlayerJoinEvent ev){
+		if(getManager().getState()!=GameState.LobbyPhase){
+			getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
+			SetSpectator(null,ev.getPlayer());
 		}
 	}
 	

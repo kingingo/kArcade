@@ -119,7 +119,7 @@ public class WorldData {
 			        for(int yy = 0; yy < 128; yy++) {
 			        	Block b = world.getBlockAt(xx, yy, zz);
 			        	Biome bio = world.getBiome(b.getLocation().getBlockX(), b.getLocation().getBlockZ());
-						if(!biomes.containsKey(bio.name())){
+						if(!biomes.containsKey(bio.name())&&bio!=Biome.DEEP_OCEAN&&bio!=Biome.FROZEN_OCEAN&&bio!=Biome.OCEAN){
 							biomes.put(bio.name(),b.getLocation());
 						}
 						break;

@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games.EnderGames.Addon;
+package me.kingingo.karcade.Game.Games.DeathGames.Addon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,10 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.PlayerStateChangeEvent;
-import me.kingingo.karcade.Game.Games.EnderGames.EnderGames;
+import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
 import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 
@@ -27,7 +28,7 @@ public class AddonPlayerTeleport extends kListener{
 	private List<Player> tplist = Lists.newArrayList();
 	private Player p1;
 	private Player p2;
-	private EnderGames instance;
+	private DeathGames instance;
 	private Player pl1;
 	private Player pl2;
 	private Player pl3;
@@ -35,7 +36,7 @@ public class AddonPlayerTeleport extends kListener{
 	private Location loc1;
 	private Location loc2;
 	
-	public AddonPlayerTeleport(EnderGames instance){
+	public AddonPlayerTeleport(DeathGames instance){
 		super(instance.getManager().getInstance(),"[AddonPlayerTeleport]");
 		this.instance=instance;
 	}
@@ -65,8 +66,8 @@ public class AddonPlayerTeleport extends kListener{
 				for (int i = 0; i < max; i++) {
 					p1 = tplist.get(0);
 					p2 = tplist.get(1);
-					p1.sendMessage("§6Du hast deine Position mit §5"+p2.getName()+" §6gewechselt!");
-					p2.sendMessage("§6Du hast deine Position mit §5"+p1.getName()+" §6gewechselt!");
+					p1.sendMessage(Text.PREFIX_GAME.getText(instance.getManager().getTyp())+Text.ENDERGAMES_TELEPORT.getText(p2.getName()));
+					p2.sendMessage(Text.PREFIX_GAME.getText(instance.getManager().getTyp())+Text.ENDERGAMES_TELEPORT.getText(p1.getName()));
 					loc1 = p1.getLocation();
 					loc2 = p2.getLocation();
 
