@@ -74,6 +74,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 
 public class kArcadeManager implements Listener{
 
@@ -337,6 +338,8 @@ public class kArcadeManager implements Listener{
 
 	    player.setLevel(0);
 	    player.setExp(0.0F);
+	    
+	    for(PotionEffect pe : player.getActivePotionEffects())player.removePotionEffect(pe.getType());
 	    
 	    ((CraftPlayer)player).getHandle().k = true;
 

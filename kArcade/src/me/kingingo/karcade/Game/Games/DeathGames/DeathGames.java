@@ -40,6 +40,8 @@ import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
 import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
 import me.kingingo.kcore.Kit.Perks.PerkPoisen;
+import me.kingingo.kcore.Kit.Perks.PerkPotionEffect;
+import me.kingingo.kcore.Kit.Perks.PerkRunner;
 import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
@@ -81,6 +83,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class DeathGames extends SoloGame{
@@ -140,12 +143,14 @@ public class DeathGames extends SoloGame{
 		grenze=new AddonQuadratGrenze(manager,getCenter(),0);
 		this.kitShop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,5)}),
 				new PerkArrowFire(30)
 			}),
 			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoKnockback(manager.getInstance())
 			}),
 			new Kit( "§aBomber",new String[]{"Der Bomber bekommt kein Explosion Schaden und","TNT zündet direkt beim setzten."}, new ItemStack(Material.TNT),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,2)}),
 				new PerkNoExplosionDamage(),
 				new PerkTNT()
 			}),
@@ -153,6 +158,7 @@ public class DeathGames extends SoloGame{
 				new PerkNoFiredamage()
 			}),
 			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.WOOD_AXE)}),
 				new PerkHolzfäller()
 			}),
 			new Kit( "§aPanzer",new String[]{"Der Panzer bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
@@ -168,10 +174,18 @@ public class DeathGames extends SoloGame{
 				new PerkHealByKill(6)
 			}),
 			new Kit( "§aAngle",new String[]{"Der Angler kann seine","Gegner zu sich ziehen"}, new ItemStack(Material.RAW_FISH),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD)}),
 				new PerkAngle()
 			}),
 			new Kit( "§aEnterhaken",new String[]{"Mit dem Enterhaken kannst du","dich schnell zu Gegner und ","Blöcken ziehen um"," dich schneller fortzubewegen"}, new ItemStack(Material.FISHING_ROD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD)}),
 				new PerkEnterhacken()
+			}),
+			new Kit( "§aJumper",new String[]{"Der Jumper kann höher","als normal springen"}, new ItemStack(Material.FEATHER),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkPotionEffect(PotionEffectType.JUMP, 16*60, 3)
+			}),
+			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkRunner(1.5F)
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.SHEEPWARS_KIT_ARROWMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),
