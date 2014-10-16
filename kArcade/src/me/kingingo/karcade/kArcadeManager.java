@@ -335,7 +335,7 @@ public class kArcadeManager implements Listener{
 
 	    player.setFireTicks(0);
 	    player.setFallDistance(0.0F);
-
+	    player.setWalkSpeed( 0.2F );
 	    player.setLevel(0);
 	    player.setExp(0.0F);
 	    

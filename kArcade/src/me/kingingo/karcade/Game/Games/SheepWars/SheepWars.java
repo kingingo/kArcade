@@ -209,8 +209,11 @@ public class SheepWars extends TeamGame{
 		manager.setState(GameState.LobbyPhase);
 	}
 	
+	//GOLD ORANGE
+	//IRON PURPLE
+	//BRICK WHITE
+	
 	//EMERALD_BLOCK&MELON_BLOCK||SPONGE = SHEEP PLACE
-	//EMERALD_BLOCK&BEDROCK = DROP
 	//EMERALD_BLOCK&EMERALD_BLOCK VILLAGER
 	//TEAM RED
 	//TEAM YELLOW
@@ -432,7 +435,7 @@ public class SheepWars extends TeamGame{
 	
 	public void setVillager(Location l,Team t){
 		l=l.add(0.5,0.3,0.5);
-		VillagerShop v = new VillagerShop(getManager().getInstance(),"Villager-Shop",l,InventorySize._27);
+		VillagerShop v = new VillagerShop(getManager().getInstance(),t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
 		
@@ -607,23 +610,18 @@ public class SheepWars extends TeamGame{
 		Team[] teams = getTyp().getTeam();
 		ArrayList<Location> list;
 		HashMap<Team,Location> sheeps = new HashMap<>();
-		HashMap<Team,Location> tt = new HashMap<>();
 		int i = 0;
 		for(Team t : teams){
 			getTeams().put(t, true);
 			list = getManager().getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
-				if(!sheeps.containsKey(t)&&!tt.containsKey(t)){
+				if(!sheeps.containsKey(t)){
 					Location l = list.get(0);
 					List<Block> blist = UtilLocation.getScans(20,l);
 					for(Block b : blist){
 						if(b.getType()==Material.EMERALD_BLOCK){
 							if(b.getRelative(BlockFace.UP).getType()==Material.SPONGE||b.getRelative(BlockFace.UP).getType()==Material.MELON_BLOCK){
 								sheeps.put(t, b.getLocation());
-								b.setType(Material.AIR);
-								b.getRelative(BlockFace.UP).setType(Material.AIR);
-							}else if(b.getRelative(BlockFace.UP).getType()==Material.BEDROCK){
-								tt.put(t, b.getLocation());
 								b.setType(Material.AIR);
 								b.getRelative(BlockFace.UP).setType(Material.AIR);
 							}else if(b.getRelative(BlockFace.UP).getType()==Material.EMERALD_BLOCK){
@@ -646,7 +644,7 @@ public class SheepWars extends TeamGame{
 			}
 		}
 		
-		adi= new AddonDropItems(getManager().getInstance(),tt);
+		//adi= new AddonDropItems(t);
 		aek=new AddonEntityKing(getManager(), teams,this, EntityType.SHEEP,sheeps);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		an= new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
@@ -718,12 +716,6 @@ public class SheepWars extends TeamGame{
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
-		//adi.getDrops().remove(ev.getTeam());
-		//adi.getDrops().put(ev.getTeam(), false);
-		int g = adi.getChance().get(t)[0];
-		int s = adi.getChance().get(t)[1];
-		adi.getChance().remove(t);
-		adi.getChance().put(t, new Integer[]{g+1,s+1});
 		getManager().getStats().setInt(ev.getKiller(), getManager().getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
 		getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
 	}

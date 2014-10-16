@@ -5,6 +5,8 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.naming.NoInitialContextException;
+
 import lombok.Getter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
@@ -55,17 +57,24 @@ import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilFirework;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilParticle;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Effect;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
@@ -137,7 +146,30 @@ public class DeathGames extends SoloGame{
 		setCompassAddon(true);
 		setItemPickup(true);
 		getWorldData().createWorld();
-		getWorldData().loadBiomes();
+		ArrayList<Biome> nobiome = new ArrayList<>();
+		nobiome.add(Biome.DEEP_OCEAN);
+		nobiome.add(Biome.FROZEN_OCEAN);
+		nobiome.add(Biome.OCEAN);
+		nobiome.add(Biome.TAIGA_MOUNTAINS);
+		nobiome.add(Biome.BIRCH_FOREST_HILLS_MOUNTAINS);
+		nobiome.add(Biome.BIRCH_FOREST_MOUNTAINS);
+		nobiome.add(Biome.COLD_TAIGA_MOUNTAINS);
+		nobiome.add(Biome.DESERT_MOUNTAINS);
+		nobiome.add(Biome.EXTREME_HILLS_MOUNTAINS);
+		nobiome.add(Biome.EXTREME_HILLS_PLUS_MOUNTAINS);
+		nobiome.add(Biome.ICE_MOUNTAINS);
+		nobiome.add(Biome.JUNGLE_EDGE_MOUNTAINS);
+		nobiome.add(Biome.JUNGLE_MOUNTAINS);
+		nobiome.add(Biome.MESA_PLATEAU_FOREST_MOUNTAINS);
+		nobiome.add(Biome.MESA_PLATEAU_MOUNTAINS);
+		nobiome.add(Biome.ROOFED_FOREST_MOUNTAINS);
+		nobiome.add(Biome.MESA_PLATEAU_MOUNTAINS);
+		nobiome.add(Biome.SAVANNA_MOUNTAINS);
+		nobiome.add(Biome.SAVANNA_PLATEAU_MOUNTAINS);
+		nobiome.add(Biome.TAIGA_MOUNTAINS);
+		nobiome.add(Biome.SWAMPLAND_MOUNTAINS);
+		nobiome.add(Biome.SMALL_MOUNTAINS);
+		getWorldData().loadBiomes(nobiome);
 		getWorldData().setMapName( ((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.r(getWorldData().getBiomes().size())]) );
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
 		grenze=new AddonQuadratGrenze(manager,getCenter(),0);
@@ -185,7 +217,7 @@ public class DeathGames extends SoloGame{
 				new PerkPotionEffect(PotionEffectType.JUMP, 16*60, 3)
 			}),
 			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkRunner(1.5F)
+				new PerkRunner(0.35F)
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.SHEEPWARS_KIT_ARROWMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),
@@ -341,6 +373,8 @@ public class DeathGames extends SoloGame{
 	public void Death(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player){
 			Player v = (Player)ev.getEntity();
+			UtilParticle.DRIP_LAVA.display(0.5F, 0.9F, 0.5F, 3, 65, v.getLocation(), 30);
+			UtilParticle.DRIP_WATER.display(0.5F, 0.9F, 0.5F, 3, 65, v.getLocation(), 30);
 			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
 			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 			getGameList().addPlayer(v, PlayerState.OUT);
@@ -363,13 +397,6 @@ public class DeathGames extends SoloGame{
 		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.IN).size()*15)){
 			getGrenze().setRadius( getGrenze().getRadius()-1 );
 			getGrenze().scan();
-//			for(Player p : getGameList().getPlayers(PlayerState.IN)){
-//				if(p.getWorld().getName().equalsIgnoreCase("map")){
-//					if(p.getLocation().distance(getGrenze().getCenter()) > getGrenze().getRadius()){
-//						p.setVelocity(UtilLocation.calculateVector(p.getLocation(), getGrenze().getCenter()).multiply(3).setY(0.4));
-//					}
-//				}
-//			}
 		}
 	}
 	
@@ -475,32 +502,34 @@ public class DeathGames extends SoloGame{
 		fall.add(fb);
 	}
 	
-//	long time;
-//	Location loc;
-//	@EventHandler
-//	public void ChangeChest(UpdateEvent ev){
-//		if(ev.getType()!=UpdateType.FAST)return;
-//		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
-//			for(int i = 0; i < chest.size(); i++){
-//				loc=(Location)chest.keySet().toArray()[i];
-//				if(UtilInv.isInventoryEmpty(chest.get(loc))){
-//					if(chest.get(loc)!=null){
-//						try{
-//							for (HumanEntity en : chest.get(loc).getViewers()){
-//								en.closeInventory();
-//							}
-//						}catch(ConcurrentModificationException e){
-//							System.out.println("[DeathGames] ConcurrentModificationException <-");
-//						}
-//					}
-//					loc.getBlock().setType(Material.AIR);
-//					loc.getWorld().playEffect(loc, Effect.COLOURED_DUST, -2);
-//					chest.remove(loc);
-//					spawnChest();
-//				}
-//			}
-//		}
-//	}
+	long time;
+	Location loc;
+	@EventHandler
+	public void ChangeChest(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.FAST)return;
+		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
+			for(int i = 0; i < chest.size(); i++){
+				loc=(Location)chest.keySet().toArray()[i];
+				if(!getGrenze().isInGrenze(loc)){
+					if(chest.get(loc)!=null){
+						try{
+							for (HumanEntity en : chest.get(loc).getViewers()){
+								en.closeInventory();
+							}
+						}catch(ConcurrentModificationException e){
+							System.out.println("[DeathGames] ConcurrentModificationException <-");
+						}
+					}
+					if(loc.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, loc, 7);
+					if(loc.getBlock().getType()==Material.ENDER_CHEST)loc.getWorld().playEffect(loc,Effect.ENDER_SIGNAL, 3);
+					loc.getBlock().setType(Material.AIR);
+					chest1.remove(chest.get(loc));
+					chest.remove(loc);
+					spawnChest();
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void InventoryClose(InventoryCloseEvent ev){
@@ -509,7 +538,11 @@ public class DeathGames extends SoloGame{
 				Location l = chest1.get(ev.getInventory());
 				chest.remove(l);
 				chest1.remove(ev.getInventory());
-				if(l.getBlock().getType()==Material.ENDER_CHEST)extra_chest_anzahl=0;
+				if(l.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, l, 7);
+				if(l.getBlock().getType()==Material.ENDER_CHEST){
+					l.getWorld().playEffect(l,Effect.ENDER_SIGNAL, 3);
+					extra_chest_anzahl=0;
+				}
 				l.getBlock().setType(Material.AIR);
 			}
 		}
@@ -521,7 +554,7 @@ public class DeathGames extends SoloGame{
 		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
 			if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
 			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
-				if(ev.getClickedBlock().getType()==Material.CHEST){
+				if(ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST){
 					if(chest.containsKey(ev.getClickedBlock().getLocation())){
 						ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
 						ev.setCancelled(true);

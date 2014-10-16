@@ -86,15 +86,23 @@ public class AddonQuadratGrenze implements Listener{
 			for (Location loc : list) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.getWorld() == loc.getWorld()) {
-						if (p.getLocation().distance(loc) <= 13) {
-							if(p.getLocation().distance(loc) <= 3)p.setVelocity(calculateVector(p.getLocation(), center).multiply(3).setY(0.4));
-							if (UtilMath.r(5) == 0) {
+						if (p.getLocation().distance(loc) <= 6) {
+							if(p.getLocation().distance(loc) <= 3){
+								p.setVelocity(calculateVector(p.getLocation(), center).multiply(3).setY(0.4));
+							}
+							
+							if(!isInGrenze(p.getLocation())){
+								p.setVelocity(calculateVector(p.getLocation(), center).multiply(3).setY(0.4));
+							}
+							
+							if (UtilMath.r(3) == 0) {
 								loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, -30);
 							}
 						}
 					}
 				}
 			}
+			
 		}
 	}
 	

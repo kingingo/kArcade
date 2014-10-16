@@ -1,53 +1,33 @@
 package me.kingingo.karcade.Game.Games.SheepWars.Addon;
 
-import java.util.HashMap;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
+import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-public class AddonDropItems implements Listener {
+public class AddonDropItems extends kListener {
 
 	@Getter
-	JavaPlugin instance;
-	@Getter
-	HashMap<Team,Location> teams;
-	@Getter
-	HashMap<Team,Boolean> drops = new HashMap<>();
-	@Getter
-	HashMap<Team,Integer[]> chance = new HashMap<>();
+	private SheepWars instance;
 	
-	public AddonDropItems(JavaPlugin instance,HashMap<Team,Location> teams){
+	public AddonDropItems(SheepWars instance){
+		super(instance.getManager().getInstance(),"[AddonDropItems]");
 		this.instance=instance;
-		this.teams=teams;
-		for(Team t : teams.keySet()){
-			drops.put(t, true);
-			chance.put(t, new Integer[]{2,3});
-		}
-		Bukkit.getPluginManager().registerEvents(this, getInstance());
 	}
 	
-	@EventHandler
-	public void Update(UpdateEvent ev){
-	if(ev.getType()!=UpdateType.SEC_2)return;
-		for(Team t : getTeams().keySet()){
-			if(getDrops().get(t)==true){
-				DropItem(getTeams().get(t),chance.get(t)[0],chance.get(t)[1]);
-			}
-		}
-	}
+	//GOLD ORANGE
+	//IRON PURPLE
+	//BRICK WHITE
 	
 	@EventHandler
 	public void Interact(PlayerPickupItemEvent ev){	
@@ -61,9 +41,7 @@ public class AddonDropItems implements Listener {
 	}
 	
 	public static String Farbe(){
-		int i = UtilMath.RandomInt(4,0);
-		
-		switch(i){
+		switch(UtilMath.RandomInt(9,0)){
 		case 0:
 			return "§r";
 		case 1:
@@ -74,29 +52,46 @@ public class AddonDropItems implements Listener {
 			return "§d";
 		case 4:
 			return "§l";
+		case 6:
+			return "§e";
+		case 7:
+			return "§m";
+		case 8:
+			return "§n";
+		case 9:
+			return "§k";
+		case 10:
+			return "§1";
+		case 11:
+			return "§2";
+		case 12:
+			return "§3";
+		default:
+			return "§4";
 		}
-		return "§n";
 	}
 	
-	public static void DropItem(Location l,int g,int s){
-		int i = UtilMath.RandomInt(14,0);
-		
-		l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,UtilMath.RandomInt(3,1)), "§bBronze"+Farbe()));
-		
-		switch(i){
-		case 2:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,2)), "§bSilver"+Farbe()));
-			break;
-		case 6:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,UtilMath.RandomInt(s,2)), "§bSilver"+Farbe()));
-			break;
-		case 4:
-			l.getWorld().dropItem(l, UtilItem.RenameItem(new ItemStack(Material.GOLD_INGOT,g), "§bGold"+Farbe()));
-			break;
-		default:
-			break;
+	public void drop(Location loc,ItemStack item,String name, int anzahl){
+		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, name+Farbe()));
+	}
+	
+	@EventHandler
+	public void Update(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.SEC){
+			for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name()))drop(loc,new ItemStack(Material.CLAY_BRICK),"§bBronze",UtilMath.RandomInt(8, 3));
+		}else if(ev.getType()!=UpdateType.SEC_2){
+			if(getInstance().getManager().getWorldData().ExistLoc(Team.PURPLE.Name())){
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.PURPLE.Name()))drop(loc,new ItemStack(Material.IRON_INGOT),"§bSilver",UtilMath.RandomInt(5, 2));
+			}else{
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name()))drop(loc,new ItemStack(Material.IRON_INGOT),"§bSilver",UtilMath.RandomInt(5, 2));
+			}
+		}else if(ev.getType()!=UpdateType.SLOW){
+			if(getInstance().getManager().getWorldData().ExistLoc(Team.PURPLE.Name())){
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.ORANGE.Name()))drop(loc,new ItemStack(Material.GOLD_INGOT),"§bGold",UtilMath.RandomInt(2, 1));
+			}else{
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name()))drop(loc,new ItemStack(Material.GOLD_INGOT),"§bGold",UtilMath.RandomInt(2, 1));
+			}
 		}
-		
 	}
 	
 }

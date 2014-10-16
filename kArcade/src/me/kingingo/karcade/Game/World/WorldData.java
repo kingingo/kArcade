@@ -63,6 +63,10 @@ public class WorldData {
 		return list;
 	}
 	
+	public boolean ExistLoc(String s){
+		return locs.containsKey(s);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public ArrayList<Location> getLocs(String s){
 		ArrayList<Location> list = new ArrayList<>();
@@ -99,7 +103,7 @@ public class WorldData {
 		 return folder;
 	 }
 	 
-	 public void loadBiomes(){
+	 public void loadBiomes(ArrayList<Biome> nobiome){
 		 biomes=new HashMap<String, Location>();
 		 Location start = world.getSpawnLocation().clone();
 		 for(int i=0;i<150.000;i++){
@@ -119,7 +123,7 @@ public class WorldData {
 			        for(int yy = 0; yy < 128; yy++) {
 			        	Block b = world.getBlockAt(xx, yy, zz);
 			        	Biome bio = world.getBiome(b.getLocation().getBlockX(), b.getLocation().getBlockZ());
-						if(!biomes.containsKey(bio.name())&&bio!=Biome.DEEP_OCEAN&&bio!=Biome.FROZEN_OCEAN&&bio!=Biome.OCEAN){
+						if(!biomes.containsKey(bio.name())&&!nobiome.contains(bio)){
 							biomes.put(bio.name(),b.getLocation());
 						}
 						break;
