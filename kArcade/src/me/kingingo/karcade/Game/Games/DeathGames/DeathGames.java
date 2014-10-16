@@ -35,6 +35,8 @@ import me.kingingo.kcore.Kit.Perks.PerkHeal;
 import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkHealByKill;
 import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
+import me.kingingo.kcore.Kit.Perks.PerkLessDamage;
+import me.kingingo.kcore.Kit.Perks.PerkMoreHeart;
 import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
 import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
@@ -43,6 +45,8 @@ import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
 import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
 import me.kingingo.kcore.Kit.Perks.PerkPoisen;
 import me.kingingo.kcore.Kit.Perks.PerkPotionEffect;
+import me.kingingo.kcore.Kit.Perks.PerkPotionEffectByHearth;
+import me.kingingo.kcore.Kit.Perks.PerkPotionInWater;
 import me.kingingo.kcore.Kit.Perks.PerkRunner;
 import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
@@ -218,6 +222,16 @@ public class DeathGames extends SoloGame{
 			}),
 			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkRunner(0.35F)
+			}),
+			new Kit( "§aHai",new String[]{"Der Hai erhält","im Wasser Regeneration"}, new ItemStack(Material.IRON_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkPotionInWater(PotionEffectType.REGENERATION, 5, 1)
+			}),
+			new Kit( "§aSchildkroete",new String[]{"Die Schildkroete hat 5 Herzen mehr!"}, new ItemStack(Material.IRON_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkMoreHeart(30),
+				new PerkLessDamage(75)
+			}),
+			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkPotionEffectByHearth(PotionEffectType.INCREASE_DAMAGE, 1, 3)
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.SHEEPWARS_KIT_ARROWMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),

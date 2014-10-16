@@ -17,6 +17,16 @@ WHITE("WHITE",UtilItem.RenameItem(new ItemStack(Material.WOOL,1), C.cWhite+"Team
 PURPLE("PURPLE",UtilItem.RenameItem(new ItemStack(Material.WOOL, 1,(byte)10),C.cPurple+"Team - Lila"),C.cPurple ),
 ORANGE("ORANGE",UtilItem.RenameItem(new ItemStack(Material.WOOD,1,(byte)1), C.mOrange+"Team - Orange"),C.mOrange),
 
+VILLAGE_RED("VILLAGE_RED", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)14), C.cRed+"Sheep - Rot"),C.cRed),
+VILLAGE_YELLOW("VILLAGE_YELLOW", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)4), C.cYellow+"Sheep - Gelb"),C.cYellow),
+VILLAGE_BLUE("VILLAGE_BLUE", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)11), C.cBlue+"Sheep - Blau"),C.cBlue),
+VILLAGE_GREEN("VILLAGE_GREEN",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)5), C.cGreen+"Sheep - Grün"),C.cGreen),
+
+SHEEP_RED("SHEEP_RED", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)14), C.cRed+"Sheep - Rot"),C.cRed),
+SHEEP_YELLOW("SHEEP_YELLOW", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)4), C.cYellow+"Sheep - Gelb"),C.cYellow),
+SHEEP_BLUE("SHEEP_BLUE", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)11), C.cBlue+"Sheep - Blau"),C.cBlue),
+SHEEP_GREEN("SHEEP_GREEN",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)5), C.cGreen+"Sheep - Grün"),C.cGreen),
+
 DISTRICT_1("District 1",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 1"),C.cAqua),
 DISTRICT_2("District 2",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 2"),C.cAqua),
 DISTRICT_3("District 3",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 3"),C.cAqua),

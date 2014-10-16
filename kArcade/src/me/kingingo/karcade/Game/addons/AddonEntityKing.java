@@ -67,21 +67,30 @@ public class AddonEntityKing implements Listener {
 	@Getter
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SUGAR), "§bSchaf-Heiler");
 	
-	public AddonEntityKing(kArcadeManager manager,Team[] teams,TeamGame team,EntityType type,HashMap<Team, Location> sheeps){
+	public AddonEntityKing(kArcadeManager manager,Team[] teams,TeamGame team,EntityType type){
 		this.manager=manager;
 		this.team=team;
 		Entity e;
+		Location loc = null;
 		for(Team t : teams){
-			if(sheeps.containsKey(t)){
-				sheeps.get(t).getWorld().loadChunk(sheeps.get(t).getWorld().getChunkAt(sheeps.get(t)));
-				e=manager.getPetManager().AddPetWithOutOwner(t.getColor()+"Schaf", type, sheeps.get(t));
-				this.teams.put(t, e/*sheeps.get(t).getWorld().spawnEntity(sheeps.get(t), type)*/);
-				this.Heal.put(e, 100D);
-			}else{
-				System.out.println("[AddonEntityKing] TEAM('"+t.Name()+"') NOT FOUND!");
-			}
+			loc=manager.getWorldData().getLocs(getSheep(t).Name()).get(0);
+			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
+			e=manager.getPetManager().AddPetWithOutOwner(t.getColor()+"Schaf", type, loc);
+			this.teams.put(t, e);
+			this.Heal.put(e, 100D);
 		}
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
+	}
+	
+	public Team getSheep(Team team){
+		switch(team){
+		case RED:return Team.SHEEP_RED;
+		case BLUE:return Team.SHEEP_BLUE;
+		case YELLOW:return Team.SHEEP_YELLOW;
+		case GREEN:return Team.SHEEP_GREEN;
+		default:
+		return Team.SHEEP_RED;
+		}
 	}
 	
 	public void setHealt(Entity e,double h){
