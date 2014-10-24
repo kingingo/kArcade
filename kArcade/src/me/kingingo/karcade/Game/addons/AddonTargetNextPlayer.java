@@ -9,12 +9,14 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.GameList;
+import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilDirection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,22 +32,22 @@ public class AddonTargetNextPlayer implements Listener {
 	@Setter
 	private boolean aktiv=false;
 	@Getter
-	GameList GL;
+	private kArcadeManager manager;
 	
 	public AddonTargetNextPlayer(kArcadeManager Manager){
-		this.GL=Manager.getGame().getGameList();
+		this.manager=Manager;
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
 	public AddonTargetNextPlayer(int radius,kArcadeManager Manager){
 		this.radius=radius;
-		this.GL=Manager.getGame().getGameList();
+		this.manager=Manager;
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
 	public AddonTargetNextPlayer(HashMap<Player,Team> TeamList,kArcadeManager Manager){
 		this.TeamList=TeamList;
-		this.GL=Manager.getGame().getGameList();
+		this.manager=Manager;
 		Bukkit.getPluginManager().registerEvents(this, Manager.getInstance());
 	}
 	
@@ -58,7 +60,7 @@ public class AddonTargetNextPlayer implements Listener {
 	public void Update(UpdateEvent ev){
 		if(UpdateType.FAST!=ev.getType())return;
 		if(isAktiv()==false)return;
-		list=GL.getPlayers(PlayerState.IN);
+		list=getManager().getGame().getGameList().getPlayers(PlayerState.IN);
 		for(Player p : list){
 			target=null;
 			dis=-1;
@@ -72,6 +74,7 @@ public class AddonTargetNextPlayer implements Listener {
 				}
 			}
 			if(target!=null){
+				if(p.getItemInHand().getType()==Material.COMPASS)p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SPIELER_ENTFERNT_COMPASS.getText(new String[]{target.getName(),String.valueOf( Math.round(target.getLocation().distance(p.getLocation())) )}));
 				p.setCompassTarget(target.getLocation());
 			}else{
 				if(!pl.containsKey(p)){

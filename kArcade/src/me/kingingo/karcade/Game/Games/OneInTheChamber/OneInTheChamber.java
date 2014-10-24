@@ -20,7 +20,6 @@ import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,25 +35,25 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Scoreboard;
 
 public class OneInTheChamber extends SoloGame implements Listener{
 
 	private HashMap<Player,Integer> Life = new HashMap<>();
 	private HashMap<Player,Integer> kills = new HashMap<>();
-	Scoreboard board;
-	ArrayList<Location> list = getManager().getWorldData().getLocs(Team.SOLO.Name());
+	//Scoreboard board;
+	ArrayList<Location> list;
 	
 	public OneInTheChamber(kArcadeManager manager) {
 		super(manager);
 		manager.setTyp(GameType.OneInTheChamber);
 		getManager().setStart(186);
 		setMax_Players(16);
-		setMin_Players(4);
+		setMin_Players(2);
 		setCompassAddon(true);
 		setDamagePvE(true);
-		setProjectileDamage(false);
+		setDamagePvP(true);
+		setDamageSelf(false);
+		setProjectileDamage(true);
 		getEntityDamage().add(DamageCause.FALL);
 		WorldData wd = new WorldData(manager,GameType.OneInTheChamber.name());
 		wd.Initialize();
@@ -70,8 +69,9 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
+		getManager().setStart(187);
 		getManager().setState(GameState.InGame);
-		ArrayList<Location> list = getManager().getWorldData().getLocs(Team.SOLO.Name());
+		list = getManager().getWorldData().getLocs(Team.SOLO.Name());
 		long time = System.currentTimeMillis();
 		int r=0;
 		//board = getGameList().createScoreboard(DisplaySlot.SIDEBAR,"GameInfo");
@@ -80,7 +80,9 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			Life.put(p, 6);
 			kills.put(p, 0);
 			getGameList().addPlayer(p,PlayerState.IN);
-			getGameList().setPlayerScoreboard(p,board);
+			
+			//getGameList().setPlayerScoreboard(p,board);
+			
 			getSpawnInventory(p);
 			if(list.size()==1){
 				r=0;
@@ -90,6 +92,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			p.teleport(list.get(r));
 			list.remove(r);
 		}
+		list = getManager().getWorldData().getLocs(Team.SOLO.Name());
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
@@ -105,7 +108,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			Player victim = ev.getEntity();
 			int i =kills.get(killer)+1;
 			kills.put(killer, i);
-			board.getObjective(DisplaySlot.SIDEBAR).getScore(Bukkit.getOfflinePlayer(killer.getName())).setScore(i);
+		//	board.getObjective(DisplaySlot.SIDEBAR).getScore(Bukkit.getOfflinePlayer(killer.getName())).setScore(i);
 			Life.put(victim,(Life.get(victim)-1));
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
 			killer.getInventory().addItem(new ItemStack(Material.ARROW));

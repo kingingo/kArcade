@@ -61,7 +61,7 @@ public class SurvivalGames extends TeamGame{
 	//AddonRandomItemInventory rii;
 	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	Hologram hm;
-	AddonTargetNextPlayer tnp;
+	//AddonTargetNextPlayer tnp;
 	boolean jump=true;
 	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	
@@ -92,8 +92,8 @@ public class SurvivalGames extends TeamGame{
 	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
 	getBlockPlaceAllow().add(Material.FIRE);
 	bp=new AddonBagPack(manager);
-	tnp = new AddonTargetNextPlayer(getTeamList(),getManager());
-	tnp.setRadius(40);
+	//tnp = new AddonTargetNextPlayer(getTeamList(),getManager());
+	//tnp.setRadius(40);
 	ArrayList<Material> itemlist = new ArrayList<>();
 	itemlist.add(Material.STONE_SWORD);
 	itemlist.add(Material.LEATHER_CHESTPLATE);
@@ -301,7 +301,7 @@ public class SurvivalGames extends TeamGame{
 				getManager().setState(GameState.InGame);
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_START.getText());
 				setDamage(true);
-				tnp.setAktiv(true);
+				//tnp.setAktiv(true);
 				move.setnotMove(false);
 			break;
 		}
@@ -354,7 +354,7 @@ public class SurvivalGames extends TeamGame{
 				move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 				setDamage(false);
 				setProjectileDamage(false);
-				tnp.setAktiv(false);
+				//tnp.setAktiv(false);
 				getManager().setState(GameState.DeathMatch);
 			break;
 		}

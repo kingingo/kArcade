@@ -70,8 +70,12 @@ public class WorldData {
 	@SuppressWarnings("unchecked")
 	public ArrayList<Location> getLocs(String s){
 		ArrayList<Location> list = new ArrayList<>();
-		for(Location l : locs.get(s)){
-			list.add(l);
+		if(!locs.containsKey(s)){
+			System.out.println("[WorldData] Team NOT Found!");
+		}else{
+			for(Location l : locs.get(s)){
+				list.add(l);
+			}
 		}
 		return list;
 	}
@@ -185,6 +189,12 @@ public class WorldData {
 		    			this.MapName=tokens[1];
 		    		}else if(tokens[0].equalsIgnoreCase(Team.SOLO.Name())){
 		    			locs.put(Team.SOLO.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.ORANGE.Name())){
+		    			locs.put(Team.ORANGE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.PURPLE.Name())){
+		    			locs.put(Team.PURPLE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.WHITE.Name())){
+		    			locs.put(Team.WHITE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.BLACK.Name())){
 		    			locs.put(Team.BLACK.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.GRAY.Name())){

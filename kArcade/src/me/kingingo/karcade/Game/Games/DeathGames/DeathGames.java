@@ -15,6 +15,7 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.Games.DeathGames.Addon.AddonPlayerTeleport;
+import me.kingingo.karcade.Game.Games.DeathGames.Perk.PerkTeleporter;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonQuadratGrenze;
 import me.kingingo.karcade.Game.addons.AddonTargetNextPlayer;
@@ -86,6 +87,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -96,6 +98,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -123,6 +126,8 @@ public class DeathGames extends SoloGame{
 	
 	private Hologram hm;
 	
+	private HashMap<Integer,ArrayList<Location>> g = new HashMap<>();
+	
 	public DeathGames(kArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
@@ -133,13 +138,15 @@ public class DeathGames extends SoloGame{
 		manager.setWorldData(getWorldData());
 		setupItems();
 		setCreatureSpawn(true);
-		setMin_Players(1);
-		setMax_Players(8);
+		setMin_Players(4);
+		setMax_Players(12);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageEvP(false);
 		setDamagePvE(true);
 		setDamageSelf(true);
+		setBlockSpread(false);
+		setCreatureSpawn(false);
 		setDeathDropItems(true);
 		setBlockBreak(true);
 		setBlockPlace(true);
@@ -153,7 +160,11 @@ public class DeathGames extends SoloGame{
 		ArrayList<Biome> nobiome = new ArrayList<>();
 		nobiome.add(Biome.DEEP_OCEAN);
 		nobiome.add(Biome.FROZEN_OCEAN);
+		nobiome.add(Biome.STONE_BEACH);
+		nobiome.add(Biome.BEACH);
 		nobiome.add(Biome.OCEAN);
+		nobiome.add(Biome.EXTREME_HILLS);
+		nobiome.add(Biome.EXTREME_HILLS_PLUS);
 		nobiome.add(Biome.TAIGA_MOUNTAINS);
 		nobiome.add(Biome.BIRCH_FOREST_HILLS_MOUNTAINS);
 		nobiome.add(Biome.BIRCH_FOREST_MOUNTAINS);
@@ -177,63 +188,69 @@ public class DeathGames extends SoloGame{
 		getWorldData().setMapName( ((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.r(getWorldData().getBiomes().size())]) );
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
 		grenze=new AddonQuadratGrenze(manager,getCenter(),0);
+		
 		this.kitShop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+			
 			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,5)}),
 				new PerkArrowFire(30)
 			}),
-			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.DEATHGAMES_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoKnockback(manager.getInstance())
 			}),
-			new Kit( "§aBomber",new String[]{"Der Bomber bekommt kein Explosion Schaden und","TNT zündet direkt beim setzten."}, new ItemStack(Material.TNT),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aBomber",new String[]{"Der Bomber bekommt kein Explosion Schaden und","TNT zündet direkt beim setzten."}, new ItemStack(Material.TNT),Permission.DEATHGAMES_KIT_BOMBER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,2)}),
 				new PerkNoExplosionDamage(),
 				new PerkTNT()
 			}),
-			new Kit( "§aFireman",new String[]{"Der Fireman bekommt kein Feuerschaden."}, new ItemStack(Material.FIRE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkNoFiredamage()
+			new Kit( "§aFireman",new String[]{"Der Fireman bekommt kein Feuerschaden","und bekommt einen","Lava Eimer und "," ein Feuerzeug."}, new ItemStack(Material.LAVA_BUCKET),Permission.DEATHGAMES_KIT_FIREMAN,KitType.KAUFEN,2000,new Perk[]{
+				new PerkNoFiredamage(),
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.LAVA,2),new ItemStack(Material.FLINT_AND_STEEL)})
 			}),
-			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),Permission.DEATHGAMES_KIT_HOLZ,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.WOOD_AXE)}),
 				new PerkHolzfäller()
 			}),
-			new Kit( "§aPanzer",new String[]{"Der Panzer bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkSneakDamage(2)
+			new Kit( "§aPanzer",new String[]{"Der Panzer bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.DEATHGAMES_KIT_PANZER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkSneakDamage(3)
 			}),
-			new Kit( "§aSkorpion",new String[]{"Der Skorpion hat die 80% Chance","wenn er einen Spieler","schlägt das dieser Vergift ist","5 sekunden lang."}, new ItemStack(351,1,(byte)10),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aSkorpion",new String[]{"Der Skorpion hat die Chance von 80%"," einen Spieler mit einem Schlag"," 5 Sek lang zu vergiften"}, new ItemStack(351,1,(byte)10),Permission.DEATHGAMES_KIT_SKORPION,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPoisen(2, 80)
 			}),
-			new Kit( "§aVersorger",new String[]{"Der Versorger bekommt kein Hunger."}, new ItemStack(Material.BAKED_POTATO),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aVersorger",new String[]{"Der Versorger bekommt kein Hunger."}, new ItemStack(Material.BAKED_POTATO),Permission.DEATHGAMES_KIT_VERSORGER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoHunger()
 			}),
-			new Kit( "§aVampire",new String[]{"Der Vampire wird für jedem","getöteten Mob 3 Herzen geheilt"}, new ItemStack(Material.GHAST_TEAR),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aVampire",new String[]{"Der Vampire wird für jedem","getöteten Mob 3 Herzen geheilt"}, new ItemStack(Material.GHAST_TEAR),Permission.DEATHGAMES_KIT_VAMPIRE,KitType.KAUFEN,2000,new Perk[]{
 				new PerkHealByKill(6)
 			}),
-			new Kit( "§aAngle",new String[]{"Der Angler kann seine","Gegner zu sich ziehen"}, new ItemStack(Material.RAW_FISH),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aAngler",new String[]{"Der Angler kann seine","Gegner zu sich ziehen"}, new ItemStack(Material.RAW_FISH),Permission.DEATHGAMES_KIT_ANGLE,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD)}),
 				new PerkAngle()
 			}),
-			new Kit( "§aEnterhaken",new String[]{"Mit dem Enterhaken kannst du","dich schnell zu Gegner und ","Blöcken ziehen um"," dich schneller fortzubewegen"}, new ItemStack(Material.FISHING_ROD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aEnterhaken",new String[]{"Mit dem Enterhaken kannst du","dich schnell zu Gegner und ","Blöcken ziehen um"," dich schneller fortzubewegen"}, new ItemStack(Material.FISHING_ROD),Permission.DEATHGAMES_KIT_ENTERHARKEN,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD)}),
 				new PerkEnterhacken()
 			}),
-			new Kit( "§aJumper",new String[]{"Der Jumper kann höher","als normal springen"}, new ItemStack(Material.FEATHER),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aJumper",new String[]{"Der Jumper kann höher","als normal springen"}, new ItemStack(Material.FEATHER),Permission.DEATHGAMES_KIT_JUMPER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionEffect(PotionEffectType.JUMP, 16*60, 3)
 			}),
-			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),Permission.DEATHGAMES_KIT_RUNNER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkRunner(0.35F)
 			}),
-			new Kit( "§aHai",new String[]{"Der Hai erhält","im Wasser Regeneration"}, new ItemStack(Material.IRON_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aHai",new String[]{"Der Hai erhält","im Wasser Regeneration"}, new ItemStack(Material.CLAY_BALL),Permission.DEATHGAMES_KIT_HAI,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionInWater(PotionEffectType.REGENERATION, 5, 1)
 			}),
-			new Kit( "§aSchildkroete",new String[]{"Die Schildkroete hat 5 Herzen mehr!"}, new ItemStack(Material.IRON_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aSchildkroete",new String[]{"Die Schildkroete hat 5 Herzen mehr!","macht aber dennoch ","weniger Schaden!"}, new ItemStack(Material.IRON_CHESTPLATE),Permission.DEATHGAMES_KIT_SCHILDKROETE,KitType.KAUFEN,2000,new Perk[]{
 				new PerkMoreHeart(30),
 				new PerkLessDamage(75)
 			}),
-			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkPotionEffectByHearth(PotionEffectType.INCREASE_DAMAGE, 1, 3)
+			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),Permission.DEATHGAMES_KIT_RITTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkPotionEffectByHearth(PotionEffectType.INCREASE_DAMAGE, 1, 7)
 			}),
-			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.SHEEPWARS_KIT_ARROWMAN,KitType.ADMIN,2000,new Perk[]{
+			new Kit( "§aTeleporter",new String[]{"Der Teleporter kann","sich 1x mit","einem Spieler ","tauschen lassen!"}, new ItemStack(Material.WATCH),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkTeleporter(getManager())
+			}),
+			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.DEATHGAMES_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_SWORD,1), new ItemStack(Material.LEATHER_HELMET,1), new ItemStack(Material.IRON_CHESTPLATE,1), new ItemStack(Material.LEATHER_LEGGINGS,1), new ItemStack(Material.LEATHER_BOOTS)}),
 				new PerkSneakDamage(1),
@@ -251,6 +268,12 @@ public class DeathGames extends SoloGame{
 				new PerkWalkEffect(Effect.HEART,10)
 			}),
 		});
+		
+		for(int i=10; i < (getMax_Players()*10)+1; i++){
+			g.put(i, getGrenze().scanWithLowestBlock(i, 35, 10));
+			System.out.println("[Grenze] Radius: "+i+" GELADEN("+g.get(i).size()+")!");
+		}
+		
 		manager.setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
@@ -266,7 +289,7 @@ public class DeathGames extends SoloGame{
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(AsyncPlayerChatEvent event) {
+	public void onPlayerChatd(AsyncPlayerChatEvent event) {
 		if (!event.isCancelled()) {
 			Player p = event.getPlayer();
 			String msg = event.getMessage();
@@ -395,6 +418,7 @@ public class DeathGames extends SoloGame{
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getManager().getStats().setInt(a, getManager().getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
+				getCoins().addCoins(a, false, 5,getManager().getTyp());
 				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
 			}else{
@@ -403,68 +427,97 @@ public class DeathGames extends SoloGame{
 		}
 	}
 	
+	long time;
+	Location loc;
 	List<Player> gl;
 	@EventHandler
 	public void Schild(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SLOW)return;
 		if(getManager().getState()!=GameState.InGame)return;
-		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.IN).size()*15)){
-			getGrenze().setRadius( getGrenze().getRadius()-1 );
-			getGrenze().scan();
-		}
-	}
-	
-	ArrayList<Entity> fall = new ArrayList<>();
-	@EventHandler
-	public void FallDamage(EntityDamageEvent ev){
-		if(manager.getState()!=GameState.SchutzModus)return;
-		if(ev.getEntity() instanceof Player){
-			if(ev.getCause()==DamageCause.FALL){
-				if(fall.contains((ev.getEntity()) ))ev.setDamage(0);
-			}
-		}
-	}
-	
-	@EventHandler
-	public void onEntityChangeBlock(EntityChangeBlockEvent ev){
-		if(ev.getEntity() instanceof FallingBlock){
-			if(fall.contains(ev.getEntity())){
-				if(ev.getEntity().getPassenger()!=null){
-		    		gp = ev.getEntity().getPassenger();
-		    		gp.leaveVehicle();
-		    		gp.remove();
-		    	}
-				fall.remove(ev.getEntity());
-			}
-		}
-	}
-	
-	private Entity gp;
-	@EventHandler
-	public void Fall(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.FAST)return;
-		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
-			for(int i = 0; i < fall.size(); i++){
-				if(fall.get(i).getPassenger()!=null&&fall.get(i).getPassenger().getType()==EntityType.CHICKEN){
-					if(fall.get(i).isOnGround()){
-						fall.get(i).getPassenger().leaveVehicle();
-						fall.remove(fall.get(i));
-					}else if(fall.get(i).isOnGround()){
-						if(fall.get(i).getPassenger()!=null){
-				    		gp = fall.get(i).getPassenger();
-				    		gp.leaveVehicle();
-				    		gp.remove();
-				    	}
-						fall.remove(i);
-					}else{
-						fall.get(i).setVelocity(new Vector(fall.get(i).getVelocity().getX(), fall.get(i).getVelocity().getY()/4, fall.get(i).getVelocity().getZ()));
+		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.IN).size()*10)){
+			//getGrenze().setRadius( getGrenze().getRadius()-1 );
+			//getGrenze().scan();
+			getGrenze().setList(getGrenze().getRadius()-1, g.get(getGrenze().getRadius()-1));
+			
+			g.remove(getGrenze().getRadius());
+			chest_anzahl=getGameList().getPlayers(PlayerState.IN).size()*10;
+			if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
+				for(int i = 0; i < chest.size(); i++){
+					loc=(Location)chest.keySet().toArray()[i];
+					if(!getGrenze().isInGrenze(loc)){
+						if(chest.get(loc)!=null){
+							try{
+								for (HumanEntity en : chest.get(loc).getViewers()){
+									en.closeInventory();
+								}
+							}catch(ConcurrentModificationException e){
+								System.out.println("[DeathGames] ConcurrentModificationException <-");
+							}
+						}
+						if(loc.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, loc, 7);
+						if(loc.getBlock().getType()==Material.ENDER_CHEST)loc.getWorld().playEffect(loc,Effect.ENDER_SIGNAL, 3);
+						loc.getBlock().setType(Material.AIR);
+						chest1.remove(chest.get(loc));
+						chest.remove(loc);
+						spawnChest();
 					}
-				}else{
-					fall.get(i).setPassenger(fall.get(i).getWorld().spawnEntity(fall.get(i).getLocation(), EntityType.CHICKEN));
 				}
 			}
+			
 		}
 	}
+	
+//	ArrayList<Entity> fall = new ArrayList<>();
+//	@EventHandler
+//	public void FallDamage(EntityDamageEvent ev){
+//		if(manager.getState()!=GameState.SchutzModus)return;
+//		if(ev.getEntity() instanceof Player){
+//			if(ev.getCause()==DamageCause.FALL){
+//				if(fall.contains((ev.getEntity()) ))ev.setDamage(0);
+//			}
+//		}
+//	}
+	
+//	@EventHandler
+//	public void onEntityChangeBlock(EntityChangeBlockEvent ev){
+//		if(ev.getEntity() instanceof FallingBlock){
+//			if(fall.contains(ev.getEntity())){
+//				if(ev.getEntity().getPassenger()!=null){
+//		    		gp = ev.getEntity().getPassenger();
+//		    		gp.leaveVehicle();
+//		    		gp.remove();
+//		    	}
+//				fall.remove(ev.getEntity());
+//			}
+//		}
+//	}
+	
+//	private Entity gp;
+//	@EventHandler
+//	public void Fall(UpdateEvent ev){
+//		if(ev.getType()!=UpdateType.FAST)return;
+//		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
+//			for(int i = 0; i < fall.size(); i++){
+//				if(fall.get(i).getPassenger()!=null&&fall.get(i).getPassenger().getType()==EntityType.CHICKEN){
+//					if(fall.get(i).isOnGround()){
+//						fall.get(i).getPassenger().leaveVehicle();
+//						fall.remove(fall.get(i));
+//					}else if(fall.get(i).isOnGround()&&fall.get(i).getLocation().getBlock().getType().toString().contains("WATER")){
+//						if(fall.get(i).getPassenger()!=null){
+//				    		gp = fall.get(i).getPassenger();
+//				    		gp.leaveVehicle();
+//				    		gp.remove();
+//				    	}
+//						fall.remove(i);
+//					}else{
+//						fall.get(i).setVelocity(new Vector(fall.get(i).getVelocity().getX(), fall.get(i).getVelocity().getY()/4, fall.get(i).getVelocity().getZ()));
+//					}
+//				}else{
+//					fall.get(i).setPassenger(fall.get(i).getWorld().spawnEntity(fall.get(i).getLocation(), EntityType.CHICKEN));
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler
 	public void SpawnChest(UpdateEvent ev){
@@ -482,8 +535,8 @@ public class DeathGames extends SoloGame{
 	
 	public void spawnExtraChest(){
 		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt(getGrenze().getMaxX(), getGrenze().getMinX()), 200, UtilMath.RandomInt(getGrenze().getMaxZ(), getGrenze().getMinZ()));
-		FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, Material.ENDER_CHEST, (byte)1);
-		fb.setPassenger(loc.getWorld().spawnEntity(loc, EntityType.CHICKEN));
+		loc.getWorld().spawnFallingBlock(loc, Material.ENDER_CHEST, (byte)1);
+		//fb.setPassenger(loc.getWorld().spawnEntity(loc, EntityType.CHICKEN));
 		Location l = UtilLocation.getLowestBlock(loc);
 
 		Inventory inv = Bukkit.createInventory(null, 9 * 3, "DeathGames");
@@ -502,51 +555,51 @@ public class DeathGames extends SoloGame{
 		
 		chest.put(l,inv);
 		chest1.put(inv,l);
-		fall.add(fb);
+		//fall.add(fb);
 	}
 	
 	public void spawnChest(){
 		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt(getGrenze().getMaxX(), getGrenze().getMinX()), 200, UtilMath.RandomInt(getGrenze().getMaxZ(), getGrenze().getMinZ()));
-		FallingBlock fb=loc.getWorld().spawnFallingBlock(loc, Material.CHEST,(byte)1);
-		fb.setPassenger(loc.getWorld().spawnEntity(loc, EntityType.CHICKEN));
+		loc.getWorld().spawnFallingBlock(loc, Material.CHEST,(byte)1);
+		//fb.setPassenger(loc.getWorld().spawnEntity(loc, EntityType.CHICKEN));
 		Location l = UtilLocation.getLowestBlock(loc);
 		Inventory inv = setupInv();
 		chest.put(l,inv);
 		chest1.put(inv,l);
-		fall.add(fb);
+		//fall.add(fb);
 	}
 	
-	long time;
-	Location loc;
-	@EventHandler
-	public void ChangeChest(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.FAST)return;
-		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
-			for(int i = 0; i < chest.size(); i++){
-				loc=(Location)chest.keySet().toArray()[i];
-				if(!getGrenze().isInGrenze(loc)){
-					if(chest.get(loc)!=null){
-						try{
-							for (HumanEntity en : chest.get(loc).getViewers()){
-								en.closeInventory();
-							}
-						}catch(ConcurrentModificationException e){
-							System.out.println("[DeathGames] ConcurrentModificationException <-");
-						}
-					}
-					if(loc.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, loc, 7);
-					if(loc.getBlock().getType()==Material.ENDER_CHEST)loc.getWorld().playEffect(loc,Effect.ENDER_SIGNAL, 3);
-					loc.getBlock().setType(Material.AIR);
-					chest1.remove(chest.get(loc));
-					chest.remove(loc);
-					spawnChest();
-				}
-			}
-		}
-	}
+//	long time;
+//	Location loc;
+//	@EventHandler
+//	public void ChangeChest(UpdateEvent ev){
+//		if(ev.getType()!=UpdateType.FAST)return;
+//		if(getManager().getState()==GameState.InGame||getManager().getState()==GameState.SchutzModus){
+//			for(int i = 0; i < chest.size(); i++){
+//				loc=(Location)chest.keySet().toArray()[i];
+//				if(!getGrenze().isInGrenze(loc)){
+//					if(chest.get(loc)!=null){
+//						try{
+//							for (HumanEntity en : chest.get(loc).getViewers()){
+//								en.closeInventory();
+//							}
+//						}catch(ConcurrentModificationException e){
+//							System.out.println("[DeathGames] ConcurrentModificationException <-");
+//						}
+//					}
+//					if(loc.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, loc, 7);
+//					if(loc.getBlock().getType()==Material.ENDER_CHEST)loc.getWorld().playEffect(loc,Effect.ENDER_SIGNAL, 3);
+//					loc.getBlock().setType(Material.AIR);
+//					chest1.remove(chest.get(loc));
+//					chest.remove(loc);
+//					spawnChest();
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler
-	public void InventoryClose(InventoryCloseEvent ev){
+	public void InventoryCloseCCC(InventoryCloseEvent ev){
 		if(ev.getInventory().getTitle().equalsIgnoreCase("DeathGames")){
 			if(UtilInv.isInventoryEmpty(ev.getInventory())){
 				Location l = chest1.get(ev.getInventory());
@@ -589,6 +642,7 @@ public class DeathGames extends SoloGame{
 			if(getGameList().getPlayers(PlayerState.IN).size()==1){
 				Player p = getGameList().getPlayers(PlayerState.IN).get(0);
 				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getCoins().addCoins(p, false, 10,getManager().getTyp());
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp())+Text.GAME_WIN.getText(p.getName()));
 			}
 		}
@@ -612,6 +666,7 @@ public class DeathGames extends SoloGame{
 		case 0:
 			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END.getText() );
 			setDamage(true);
+			NoCheatToggle();
 			getManager().setStart(60*15);
 			getManager().setState(GameState.InGame);
 			break;
@@ -665,13 +720,28 @@ public class DeathGames extends SoloGame{
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
+	public void NoCheatToggle(){
+		Plugin pl = Bukkit.getPluginManager().getPlugin("NoCheatPlus");
+		if(Bukkit.getPluginManager().isPluginEnabled(pl)){
+			Bukkit.getPluginManager().disablePlugin(pl);
+		}else{
+			Bukkit.getPluginManager().enablePlugin(pl);
+		}
+		
+	}
+	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
 		getWorldData().getWorld().setStorm(false);
-		chest_anzahl=UtilServer.getPlayers().length*5;
-		grenze.setRadius( (UtilServer.getPlayers().length*15) );
-		grenze.scan();
+		NoCheatToggle();
+		chest_anzahl=UtilServer.getPlayers().length*10;
+		
+		grenze.setList(chest_anzahl, g.get( chest_anzahl ));
+		g.remove(chest_anzahl);
+		//grenze.setRadius( (UtilServer.getPlayers().length*10) );
+		//grenze.scan();
+		
 		int minZ=grenze.MinZ()+20;
 		int maxZ=grenze.MaxZ()-20;
 		int minX=grenze.MinX()+20;
@@ -681,15 +751,14 @@ public class DeathGames extends SoloGame{
 		new AddonPlayerTeleport(this);
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
-			fall.add(p);
 			getGameList().addPlayer(p,PlayerState.IN);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomInt(maxX, minX), 200, UtilMath.RandomInt(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 		}
-		AddonTargetNextPlayer a = new AddonTargetNextPlayer(50,getManager());
+		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,getManager());
 		a.setAktiv(true);
 		setDamage(false);
-		getManager().setStart(31);
+		getManager().setStart(46);
 		getManager().setState(GameState.SchutzModus);
 		getManager().DebugLog(time, this.getClass().getName());
 	}

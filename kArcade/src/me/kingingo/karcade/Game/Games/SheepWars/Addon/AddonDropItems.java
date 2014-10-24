@@ -19,6 +19,7 @@ public class AddonDropItems extends kListener {
 
 	@Getter
 	private SheepWars instance;
+	private int i=0;
 	
 	public AddonDropItems(SheepWars instance){
 		super(instance.getManager().getInstance(),"[AddonDropItems]");
@@ -40,56 +41,35 @@ public class AddonDropItems extends kListener {
 		}
 	}
 	
-	public static String Farbe(){
-		switch(UtilMath.RandomInt(9,0)){
-		case 0:
-			return "§r";
-		case 1:
-			return "§a";
-		case 2:
-			return "§c";
-		case 3:
-			return "§d";
-		case 4:
-			return "§l";
-		case 6:
-			return "§e";
-		case 7:
-			return "§m";
-		case 8:
-			return "§n";
-		case 9:
-			return "§k";
-		case 10:
-			return "§1";
-		case 11:
-			return "§2";
-		case 12:
-			return "§3";
-		default:
-			return "§4";
-		}
+	public String getName(){
+		i++;
+		return String.valueOf(i);
 	}
 	
-	public void drop(Location loc,ItemStack item,String name, int anzahl){
-		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, name+Farbe()));
+	public void drop(Location loc,ItemStack item, int anzahl){
+		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, getName()));
 	}
 	
 	@EventHandler
 	public void Update(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.SEC){
-			for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name()))drop(loc,new ItemStack(Material.CLAY_BRICK),"§bBronze",UtilMath.RandomInt(8, 3));
-		}else if(ev.getType()!=UpdateType.SEC_2){
+		
+		if(ev.getType()==UpdateType.SEC){
+			for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),1);
+		}
+		
+		if(ev.getType()==UpdateType.SLOW){
 			if(getInstance().getManager().getWorldData().ExistLoc(Team.PURPLE.Name())){
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.PURPLE.Name()))drop(loc,new ItemStack(Material.IRON_INGOT),"§bSilver",UtilMath.RandomInt(5, 2));
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.PURPLE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
 			}else{
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name()))drop(loc,new ItemStack(Material.IRON_INGOT),"§bSilver",UtilMath.RandomInt(5, 2));
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
 			}
-		}else if(ev.getType()!=UpdateType.SLOW){
-			if(getInstance().getManager().getWorldData().ExistLoc(Team.PURPLE.Name())){
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.ORANGE.Name()))drop(loc,new ItemStack(Material.GOLD_INGOT),"§bGold",UtilMath.RandomInt(2, 1));
+		}
+		
+		if(ev.getType()==UpdateType.SLOWER){
+			if(getInstance().getManager().getWorldData().ExistLoc(Team.ORANGE.Name())){
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
 			}else{
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name()))drop(loc,new ItemStack(Material.GOLD_INGOT),"§bGold",UtilMath.RandomInt(2, 1));
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
 			}
 		}
 	}

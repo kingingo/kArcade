@@ -592,7 +592,7 @@ public class kArcadeManager implements Listener{
 				updateInfo(GameState.InGame);
 			}else{
 				start=-1;
-				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+C.cRed+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
+				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+C.cRed+"Es sind zu wenig Spieler(min. "+getGame().getMin_Players()+") online! Wartemodus wird neugestartet!");
 			}
 		}
 	}

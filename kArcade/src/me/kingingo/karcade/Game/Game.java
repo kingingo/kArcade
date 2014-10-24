@@ -248,7 +248,7 @@ public class Game implements Listener{
 	}
 	
 	@EventHandler
-	public void Quit(PlayerQuitEvent ev){
+	public void QuitPlayerListener(PlayerQuitEvent ev){
 		ev.setQuitMessage(null);
 		if(getManager().getState()==GameState.Restart)return;
 		manager.getStats().SaveAllPlayerData(ev.getPlayer());
@@ -423,6 +423,11 @@ public class Game implements Listener{
 			  getManager().getLobby().getWorld().setStorm(false);
 			  getManager().getLobby().getWorld().setTime(4000);
 			  ev.getPlayer().teleport(getManager().getLobby());
+			  if(getMax_Players() <= Bukkit.getOnlinePlayers().length ){
+				  if(getManager().getStart() > 16){
+					  getManager().setStart(16);
+				  }
+			  }
 		  }
 	  }
 	  
