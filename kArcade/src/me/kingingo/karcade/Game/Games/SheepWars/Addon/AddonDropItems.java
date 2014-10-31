@@ -46,6 +46,10 @@ public class AddonDropItems extends kListener {
 		return String.valueOf(i);
 	}
 	
+	public void drop(Location loc,ItemStack item, int anzahl,String Name){
+		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, Name));
+	}
+	
 	public void drop(Location loc,ItemStack item, int anzahl){
 		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, getName()));
 	}
@@ -67,7 +71,7 @@ public class AddonDropItems extends kListener {
 		
 		if(ev.getType()==UpdateType.SLOWER){
 			if(getInstance().getManager().getWorldData().ExistLoc(Team.ORANGE.Name())){
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
+				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1, "§bGold");
 			}else{
 				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
 			}

@@ -63,7 +63,6 @@ public class SurvivalGames extends TeamGame{
 	Hologram hm;
 	//AddonTargetNextPlayer tnp;
 	boolean jump=true;
-	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	
 	public SurvivalGames(kArcadeManager manager) {
 		super(manager);
@@ -426,8 +425,8 @@ public class SurvivalGames extends TeamGame{
 			
 			Player t = TeamPartner(victim);
 			if(t!=null){
-				boards.get(t).resetScore(Bukkit.getOfflinePlayer("§a"+victim.getName()), DisplaySlot.SIDEBAR);
-				boards.get(t).setScore(Bukkit.getOfflinePlayer("§c"+victim.getName()), DisplaySlot.SIDEBAR, 8);
+				getBoards().get(t).resetScore(Bukkit.getOfflinePlayer("§a"+victim.getName()), DisplaySlot.SIDEBAR);
+				getBoards().get(t).setScore(Bukkit.getOfflinePlayer("§c"+victim.getName()), DisplaySlot.SIDEBAR, 8);
 			}
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
@@ -438,8 +437,8 @@ public class SurvivalGames extends TeamGame{
 			
 			Player t = TeamPartner(victim);
 			if(t!=null){
-				boards.get(t).resetScore(Bukkit.getOfflinePlayer("§a"+victim.getName()), DisplaySlot.SIDEBAR);
-				boards.get(t).setScore(Bukkit.getOfflinePlayer("§c"+victim.getName()), DisplaySlot.SIDEBAR, 8);
+				getBoards().get(t).resetScore(Bukkit.getOfflinePlayer("§a"+victim.getName()), DisplaySlot.SIDEBAR);
+				getBoards().get(t).setScore(Bukkit.getOfflinePlayer("§c"+victim.getName()), DisplaySlot.SIDEBAR, 8);
 			}
 		}
 	}
@@ -502,8 +501,8 @@ public class SurvivalGames extends TeamGame{
 		for(Player p : getTeamList().keySet()){
 			r=UtilMath.r(list.size());
 			t = getTeamList().get(p);
-			boards.put(p, new PlayerScoreboard(p));
-			ps=boards.get(p);
+			getBoards().put(p, new PlayerScoreboard(p));
+			ps=getBoards().get(p);
 			ps.addBoard(DisplaySlot.BELOW_NAME, C.cGray+t.Name().split(" ")[0]);
 			for(Player p1 : UtilServer.getPlayers()){
 				if(!getTeamList().containsKey(p1))continue;
@@ -545,7 +544,7 @@ public class SurvivalGames extends TeamGame{
 		"Map: "+wd.getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
-		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
+		//"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		" ",

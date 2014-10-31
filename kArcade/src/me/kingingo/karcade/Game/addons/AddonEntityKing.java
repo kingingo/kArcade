@@ -18,8 +18,10 @@ import me.kingingo.kcore.Util.UtilItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
@@ -39,19 +41,10 @@ public class AddonEntityKing implements Listener {
 	@Getter
 	kArcadeManager manager;;
 	@Getter
-	HashMap<Team,Entity> teams = new HashMap<>();
+	HashMap<Team,Creature> teams = new HashMap<>();
 	@Getter
 	@Setter
 	boolean move=false;
-//	@Getter
-//	@Setter
-//	boolean DamageEvP=false;
-//	@Getter
-//	@Setter
-//	boolean DamagePvE=false;
-//	@Getter
-//	@Setter
-//	boolean DamageEvE=false;
 	@Getter
 	@Setter
 	boolean Damage=false;
@@ -59,9 +52,9 @@ public class AddonEntityKing implements Listener {
 	@Setter
 	boolean ProjectileDamage=false;
 	@Getter
-	HashMap<Entity,Double> Heal = new HashMap<>();
+	HashMap<Creature,Double> Heal = new HashMap<>();
 	@Getter
-	HashMap<Entity, NameTagMessage> NameTagMessage = new HashMap<>();
+	HashMap<Creature, NameTagMessage> NameTagMessage = new HashMap<>();
 	@Getter
 	TeamGame team;
 	@Getter
@@ -70,7 +63,7 @@ public class AddonEntityKing implements Listener {
 	public AddonEntityKing(kArcadeManager manager,Team[] teams,TeamGame team,EntityType type){
 		this.manager=manager;
 		this.team=team;
-		Entity e;
+		Creature e;
 		Location loc = null;
 		for(Team t : teams){
 			loc=manager.getWorldData().getLocs(getSheep(t).Name()).get(0);
@@ -93,9 +86,10 @@ public class AddonEntityKing implements Listener {
 		}
 	}
 	
-	public void setHealt(Entity e,double h){
+	public void setHealt(Creature e,double h){
 		getHeal().put(e, h);
-		((Sheep)e).setCustomName(((Sheep)e).getCustomName().split(" ")[0]+" §c"+h+"❤");
+		if(!(e instanceof LivingEntity))return;
+		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+"❤");
 	}
 	
 	public double getHealt(Entity e){
@@ -126,16 +120,31 @@ public class AddonEntityKing implements Listener {
 	@EventHandler
 	public void Testeer(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.MIN_005)return;
+		
+//		System.out.println("Eintrag: "+teams.size());
+//		for(Team t : teams.keySet()){
+//			try{
+//			System.out.println("TEAM: "+t.Name());
+//			System.out.println("eeeeENTITY: "+teams.get(t)==null);
+//			System.out.println("ENTITYddd: "+teams.get(t).isDead());
+//			}catch(NullPointerException e){
+//				System.err.println("[AddonEntityKing] Fehler: dddddd NullPointer!");
+//			}
+//		}
+//		
 		for(Team t : teams.keySet()){
-			if(teams.get(t).isDead()){
-				list.add(t);
-				AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(t,teams.get(t),null);
-				Bukkit.getPluginManager().callEvent(e);
+			try{
+				if(teams.get(t).isDead()){
+					AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(t,teams.get(t),null);
+					Bukkit.getPluginManager().callEvent(e);
+					list.add(t);
+				}
+			}catch(NullPointerException e){
+				System.err.println("[AddonEntityKing] Fehler: Testeer NullPointerException!");
 			}
 		}
-		for(Team t : list){
-			teams.remove(t);
-		}
+		
+		for(Team t : list)teams.remove(t);
 		list.clear();
 	}
 	
@@ -164,10 +173,10 @@ public class AddonEntityKing implements Listener {
 	
 	@EventHandler
 	public void Click(PlayerInteractEntityEvent ev){
-		if(is(ev.getRightClicked())){
+		if(ev.getRightClicked() instanceof Creature&&is(ev.getRightClicked())){
 			if(UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())){
 				ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
-				setHealt(ev.getRightClicked(),20);
+				setHealt(((Creature)ev.getRightClicked()),20);
 			}
 		}
 	}
@@ -189,23 +198,8 @@ public class AddonEntityKing implements Listener {
 	double h;
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
-//		if(((ev.getEntity() instanceof Player && !(ev.getDamager() instanceof Player))&& is(ev.getDamager()))&&!DamageEvP){
-//			//E vs P
-//			ev.setCancelled(true);
-//			return;
-//		}else if ( ((!(ev.getEntity() instanceof Player) && (ev.getDamager() instanceof Player))&&is(ev.getEntity()))&&!DamagePvE){
-//			//P vs E
-//			ev.setCancelled(true);
-//			return;
-//		}
-//		
-//		if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&is(ev.getEntity())&&!ProjectileDamage){
-//			ev.setCancelled(true);
-//			return;
-//		}
-		
 		if(!(ev.getDamager() instanceof Player))return;
-		if(is(ev.getEntity())){
+		if(ev.getEntity() instanceof Creature&&is(ev.getEntity())){
 			Team t = get(ev.getEntity());
 			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t || manager.getGame().getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
 				ev.setCancelled(true);
@@ -219,7 +213,7 @@ public class AddonEntityKing implements Listener {
 				}else{
 					ev.setDamage(0);
 				}
-				setHealt(ev.getEntity(), h);
+				setHealt(((Creature)ev.getEntity()), h);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getManager().getInstance(), new Runnable() {
                     public void run() {
                         ev.getEntity().setVelocity(new Vector());

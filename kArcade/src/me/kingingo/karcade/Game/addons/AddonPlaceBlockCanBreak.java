@@ -46,17 +46,14 @@ public class AddonPlaceBlockCanBreak implements Listener{
 			ev.blockList().clear();
 			return;
 		}
-		List<Block> list = new ArrayList<>();
+
 		for(Block b : ev.blockList()){
 			if(getBlocks().contains(b.getLocation())){
-				list.add(b);
+				b.setType(Material.AIR);
 				getBlocks().remove(b.getLocation());
 			}
 		}
 		ev.blockList().clear();
-		for(Block b : list){
-			ev.blockList().add(b);
-		}
 	}
 	
 	@EventHandler
@@ -74,7 +71,9 @@ public class AddonPlaceBlockCanBreak implements Listener{
 	
 	@EventHandler
 	public void Place(BlockPlaceEvent ev){
-		getBlocks().add(ev.getBlock().getLocation());
+		if(!getBlocks().contains(ev.getBlock().getLocation())){
+			getBlocks().add(ev.getBlock().getLocation());
+		}
 	}
 	
 }

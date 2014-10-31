@@ -20,6 +20,7 @@ import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Addons.AddonTimeNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
@@ -69,8 +70,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Villager;
@@ -92,11 +95,9 @@ import org.bukkit.potion.PotionEffectType;
 public class SheepWars extends TeamGame{
 
 	WorldData wd;
-	HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	Hologram hm;
 	AddonEnterhacken aeh;
 	AddonEntityKing aek;
-	AddonNight an;
 	AddonDropItems adi;
 	AddonPlaceBlockCanBreak apbcb;
 	@Getter
@@ -104,6 +105,7 @@ public class SheepWars extends TeamGame{
 	KitShop kitshop;
 	@Getter
 	SheepWarsType typ;
+	HashMap<Player,String> kits = new HashMap<>();
 	
 	public SheepWars(kArcadeManager manager,SheepWarsType typ){
 		super(manager);	
@@ -246,14 +248,14 @@ public class SheepWars extends TeamGame{
 		 }
 	}
 	
-	@EventHandler
-	public void Explosion(EntityExplodeEvent ev){
-		for(int i = 0; i<ev.blockList().size(); i++){
-			if(ev.blockList().get(i).getType()==Material.GLOWSTONE){
-				ev.blockList().remove(i);
-			}
-		}
-	}
+//	@EventHandler
+//	public void Explosion(EntityExplodeEvent ev){
+//		for(int i = 0; i<ev.blockList().size(); i++){
+//			if(ev.blockList().get(i).getType()==Material.GLOWSTONE){
+//				ev.blockList().remove(i);
+//			}
+//		}
+//	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Explode (EntityExplodeEvent ev){
@@ -340,7 +342,8 @@ public class SheepWars extends TeamGame{
 					l.put(p, getTeamList().get(p).getColor());
 				}
 				for(Kit kit : kitshop.getKits()){
-				kit.StartGame(l);
+					kit.StartGame(l);
+					for(Player p :kit.getPlayers())kits.put(p, kit.getName());
 				}
 				
 				TeamTab(typ.getTeam());
@@ -387,9 +390,9 @@ public class SheepWars extends TeamGame{
 		return UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,i), "§bBronze");
 	}
 	
-	public void setSpezialVillager(Location l){
+	public void setSpezialVillager(Location l,EntityType e){
 		l=l.add(0.5,0.5,0.5);
-		VillagerShop v = new VillagerShop(getManager().getInstance(),"Spezial-Shop",l,InventorySize._27);
+		VillagerShop v = new VillagerShop(getManager().getInstance(),e,"Spezial-Shop",l,InventorySize._27);
 		
 		Merchant rustung = new Merchant();
 		ItemStack r1 = UtilItem.RenameItem(new ItemStack(Material.IRON_CHESTPLATE), "Spezial Eisenhemd Lvl 1");
@@ -434,9 +437,9 @@ public class SheepWars extends TeamGame{
 		v.finish();
 	}
 	
-	public void setVillager(Team t){
+	public void setVillager(Team t,EntityType e){
 		Location l=getManager().getWorldData().getLocs(getVillagerSpawn(t).Name()).get(0).add(0.5,0.3,0.5);
-		VillagerShop v = new VillagerShop(getManager().getInstance(),t.getColor()+"Villager-Shop",l,InventorySize._27);
+		VillagerShop v = new VillagerShop(getManager().getInstance(),e,t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
 		
@@ -526,19 +529,21 @@ public class SheepWars extends TeamGame{
 		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"§aGreife deine Gegner an und töte sie!"}, "§cSchwerter"), schwerter, 12);
 		
 		Merchant bogen = new Merchant();
-		ItemStack b1 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 1");
+		ItemStack b0 = UtilItem.RenameItem(new ItemStack(Material.BOW), "§bBogen Lvl 1");
+		bogen.addOffer(new MerchantOffer(Silber(10),b0));
+		ItemStack b1 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 2");
 		b1.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 		bogen.addOffer(new MerchantOffer(Gold(3),b1));
-		ItemStack b2 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 2");
+		ItemStack b2 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 3");
 		b2.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 		b2.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
 		bogen.addOffer(new MerchantOffer(Gold(7),b2));
-		ItemStack b3 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 3");
+		ItemStack b3 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 4");
 		b3.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 		b3.addEnchantment(Enchantment.ARROW_DAMAGE, 2);
 		b3.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
 		bogen.addOffer(new MerchantOffer(Gold(13),b3));
-		bogen.addOffer(new MerchantOffer(Gold(1),UtilItem.RenameItem(new ItemStack(Material.ARROW), "Pfeil")));
+		bogen.addOffer(new MerchantOffer(Bronze(5),UtilItem.RenameItem(new ItemStack(Material.ARROW), "Pfeil")));
 		v.addShop(UtilItem.Item(new ItemStack(Material.BOW), new String[]{"§aDer fernkampf hat schon einige Kriege entschieden!"}, "§cBögen"), bogen, 13);
 		
 		Merchant nahrung = new Merchant();
@@ -610,10 +615,34 @@ public class SheepWars extends TeamGame{
 		
 		Team[] teams = getTyp().getTeam();
 		ArrayList<Location> list;
+		
+		for(Entity e : getManager().getWorldData().getWorld().getEntities()){
+			if(!(e instanceof Player)&&!(e instanceof Villager)){
+				e.remove();
+			}
+		}
+		
+		EntityType et = EntityType.VILLAGER;
+		EntityType sp_et = EntityType.VILLAGER;
+		EntityType sh_et=EntityType.SHEEP;
+		
+		if(getManager().getHoliday()!=null){
+			switch(getManager().getHoliday()){
+			case HELLOWEEN:
+				et=EntityType.WITCH;
+				new AddonTimeNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
+				break;
+			default:
+				new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+				break;
+			}
+		}
+		
 		int i = 0;
 		for(Team t : teams){
 			getTeams().put(t, true);
-			setVillager(t);
+			setVillager(t,et);
 			list = getManager().getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
 				p.teleport(list.get(i));
@@ -621,32 +650,38 @@ public class SheepWars extends TeamGame{
 				if(i==list.size())i=0;
 			}
 		}
-        
-		for(Entity e : getManager().getWorldData().getWorld().getEntities()){
-			if(!(e instanceof Player)&&!(e instanceof Villager)){
-				e.remove();
-			}
-		}
 		
 		adi= new AddonDropItems(this);
-		aek=new AddonEntityKing(getManager(), teams,this, EntityType.SHEEP);
+		aek=new AddonEntityKing(getManager(), teams,this, sh_et);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
-		an= new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
 		aeh=new AddonEnterhacken(getManager().getInstance());
 		getManager().getWorldData().getWorld().setStorm(false);
+		LivingEntity s;
 		for(Team t: aek.getTeams().keySet()){
-			Sheep s = (Sheep)aek.getTeams().get(t);
-			s.setColor(cd(t.getColor()));
-			s.setCustomName(t.getColor()+"Schaf ");
+			s = (LivingEntity)aek.getTeams().get(t);
+			s.setCustomName(t.getColor()+getName(sh_et)+" ");
+			if(s instanceof Sheep){
+				((Sheep)s).setColor(cd(t.getColor()));
+			}
 		}
 		
 		if(getManager().getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getManager().getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
 			for(Location loc : getManager().getWorldData().getLocs(Team.BLACK.Name())){
-				setSpezialVillager(loc);
+				setSpezialVillager(loc,et);
 			}
 		}
 		hm.RemoveAllText();
 		getManager().DebugLog(time, this.getClass().getName());
+	}
+	
+	public String getName(EntityType e){
+		switch(e){
+		case SHEEP: return "Schaf";
+		case SPIDER: return "Spinne";
+		case ZOMBIE: return "Zombie";
+		case CAVE_SPIDER: return "Spinne";
+		default: return "Tier";
+		}
 	}
 	
 	public Team getVillagerSpawn(Team team){
@@ -660,6 +695,8 @@ public class SheepWars extends TeamGame{
 		}
 	}
 	
+	String v;
+	String k;
 	@EventHandler
 	public void Death(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player&&ev.getEntity().getKiller() instanceof Player){
@@ -669,7 +706,17 @@ public class SheepWars extends TeamGame{
 			getCoins().addCoins(killer, false, 4,getManager().getTyp());
 			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{t.getColor()+victim.getName(),getTeam(killer).getColor()+killer.getName()}));
+			v=t.getColor()+victim.getName();
+			k=getTeam(killer).getColor()+killer.getName();
+			
+			if(kits.containsKey(victim)){
+				v=v+"§a["+kits.get(victim)+"§a]";
+			}
+			if(kits.containsKey(killer)){
+				k=k+"§a["+kits.get(killer)+"§a]";
+			}
+			
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{v,k}));
 			
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
@@ -679,7 +726,12 @@ public class SheepWars extends TeamGame{
 			Player victim = ev.getEntity();
 			Team t = getTeam(victim);
 			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.DEATH.getText(new String[]{t.getColor()+victim.getName()}));
+			v=t.getColor()+victim.getName();
+			
+			if(kits.containsKey(victim)){
+				v=v+"§a["+kits.get(victim)+"§a]";
+			}
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.DEATH.getText(new String[]{v}));
 
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
@@ -711,8 +763,12 @@ public class SheepWars extends TeamGame{
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
-		getManager().getStats().setInt(ev.getKiller(), getManager().getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
-		getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
+		if(ev.getKiller()!=null){
+			getManager().getStats().setInt(ev.getKiller(), getManager().getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
+		}else{
+			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),"FAIL"}));
+		}
 	}
 	
 	@EventHandler
@@ -751,8 +807,7 @@ public class SheepWars extends TeamGame{
 		"Map: "+wd.getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
-		"Coins: "+getCoins().getCoins(ev.getPlayer()),
-		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
+		//"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Schaf-Kills: "+getManager().getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer()),

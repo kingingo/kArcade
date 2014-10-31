@@ -20,7 +20,7 @@ public class CommandScan implements CommandExecutor{
 	
 	@me.kingingo.kcore.Command.CommandHandler.Command(command = "scan", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
-		if((permManager.hasPermission(((Player)cs), Permission.ALL_PERMISSION)||((Player)cs).isOp())){
+		if(((Player)cs).isOp()){
 			WorldParser.Scan(((Player)cs), args[0]);
 		}
 		return false;

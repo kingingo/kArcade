@@ -21,6 +21,8 @@ import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Service.CommandService;
+import me.kingingo.kcore.Calendar.Calendar;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Command.CommandHandler;
@@ -122,6 +124,8 @@ public class kArcadeManager implements Listener{
 	private NickManager nManager;
 	@Getter
 	private CommandService service;
+	@Getter
+	private CalendarType holiday;
 	
 	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
 		this.lobby.setPitch(2);
@@ -136,6 +140,8 @@ public class kArcadeManager implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
+		this.holiday=Calendar.getHoliday(5);
+		
 		cmd.register(CommandService.class, this.service);
 		for(Entity e : getLobby().getWorld().getEntities()){
 			if(!(e instanceof Player)){
@@ -565,7 +571,7 @@ public class kArcadeManager implements Listener{
 		start--;
 		for(Player p : UtilServer.getPlayers()){
 			UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
-			if(p.getLocation().getY()<5)p.teleport(lobby);
+			//if(p.getLocation().getY()<5)p.teleport(lobby);
 		}
 		if(start!=0){
 			switch(start){

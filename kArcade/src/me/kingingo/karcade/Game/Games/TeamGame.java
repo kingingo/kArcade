@@ -17,6 +17,7 @@ import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -41,10 +42,10 @@ public class TeamGame extends Game{
 	@Getter
 	@Setter
 	private AddonVoteTeam VoteTeam;
+	AddonSpectator spec=null;
 	@Getter
 	@Setter
 	private Scoreboard board;
-	AddonSpectator spec=null;
 	
 	public TeamGame(kArcadeManager manager) {
 		super(manager);
@@ -160,19 +161,17 @@ public class TeamGame extends Game{
 	}
 	
 	public void TeamTab(Team[] teams){
-		setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
-		for(Team team : teams){
-			org.bukkit.scoreboard.Team s = getBoard().registerNewTeam(team.Name());
-			s.setPrefix(team.getColor());
-			for(Player p : getTeamList().keySet()){
-				if(getTeamList().get(p)==team){
-					s.addPlayer(p);
-				}
-			}
-		}
-		for(Player p : UtilServer.getPlayers()){
-			p.setScoreboard(getBoard());
-		}
+	    setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
+	    for (me.kingingo.karcade.Enum.Team team : teams) {
+	      org.bukkit.scoreboard.Team s = getBoard().registerNewTeam(team.Name());
+	      s.setPrefix(team.getColor());
+	      for (Player p : getTeamList().keySet()) {
+	        if (getTeamList().get(p) == team) {
+	          s.addPlayer(p);
+	        }
+	      }
+	    }
+	    for(Player p : UtilServer.getPlayers())p.setScoreboard(getBoard());
 	}
 	
 	public void PlayerVerteilung(HashMap<Team,Integer> t,ArrayList<Player> list){

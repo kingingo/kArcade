@@ -94,8 +94,6 @@ public class TroubleInMinecraft extends TeamGame{
 	NPCManager npcManager;
 	Hologram hm;
 	@Getter
-	private HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
-	@Getter
 	ItemFakeManager ifm;
 	@Getter
 	public static Shotgun shotgun;
@@ -695,17 +693,17 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void StatsChange(PlayerStatsChangeEvent ev){
-		if(!boards.containsKey(ev.getPlayer()))return;
+		if(!getBoards().containsKey(ev.getPlayer()))return;
 		if(ev.getStats()==Stats.TTT_KARMA){
-			PlayerScoreboard ps = boards.get(ev.getPlayer());
+			PlayerScoreboard ps = getBoards().get(ev.getPlayer());
 			ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.TTT_DETECTIVE_PUNKTE){
-			PlayerScoreboard ps = boards.get(ev.getPlayer());
+			PlayerScoreboard ps = getBoards().get(ev.getPlayer());
 			ps.setScore(C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.TTT_TRAITOR_PUNKTE){
-			PlayerScoreboard ps = boards.get(ev.getPlayer());
+			PlayerScoreboard ps = getBoards().get(ev.getPlayer());
 			ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.WIN){
@@ -730,7 +728,7 @@ public class TroubleInMinecraft extends TeamGame{
 		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Karma: "+getManager().getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()),
-		"Rang: "+getManager().getStats().getRank(Stats.TTT_KARMA, ev.getPlayer()),	
+		//"Rang: "+getManager().getStats().getRank(Stats.TTT_KARMA, ev.getPlayer()),	
 		"Tests: "+getManager().getStats().getInt(Stats.TTT_TESTS, ev.getPlayer()),
 		"Traitor-Punkte: "+getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()),
 		"Detective-Punkte: "+getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()),
@@ -798,7 +796,7 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 				
 				ps.setBoard();
-				boards.put(p, ps);
+				getBoards().put(p, ps);
 				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_IS_NOW.getText(Team.DETECTIVE.Name()));
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
@@ -849,7 +847,7 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 				
 				ps.setBoard();
-				boards.put(p, ps);
+				getBoards().put(p, ps);
 			}
 			
 			for(Player p : t){
@@ -881,7 +879,7 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 				ps.setBoard();
 				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_IS_NOW.getText(Team.INOCCENT.Name()));
-				boards.put(p, ps);
+				getBoards().put(p, ps);
 			}
 			setDamage(true);
 			setProjectileDamage(true);

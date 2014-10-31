@@ -48,10 +48,10 @@ public class kArcade extends JavaPlugin{
 			c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"a"+id,this,updater);
 		}
 		mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
-		permManager=new PermissionManager(this,mysql);
 		cmd=new CommandHandler(this);
 		cmd.register(CommandScan.class, new CommandScan(permManager));
 		pManager=new PacketManager(this,c);
+		permManager=new PermissionManager(this,pManager,mysql);
 		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
 		cmd.register(CommandSend.class, new CommandSend(c));
 		cmd.register(CommandStart.class, new CommandStart(manager));
