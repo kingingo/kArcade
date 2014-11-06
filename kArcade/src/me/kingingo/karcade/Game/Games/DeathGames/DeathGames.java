@@ -35,6 +35,7 @@ import me.kingingo.kcore.Kit.Perks.PerkEquipment;
 import me.kingingo.kcore.Kit.Perks.PerkHeal;
 import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkHealByKill;
+import me.kingingo.kcore.Kit.Perks.PerkHitEffect;
 import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
 import me.kingingo.kcore.Kit.Perks.PerkLessDamage;
 import me.kingingo.kcore.Kit.Perks.PerkMoreHeart;
@@ -50,6 +51,7 @@ import me.kingingo.kcore.Kit.Perks.PerkPotionEffectByHearth;
 import me.kingingo.kcore.Kit.Perks.PerkPotionInWater;
 import me.kingingo.kcore.Kit.Perks.PerkRunner;
 import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
+import me.kingingo.kcore.Kit.Perks.PerkSnowballSwitcher;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
@@ -192,8 +194,12 @@ public class DeathGames extends SoloGame{
 		this.kitShop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			
 			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,5)}),
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,4)}),
 				new PerkArrowFire(30)
+			}),
+			new Kit( "§aBogenmeister",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 8 Pfeilen.","60% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,8)}),
+				new PerkArrowFire(60)
 			}),
 			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.DEATHGAMES_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoKnockback(manager.getInstance())
@@ -206,6 +212,9 @@ public class DeathGames extends SoloGame{
 			new Kit( "§aFireman",new String[]{"Der Fireman bekommt kein Feuerschaden","und bekommt einen","Lava Eimer und "," ein Feuerzeug."}, new ItemStack(Material.LAVA_BUCKET),Permission.DEATHGAMES_KIT_FIREMAN,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoFiredamage(),
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.LAVA,2),new ItemStack(Material.FLINT_AND_STEEL)})
+			}),
+			new Kit( "§aSwitcher",new String[]{"Der Switcher hat ein unendlichen Schneeball"," im Inventar welcher ihn mit seinem"," Gegner Tauscht sobald"," er ihn abwirft"}, new ItemStack(Material.SNOW_BALL),Permission.DEATHGAMES_KIT_SWITCHER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkSnowballSwitcher()
 			}),
 			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),Permission.DEATHGAMES_KIT_HOLZ,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.WOOD_AXE)}),
@@ -246,6 +255,12 @@ public class DeathGames extends SoloGame{
 			}),
 			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),Permission.DEATHGAMES_KIT_RITTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionEffectByHearth(PotionEffectType.INCREASE_DAMAGE, 1, 7)
+			}),
+			new Kit( "§aToxin",new String[]{"Wenn er einen Gegner schlägt"," wird dieser für ","5 Sekunden lang blind."}, new ItemStack(Material.FLINT),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkHitEffect(5, 90, PotionEffectType.BLINDNESS)
+			}),
+			new Kit( "§aYeti",new String[]{"Sobald er einen Gegner"," schlägt erhält dieser","Langsamkeit für"," 5 Sekunden."}, new ItemStack(Material.SOUL_SAND),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkHitEffect(5, 90, PotionEffectType.SLOW)
 			}),
 			new Kit( "§aTeleporter",new String[]{"Der Teleporter kann","sich 1x mit","einem Spieler ","tauschen lassen!"}, new ItemStack(Material.WATCH),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkTeleporter(getManager())
