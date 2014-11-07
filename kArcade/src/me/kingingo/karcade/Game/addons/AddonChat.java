@@ -58,7 +58,7 @@ public class AddonChat extends kListener{
 							p.sendMessage(C.mOrange+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 						}
 					}else{
-						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getGame().getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 					}
 				}
 			}else{
@@ -76,7 +76,7 @@ public class AddonChat extends kListener{
 							p.sendMessage(C.mOrange+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 						}
 					}else{
-						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getGame().getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 					}
 				}
 			}

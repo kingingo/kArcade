@@ -46,7 +46,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	public OneInTheChamber(kArcadeManager manager) {
 		super(manager);
 		registerListener();
-		manager.setTyp(GameType.OneInTheChamber);
+		setTyp(GameType.OneInTheChamber);
 		getManager().setStart(186);
 		setMax_Players(16);
 		setMin_Players(2);
@@ -111,11 +111,11 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			kills.put(killer, i);
 		//	board.getObjective(DisplaySlot.SIDEBAR).getScore(Bukkit.getOfflinePlayer(killer.getName())).setScore(i);
 			Life.put(victim,(Life.get(victim)-1));
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
 			killer.getInventory().addItem(new ItemStack(Material.ARROW));
 			if(Life.get(victim)<=0){
 				getGameList().addPlayer(victim, PlayerState.OUT);
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_EXCLUSION.getText(victim.getName()));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_EXCLUSION.getText(victim.getName()));
 			}
 		}
 	}
@@ -170,24 +170,24 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));
 		
 		switch(this.getManager().getStart()){
-		case 185:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 184:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 183:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 182:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 181:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
-		case 180:getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
+		case 185:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 184:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 183:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 182:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 181:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getManager().getStart() - 180))));break;
+		case 180:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
 		}
 	}else{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));
 		
 		switch(getManager().getStart()){
-		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
-		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
+		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getManager().getStart())));break;
 		case 0: 
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END.getText());
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
 			onDisable();
 		break;
 		}

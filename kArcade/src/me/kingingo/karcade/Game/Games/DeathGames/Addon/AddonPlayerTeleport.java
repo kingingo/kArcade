@@ -66,8 +66,8 @@ public class AddonPlayerTeleport extends kListener{
 				for (int i = 0; i < max; i++) {
 					p1 = tplist.get(0);
 					p2 = tplist.get(1);
-					p1.sendMessage(Text.PREFIX_GAME.getText(instance.getManager().getTyp())+Text.ENDERGAMES_TELEPORT.getText(p2.getName()));
-					p2.sendMessage(Text.PREFIX_GAME.getText(instance.getManager().getTyp())+Text.ENDERGAMES_TELEPORT.getText(p1.getName()));
+					p1.sendMessage(Text.PREFIX_GAME.getText(instance.getType())+Text.ENDERGAMES_TELEPORT.getText(p2.getName()));
+					p2.sendMessage(Text.PREFIX_GAME.getText(instance.getType())+Text.ENDERGAMES_TELEPORT.getText(p1.getName()));
 					loc1 = p1.getLocation();
 					loc2 = p2.getLocation();
 

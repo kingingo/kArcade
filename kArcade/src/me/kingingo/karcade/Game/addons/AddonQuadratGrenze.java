@@ -96,7 +96,7 @@ public class AddonQuadratGrenze implements Listener{
 					if(!isInGrenze(p.getLocation())){
 						p.damage(-1);
 						UtilPlayer.health(p, -1);
-						p.sendMessage(Text.PREFIX_GAME.getText(manager.getTyp().name())+"§c"+Text.AUßERHALB_DER_MAP.getText());
+						p.sendMessage(Text.PREFIX_GAME.getText(manager.getGame().getType().name())+"§c"+Text.AUßERHALB_DER_MAP.getText());
 					}
 				}	
 			}

@@ -47,8 +47,8 @@ public class PerkTeleporter extends Perk{
 				Location tele_loc = tele.getLocation();
 				Location p_loc= ev.getPlayer().getLocation();
 				
-				ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(manager.getTyp())+Text.ENDERGAMES_TELEPORT.getText(tele.getName()));
-				tele.sendMessage(Text.PREFIX_GAME.getText(manager.getTyp())+Text.ENDERGAMES_TELEPORT.getText(ev.getPlayer().getName()));
+				ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(manager.getGame().getType().getTyp())+Text.ENDERGAMES_TELEPORT.getText(tele.getName()));
+				tele.sendMessage(Text.PREFIX_GAME.getText(manager.getGame().getType().getTyp())+Text.ENDERGAMES_TELEPORT.getText(ev.getPlayer().getName()));
 				
 				tele.teleport(p_loc);
 				ev.getPlayer().teleport(tele_loc);

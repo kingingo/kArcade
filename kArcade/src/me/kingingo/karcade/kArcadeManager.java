@@ -12,6 +12,8 @@ import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
+import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
+import me.kingingo.karcade.Game.Games.ArcadeGanes.ArcadeGames;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
@@ -95,7 +97,6 @@ public class kArcadeManager implements Listener{
 	@Getter
 	@Setter
 	private String BungeeCord_Fallback_Server = "falldown";
-	private GameType typ = GameType.NONE;
 	@Getter
 	@Setter
 	private Location lobby=new Location(Bukkit.getWorld("world"),789.415,29,680.2699);
@@ -181,11 +182,6 @@ public class kArcadeManager implements Listener{
 	public DisguiseManager getDisguiseManager(){
 		if(disguiseManager==null)disguiseManager=new DisguiseManager(getInstance());
 		return disguiseManager;
-	}
-	
-	public void setTyp(GameType typ){
-		getGame().setStats(typ);
-		this.typ=typ;
 	}
 	
 	public Sign getSign(Location loc){
@@ -274,6 +270,9 @@ public class kArcadeManager implements Listener{
 			return new DeathGames(this);
 		}else if(GameType.SurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
+		}else if(GameType.ArcadeGames.getTyp().equalsIgnoreCase(game)){
+			new ArcadeGames(this);
+			return null;
 		}else{
 			return new OneInTheChamber(this);
 		}
@@ -347,12 +346,18 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(int o){
-		SERVER_STATUS ss = new SERVER_STATUS(state,o, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,o, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
+		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
+		Bukkit.getPluginManager().callEvent(ev);
+		if(ev.isCancelled())return;
 		pManager.SendPacket("hub", ss);
 	}
 	
 	public void updateInfo(GameState s){
-		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
+		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
+		Bukkit.getPluginManager().callEvent(ev);
+		if(ev.isCancelled())return;
 		pManager.SendPacket("hub", ss);
 	}
 	
@@ -363,7 +368,10 @@ public class kArcadeManager implements Listener{
 //		System.out.println("O: "+getWorldData().getMapName());
 //		System.out.println("O: "+getTyp());
 //		System.out.println("O: "+"a"+kArcade.id);
-		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
+		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
+		Bukkit.getPluginManager().callEvent(ev);
+		if(ev.isCancelled())return;
 		pManager.SendPacket("hub", ss);
 	}
 	
@@ -398,7 +406,7 @@ public class kArcadeManager implements Listener{
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		state=gs;
-		System.out.println("["+this.typ.getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
+		System.out.println("["+getGame().getType().getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -408,16 +416,8 @@ public class kArcadeManager implements Listener{
 		}
 	}
 	
-	public boolean isType(GameType gt){
-		return typ==gt;
-	}
-	
 	public boolean isState(GameState gs){
 		return gs==getState();
-	}
-	
-	public GameType getTyp(){
-		return this.typ;
 	}
 	
 	public void broadcast(String message){
@@ -528,21 +528,21 @@ public class kArcadeManager implements Listener{
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.RESTART_IN.getText(start));
 		
 		switch(start){
-		case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 30:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 25:
-			broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
+			broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
 			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
 		case 23:getGame().getStats().SaveAllData();break;
-		case 20:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
+		case 20:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
 		for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
-		case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 5:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
-		case 4:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 10:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 5:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
+		case 4:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 3:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 2:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
+		case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 0: 
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			try {
@@ -570,29 +570,29 @@ public class kArcadeManager implements Listener{
 		if(start!=0){
 			switch(start){
 			case 120:
-				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
+				broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
 				Bukkit.getWorld("world").setWeatherDuration(0);
 				Bukkit.getWorld("world").setStorm(false);
 				break;
-			case 90:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 60:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 90:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 60:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 30:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 15:
-				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
+				broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
 				for(Player p : UtilServer.getPlayers())Title.sendTitle(p, "§aMap:§6 "+getGame().getWorldData().getMapName());
 				break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 10:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 3:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 2:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+			case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			}
 		}else{
 			if(UtilServer.getPlayers().length>=game.getMin_Players()){
-				Bukkit.getPluginManager().callEvent(new GameStartEvent(getTyp()));
+				Bukkit.getPluginManager().callEvent(new GameStartEvent(getGame().getType()));
 				updateInfo(GameState.InGame);
 			}else{
 				start=-1;
-				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+C.cRed+"Es sind zu wenig Spieler(min. "+getGame().getMin_Players()+") online! Wartemodus wird neugestartet!");
+				broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+C.cRed+"Es sind zu wenig Spieler(min. "+getGame().getMin_Players()+") online! Wartemodus wird neugestartet!");
 			}
 		}
 	}

@@ -119,7 +119,7 @@ public class Fake_Chest implements Listener,IShop {
 		if(!list.containsKey(ev.getItemfake()))return;
 		if(TTT.getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+"Dieses Item ist ein Fake-Item.");
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getType().getTyp())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);
 			return;
 		}

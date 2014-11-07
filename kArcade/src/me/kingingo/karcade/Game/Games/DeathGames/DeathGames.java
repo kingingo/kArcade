@@ -134,7 +134,7 @@ public class DeathGames extends SoloGame{
 		super(manager);
 		registerListener();
 		long t = System.currentTimeMillis();
-		manager.setTyp(GameType.DeathGames);
+		setTyp(GameType.DeathGames);
 		manager.setState(GameState.Laden);
 		this.manager=manager;
 		this.worldData=new WorldData(manager,GameType.DeathGames.name());
@@ -434,11 +434,11 @@ public class DeathGames extends SoloGame{
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
-				getCoins().addCoins(a, false, 5,getManager().getTyp());
-				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
+				getCoins().addCoins(a, false, 5,getType());
+				getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
 			}else{
-				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.DEATH.getText(v.getName()) );
+				getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.DEATH.getText(v.getName()) );
 			}
 		}
 	}
@@ -658,8 +658,8 @@ public class DeathGames extends SoloGame{
 			if(getGameList().getPlayers(PlayerState.IN).size()==1){
 				Player p = getGameList().getPlayers(PlayerState.IN).get(0);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-				getCoins().addCoins(p, false, 10,getManager().getTyp());
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp())+Text.GAME_WIN.getText(p.getName()));
+				getCoins().addCoins(p, false, 10,getType());
+				getManager().broadcast(Text.PREFIX_GAME.getText(getType())+Text.GAME_WIN.getText(p.getName()));
 			}
 		}
 	}
@@ -672,15 +672,15 @@ public class DeathGames extends SoloGame{
 
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())), p);
 		switch(getManager().getStart()){
-		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
 		case 0:
-			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SCHUTZZEIT_END.getText() );
+			getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END.getText() );
 			setDamage(true);
 			NoCheatToggle();
 			getManager().setStart(60*15);
@@ -697,21 +697,21 @@ public class DeathGames extends SoloGame{
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())), p);
 		switch(getManager().getStart()){
-		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
 		case 0:
-			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END.getText() );
+			getManager().broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END.getText() );
 			getManager().setState(GameState.Restart);
 			break;
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase)return;
@@ -721,11 +721,11 @@ public class DeathGames extends SoloGame{
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.1, 0),new String[]{
-		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: DeathGames §a"+kArcade.id,
 		"Biom: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		" ",

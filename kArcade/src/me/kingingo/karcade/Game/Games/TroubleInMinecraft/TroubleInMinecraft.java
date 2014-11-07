@@ -116,7 +116,7 @@ public class TroubleInMinecraft extends TeamGame{
 		this.manager=manager;
 		long t = System.currentTimeMillis();
 		manager.setState(GameState.Laden);
-		manager.setTyp(GameType.TroubleInMinecraft);
+		setTyp(GameType.TroubleInMinecraft);
 		setMin_Players(6);
 		setMax_Players(16);
 		getInventoryTypDisallow().add(InventoryType.ANVIL);
@@ -223,7 +223,7 @@ public class TroubleInMinecraft extends TeamGame{
 //		ev.setCancelled(true);
 //		if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 //			ev.setCancelled(true);
-//			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+//			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 //			return;
 //		}
 //		UtilServer.broadcast(C.cGray+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
@@ -292,7 +292,7 @@ public class TroubleInMinecraft extends TeamGame{
 					npclist.remove(npc.getP().getId());
 					npc.remove();
 					Team t = defi.getTeams().get(name.toLowerCase());
-					if(t!=null)UtilServer.broadcast(Text.PREFIX_GAME.getText(manager.getTyp().getTyp())+Text.TTT_LEICHE_IDENTIFIZIERT.getText(new String[]{t.getColor()+name,t.getColor()+t.Name()}));
+					if(t!=null)UtilServer.broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_LEICHE_IDENTIFIZIERT.getText(new String[]{t.getColor()+name,t.getColor()+t.Name()}));
 //					if(t==Team.TRAITOR){
 //						for(Player p : getGameList().getPlayers(PlayerState.IN)){
 //							if(getTeam(p)==t){
@@ -317,7 +317,7 @@ public class TroubleInMinecraft extends TeamGame{
 //					}
 				}else{
 					if(defi.getTeams().containsKey(npc.getName().toLowerCase())){
-						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_NPC_CLICKED.getText(new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
+						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_NPC_CLICKED.getText(new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
 					}
 				}
 		 	}
@@ -365,8 +365,8 @@ public class TroubleInMinecraft extends TeamGame{
 				int k = getStats().getInt(Stats.TTT_KARMA, (Player)ev.getEntity().getKiller());
 				int d=-1;
 				int tr=-1;
-				((Player)ev.getEntity()).sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
-				((Player)ev.getEntity().getKiller()).sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
+				((Player)ev.getEntity()).sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
+				((Player)ev.getEntity().getKiller()).sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
 				if(t1==Team.TRAITOR){
 					if(t==Team.TRAITOR){
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
@@ -630,7 +630,7 @@ public class TroubleInMinecraft extends TeamGame{
 		if(getManager().getState()!=GameState.InGame)return;
 		getManager().setStart(getManager().getStart()-1);
 		if(isInTeam(Team.INOCCENT)==0&&isInTeam(Team.DETECTIVE)==0){
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_WIN.getText(Team.TRAITOR.Name()));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_WIN.getText(Team.TRAITOR.Name()));
 			System.out.println("[TTT] TRAITOR HABEN GEWONNEN");
 			for(Player p : getTeamList().keySet()){
 				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
@@ -642,7 +642,7 @@ public class TroubleInMinecraft extends TeamGame{
 			
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);	
 		}else if(isInTeam(Team.TRAITOR)==0){
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_WIN.getText(Team.INOCCENT.Name()));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_WIN.getText(Team.INOCCENT.Name()));
 			System.out.println("[TTT] INNOCENT HABEN GEWONNEN");
 			for(Player p : getTeamList().keySet()){
 				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
@@ -657,18 +657,18 @@ public class TroubleInMinecraft extends TeamGame{
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));
 		switch(getManager().getStart()){
-		case 30: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 20: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 15: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 10: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
-		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 30: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 20: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 15: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 10: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
+		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())));break;
 		case 0: 
 			Team t = getHaveWinTeam();
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_WIN.getText(t.Name()));
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_WIN.getText(t.Name()));
 		
 			for(Player p : getTeamList().keySet()){
 				if(t==Team.TRAITOR){
@@ -687,7 +687,7 @@ public class TroubleInMinecraft extends TeamGame{
 			}
 			
 			getManager().setState(GameState.Restart);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END.getText());
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
 			break;
 		}
 	}
@@ -721,11 +721,11 @@ public class TroubleInMinecraft extends TeamGame{
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.8, 0),new String[]{
-		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
 		" ",
-		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Karma: "+getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()),
@@ -747,15 +747,15 @@ public class TroubleInMinecraft extends TeamGame{
 		getManager().setStart(getManager().getStart()-1);
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));
 		switch(getManager().getStart()){
-		case 30: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 20: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 15: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 10: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
-		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 30: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 20: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 15: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 10: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 5: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 4: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 3: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 2: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
+		case 1: getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getManager().getStart()));break;
 		case 0: 
 			getManager().setStart(60*20);
 			ArrayList<Player> plist = new ArrayList<>();
@@ -798,7 +798,7 @@ public class TroubleInMinecraft extends TeamGame{
 				
 				ps.setBoard();
 				getBoards().put(p, ps);
-				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_IS_NOW.getText(Team.DETECTIVE.Name()));
+				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_IS_NOW.getText(Team.DETECTIVE.Name()));
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
 			}
@@ -810,8 +810,8 @@ public class TroubleInMinecraft extends TeamGame{
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cDRed+"TraitorBoard");
 				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
 				ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, p));
-				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_IS_NOW.getText(Team.TRAITOR.Name()));
-				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_TRAITOR_CHAT.getText());
+				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_IS_NOW.getText(Team.TRAITOR.Name()));
+				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_TRAITOR_CHAT.getText());
 				if(t.size()!=1){
 					ps.setScore("§7", DisplaySlot.SIDEBAR, -1);
 					ps.setScore(C.cRed+"Traitor:", DisplaySlot.SIDEBAR, -2);
@@ -879,14 +879,14 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				ps.setBoard();
-				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_IS_NOW.getText(Team.INOCCENT.Name()));
+				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_IS_NOW.getText(Team.INOCCENT.Name()));
 				getBoards().put(p, ps);
 			}
 			setDamage(true);
 			setProjectileDamage(true);
 			setDamageSelf(true);
 			setDamageTeamOther(true);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SCHUTZZEIT_END.getText());
+			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END.getText());
 			getManager().setState(GameState.InGame);
 			break;
 		}
@@ -901,7 +901,7 @@ public class TroubleInMinecraft extends TeamGame{
 				for(Player p : traitor){
 					t=t+p.getName()+",";
 				}
-				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+"§cDiese Spieler waren Traitor: §e"+t.substring(0, t.length()-1));
+				getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"§cDiese Spieler waren Traitor: §e"+t.substring(0, t.length()-1));
 			}
 		}
 	}

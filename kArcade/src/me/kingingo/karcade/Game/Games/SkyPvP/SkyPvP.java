@@ -59,7 +59,7 @@ public class SkyPvP extends SoloGame{
 		registerListener();
 		long l = System.currentTimeMillis();
 		getManager().setState(GameState.Laden);
-		getManager().setTyp(GameType.SkyPvP);
+		setTyp(GameType.SkyPvP);
 		setMax_Players(24);
 		setMin_Players(1);
 		setDamage(true);
@@ -97,7 +97,7 @@ public class SkyPvP extends SoloGame{
 		ev.setCancelled(true);
 		if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -115,16 +115,16 @@ public class SkyPvP extends SoloGame{
 		getManager().setStart(getManager().getStart()-1);
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())), p);
 		switch(getManager().getStart()){
-		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
-		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 30: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 15: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 10: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 5: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 4: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 3: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 2: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
+		case 1: getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getManager().getStart())) );break;
 		case 0:
-			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_END.getText() );
+			getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText() );
 			getManager().setState(GameState.Restart);
 			break;
 		}
@@ -149,11 +149,11 @@ public class SkyPvP extends SoloGame{
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
-				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
+				getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
 			}
-			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.DEATH.getText(v.getName()) );
-			if(b)getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
+			getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(v.getName()) );
+			if(b)getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
 			getStats().setInt(v, getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 		}
 	}
@@ -164,7 +164,7 @@ public class SkyPvP extends SoloGame{
 			if(getGameList().getPlayers(PlayerState.IN).size()==1){
 				Player win = getGameList().getPlayers(PlayerState.IN).get(0);
 				getStats().setInt(win, getStats().getInt(Stats.WIN, win)+1, Stats.WIN);
-				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_WIN.getText(win.getName()));
+				getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(win.getName()));
 			}
 		}
 	}
@@ -178,11 +178,11 @@ public class SkyPvP extends SoloGame{
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.3, 0),new String[]{
-		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SkyPvP §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
 		"Coins: "+getCoins().getCoins(ev.getPlayer()),
 		"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),

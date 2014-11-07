@@ -27,7 +27,7 @@ public class CommandTraitorChat implements CommandExecutor, Listener{
 		Team t = TTT.getTeam(p);
 		if(t!=Team.TRAITOR)return false;
 		if(args.length==0){
-			p.sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+"§c/tc [Nachricht]");
+			p.sendMessage(Text.PREFIX_GAME.getText(TTT.getType().getTyp())+"§c/tc [Nachricht]");
 			return false;
 		}else{
 			String msg = "";

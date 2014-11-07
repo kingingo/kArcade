@@ -94,6 +94,7 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	public boolean DamageSelf = true;
+	private GameType typ = GameType.NONE;
 	@Getter
 	@Setter
 	public boolean DamageTeamSelf = false;
@@ -265,7 +266,7 @@ public class Game implements Listener{
 	}
 	
 	public void setStats(){
-		if(stats==null)this.stats=new StatsManager(manager.getInstance(),manager.getMysql(),manager.getTyp());
+		if(stats==null)this.stats=new StatsManager(manager.getInstance(),manager.getMysql(),getType());
 	}
 	
 	@EventHandler
@@ -444,10 +445,23 @@ public class Game implements Listener{
 		ev.setDeathMessage(null);
 	}
 	
+	public void setTyp(GameType typ){
+		setStats(typ);
+		this.typ=typ;
+	}
+	
+	public boolean isType(GameType gt){
+		return typ==gt;
+	}
+	
+	public GameType getType(){
+		return this.typ;
+	}
+	
 	  @EventHandler
 	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
-		  TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+manager.getTyp().getTyp(), "§eShop.EpicPvP.de");
+		  TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
 		  ev.getPlayer().sendMessage(Text.PREFIX.getText()+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
 		  if(getManager().isState(GameState.LobbyPhase)){
@@ -469,7 +483,7 @@ public class Game implements Listener{
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
 					  if(!getManager().getPermManager().hasPermission(p, Permission.JOIN_FULL_SERVER)){
-						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KICKED_BY_PREMIUM.getText());
+						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getType().getTyp())+Text.KICKED_BY_PREMIUM.getText());
 						  UtilBG.sendToServer(p, getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
 						  b=true;
 						  break;

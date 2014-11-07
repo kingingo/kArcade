@@ -37,9 +37,9 @@ public class CommandStart implements CommandExecutor{
 				        try{
 				        	Integer i = Integer.valueOf(ev.getName());
 				        	Manager.setStart(i);
-				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().getTyp())+"Die Zeit wurde zu "+i+" geändert!");
+				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+"Die Zeit wurde zu "+i+" geändert!");
 				        }catch(NumberFormatException e){
-				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().getTyp())+"Das ist keine Zahl "+ev.getName());
+				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+"Das ist keine Zahl "+ev.getName());
 				        }
 					}
 				}

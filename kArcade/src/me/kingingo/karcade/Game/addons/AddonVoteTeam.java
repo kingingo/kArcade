@@ -81,12 +81,12 @@ public class AddonVoteTeam implements Listener{
 					p.closeInventory();
 					
 					if(UtilServer.getPlayers().length<=Manager.getGame().getMin_Players()){
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().getTyp())+Text.VOTE_TEAM_MIN_PLAYER.getText(Manager.getGame().getMin_Players()+1));
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+Text.VOTE_TEAM_MIN_PLAYER.getText(Manager.getGame().getMin_Players()+1));
 						return;
 					}
 					
 					if(vote.containsKey(p)){
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().getTyp())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
 						Team t = vote.get(p);
 						vote.remove(p);
 						fixItem(t);
@@ -98,9 +98,9 @@ public class AddonVoteTeam implements Listener{
 								int a = isVotet(t);
 								vote.put(p, t);
 								fixItem(t);
-								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().getTyp())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
+								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
 							}else{
-								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getTyp().getTyp())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.getColor()+t.Name()));
+								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.getColor()+t.Name()));
 							}
 							break;
 						}

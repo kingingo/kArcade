@@ -57,7 +57,7 @@ public class DNA_TEST extends kListener implements IShop{
 			UtilInv.remove(ev.getPlayer(), ev.getPlayer().getItemInHand().getType(), ev.getPlayer().getItemInHand().getData().getData(), 1);
 			System.out.println("LOOK "+ev.getNpc().getName().toLowerCase()+" ");
 			if(!list.containsKey(ev.getNpc().getName().toLowerCase()))return;
-			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_DNA_TEST.getText(new String[]{"§a"+ev.getNpc().getName(),"§c"+list.get(ev.getNpc().getName().toLowerCase())}));
+			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DNA_TEST.getText(new String[]{"§a"+ev.getNpc().getName(),"§c"+list.get(ev.getNpc().getName().toLowerCase())}));
 		}
 	}
 	

@@ -79,9 +79,9 @@ public class Shop implements Listener{
 					if(player_punkte>=pk){
 						TTT.getStats().setInt(p, (player_punkte-pk), getPunkte());
 						s.add(p);
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_SHOP_BUYED.getText());
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_SHOP_BUYED.getText());
 					}else{
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_SHOP.getText());
+						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_SHOP.getText());
 					}
 					break;
 				}
