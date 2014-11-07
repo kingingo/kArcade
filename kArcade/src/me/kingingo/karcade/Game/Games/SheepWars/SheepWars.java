@@ -108,7 +108,8 @@ public class SheepWars extends TeamGame{
 	HashMap<Player,String> kits = new HashMap<>();
 	
 	public SheepWars(kArcadeManager manager,SheepWarsType typ){
-		super(manager);	
+		super(manager);
+		registerListener();
 		long t = System.currentTimeMillis();
 		this.typ=typ;
 		manager.setState(GameState.Laden);
@@ -205,7 +206,7 @@ public class SheepWars extends TeamGame{
 		
 		wd=new WorldData(manager,typ.getType().name());
 		wd.Initialize();
-		manager.setWorldData(wd);
+		setWorldData(wd);
 		manager.DebugLog(t, this.getClass().getName());
 		
 		manager.setState(GameState.LobbyPhase);
@@ -243,7 +244,7 @@ public class SheepWars extends TeamGame{
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
-			l= getManager().getWorldData().getLocs(getTeam(ev.getPlayer()).Name());
+			l= getWorldData().getLocs(getTeam(ev.getPlayer()).Name());
 			 ev.setRespawnLocation( l.get(UtilMath.r(l.size())) );
 		 }
 	}
@@ -334,7 +335,7 @@ public class SheepWars extends TeamGame{
 					if(getTeamList().containsKey(p))continue;
 					Team t = littleTeam();
 					addTeam(p, t);
-					p.teleport(getManager().getWorldData().getLocs(t.Name()).get(0));
+					p.teleport(getWorldData().getLocs(t.Name()).get(0));
 				}
 				
 				HashMap<Player,String> l= new HashMap<>();
@@ -438,7 +439,7 @@ public class SheepWars extends TeamGame{
 	}
 	
 	public void setVillager(Team t,EntityType e){
-		Location l=getManager().getWorldData().getLocs(getVillagerSpawn(t).Name()).get(0).add(0.5,0.3,0.5);
+		Location l=getWorldData().getLocs(getVillagerSpawn(t).Name()).get(0).add(0.5,0.3,0.5);
 		VillagerShop v = new VillagerShop(getManager().getInstance(),e,t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
@@ -616,7 +617,7 @@ public class SheepWars extends TeamGame{
 		Team[] teams = getTyp().getTeam();
 		ArrayList<Location> list;
 		
-		for(Entity e : getManager().getWorldData().getWorld().getEntities()){
+		for(Entity e : getWorldData().getWorld().getEntities()){
 			if(!(e instanceof Player)&&!(e instanceof Villager)){
 				e.remove();
 			}
@@ -630,11 +631,11 @@ public class SheepWars extends TeamGame{
 			switch(getManager().getHoliday()){
 			case HELLOWEEN:
 				et=EntityType.WITCH;
-				new AddonTimeNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+				new AddonTimeNight(getManager().getInstance(),getWorldData().getWorld());
 				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
 				break;
 			default:
-				new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 				break;
 			}
 		}
@@ -643,7 +644,7 @@ public class SheepWars extends TeamGame{
 		for(Team t : teams){
 			getTeams().put(t, true);
 			setVillager(t,et);
-			list = getManager().getWorldData().getLocs(t.Name());
+			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
 				p.teleport(list.get(i));
 				i++;
@@ -655,7 +656,7 @@ public class SheepWars extends TeamGame{
 		aek=new AddonEntityKing(getManager(), teams,this, sh_et);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		aeh=new AddonEnterhacken(getManager().getInstance());
-		getManager().getWorldData().getWorld().setStorm(false);
+		getWorldData().getWorld().setStorm(false);
 		LivingEntity s;
 		for(Team t: aek.getTeams().keySet()){
 			s = (LivingEntity)aek.getTeams().get(t);
@@ -665,8 +666,8 @@ public class SheepWars extends TeamGame{
 			}
 		}
 		
-		if(getManager().getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getManager().getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
-			for(Location loc : getManager().getWorldData().getLocs(Team.BLACK.Name())){
+		if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
+			for(Location loc : getWorldData().getLocs(Team.BLACK.Name())){
 				setSpezialVillager(loc,et);
 			}
 		}
@@ -704,8 +705,8 @@ public class SheepWars extends TeamGame{
 			Player victim = ev.getEntity();
 			Team t = getTeam(victim);
 			getCoins().addCoins(killer, false, 4,getManager().getTyp());
-			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
+			getStats().setInt(killer, getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
+			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
 			v=t.getColor()+victim.getName();
 			k=getTeam(killer).getColor()+killer.getName();
 			
@@ -720,12 +721,12 @@ public class SheepWars extends TeamGame{
 			
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
-				getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
+				getStats().setInt(victim, getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			}
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
 			Team t = getTeam(victim);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
+			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
 			v=t.getColor()+victim.getName();
 			
 			if(kits.containsKey(victim)){
@@ -735,7 +736,7 @@ public class SheepWars extends TeamGame{
 
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
-				getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
+				getStats().setInt(victim, getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			}
 		}
 	}
@@ -747,7 +748,7 @@ public class SheepWars extends TeamGame{
 				Team t = lastTeam();
 				for(Player p : getPlayerFrom(t)){
 					if(getGameList().isPlayerState(p)==PlayerState.IN){
-						getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+						getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 						getCoins().addCoins(p, false, 10,getManager().getTyp());
 					}
 				}
@@ -764,7 +765,7 @@ public class SheepWars extends TeamGame{
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		if(ev.getKiller()!=null){
-			getManager().getStats().setInt(ev.getKiller(), getManager().getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
+			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
 		}else{
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),"FAIL"}));
@@ -798,8 +799,8 @@ public class SheepWars extends TeamGame{
 		if(getManager().getState()!=GameState.LobbyPhase)return;
 		if(hm==null)hm=new Hologram(getManager().getInstance());
 
-		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
-		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.4, 0),new String[]{
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
@@ -807,10 +808,10 @@ public class SheepWars extends TeamGame{
 		"Map: "+wd.getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
-		//"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
-		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		"Schaf-Kills: "+getManager().getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer()),
+		//"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
+		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		"Schaf-Kills: "+getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,

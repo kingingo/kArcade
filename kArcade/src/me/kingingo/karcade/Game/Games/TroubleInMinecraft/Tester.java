@@ -171,7 +171,7 @@ public class Tester implements Listener{
 				}
 				timer=-1;
 				p=ev.getPlayer();
-				TTT.getManager().getStats().setInt(ev.getPlayer(), TTT.getManager().getStats().getInt(Stats.TTT_TESTS, ev.getPlayer())+1, Stats.TTT_TESTS);
+				TTT.getStats().setInt(ev.getPlayer(), TTT.getStats().getInt(Stats.TTT_TESTS, ev.getPlayer())+1, Stats.TTT_TESTS);
 				TTT.getManager().broadcast(Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_TESTER_JOIN.getText(ev.getPlayer().getName()));
 				use=true;
 				ev.getPlayer().teleport(Join);

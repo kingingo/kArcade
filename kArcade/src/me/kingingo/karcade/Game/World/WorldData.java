@@ -37,7 +37,7 @@ public class WorldData {
 	String gameName;
 	@Getter
 	World world;
-	String folder="map";
+	String folder=gameName;
 	@Getter
 	@Setter
 	String MapName="Loading ...";
@@ -145,13 +145,13 @@ public class WorldData {
 	 
 	 public void createWorld(){
 		 removeWorld();
-		 world=Bukkit.createWorld(new WorldCreator("map"));
+		 world=Bukkit.createWorld(new WorldCreator(gameName));
 	 }
 	 
 	 public void removeWorld(){
-		 if(Bukkit.getWorld("map")!=null||world!=null){
-			 Bukkit.unloadWorld("map", false);
-			 FileUtil.DeleteFolder(new File("map"));
+		 if(Bukkit.getWorld(gameName)!=null||world!=null){
+			 Bukkit.unloadWorld(gameName, false);
+			 FileUtil.DeleteFolder(new File(gameName));
 			 world=null;
 		 }
 	 }
@@ -238,7 +238,7 @@ public class WorldData {
 		for(String t : locs.keySet()){
 				System.out.println("TEAM:"+t+" LOC:"+locs.get(t).size());
 		}
-		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld("map")));
+		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld(gameName)));
 	}
 	
 }

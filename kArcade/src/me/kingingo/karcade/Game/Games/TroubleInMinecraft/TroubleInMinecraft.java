@@ -112,6 +112,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	public TroubleInMinecraft(kArcadeManager manager) {
 		super(manager);
+		registerListener();
 		this.manager=manager;
 		long t = System.currentTimeMillis();
 		manager.setState(GameState.Laden);
@@ -166,7 +167,7 @@ public class TroubleInMinecraft extends TeamGame{
 		});
 		wd = new WorldData(manager,GameType.TroubleInMinecraft.name());
 		wd.Initialize();
-		manager.setWorldData(wd);
+		setWorldData(wd);
 		manager.setState(GameState.LobbyPhase);
 		manager.getPermManager().setSetAllowTab(false);
 		manager.DebugLog(t, this.getClass().getName());
@@ -309,10 +310,10 @@ public class TroubleInMinecraft extends TeamGame{
 					npc.spawn(loc);
 					npc.sleep();
 					if(getTeam(ev.getPlayer())==Team.DETECTIVE){
-						getManager().getStats().setInt(ev.getPlayer(),getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, Stats.TTT_DETECTIVE_PUNKTE);	
+						getStats().setInt(ev.getPlayer(),getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, Stats.TTT_DETECTIVE_PUNKTE);	
 					}
 //					else if(getTeam(ev.getPlayer())==Team.TRAITOR){
-//						getManager().getStats().setInt(ev.getPlayer(),getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer())+1, Stats.TTT_TRAITOR_PUNKTE);	
+//						getStats().setInt(ev.getPlayer(),getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer())+1, Stats.TTT_TRAITOR_PUNKTE);	
 //					}
 				}else{
 					if(defi.getTeams().containsKey(npc.getName().toLowerCase())){
@@ -325,8 +326,8 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void DeathTTT(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.IN).contains( ((Player)ev.getEntity()) )){
-			getManager().getStats().setInt(((Player)ev.getEntity()),getManager().getStats().getInt(Stats.DEATHS, ((Player)ev.getEntity()))+1, Stats.DEATHS);
-			getManager().getStats().setInt(((Player)ev.getEntity()),getManager().getStats().getInt(Stats.LOSE, ((Player)ev.getEntity()))+1, Stats.LOSE);
+			getStats().setInt(((Player)ev.getEntity()),getStats().getInt(Stats.DEATHS, ((Player)ev.getEntity()))+1, Stats.DEATHS);
+			getStats().setInt(((Player)ev.getEntity()),getStats().getInt(Stats.LOSE, ((Player)ev.getEntity()))+1, Stats.LOSE);
 			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.OUT);
 			boolean b = false;
 			for(ItemStack item : ev.getDrops()){
@@ -358,55 +359,55 @@ public class TroubleInMinecraft extends TeamGame{
 //			}
 			npclist.put(npc.getP().getId(), ((Player)ev.getEntity()).getName());
 			if(ev.getEntity().getKiller() instanceof Player){
-				getManager().getStats().setInt(((Player)ev.getEntity().getKiller()),getManager().getStats().getInt(Stats.KILLS, ((Player)ev.getEntity().getKiller()))+1, Stats.KILLS);
+				getStats().setInt(((Player)ev.getEntity().getKiller()),getStats().getInt(Stats.KILLS, ((Player)ev.getEntity().getKiller()))+1, Stats.KILLS);
 				
 				Team t1 = getTeam( ((Player)ev.getEntity().getKiller()) );
-				int k = getManager().getStats().getInt(Stats.TTT_KARMA, (Player)ev.getEntity().getKiller());
+				int k = getStats().getInt(Stats.TTT_KARMA, (Player)ev.getEntity().getKiller());
 				int d=-1;
 				int tr=-1;
 				((Player)ev.getEntity()).sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
 				((Player)ev.getEntity().getKiller()).sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
 				if(t1==Team.TRAITOR){
 					if(t==Team.TRAITOR){
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
 					}else if(t==Team.INOCCENT){
 						getCoins().addCoins(((Player)ev.getEntity()), false, 5);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+10, Stats.TTT_KARMA);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_TRAITOR_PUNKTE);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+10, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_TRAITOR_PUNKTE);
 						k=10;
 						tr=2;
 					}else if(t==Team.DETECTIVE){
 						getCoins().addCoins(((Player)ev.getEntity()), false, 5);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+4, Stats.TTT_TRAITOR_PUNKTE);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+4, Stats.TTT_TRAITOR_PUNKTE);
 						k=20;
 						tr=4;
 					}
 				}else if(t1==Team.INOCCENT){
 					if(t==Team.TRAITOR){
 						getCoins().addCoins(((Player)ev.getEntity()), false, 5);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
 						k=20;
 					}else if(t==Team.INOCCENT){
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, Stats.TTT_KARMA);
 						k=-20;
 					}else if(t==Team.DETECTIVE){
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
 					}
 				}else if(t1==Team.DETECTIVE){
 					if(t==Team.TRAITOR){
 						getCoins().addCoins(((Player)ev.getEntity()), false, 10);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+30, Stats.TTT_KARMA);
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_DETECTIVE_PUNKTE);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+30, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_DETECTIVE_PUNKTE);
 						k=30;
 						d=2;
 					}else if(t==Team.INOCCENT){
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, Stats.TTT_KARMA);
 						k=-20;
 					}else if(t==Team.DETECTIVE){
-						getManager().getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
+						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
 					}
 				}
@@ -633,9 +634,9 @@ public class TroubleInMinecraft extends TeamGame{
 			System.out.println("[TTT] TRAITOR HABEN GEWONNEN");
 			for(Player p : getTeamList().keySet()){
 				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
+					getStats().setInt(p,getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
 				}else{
-					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+					getStats().setInt(p,getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				}
 			}
 			
@@ -645,9 +646,9 @@ public class TroubleInMinecraft extends TeamGame{
 			System.out.println("[TTT] INNOCENT HABEN GEWONNEN");
 			for(Player p : getTeamList().keySet()){
 				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+					getStats().setInt(p,getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				}else{
-					getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
+					getStats().setInt(p,getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
 				}
 			}
 			
@@ -672,15 +673,15 @@ public class TroubleInMinecraft extends TeamGame{
 			for(Player p : getTeamList().keySet()){
 				if(t==Team.TRAITOR){
 					if(getTeamList().get(p)==Team.TRAITOR){
-						getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+						getStats().setInt(p,getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 					}else{
-						getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
+						getStats().setInt(p,getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
 					}
 				}else{
 					if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-						getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+						getStats().setInt(p,getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 					}else{
-						getManager().getStats().setInt(p,getManager().getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
+						getStats().setInt(p,getStats().getInt(Stats.LOSE, p)+1, Stats.LOSE);
 					}
 				}
 			}
@@ -696,15 +697,15 @@ public class TroubleInMinecraft extends TeamGame{
 		if(!getBoards().containsKey(ev.getPlayer()))return;
 		if(ev.getStats()==Stats.TTT_KARMA){
 			PlayerScoreboard ps = getBoards().get(ev.getPlayer());
-			ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
+			ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.TTT_DETECTIVE_PUNKTE){
 			PlayerScoreboard ps = getBoards().get(ev.getPlayer());
-			ps.setScore(C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
+			ps.setScore(C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.TTT_TRAITOR_PUNKTE){
 			PlayerScoreboard ps = getBoards().get(ev.getPlayer());
-			ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
+			ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.WIN){
 			getCoins().addCoins(ev.getPlayer(), false, 15);
@@ -716,8 +717,8 @@ public class TroubleInMinecraft extends TeamGame{
 		if(getManager().getState()!=GameState.LobbyPhase)return;
 		if(hm==null)hm=new Hologram(getManager().getInstance());
 
-		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
-		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.8, 0),new String[]{
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
@@ -725,13 +726,13 @@ public class TroubleInMinecraft extends TeamGame{
 		"Map: "+wd.getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
-		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		"Karma: "+getManager().getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()),
-		//"Rang: "+getManager().getStats().getRank(Stats.TTT_KARMA, ev.getPlayer()),	
-		"Tests: "+getManager().getStats().getInt(Stats.TTT_TESTS, ev.getPlayer()),
-		"Traitor-Punkte: "+getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()),
-		"Detective-Punkte: "+getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()),
+		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		"Karma: "+getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()),
+		//"Rang: "+getStats().getRank(Stats.TTT_KARMA, ev.getPlayer()),	
+		"Tests: "+getStats().getInt(Stats.TTT_TESTS, ev.getPlayer()),
+		"Traitor-Punkte: "+getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()),
+		"Detective-Punkte: "+getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,
@@ -766,8 +767,8 @@ public class TroubleInMinecraft extends TeamGame{
 			for(Player p : d){
 				PlayerScoreboard ps = new PlayerScoreboard(p);
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cBlue+"DetectiveBoard");
-				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
-				ps.setScore(C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, p));
+				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
+				ps.setScore(C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, p));
 				if(d.size()!=1){
 					ps.setScore("§7", DisplaySlot.SIDEBAR, -1);
 					ps.setScore(C.cBlue+"Detective:", DisplaySlot.SIDEBAR, -2);
@@ -807,8 +808,8 @@ public class TroubleInMinecraft extends TeamGame{
 				p.getInventory().addItem(traitor_shop.getShop_item());
 				PlayerScoreboard ps = new PlayerScoreboard(p);
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cDRed+"TraitorBoard");
-				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
-				ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, p));
+				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
+				ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, p));
 				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_IS_NOW.getText(Team.TRAITOR.Name()));
 				p.sendMessage(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.TTT_TRAITOR_CHAT.getText());
 				if(t.size()!=1){
@@ -861,7 +862,7 @@ public class TroubleInMinecraft extends TeamGame{
 			for(Player p:i){
 				PlayerScoreboard ps = new PlayerScoreboard(p);
 				ps.addBoard(DisplaySlot.SIDEBAR, C.cRed+"InnocentBoard");
-				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getManager().getStats().getInt(Stats.TTT_KARMA, p));
+				ps.setScore(C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
 				org.bukkit.scoreboard.Team s = ps.getBoard().registerNewTeam(Team.INOCCENT.Name());
 				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
 				for(Player p1 : getTeamList().keySet()){
@@ -907,7 +908,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void World(WorldLoadEvent ev){
-		HashMap<String,ArrayList<Location>> list = getManager().getWorldData().getLocs();
+		HashMap<String,ArrayList<Location>> list = getWorldData().getLocs();
 		tester = new Tester(this, list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
 	}
 	
@@ -924,7 +925,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
-		ArrayList<Location> list = getManager().getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
@@ -936,8 +937,8 @@ public class TroubleInMinecraft extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 		}
 		ifm=new ItemFakeManager(getManager().getInstance(),hm);
-		setItemFake(getManager().getWorldData().getLocs(Team.YELLOW.Name()));
-		new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+		setItemFake(getWorldData().getLocs(Team.YELLOW.Name()));
+		new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 		setDamage(false);
 		getManager().setStart(31);
 		getManager().setState(GameState.StartGame);

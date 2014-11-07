@@ -56,6 +56,7 @@ public class SkyPvP extends SoloGame{
 	
 	public SkyPvP(kArcadeManager manager){
 		super(manager);
+		registerListener();
 		long l = System.currentTimeMillis();
 		getManager().setState(GameState.Laden);
 		getManager().setTyp(GameType.SkyPvP);
@@ -86,7 +87,7 @@ public class SkyPvP extends SoloGame{
 		setRespawn(true);
 		WorldData wd=new WorldData(manager,GameType.SkyPvP.name());
 		wd.Initialize();
-		manager.setWorldData(wd);
+		setWorldData(wd);
 		getManager().DebugLog(l, this.getClass().getName());
 	}
 	
@@ -137,7 +138,7 @@ public class SkyPvP extends SoloGame{
 			int i = life.get(v);
 			i--;
 			if(i<=0){
-				getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
+				getStats().setInt(v, getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
 				getGameList().addPlayer(v, PlayerState.OUT);
 				b=true;
 			}else{
@@ -147,13 +148,13 @@ public class SkyPvP extends SoloGame{
 			
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
-				getManager().getStats().setInt(a, getManager().getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
+				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
 				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
 			}
 			getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.DEATH.getText(v.getName()) );
 			if(b)getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
-			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
+			getStats().setInt(v, getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 		}
 	}
 	
@@ -162,7 +163,7 @@ public class SkyPvP extends SoloGame{
 		if(ev.getFrom()==GameState.InGame&&ev.getTo()==GameState.Restart){
 			if(getGameList().getPlayers(PlayerState.IN).size()==1){
 				Player win = getGameList().getPlayers(PlayerState.IN).get(0);
-				getManager().getStats().setInt(win, getManager().getStats().getInt(Stats.WIN, win)+1, Stats.WIN);
+				getStats().setInt(win, getStats().getInt(Stats.WIN, win)+1, Stats.WIN);
 				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.GAME_WIN.getText(win.getName()));
 			}
 		}
@@ -173,19 +174,19 @@ public class SkyPvP extends SoloGame{
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase)return;
 		if(hm==null)hm=new Hologram(getManager().getInstance());
-		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
-		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.3, 0),new String[]{
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SkyPvP §a"+kArcade.id,
-		"Map: "+getManager().getWorldData().getMapName(),
+		"Map: "+getWorldData().getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
 		"Coins: "+getCoins().getCoins(ev.getPlayer()),
-		"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
-		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
+		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,
@@ -196,7 +197,7 @@ public class SkyPvP extends SoloGame{
 	
 	@EventHandler
 	public void GameStartSkyPvP(GameStartEvent ev){
-		ArrayList<Location> locs = getManager().getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> locs = getWorldData().getLocs(Team.RED.Name());
 		for(Location loc : locs){
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 		}
@@ -213,7 +214,7 @@ public class SkyPvP extends SoloGame{
 			island.put(p, locs.get(0));
 			locs.remove(0);
 		}
-		new AddonNight(getManager().getInstance(),getManager().getWorldData().getWorld());
+		new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 		getManager().setStart((60*30)+1);
 		getManager().setState(GameState.InGame);
 	}

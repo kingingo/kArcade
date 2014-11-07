@@ -8,13 +8,16 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Util.Coins;
 import me.kingingo.kcore.Util.TabTitle;
@@ -37,6 +40,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -82,6 +86,8 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	public boolean DamagePvE = true;
+	@Getter
+	private StatsManager stats;
 	@Getter
 	@Setter
 	public boolean DamageEvP = true;
@@ -199,6 +205,9 @@ public class Game implements Listener{
 	@Getter
 	private ArrayList<DamageCause> EntityDamage = new ArrayList<>();
 	private Tokens tokens;
+	@Setter
+	@Getter
+	private WorldData worldData;
 	private Coins coins;
 	@Getter
 	private HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
@@ -206,11 +215,18 @@ public class Game implements Listener{
 	public Game(kArcadeManager manager) {
 		this.manager=manager;
 		this.gamelist=new GameList(this,manager);
-		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	
 	public GameList getGameList(){
 		return this.gamelist;
+	}
+	
+	public void unregisterListener(){
+		HandlerList.unregisterAll(this);
+	}
+	
+	public void registerListener(){
+		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	
 	@EventHandler
@@ -243,6 +259,14 @@ public class Game implements Listener{
 			ev.setCancelled(true);
 		}
 	}
+
+	public void setStats(GameType type){
+		if(stats==null)this.stats=new StatsManager(manager.getInstance(),manager.getMysql(),type);
+	}
+	
+	public void setStats(){
+		if(stats==null)this.stats=new StatsManager(manager.getInstance(),manager.getMysql(),manager.getTyp());
+	}
 	
 	@EventHandler
 	public void InterBack(PlayerInteractEvent ev){
@@ -258,7 +282,7 @@ public class Game implements Listener{
 	public void QuitPlayerListener(PlayerQuitEvent ev){
 		ev.setQuitMessage(null);
 		if(getManager().getState()==GameState.Restart)return;
-		manager.getStats().SaveAllPlayerData(ev.getPlayer());
+		getStats().SaveAllPlayerData(ev.getPlayer());
 	}
 	
 	@EventHandler
@@ -307,9 +331,9 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void StartGameGame(GameStartEvent ev){
-		if(getManager().getWorldData()!=null){
-			if(getManager().getWorldData().getWorld()!=null){
-				getManager().getWorldData().getWorld().setStorm(false);
+		if(getWorldData()!=null){
+			if(getWorldData().getWorld()!=null){
+				getWorldData().getWorld().setStorm(false);
 			}
 		}
 	}
@@ -372,7 +396,7 @@ public class Game implements Listener{
 	@EventHandler
 	public void BreakBlockInMap(BlockBreakEvent ev){
 		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
-		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()) || !ev.getBlock().getWorld().getName().equalsIgnoreCase(getManager().getWorldData().getWorld().getName()))ev.setCancelled(true);
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()) || !ev.getBlock().getWorld().getName().equalsIgnoreCase(getWorldData().getWorld().getName()))ev.setCancelled(true);
 		if((getManager().isState(GameState.LobbyPhase))||BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))){
 			ev.setCancelled(true);
 		}
@@ -468,7 +492,7 @@ public class Game implements Listener{
 	  @EventHandler(priority=EventPriority.HIGHEST)
 	  public void BreakBlockLobby(BlockBreakEvent ev){
 		  if(getManager().getState()==GameState.LobbyPhase)ev.setCancelled(true);
-		  if(!ev.getBlock().getWorld().getName().equalsIgnoreCase(getManager().getWorldData().getWorld().getName()))ev.setCancelled(true);
+		  if(!ev.getBlock().getWorld().getName().equalsIgnoreCase(getWorldData().getWorld().getName()))ev.setCancelled(true);
 	  }
 	
 	  @EventHandler

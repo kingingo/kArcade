@@ -66,7 +66,7 @@ public class AddonEntityKing implements Listener {
 		Creature e;
 		Location loc = null;
 		for(Team t : teams){
-			loc=manager.getWorldData().getLocs(getSheep(t).Name()).get(0);
+			loc=manager.getGame().getWorldData().getLocs(getSheep(t).Name()).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 			e=manager.getPetManager().AddPetWithOutOwner(t.getColor()+"Schaf", type, loc);
 			this.teams.put(t, e);

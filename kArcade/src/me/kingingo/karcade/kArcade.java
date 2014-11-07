@@ -9,6 +9,7 @@ import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Command.Admin.CommandMuteAll;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Permission.PermissionManager;
@@ -38,7 +39,7 @@ public class kArcade extends JavaPlugin{
 	public void onEnable(){
 		long time = System.currentTimeMillis();
 		loadConfig();
-		FileUtil.DeleteFolder(new File("map"));
+		for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.name()));
 		id=getConfig().getInt("Config.Server.ID");
 		FilePath=getConfig().getString("Config.Server.FilePath");
 		updater=new Updater(this);

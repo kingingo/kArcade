@@ -58,22 +58,22 @@ public class AddonDropItems extends kListener {
 	public void Update(UpdateEvent ev){
 		
 		if(ev.getType()==UpdateType.SEC){
-			for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),1);
+			for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),1);
 		}
 		
 		if(ev.getType()==UpdateType.SLOW){
-			if(getInstance().getManager().getWorldData().ExistLoc(Team.PURPLE.Name())){
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.PURPLE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
+			if(getInstance().getWorldData().ExistLoc(Team.PURPLE.Name())){
+				for(Location loc : getInstance().getWorldData().getLocs(Team.PURPLE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
 			}else{
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
 			}
 		}
 		
 		if(ev.getType()==UpdateType.SLOWER){
-			if(getInstance().getManager().getWorldData().ExistLoc(Team.ORANGE.Name())){
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1, "§bGold");
+			if(getInstance().getWorldData().ExistLoc(Team.ORANGE.Name())){
+				for(Location loc : getInstance().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1, "§bGold");
 			}else{
-				for(Location loc : getInstance().getManager().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
 			}
 		}
 	}

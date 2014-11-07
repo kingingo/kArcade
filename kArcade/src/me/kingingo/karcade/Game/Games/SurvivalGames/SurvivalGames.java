@@ -66,11 +66,12 @@ public class SurvivalGames extends TeamGame{
 	
 	public SurvivalGames(kArcadeManager manager) {
 		super(manager);
+		registerListener();
 	long t = System.currentTimeMillis();
 	manager.setTyp(GameType.SurvivalGames); 
 	wd = new WorldData(manager,GameType.SurvivalGames.name());
 	wd.Initialize();
-	manager.setWorldData(wd);
+	setWorldData(wd);
 	setMin_Players(6);
 	setMax_Players(24);
 	setCompassAddon(true);
@@ -343,7 +344,7 @@ public class SurvivalGames extends TeamGame{
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_END.getText());
 				getManager().setStart((3*60)+1);
 				
-				ArrayList<Location> list = getManager().getWorldData().getLocs(Team.RED.Name());
+				ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
 				Location r=null;
 				for(Player p : UtilServer.getPlayers()){
 					r=list.get(0);
@@ -381,7 +382,7 @@ public class SurvivalGames extends TeamGame{
 		switch(getManager().getStart()){
 			case 180:
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));
-				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),Bukkit.getWorld("map"));
+				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),Bukkit.getWorld(getManager().getTyp().name()));
 				sg.loadGrenzen(wd.getLocs().get(Team.YELLOW.Name()).get(0), ( (int)wd.getLocs().get(Team.YELLOW.Name()).get(0).distance(wd.getLocs().get(Team.RED.Name()).get(0))+5 ) );
 				sg.start();
 				break;
@@ -417,9 +418,9 @@ public class SurvivalGames extends TeamGame{
 		if(ev.getEntity() instanceof Player && ev.getEntity().getKiller() instanceof Player){
 			Player killer = ev.getEntity().getKiller();
 			Player victim = ev.getEntity();
-			getManager().getStats().setInt(killer, getManager().getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
+			getStats().setInt(killer, getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
+			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
+			getStats().setInt(victim, getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
 			getGameList().addPlayer(victim, PlayerState.OUT);
 			
@@ -430,8 +431,8 @@ public class SurvivalGames extends TeamGame{
 			}
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
-			getManager().getStats().setInt(victim, getManager().getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
+			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
+			getStats().setInt(victim, getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.DEATH.getText(new String[]{victim.getName()}));
 			getGameList().addPlayer(victim, PlayerState.OUT);
 			
@@ -486,7 +487,7 @@ public class SurvivalGames extends TeamGame{
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
 		getManager().setState(GameState.StartGame);
-		ArrayList<Location> list = getManager().getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
 		ArrayList<Player> plist = new ArrayList<>();
 		
 		int r=0;
@@ -535,8 +536,8 @@ public class SurvivalGames extends TeamGame{
 		if(getManager().getState()!=GameState.LobbyPhase)return;
 		if(hm==null)hm=new Hologram(getManager().getInstance());
 
-		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
-		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0,0.5,0),new String[]{
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
@@ -544,9 +545,9 @@ public class SurvivalGames extends TeamGame{
 		"Map: "+wd.getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
-		//"Rang: "+getManager().getStats().getRank(Stats.WIN, ev.getPlayer()),	
-		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		//"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
+		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,
@@ -570,14 +571,14 @@ public class SurvivalGames extends TeamGame{
 			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
 			if(list.size()==1){
 				Player p = list.get(0);
-				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.GAME_WIN.getText(p.getName()));
 			}else if(list.size()==2){
 				Team t = lastTeam();
 				Player p = list.get(0);
 				Player p1 = list.get(1);
-				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-				getManager().getStats().setInt(p1, getManager().getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
+				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getStats().setInt(p1, getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp().getTyp())+Text.SURVIVAL_GAMES_DISTRICT_WIN.getText(new String[]{t.Name(),p.getName(),p1.getName()}));
 			}
 		}

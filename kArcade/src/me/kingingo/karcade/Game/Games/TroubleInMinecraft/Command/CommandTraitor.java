@@ -33,7 +33,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_LOBBYPHASE.getText());
 			return false;
 		}
-		int t_p = TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
+		int t_p = TTT.getStats().getInt(Stats.TTT_PÄSSE, ((Player)cs));
 		if(!(t_p>0)){
 			UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_KEINE.getText("Traitor"));
 			return false;
@@ -46,7 +46,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 			return false;
 		}
 		t_p=t_p-1;
-		TTT.getManager().getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
+		TTT.getStats().setInt( ((Player)cs) , t_p, Stats.TTT_PÄSSE);
 		TTT.addTeam(((Player)cs) , Team.TRAITOR);
 		UtilPlayer.sendMessage(((Player)cs),Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+ Text.TTT_PASSE_USE.getText(new String[]{"Traitor",String.valueOf(t_p)}));
 		return false;
@@ -59,7 +59,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 			Team t = TTT.getTeamList().get(ev.getPlayer());
 			if(t==Team.TRAITOR){
 				TTT.getTeamList().remove(ev.getPlayer());
-				TTT.getManager().getStats().setInt(ev.getPlayer() ,TTT.getManager().getStats().getInt(Stats.TTT_PÄSSE, ev.getPlayer())+1, Stats.TTT_PÄSSE);
+				TTT.getStats().setInt(ev.getPlayer() ,TTT.getStats().getInt(Stats.TTT_PÄSSE, ev.getPlayer())+1, Stats.TTT_PÄSSE);
 			}
 		}
 	}

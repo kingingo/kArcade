@@ -19,7 +19,6 @@ import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
 import me.kingingo.karcade.Game.Games.SkyPvP.SkyPvP;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Service.CommandService;
 import me.kingingo.kcore.Calendar.Calendar;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
@@ -84,9 +83,6 @@ public class kArcadeManager implements Listener{
 	private Game game;
 	@Getter
 	@Setter
-	private WorldData worldData;
-	@Getter
-	@Setter
 	int start=-1;
 	@Getter
 	@Setter
@@ -108,8 +104,6 @@ public class kArcadeManager implements Listener{
 	@Getter
 	@Setter
 	private Location loc_stats = new Location(Bukkit.getWorld("world"), 785.54191,24.5,615.49871);
-	@Getter
-	private StatsManager stats;
 	@Getter
 	private MySQL mysql;
 	@Getter
@@ -190,7 +184,7 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void setTyp(GameType typ){
-		if(stats==null)this.stats=new StatsManager(getInstance(),getMysql(),typ);;
+		getGame().setStats(typ);
 		this.typ=typ;
 	}
 	
@@ -248,7 +242,7 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void setRanking(Stats s){
-		HashMap<Integer,String> list = getStats().getRanking(s, 10);
+		HashMap<Integer,String> list = getGame().getStats().getRanking(s, 10);
 		Sign sign;
 		Skull sk;
 		for(int i : ranking.keySet()){
@@ -256,8 +250,8 @@ public class kArcadeManager implements Listener{
 			sign=ranking.get(i);
 			sign.setLine(0, "---- "+C.Bold+"#"+i+"§r ----");
 			sign.setLine(1, list.get(i));
-			sign.setLine(2, s.getKÜRZEL()+" "+getStats().getIntWithString(s, list.get(i)));
-			sign.setLine(3, "K/D "+getStats().getKDR(getStats().getIntWithString(Stats.KILLS, list.get(i)), getStats().getIntWithString(Stats.DEATHS,list.get(i))));
+			sign.setLine(2, s.getKÜRZEL()+" "+getGame().getStats().getIntWithString(s, list.get(i)));
+			sign.setLine(3, "K/D "+getGame().getStats().getKDR(getGame().getStats().getIntWithString(Stats.KILLS, list.get(i)), getGame().getStats().getIntWithString(Stats.DEATHS,list.get(i))));
 			sign.update(true);
 			sk = (Skull)sign.getLocation().add(0,1,0).getBlock().getState();
 			sk.setOwner(list.get(i));
@@ -353,12 +347,12 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(int o){
-		SERVER_STATUS ss = new SERVER_STATUS(state,o, getGame().getMax_Players(),getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,o, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
 		pManager.SendPacket("hub", ss);
 	}
 	
 	public void updateInfo(GameState s){
-		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().length, getGame().getMax_Players(),getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
 		pManager.SendPacket("hub", ss);
 	}
 	
@@ -369,7 +363,7 @@ public class kArcadeManager implements Listener{
 //		System.out.println("O: "+getWorldData().getMapName());
 //		System.out.println("O: "+getTyp());
 //		System.out.println("O: "+"a"+kArcade.id);
-		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getTyp(),"a"+kArcade.id);
 		pManager.SendPacket("hub", ss);
 	}
 	
@@ -407,9 +401,9 @@ public class kArcadeManager implements Listener{
 		System.out.println("["+this.typ.getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void r(GameStateChangeEvent ev){
-		if(ev.getTo()==GameState.Restart){
+		if(!ev.isCancelled()&&ev.getTo()==GameState.Restart){
 			setStart(-1);
 		}
 	}
@@ -539,7 +533,7 @@ public class kArcadeManager implements Listener{
 			broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
 			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
-		case 23:getStats().SaveAllData();break;
+		case 23:getGame().getStats().SaveAllData();break;
 		case 20:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+Text.RESTART_IN.getText(start));
 		for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 			break;
@@ -571,7 +565,7 @@ public class kArcadeManager implements Listener{
 		start--;
 		for(Player p : UtilServer.getPlayers()){
 			UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
-			//if(p.getLocation().getY()<5)p.teleport(lobby);
+			if(p.getLocation().getY()<5)p.teleport(lobby);
 		}
 		if(start!=0){
 			switch(start){
@@ -585,7 +579,7 @@ public class kArcadeManager implements Listener{
 			case 30:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 15:
 				broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
-				for(Player p : UtilServer.getPlayers())Title.sendTitle(p, "§aMap:§6 "+getWorldData().getMapName());
+				for(Player p : UtilServer.getPlayers())Title.sendTitle(p, "§aMap:§6 "+getGame().getWorldData().getMapName());
 				break;
 			case 10:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 3:broadcast(Text.PREFIX_GAME.getText(getTyp().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;

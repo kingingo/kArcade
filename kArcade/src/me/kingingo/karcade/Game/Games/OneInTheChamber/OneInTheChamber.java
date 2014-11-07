@@ -45,6 +45,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	
 	public OneInTheChamber(kArcadeManager manager) {
 		super(manager);
+		registerListener();
 		manager.setTyp(GameType.OneInTheChamber);
 		getManager().setStart(186);
 		setMax_Players(16);
@@ -57,7 +58,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		getEntityDamage().add(DamageCause.FALL);
 		WorldData wd = new WorldData(manager,GameType.OneInTheChamber.name());
 		wd.Initialize();
-		manager.setWorldData(wd);
+		setWorldData(wd);
 	}
 	
 	@EventHandler
@@ -71,7 +72,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	public void Start(GameStartEvent ev){
 		getManager().setStart(187);
 		getManager().setState(GameState.InGame);
-		list = getManager().getWorldData().getLocs(Team.SOLO.Name());
+		list = getWorldData().getLocs(Team.SOLO.Name());
 		long time = System.currentTimeMillis();
 		int r=0;
 		//board = getGameList().createScoreboard(DisplaySlot.SIDEBAR,"GameInfo");
@@ -92,13 +93,13 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			p.teleport(list.get(r));
 			list.remove(r);
 		}
-		list = getManager().getWorldData().getLocs(Team.SOLO.Name());
+		list = getWorldData().getLocs(Team.SOLO.Name());
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
 	public void onDisable(){
 		getManager().setState(GameState.Restart);
-		getManager().getWorldData().Uninitialize();
+		getWorldData().Uninitialize();
 	}
 	
 	@EventHandler

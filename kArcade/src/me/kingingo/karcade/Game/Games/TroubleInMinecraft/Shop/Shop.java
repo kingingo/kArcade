@@ -75,9 +75,9 @@ public class Shop implements Listener{
 			for(IShop s : ShopList){
 				if(UtilItem.ItemNameEquals(ev.getCurrentItem(), s.getShopItem())){
 					int pk = s.getPunkte();
-					int player_punkte = TTT.getManager().getStats().getInt(getPunkte(), p);
+					int player_punkte = TTT.getStats().getInt(getPunkte(), p);
 					if(player_punkte>=pk){
-						TTT.getManager().getStats().setInt(p, (player_punkte-pk), getPunkte());
+						TTT.getStats().setInt(p, (player_punkte-pk), getPunkte());
 						s.add(p);
 						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getManager().getTyp().getTyp())+Text.TTT_SHOP_BUYED.getText());
 					}else{

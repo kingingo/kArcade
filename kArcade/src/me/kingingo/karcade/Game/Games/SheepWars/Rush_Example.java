@@ -67,6 +67,7 @@ public class Rush_Example extends TeamGame{
 	
 	public Rush_Example(kArcadeManager manager) {
 		super(manager);
+		registerListener();
 		t = System.currentTimeMillis();
 		manager.setTyp(GameType.Rush);
 		manager.setState(GameState.Laden);
@@ -85,7 +86,7 @@ public class Rush_Example extends TeamGame{
 		setVoteTeam(new AddonVoteTeam(manager,new Team[]{Team.RED,Team.YELLOW,Team.GREEN,Team.BLUE},InventorySize._9,4));
 		wd = new WorldData(manager,GameType.Rush.name());
 		wd.Initialize();
-		manager.setWorldData(wd);
+		setWorldData(wd);
 	}
 	
 	public void onDisable(){
@@ -601,7 +602,7 @@ public class Rush_Example extends TeamGame{
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		getManager().setState(GameState.InGame);
-		HashMap<String,ArrayList<Location>> list = getManager().getWorldData().getLocs();
+		HashMap<String,ArrayList<Location>> list = getWorldData().getLocs();
 		ArrayList<Player> plist = new ArrayList<>();
 		long time = System.currentTimeMillis();
 		int r=0;

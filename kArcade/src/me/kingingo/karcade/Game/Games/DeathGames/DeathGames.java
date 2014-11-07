@@ -132,12 +132,13 @@ public class DeathGames extends SoloGame{
 	
 	public DeathGames(kArcadeManager manager) {
 		super(manager);
+		registerListener();
 		long t = System.currentTimeMillis();
 		manager.setTyp(GameType.DeathGames);
 		manager.setState(GameState.Laden);
 		this.manager=manager;
 		this.worldData=new WorldData(manager,GameType.DeathGames.name());
-		manager.setWorldData(getWorldData());
+		setWorldData(getWorldData());
 		setupItems();
 		setCreatureSpawn(true);
 		setMin_Players(4);
@@ -427,12 +428,12 @@ public class DeathGames extends SoloGame{
 			Player v = (Player)ev.getEntity();
 			UtilParticle.DRIP_LAVA.display(0.5F, 0.9F, 0.5F, 3, 65, v.getLocation(), 30);
 			UtilParticle.DRIP_WATER.display(0.5F, 0.9F, 0.5F, 3, 65, v.getLocation(), 30);
-			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
-			getManager().getStats().setInt(v, getManager().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
+			getStats().setInt(v, getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
+			getStats().setInt(v, getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 			getGameList().addPlayer(v, PlayerState.OUT);
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
-				getManager().getStats().setInt(a, getManager().getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
+				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
 				getCoins().addCoins(a, false, 5,getManager().getTyp());
 				getManager().broadcast( Text.PREFIX_GAME.getText(getManager().getTyp().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
@@ -656,7 +657,7 @@ public class DeathGames extends SoloGame{
 		if(ev.getTo()==GameState.Restart){
 			if(getGameList().getPlayers(PlayerState.IN).size()==1){
 				Player p = getGameList().getPlayers(PlayerState.IN).get(0);
-				getManager().getStats().setInt(p, getManager().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getCoins().addCoins(p, false, 10,getManager().getTyp());
 				getManager().broadcast(Text.PREFIX_GAME.getText(getManager().getTyp())+Text.GAME_WIN.getText(p.getName()));
 			}
@@ -716,8 +717,8 @@ public class DeathGames extends SoloGame{
 		if(getManager().getState()!=GameState.LobbyPhase)return;
 		if(hm==null)hm=new Hologram(getManager().getInstance());
 
-		int win = getManager().getStats().getInt(Stats.WIN, ev.getPlayer());
-		int lose = getManager().getStats().getInt(Stats.LOSE, ev.getPlayer());
+		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
 		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.1, 0),new String[]{
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Info",
@@ -725,8 +726,8 @@ public class DeathGames extends SoloGame{
 		"Biom: "+getWorldData().getMapName(),
 		" ",
 		C.cGreen+getManager().getTyp().getTyp()+C.mOrange+C.Bold+" Stats",
-		"Kills: "+getManager().getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getManager().getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,
