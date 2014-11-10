@@ -56,7 +56,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		setDamageSelf(false);
 		setProjectileDamage(true);
 		getEntityDamage().add(DamageCause.FALL);
-		WorldData wd = new WorldData(manager,GameType.OneInTheChamber.name());
+		WorldData wd=new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
 	}

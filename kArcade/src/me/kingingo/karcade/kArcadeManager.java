@@ -82,7 +82,8 @@ import org.bukkit.potion.PotionEffect;
 public class kArcadeManager implements Listener{
 
 	@Getter
-	private Game game;
+	@Setter
+	private Game game = null;
 	@Getter
 	@Setter
 	int start=-1;
@@ -362,12 +363,13 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(){
-//		System.out.println("S:"+state.string());
-//		System.out.println("O: "+UtilServer.getPlayers().length);
-//		System.out.println("O: "+getGame().getMax_Players());
-//		System.out.println("O: "+getWorldData().getMapName());
-//		System.out.println("O: "+getTyp());
-//		System.out.println("O: "+"a"+kArcade.id);
+		System.out.println("S:"+state.string());
+		System.out.println("O: "+UtilServer.getPlayers().length);
+		System.out.println("O1: "+getGame()==null);
+		System.out.println("O: "+getGame().getMax_Players());
+		System.out.println("O: "+getGame().getWorldData().getMapName());
+		System.out.println("O: "+getGame().getType());
+		System.out.println("O: "+"a"+kArcade.id);
 		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
@@ -406,7 +408,11 @@ public class kArcadeManager implements Listener{
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		state=gs;
-		System.out.println("["+getGame().getType().getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
+		if(getGame()!=null){
+			System.out.println("["+getGame().getType().getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
+		}else{
+			System.out.println("[ArcadeManager] GameState wurde zu "+state.string()+" geändert.");
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -557,6 +563,7 @@ public class kArcadeManager implements Listener{
 	@EventHandler
 	public void Lobby(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
+		if(getGame()==null)return;
 		if(getState()!=GameState.LobbyPhase)return;
 		if(start<0){
 			start=120;

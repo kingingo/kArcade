@@ -115,8 +115,8 @@ public class TroubleInMinecraft extends TeamGame{
 		registerListener();
 		this.manager=manager;
 		long t = System.currentTimeMillis();
-		manager.setState(GameState.Laden);
 		setTyp(GameType.TroubleInMinecraft);
+		manager.setState(GameState.Laden);
 		setMin_Players(6);
 		setMax_Players(16);
 		getInventoryTypDisallow().add(InventoryType.ANVIL);
@@ -165,7 +165,7 @@ public class TroubleInMinecraft extends TeamGame{
 				new Medipack(this),
 				new DNA_TEST(this),
 		});
-		wd = new WorldData(manager,GameType.TroubleInMinecraft.name());
+		wd = new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
 		manager.setState(GameState.LobbyPhase);

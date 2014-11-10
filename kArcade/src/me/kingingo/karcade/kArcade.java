@@ -39,7 +39,8 @@ public class kArcade extends JavaPlugin{
 	public void onEnable(){
 		long time = System.currentTimeMillis();
 		loadConfig();
-		for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.name()));
+		for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel().toLowerCase()));
+		FileUtil.DeleteFolder(new File("map"));
 		id=getConfig().getInt("Config.Server.ID");
 		FilePath=getConfig().getString("Config.Server.FilePath");
 		updater=new Updater(this);
@@ -65,11 +66,12 @@ public class kArcade extends JavaPlugin{
 		for(Player p : UtilServer.getPlayers()){
 			UtilBG.sendToServer(p, manager.getBungeeCord_Fallback_Server(),this);
 		}
-		if(getConfig().getString("Config.Server.World-Save").equalsIgnoreCase("false")){
-			for(World w : Bukkit.getWorlds()){
-				
-			}
-		}
+//		if(getConfig().getString("Config.Server.World-Save").equalsIgnoreCase("false")){
+//			for(World w : Bukkit.getWorlds()){
+//				w.set
+//			}
+//		}
+		for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel().toLowerCase()));
 		mysql.close();
 		updater.stop();
 		manager.setState(GameState.Restart);

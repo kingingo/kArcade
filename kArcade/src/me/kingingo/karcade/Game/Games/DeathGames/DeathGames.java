@@ -137,7 +137,7 @@ public class DeathGames extends SoloGame{
 		setTyp(GameType.DeathGames);
 		manager.setState(GameState.Laden);
 		this.manager=manager;
-		this.worldData=new WorldData(manager,GameType.DeathGames.name());
+		this.worldData=new WorldData(manager,getType());
 		setWorldData(getWorldData());
 		setupItems();
 		setCreatureSpawn(true);

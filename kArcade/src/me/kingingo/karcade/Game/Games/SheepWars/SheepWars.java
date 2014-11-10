@@ -203,8 +203,8 @@ public class SheepWars extends TeamGame{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,5)
 			})
 		});
-		
-		wd=new WorldData(manager,typ.getType().getTyp());
+
+		this.wd=new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
 		manager.DebugLog(t, this.getClass().getName());

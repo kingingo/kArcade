@@ -15,6 +15,7 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Util.FileUtil;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
@@ -37,7 +38,7 @@ public class WorldData {
 	String gameName;
 	@Getter
 	World world;
-	String folder=gameName;
+	String folder=null;
 	@Getter
 	@Setter
 	String MapName="Loading ...";
@@ -47,9 +48,10 @@ public class WorldData {
 	@Setter
 	HashMap<String,Location> biomes = null;
 	
-	public WorldData(kArcadeManager manager,String gameName){
+	public WorldData(kArcadeManager manager,GameType type){
 		this.manager=manager;
-		this.gameName=gameName;
+		this.gameName=type.name();
+		this.folder=type.getKürzel();
 	}
 	
 	public HashMap<String,ArrayList<Location>> getLocs(){
@@ -93,6 +95,7 @@ public class WorldData {
 	    	System.out.println("ES WURDEN KEINE MAPS GEFUNDEN ...");
 	    	return;
 	    }
+	    
 	    new File(folder).mkdir();
 	    new File(folder + File.separator + "region"+File.separator).mkdir();
 	    new File(folder + File.separator + "data"+File.separator).mkdir();
@@ -145,7 +148,7 @@ public class WorldData {
 	 
 	 public void createWorld(){
 		 removeWorld();
-		 world=Bukkit.createWorld(new WorldCreator(gameName));
+		 world=Bukkit.createWorld(new WorldCreator(folder));
 	 }
 	 
 	 public void removeWorld(){
@@ -233,10 +236,10 @@ public class WorldData {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("[kArcade] Load Config:");
-		System.out.println("[kArcade] Map Name: "+MapName);
+		System.out.println("["+gameName+"] Load Config:");
+		System.out.println("["+gameName+"] Map Name: "+MapName);
 		for(String t : locs.keySet()){
-				System.out.println("TEAM:"+t+" LOC:"+locs.get(t).size());
+				System.out.println("["+gameName+"] TEAM:"+t+" LOC:"+locs.get(t).size());
 		}
 		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld(gameName)));
 	}

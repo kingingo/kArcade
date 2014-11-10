@@ -69,7 +69,7 @@ public class SurvivalGames extends TeamGame{
 		registerListener();
 	long t = System.currentTimeMillis();
 	setTyp(GameType.SurvivalGames); 
-	wd = new WorldData(manager,GameType.SurvivalGames.name());
+	wd=new WorldData(manager,getType());
 	wd.Initialize();
 	setWorldData(wd);
 	setMin_Players(6);
@@ -382,7 +382,7 @@ public class SurvivalGames extends TeamGame{
 		switch(getManager().getStart()){
 			case 180:
 				getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getManager().getStart()-170));
-				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),Bukkit.getWorld(getType().name()));
+				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),getWorldData().getWorld());
 				sg.loadGrenzen(wd.getLocs().get(Team.YELLOW.Name()).get(0), ( (int)wd.getLocs().get(Team.YELLOW.Name()).get(0).distance(wd.getLocs().get(Team.RED.Name()).get(0))+5 ) );
 				sg.start();
 				break;

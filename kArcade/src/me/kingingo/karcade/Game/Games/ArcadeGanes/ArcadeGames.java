@@ -8,8 +8,8 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
-import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
-import me.kingingo.karcade.Game.Games.SkyPvP.SkyPvP;
+import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
+import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
 import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.kListener;
@@ -46,6 +46,8 @@ public class ArcadeGames extends kListener{
 			last_game=null;
 		}
 		last_game=games.get(UtilMath.r(games.size()));
+		getManager().setGame(last_game);
+		last_game.registerListener();
 		return last_game;
 	}
 	
@@ -54,6 +56,8 @@ public class ArcadeGames extends kListener{
 		if(ev.getTo()==GameState.Restart){
 			for(Player p : UtilServer.getPlayers())p.teleport(manager.getLobby());
 			NextGame();
+			getManager().setState(GameState.LobbyPhase);
+			getManager().setStart(20);
 			
 		}
 	}
@@ -64,16 +68,16 @@ public class ArcadeGames extends kListener{
 		packet=ev.getPacket();
 		packet.setMax_online(12);
 		packet.setOnline(UtilServer.getPlayers().length);
-		packet.setMap( last_game.getType().name() );
+		packet.setMap( last_game.getType().getKürzel() );
+		packet.setTyp(GameType.ArcadeGames);
 	}
 
 	public void loadGames(){
-		games.add(new OneInTheChamber(manager));
+		games.add(new SheepWars(manager,SheepWarsType._4));
 		games.add(new DeathGames(manager));
-		games.add(new DeathGames(manager));
-		games.add(new TroubleInMinecraft(manager));
-		games.add(new SurvivalGames(manager));
-		games.add(new SkyPvP(manager));
+		//games.add(new TroubleInMinecraft(manager));
+		//games.add(new SurvivalGames(manager));
+		for(Game g : games)g.unregisterListener();
 	}
 	
 	

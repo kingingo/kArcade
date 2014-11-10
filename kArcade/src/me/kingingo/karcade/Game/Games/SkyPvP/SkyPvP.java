@@ -85,7 +85,7 @@ public class SkyPvP extends SoloGame{
 //			new Kit("Miner",new ItemStack(Material.IRON_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.DIG_SPEED.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
 //		});
 		setRespawn(true);
-		WorldData wd=new WorldData(manager,GameType.SkyPvP.name());
+		WorldData wd=new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
 		getManager().DebugLog(l, this.getClass().getName());
