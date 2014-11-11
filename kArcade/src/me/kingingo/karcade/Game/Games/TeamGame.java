@@ -17,7 +17,6 @@ import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;

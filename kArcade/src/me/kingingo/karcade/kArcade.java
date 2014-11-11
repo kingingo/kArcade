@@ -19,8 +19,6 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.memory.MemoryFix;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 

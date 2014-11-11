@@ -2,7 +2,6 @@ package me.kingingo.karcade.Command;
 
 import me.kingingo.karcade.Game.World.WorldParser;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
-import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Permission.PermissionManager;
 
 import org.bukkit.command.Command;

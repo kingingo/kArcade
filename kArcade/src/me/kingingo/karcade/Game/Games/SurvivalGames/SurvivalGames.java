@@ -14,7 +14,6 @@ import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonBagPack;
 import me.kingingo.karcade.Game.addons.AddonMove;
 import me.kingingo.karcade.Game.addons.AddonSphereGrenze;
-import me.kingingo.karcade.Game.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;

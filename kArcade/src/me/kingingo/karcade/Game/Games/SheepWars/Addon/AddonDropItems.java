@@ -1,11 +1,5 @@
 package me.kingingo.karcade.Game.Games.SheepWars.Addon;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-
 import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
@@ -13,7 +7,12 @@ import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilMath;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class AddonDropItems extends kListener {
 

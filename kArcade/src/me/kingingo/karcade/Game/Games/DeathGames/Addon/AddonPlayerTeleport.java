@@ -3,15 +3,6 @@ package me.kingingo.karcade.Game.Games.DeathGames.Addon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-
-import com.google.common.collect.Lists;
-
-import lombok.Getter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.PlayerStateChangeEvent;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
@@ -20,6 +11,14 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+
+import com.google.common.collect.Lists;
 
 public class AddonPlayerTeleport extends kListener{
 

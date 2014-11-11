@@ -10,8 +10,6 @@ import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
-import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;

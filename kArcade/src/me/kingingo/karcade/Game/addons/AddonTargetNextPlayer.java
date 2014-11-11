@@ -8,7 +8,6 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
-import me.kingingo.karcade.Game.GameList;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;

@@ -2,7 +2,6 @@ package me.kingingo.karcade.Game.Events;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 
 import org.bukkit.event.Cancellable;

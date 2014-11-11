@@ -14,8 +14,6 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Kit.Kit;
-import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
@@ -69,7 +67,6 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.scoreboard.DisplaySlot;
 
 public class Game implements Listener{
 	@Getter

@@ -39,7 +39,6 @@ import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.PlayerStats.Stats;
-import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
