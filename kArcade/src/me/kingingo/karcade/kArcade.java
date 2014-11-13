@@ -14,11 +14,13 @@ import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Update.Updater;
+import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.FileUtil;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.memory.MemoryFix;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,29 +37,33 @@ public class kArcade extends JavaPlugin{
 	public static String FilePath;
 	
 	public void onEnable(){
-		long time = System.currentTimeMillis();
-		loadConfig();
-		for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel().toLowerCase()));
-		FileUtil.DeleteFolder(new File("map"));
-		id=getConfig().getInt("Config.Server.ID");
-		FilePath=getConfig().getString("Config.Server.FilePath");
-		updater=new Updater(this);
-		if(id==-1){
-			c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER",this,updater);
-		}else{
-			c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"a"+id,this,updater);
+		try{
+			long time = System.currentTimeMillis();
+			loadConfig();
+			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
+			for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel().toLowerCase()));
+			FileUtil.DeleteFolder(new File("map"));
+			id=getConfig().getInt("Config.Server.ID");
+			FilePath=getConfig().getString("Config.Server.FilePath");
+			updater=new Updater(this);
+			if(id==-1){
+				c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER",this,updater);
+			}else{
+				c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"a"+id,this,updater);
+			}
+			cmd=new CommandHandler(this);
+			cmd.register(CommandScan.class, new CommandScan(permManager));
+			pManager=new PacketManager(this,c);
+			permManager=new PermissionManager(this,pManager,mysql);
+			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
+			cmd.register(CommandSend.class, new CommandSend(c));
+			cmd.register(CommandStart.class, new CommandStart(manager));
+			cmd.register(CommandMuteAll.class, new CommandMuteAll(permManager));
+			new MemoryFix(this);
+			manager.DebugLog(time, this.getClass().getName());
+		}catch(Exception e){
+			UtilException.catchException(e, getConfig().getString("Config.Server.ID"), Bukkit.getIp(), mysql);
 		}
-		mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
-		cmd=new CommandHandler(this);
-		cmd.register(CommandScan.class, new CommandScan(permManager));
-		pManager=new PacketManager(this,c);
-		permManager=new PermissionManager(this,pManager,mysql);
-		manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
-		cmd.register(CommandSend.class, new CommandSend(c));
-		cmd.register(CommandStart.class, new CommandStart(manager));
-		cmd.register(CommandMuteAll.class, new CommandMuteAll(permManager));
-		new MemoryFix(this);
-		manager.DebugLog(time, this.getClass().getName());
 	}
 	
 	public void onDisable(){
