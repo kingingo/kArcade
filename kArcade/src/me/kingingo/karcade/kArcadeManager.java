@@ -362,13 +362,13 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(){
-		System.out.println("S:"+state.string());
-		System.out.println("O: "+UtilServer.getPlayers().length);
-		System.out.println("O1: "+getGame()==null);
-		System.out.println("O: "+getGame().getMax_Players());
-		System.out.println("O: "+getGame().getWorldData().getMapName());
-		System.out.println("O: "+getGame().getType());
-		System.out.println("O: "+"a"+kArcade.id);
+//		System.out.println("S:"+state.string());
+//		System.out.println("O: "+UtilServer.getPlayers().length);
+//		System.out.println("O1: "+getGame()==null);
+//		System.out.println("O: "+getGame().getMax_Players());
+//		System.out.println("O: "+getGame().getWorldData().getMapName());
+//		System.out.println("O: "+getGame().getType());
+//		System.out.println("O: "+"a"+kArcade.id);
 		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
@@ -593,7 +593,7 @@ public class kArcadeManager implements Listener{
 			case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			}
 		}else{
-			if(UtilServer.getPlayers().length>=game.getMin_Players()){
+			if(UtilServer.getPlayers().length>=getGame().getMin_Players()){
 				Bukkit.getPluginManager().callEvent(new GameStartEvent(getGame().getType()));
 				updateInfo(GameState.InGame);
 			}else{
