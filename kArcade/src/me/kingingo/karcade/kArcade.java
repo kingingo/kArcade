@@ -42,7 +42,7 @@ public class kArcade extends JavaPlugin{
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel()));
-			FileUtil.DeleteFolder(new File("map"));
+//			FileUtil.DeleteFolder(new File("map"));
 //			FileUtil.DeleteFolder(new File("logs"));
 //			FileUtil.DeleteFolder(new File("world"+File.separator+"stats"));
 //			FileUtil.DeleteFolder(new File("world"+File.separator+"playerdata"));
