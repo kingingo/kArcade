@@ -135,7 +135,7 @@ public class kArcadeManager implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
-		this.holiday=Calendar.getHoliday(5);
+		this.holiday=Calendar.getHoliday();
 		
 		cmd.register(CommandService.class, this.service);
 		for(Entity e : getLobby().getWorld().getEntities()){
