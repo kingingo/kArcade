@@ -46,6 +46,8 @@ import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.Scheduler.kScheduler;
+import me.kingingo.kcore.Scheduler.kScheduler.kSchedulerHandler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -55,6 +57,7 @@ import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
@@ -619,7 +622,6 @@ public class SheepWars extends TeamGame{
 		}
 		
 		EntityType et = EntityType.VILLAGER;
-		EntityType sp_et = EntityType.VILLAGER;
 		EntityType sh_et=EntityType.SHEEP;
 		
 		if(getManager().getHoliday()!=null){
@@ -628,6 +630,20 @@ public class SheepWars extends TeamGame{
 				et=EntityType.WITCH;
 				new AddonTimeNight(getManager().getInstance(),getWorldData().getWorld());
 				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
+				break;
+			case WEIHNACHTEN:
+				et=EntityType.SNOWMAN;
+				new AddonTimeNight(getManager().getInstance(),getWorldData().getWorld());
+				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
+
+					@Override
+					public void onRun() {
+						for(Team team : getTyp().getTeam()){
+							UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
+						}
+					}
+					
+				},UpdateType.FAST);
 				break;
 			default:
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
