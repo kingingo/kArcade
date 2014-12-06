@@ -20,6 +20,7 @@ import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
@@ -66,6 +67,7 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -204,6 +206,11 @@ public class SheepWars extends TeamGame{
 		this.wd=new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
+		
+		if(manager.getHoliday()==CalendarType.WEIHNACHTEN){
+			getWorldData().setBiome(getWorldData().getLocs(Team.BLACK.toString()).get(0), Biome.TAIGA);
+		}
+		
 		manager.DebugLog(t, this.getClass().getName());
 		
 		manager.setState(GameState.LobbyPhase);
@@ -633,16 +640,16 @@ public class SheepWars extends TeamGame{
 			case WEIHNACHTEN:
 				et=EntityType.SNOWMAN;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+				//getWorldData().getWorld().setStorm(true);
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
 
 					@Override
 					public void onRun() {
-						for(Team team : getTyp().getTeam()){
-							UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
-						}
+						//for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
+						getWorldData().getWorld().setStorm(true);
 					}
 					
-				},UpdateType.FAST);
+				},UpdateType.MIN_005);
 				break;
 			default:
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
