@@ -159,6 +159,24 @@ public class WorldData {
 		 }
 	 }
 	 
+	 public void setBiome(Location l,Biome biome){
+		 setBiome(l, 300, biome);
+	 }
+	 
+	public void setBiome(Location l,int add,Biome biome){
+		int min_x = l.getBlockX()-add;
+		int max_x = l.getBlockX()+add;
+		
+		int min_z = l.getBlockZ()-add;
+		int max_z = l.getBlockZ()+add;
+		
+		for(int x = min_x; x < max_x; x++){
+			for(int z = min_z; z < max_z; z++){
+				world.setBiome(x, z, biome);
+			}
+		}
+	}
+	 
 	public void Initialize(){
 		UtilServer.getServer().getScheduler().runTaskAsynchronously(manager.getInstance(), new Runnable()
 	    {
