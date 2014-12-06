@@ -18,8 +18,8 @@ import me.kingingo.karcade.Game.addons.AddonEntityKing;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
+import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
-import me.kingingo.kcore.Addons.AddonTimeNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
@@ -47,7 +47,6 @@ import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
-import me.kingingo.kcore.Scheduler.kScheduler.kSchedulerHandler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -628,12 +627,12 @@ public class SheepWars extends TeamGame{
 			switch(getManager().getHoliday()){
 			case HELLOWEEN:
 				et=EntityType.WITCH;
-				new AddonTimeNight(getManager().getInstance(),getWorldData().getWorld());
+				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
 				break;
 			case WEIHNACHTEN:
 				et=EntityType.SNOWMAN;
-				new AddonTimeNight(getManager().getInstance(),getWorldData().getWorld());
+				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
 
 					@Override
@@ -646,7 +645,7 @@ public class SheepWars extends TeamGame{
 				},UpdateType.FAST);
 				break;
 			default:
-				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 				break;
 			}
 		}

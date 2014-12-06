@@ -425,8 +425,8 @@ public class SurvivalGames extends TeamGame{
 			
 			Player t = TeamPartner(victim);
 			if(t!=null){
-				getBoards().get(t).resetScore(Bukkit.getOfflinePlayer("§a"+victim.getName()), DisplaySlot.SIDEBAR);
-				getBoards().get(t).setScore(Bukkit.getOfflinePlayer("§c"+victim.getName()), DisplaySlot.SIDEBAR, 8);
+				getBoards().get(t).resetScore("§a"+victim.getName(), DisplaySlot.SIDEBAR);
+				getBoards().get(t).setScore("§c"+victim.getName(), DisplaySlot.SIDEBAR, 8);
 			}
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
@@ -437,8 +437,8 @@ public class SurvivalGames extends TeamGame{
 			
 			Player t = TeamPartner(victim);
 			if(t!=null){
-				getBoards().get(t).resetScore(Bukkit.getOfflinePlayer("§a"+victim.getName()), DisplaySlot.SIDEBAR);
-				getBoards().get(t).setScore(Bukkit.getOfflinePlayer("§c"+victim.getName()), DisplaySlot.SIDEBAR, 8);
+				getBoards().get(t).resetScore("§a"+victim.getName(), DisplaySlot.SIDEBAR);
+				getBoards().get(t).setScore("§c"+victim.getName(), DisplaySlot.SIDEBAR, 8);
 			}
 		}
 	}
@@ -485,10 +485,8 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
-		getManager().setState(GameState.StartGame);
 		ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
 		ArrayList<Player> plist = new ArrayList<>();
-		
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
@@ -499,6 +497,7 @@ public class SurvivalGames extends TeamGame{
 		Team t;
 		PlayerScoreboard ps;
 		for(Player p : getTeamList().keySet()){
+			time=System.currentTimeMillis();
 			r=UtilMath.r(list.size());
 			t = getTeamList().get(p);
 			getBoards().put(p, new PlayerScoreboard(p));
@@ -506,27 +505,35 @@ public class SurvivalGames extends TeamGame{
 			ps.addBoard(DisplaySlot.BELOW_NAME, C.cGray+t.Name().split(" ")[0]);
 			for(Player p1 : UtilServer.getPlayers()){
 				if(!getTeamList().containsKey(p1))continue;
-				ps.setScore(p1, DisplaySlot.BELOW_NAME, Integer.valueOf( getTeamList().get(p1).Name().split(" ")[1] ));
+				ps.setScore(p1.getName(), DisplaySlot.BELOW_NAME, Integer.valueOf( getTeamList().get(p1).Name().split(" ")[1] ));
 			}
+			
+			
 			ps.addBoard(DisplaySlot.SIDEBAR, "§aSurvivalGames §6§lInfo");
-			ps.setScore(Bukkit.getOfflinePlayer("§3"), DisplaySlot.SIDEBAR, 10);
-			ps.setScore(Bukkit.getOfflinePlayer("§aPartner:"), DisplaySlot.SIDEBAR, 9);
+			ps.setScore("§3", DisplaySlot.SIDEBAR, 10);
+			ps.setScore("§aPartner:", DisplaySlot.SIDEBAR, 9);
+			
+			
 			for(Player p1 : getPlayerFrom(getTeam(p))){
 				if(p==p1)continue;
 				if(p1.getName().length()>13){
-					ps.setScore(Bukkit.getOfflinePlayer("§a"+p1.getName().substring(13)), DisplaySlot.SIDEBAR, 8);
+					ps.setScore("§a"+p1.getName().substring(13), DisplaySlot.SIDEBAR, 8);
 				}else{
-					ps.setScore(Bukkit.getOfflinePlayer("§a"+p1.getName()), DisplaySlot.SIDEBAR, 8);
+					ps.setScore("§a"+p1.getName(), DisplaySlot.SIDEBAR, 8);
 				}
 			}
+			
+
+			ps.setScore("§3", DisplaySlot.SIDEBAR, 7);
 			ps.setBoard();
-			ps.setScore(Bukkit.getOfflinePlayer("§3"), DisplaySlot.SIDEBAR, 7);
 			p.teleport(list.get(r));
 			list.remove(r);
 		}
+		getManager().DebugLog(time, this.getClass().getName());
 		move=new AddonMove(getManager());
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 		hm.RemoveAllText();
+		getManager().setState(GameState.StartGame);
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
@@ -556,12 +563,10 @@ public class SurvivalGames extends TeamGame{
 	
 	@EventHandler
 	public void onBreak(BlockBreakEvent ev){
-		
 		if(ev.getBlock().getType() == Material.ITEM_FRAME && !ev.getPlayer().isOp()){
 			ev.setCancelled(true);
 			return;
 		}
-		
 	}
 	
 	@EventHandler

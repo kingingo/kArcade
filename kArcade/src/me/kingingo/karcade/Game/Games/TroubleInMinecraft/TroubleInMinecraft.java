@@ -32,7 +32,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -337,7 +337,7 @@ public class TroubleInMinecraft extends TeamGame{
 						break;
 					}
 				}
-				if(b)new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4),0.2,UtilMath.RandomDouble(-0.4, 0.4)),item,getManager().getInstance());
+				if(b)new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4),0.2,UtilMath.RandomDouble(-0.4, 0.4)),item);
 			}
 			ev.getDrops().clear();
 			Team t = getTeam(((Player)ev.getEntity()));
@@ -455,7 +455,7 @@ public class TroubleInMinecraft extends TeamGame{
 		ev.setCancelled(true);
 		for(TTT_Item t : TTT_Item.values()){
 			if(UtilItem.ItemNameEquals(t.getItem(), ev.getItemDrop().getItemStack())){
-				new ItemFake(ev.getItemDrop(),getManager().getInstance());
+				new ItemFake(ev.getItemDrop());
 				ev.setCancelled(false);
 				break;
 			}
@@ -550,7 +550,7 @@ public class TroubleInMinecraft extends TeamGame{
 		
 		if(!list.isEmpty()){
 			Location loc = list.get(UtilMath.r(list.size()));
-			TTT_Item.SCHWERT_IRON.setItemFake(loc, getManager().getInstance());
+			TTT_Item.SCHWERT_IRON.setItemFake(loc);
 			list.remove(loc);
 		}
 		
@@ -577,40 +577,40 @@ public class TroubleInMinecraft extends TeamGame{
 			if(list.isEmpty())break;
 			r=UtilMath.r(list.size());
 			if(s_h!=0){
-				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r),getManager().getInstance());
+				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				list.remove(r);
 				s_h--;
 			}else if(arrow!=0){
-				TTT_Item.ARROW.setItemFake(list.get(r),getManager().getInstance());
+				TTT_Item.ARROW.setItemFake(list.get(r));
 				list.remove(r);
 				arrow--;
 			}else if(s_s!=0){
-				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r),getManager().getInstance());
+				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r));
 				list.remove(r);
 				s_s--;
 			}else if(b_mg!=0){
-				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r),getManager().getInstance());
+				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r));
 				list.remove(r);
 				b_mg--;
 			}else if(b_s!=0){
-				TTT_Item.BOW_SHOTGUN.setItemFake(list.get(r),getManager().getInstance());
+				TTT_Item.BOW_SHOTGUN.setItemFake(list.get(r));
 				list.remove(r);
 				b_s--;
 			}
 //			else if(b_b!=0){
-//				TTT_Item.BOW_BOGEN.setItemFake(list.get(r),getManager().getInstance());
+//				TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
 //				list.remove(r);
 //				b_b--;
 //			}
 			else if(b_sn!=0){
-				TTT_Item.BOW_SNIPER.setItemFake(list.get(r),getManager().getInstance());
+				TTT_Item.BOW_SNIPER.setItemFake(list.get(r));
 				list.remove(r);
 				b_sn--;
 			}else{
 				if(UtilMath.r(1)==0){
-					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r),getManager().getInstance());
+					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				}else{
-					TTT_Item.ARROW.setItemFake(list.get(r),getManager().getInstance());
+					TTT_Item.ARROW.setItemFake(list.get(r));
 				}
 				list.remove(r);
 			}
@@ -938,7 +938,7 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 		ifm=new ItemFakeManager(getManager().getInstance(),hm);
 		setItemFake(getWorldData().getLocs(Team.YELLOW.Name()));
-		new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		setDamage(false);
 		getManager().setStart(31);
 		getManager().setState(GameState.StartGame);

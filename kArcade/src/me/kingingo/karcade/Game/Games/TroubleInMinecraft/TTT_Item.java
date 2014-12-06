@@ -34,13 +34,13 @@ BOW_SNIPER(TroubleInMinecraft.getSniper().getItem(),"BOW");
 			return item.clone();
 	}
 	
-	public ItemFake setItemFake(Location l,JavaPlugin plugin){
+	public ItemFake setItemFake(Location l){
 		if(getTyp().equalsIgnoreCase("ARROW")){
 			ItemStack ite = getItem().clone();
 			ite.setAmount(UtilMath.RandomInt(20, 5));
-			return new ItemFake(l,ite,plugin);
+			return new ItemFake(l,ite);
 		}else{
-			return new ItemFake(l,getItem(),plugin);
+			return new ItemFake(l,getItem());
 		}
 	 }
 	

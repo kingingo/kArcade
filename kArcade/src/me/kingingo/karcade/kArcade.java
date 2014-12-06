@@ -42,11 +42,7 @@ public class kArcade extends JavaPlugin{
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel()));
-//			FileUtil.DeleteFolder(new File("map"));
-//			FileUtil.DeleteFolder(new File("logs"));
-//			FileUtil.DeleteFolder(new File("world"+File.separator+"stats"));
-//			FileUtil.DeleteFolder(new File("world"+File.separator+"playerdata"));
-//			System.exit(0);
+			FileUtil.DeleteFolder(new File("map"));
 			id=getConfig().getInt("Config.Server.ID");
 			FilePath=getConfig().getString("Config.Server.FilePath");
 			updater=new Updater(this);
@@ -74,11 +70,6 @@ public class kArcade extends JavaPlugin{
 		for(Player p : UtilServer.getPlayers()){
 			UtilBG.sendToServer(p, manager.getBungeeCord_Fallback_Server(),this);
 		}
-//		if(getConfig().getString("Config.Server.World-Save").equalsIgnoreCase("false")){
-//			for(World w : Bukkit.getWorlds()){
-//				w.set
-//			}
-//		}
 		for(GameType type : GameType.values())FileUtil.DeleteFolder(new File(type.getKürzel().toLowerCase()));
 		mysql.close();
 		updater.stop();

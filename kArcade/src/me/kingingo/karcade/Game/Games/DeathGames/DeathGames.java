@@ -17,6 +17,8 @@ import me.kingingo.karcade.Game.Games.DeathGames.Perk.PerkTeleporter;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonQuadratGrenze;
 import me.kingingo.karcade.Game.addons.AddonTargetNextPlayer;
+import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -55,6 +57,7 @@ import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -740,8 +743,6 @@ public class DeathGames extends SoloGame{
 		
 		grenze.setList(chest_anzahl, g.get( chest_anzahl ));
 		g.remove(chest_anzahl);
-		//grenze.setRadius( (UtilServer.getPlayers().length*10) );
-		//grenze.scan();
 		
 		int minZ=grenze.MinZ()+20;
 		int maxZ=grenze.MaxZ()-20;
@@ -759,6 +760,19 @@ public class DeathGames extends SoloGame{
 		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,getManager());
 		a.setAktiv(true);
 		setDamage(false);
+		
+		if(getManager().getHoliday()==CalendarType.WEIHNACHTEN){
+			new AddonNight(getManager().getInstance(), getWorldData().getWorld());
+			new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler() {
+				
+				@Override
+				public void onRun() {
+					for(Player p : getGameList().getPlayers(PlayerState.IN))UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, p.getLocation(), 15);
+				}
+				
+			},UpdateType.FAST);
+		}
+		
 		getManager().setStart(46);
 		getManager().setState(GameState.SchutzModus);
 		getManager().DebugLog(time, this.getClass().getName());
