@@ -29,7 +29,7 @@ public class CommandStart implements CommandExecutor{
 		if((Manager.getPermManager().hasPermission(((Player)cs), Permission.START_SERVER)||((Player)cs).isOp())){
 			final Player p = (Player)cs;
 			
-			AnvilGUI gui = new AnvilGUI( p,new AnvilGUI.AnvilClickEventHandler(){
+			AnvilGUI gui = new AnvilGUI(new AnvilGUI.AnvilClickEventHandler(){
 
 				@Override
 				public void onAnvilClick(AnvilClickEvent ev) {
@@ -50,7 +50,7 @@ public class CommandStart implements CommandExecutor{
 				 gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, renamed);
 				 gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, UtilItem.RenameItem(new ItemStack(Material.NAME_TAG), "§aFertig"));
 
-				 gui.open();
+				 gui.open(p);
 			
 		}
 		return false;

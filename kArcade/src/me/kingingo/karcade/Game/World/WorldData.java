@@ -15,6 +15,8 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Util.FileUtil;
 import me.kingingo.kcore.Util.UtilMap;
@@ -30,6 +32,13 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+
+import com.sk89q.worldedit.BiomeType;
+import com.sk89q.worldedit.LocalWorld;
+import com.sk89q.worldedit.UnknownBiomeTypeException;
+import com.sk89q.worldedit.Vector2D;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
 
 public class WorldData {
 	@Getter
@@ -163,7 +172,7 @@ public class WorldData {
 		 setBiome(l, 300, biome);
 	 }
 	 
-	public void setBiome(Location l,int add,Biome biome){
+	public void setBiome(Location l,int add,Biome biome){	
 		int min_x = l.getBlockX()-add;
 		int max_x = l.getBlockX()+add;
 		
@@ -178,6 +187,7 @@ public class WorldData {
 	}
 	 
 	public void Initialize(){
+		final WorldData wd = this;
 		UtilServer.getServer().getScheduler().runTaskAsynchronously(manager.getInstance(), new Runnable()
 	    {
 	      public void run()
@@ -190,6 +200,7 @@ public class WorldData {
 	            world=WorldUtil.LoadWorld(new WorldCreator(getFolder()));
 	            world.setDifficulty(Difficulty.HARD);
 	            LoadWorldConfig();
+	            Bukkit.getPluginManager().callEvent(new WorldDataInitializeEvent( wd ));
 	          }
 	        });
 	      }

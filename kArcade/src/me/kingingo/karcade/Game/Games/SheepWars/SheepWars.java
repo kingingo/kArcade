@@ -13,6 +13,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.addons.AddonEntityKing;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
@@ -207,10 +208,6 @@ public class SheepWars extends TeamGame{
 		wd.Initialize();
 		setWorldData(wd);
 		
-		if(manager.getHoliday()==CalendarType.WEIHNACHTEN){
-			getWorldData().setBiome(getWorldData().getLocs(Team.BLACK.toString()).get(0), Biome.TAIGA);
-		}
-		
 		manager.DebugLog(t, this.getClass().getName());
 		
 		manager.setState(GameState.LobbyPhase);
@@ -228,6 +225,17 @@ public class SheepWars extends TeamGame{
 	//TEAM BLUE
 	//TEAM GREEN
 	//SPEZIAL VILLAGER BLACK
+	
+	@EventHandler
+	public void WorldData(WorldDataInitializeEvent ev){
+//		if(getManager().getHoliday()==CalendarType.WEIHNACHTEN){
+//			if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
+//				ev.getWorldData().setBiome(ev.getWorldData().getLocs(Team.BLACK.Name()).get(0), Biome.ICE_PLAINS);
+//			}else{
+//				ev.getWorldData().setBiome(ev.getWorldData().getLocs(Team.RED.Name()).get(0),500, Biome.ICE_PLAINS);
+//			}
+//		}
+	}
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
@@ -640,13 +648,12 @@ public class SheepWars extends TeamGame{
 			case WEIHNACHTEN:
 				et=EntityType.SNOWMAN;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				//getWorldData().getWorld().setStorm(true);
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
 
 					@Override
 					public void onRun() {
-						//for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
-						getWorldData().getWorld().setStorm(true);
+						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
+						//getWorldData().getWorld().setStorm(true);
 					}
 					
 				},UpdateType.MIN_005);
