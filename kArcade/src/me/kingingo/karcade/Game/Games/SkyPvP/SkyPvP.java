@@ -1,5 +1,6 @@
 package me.kingingo.karcade.Game.Games.SkyPvP;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -53,7 +54,7 @@ public class SkyPvP extends SoloGame{
 		long l = System.currentTimeMillis();
 		getManager().setState(GameState.Laden);
 		setTyp(GameType.SkyPvP);
-		setMax_Players(24);
+		setMax_Players(12);
 		setMin_Players(1);
 		setDamage(true);
 		setDamagePvP(true);
@@ -79,8 +80,14 @@ public class SkyPvP extends SoloGame{
 //		});
 		setRespawn(true);
 		WorldData wd=new WorldData(manager,getType());
-		wd.Initialize();
 		setWorldData(wd);
+		wd.createWorld();
+		HashMap<File,Integer> list = new HashMap<>();
+		list.put(new File(kArcade.FilePath+"/SkyPvP/normal.schematic"), 7);
+		list.put(new File(kArcade.FilePath+"/SkyPvP/vip.schematic"), 2);
+		list.put(new File(kArcade.FilePath+"/SkyPvP/premium.schematic"), 2);
+		list.put(new File(kArcade.FilePath+"/SkyPvP/elite.schematic"), 1);
+		wd.setIslands(list,4, 30, new Location(wd.getWorld(),0,80,0), 70);
 		getManager().DebugLog(l, this.getClass().getName());
 	}
 	

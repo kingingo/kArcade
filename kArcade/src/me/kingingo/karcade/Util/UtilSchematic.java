@@ -24,13 +24,9 @@ public class UtilSchematic {
 
 	@Getter
 	@Setter
-    EditSession editSession=null ;
+	private static EditSession editSession=null ;
 	
-	public UtilSchematic(){
-		
-	}
-	
-	public void removePlate(){
+	public static void removePlate(){
 		editSession.undo(editSession);
 	}
 	
@@ -59,14 +55,14 @@ public class UtilSchematic {
 		return list;
 	}
 	
-	private void loadArea(World world, File file,Vector origin) throws DataException, IOException, MaxChangedBlocksException{
+	private static void loadArea(World world, File file,Vector origin) throws DataException, IOException, MaxChangedBlocksException{
 	    EditSession es = editSession;
 	    CuboidClipboard cc = CuboidClipboard.loadSchematic(file);
 	    cc.paste(es, origin, false);
 	    cc.copy(es);   
 	}
 	
-	public void pastePlate(Location l,File file){
+	public static void pastePlate(Location l,File file){
 		if(editSession==null)editSession=new EditSession(new BukkitWorld(l.getWorld()), 999999999);
 		Vector v = new Vector(l.getX(), l.getY(), l.getZ());
 		try {

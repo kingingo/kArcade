@@ -16,9 +16,11 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
-import me.kingingo.kcore.Calendar.Calendar.CalendarType;
+import me.kingingo.karcade.Util.UtilSchematic;
+import me.kingingo.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Util.FileUtil;
+import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -32,13 +34,6 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-
-import com.sk89q.worldedit.BiomeType;
-import com.sk89q.worldedit.LocalWorld;
-import com.sk89q.worldedit.UnknownBiomeTypeException;
-import com.sk89q.worldedit.Vector2D;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 
 public class WorldData {
 	@Getter
@@ -155,6 +150,13 @@ public class WorldData {
 		world=null;
 	 }
 	 
+	 public void createCleanWorld(){
+		 removeWorld();
+		 WorldCreator wc = new WorldCreator(gameName);
+		 wc.generator(new CleanroomChunkGenerator(".0,AIR"));
+		 world= WorldUtil.LoadWorld(wc);
+	 }
+	 
 	 public void createWorld(){
 		 removeWorld();
 		 world=Bukkit.createWorld(new WorldCreator(folder));
@@ -205,6 +207,33 @@ public class WorldData {
 	        });
 	      }
 	    });
+	}
+	
+	public void setIslands(HashMap<File,Integer> list,int MinBorder,int MaxBorder,Location location,int radius){
+		int amount = 0;
+		boolean b = false;
+		for(File file : list.keySet())amount=amount+list.get(file);
+		ArrayList<Location> l = UtilLocation.LocWithBorder(getWorld(), amount, MinBorder, MaxBorder, location, radius);
+		if(!getLocs().containsKey(Team.RED.Name())) getLocs().put(Team.RED.Name(), new ArrayList<Location>());
+		for(File file : list.keySet()){
+			for(int i = 0; i <= list.get(file); i++){
+				if(l.isEmpty())break;
+				for(int lo = 0; lo < l.size(); lo++){
+					if(l.isEmpty())break;
+					UtilSchematic.pastePlate(l.get(lo), file);
+					getLocs().get(Team.RED.Name()).add(l.get(lo));
+					l.remove(lo);
+				}
+			}
+		}
+	}
+	
+	public void setIsland(File schematic,int amount,int MinBorder,int MaxBorder,Location location,int radius){
+		ArrayList<Location> list = UtilLocation.LocWithBorder(getWorld(), amount, MinBorder, MaxBorder, location, radius);
+		
+		for(Location loc : list){
+			UtilSchematic.pastePlate(loc, schematic);
+		}
 	}
 	
 	public void LoadWorldConfig(){
