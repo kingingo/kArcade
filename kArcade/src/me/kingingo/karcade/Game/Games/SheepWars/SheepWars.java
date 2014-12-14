@@ -356,7 +356,7 @@ public class SheepWars extends TeamGame{
 				}
 				for(Kit kit : kitshop.getKits()){
 					kit.StartGame(l);
-					for(Player p :kit.getPlayers())kits.put(p, kit.getName());
+					for(Player p : kit.getPlayers().get(0))kits.put(p, kit.getName());
 				}
 				
 				TeamTab(typ.getTeam());
