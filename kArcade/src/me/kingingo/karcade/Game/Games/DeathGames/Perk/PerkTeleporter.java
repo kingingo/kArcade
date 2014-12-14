@@ -32,7 +32,8 @@ public class PerkTeleporter extends Perk{
 	
 	@EventHandler
 	public void Start(PerkStartEvent ev){
-		for(Player p : getKit().getPlayers())p.getInventory().addItem(item.clone());
+		if(!getPerkData().getPlayers().containsKey(this))return;
+		for(Player p : getPerkData().getPlayers().get(this))p.getInventory().addItem(item.clone());
 	}
 	
 	@EventHandler
