@@ -27,6 +27,12 @@ SHEEP_YELLOW("SHEEP_YELLOW", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(
 SHEEP_BLUE("SHEEP_BLUE", UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)11), C.cBlue+"Sheep - Blau"),C.cBlue),
 SHEEP_GREEN("SHEEP_GREEN",UtilItem.RenameItem(new ItemStack(Material.WOOL,1,(byte)5), C.cGreen+"Sheep - Grün"),C.cGreen),
 
+
+GOLD("GOLD",UtilItem.RenameItem(new ItemStack(Material.GOLD_BLOCK,1), C.cGold+"Gold"),C.cGold),
+SILBER("SILBER",UtilItem.RenameItem(new ItemStack(Material.IRON_BLOCK,1), C.cGold+"Silber"),C.cGray),
+BRONZE("BRONZE",UtilItem.RenameItem(new ItemStack(Material.COAL_BLOCK,1), C.cGold+"Bronze"),C.cDGray),
+DIAMOND("DIAMOND",UtilItem.RenameItem(new ItemStack(Material.DIAMOND_BLOCK,1), C.cDAqua+"Diamanten"),C.cDAqua),
+
 DISTRICT_1("District 1",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 1"),C.cAqua),
 DISTRICT_2("District 2",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 2"),C.cAqua),
 DISTRICT_3("District 3",UtilItem.RenameItem(new ItemStack(Material.WORKBENCH,1), C.cGreen+"District 3"),C.cAqua),

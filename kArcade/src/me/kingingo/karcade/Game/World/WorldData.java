@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,10 +31,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 
 public class WorldData {
 	@Getter
@@ -152,20 +155,20 @@ public class WorldData {
 	 
 	 public void createCleanWorld(){
 		 removeWorld();
-		 WorldCreator wc = new WorldCreator(gameName);
+		 WorldCreator wc = new WorldCreator(getFolder());
 		 wc.generator(new CleanroomChunkGenerator(".0,AIR"));
 		 world= WorldUtil.LoadWorld(wc);
 	 }
 	 
 	 public void createWorld(){
 		 removeWorld();
-		 world=Bukkit.createWorld(new WorldCreator(folder));
+		 world=Bukkit.createWorld(new WorldCreator(getFolder()));
 	 }
 	 
 	 public void removeWorld(){
-		 if(Bukkit.getWorld(gameName)!=null||world!=null){
-			 Bukkit.unloadWorld(gameName, false);
-			 FileUtil.DeleteFolder(new File(gameName));
+		 if(Bukkit.getWorld(getFolder())!=null||world!=null){
+			 Bukkit.unloadWorld(getFolder(), false);
+			 FileUtil.DeleteFolder(new File(getFolder()));
 			 world=null;
 		 }
 	 }
@@ -209,30 +212,21 @@ public class WorldData {
 	    });
 	}
 	
-	public void setIslands(HashMap<File,Integer> list,int MinBorder,int MaxBorder,Location location,int radius){
-		int amount = 0;
-		boolean b = false;
-		for(File file : list.keySet())amount=amount+list.get(file);
-		ArrayList<Location> l = UtilLocation.LocWithBorder(getWorld(), amount, MinBorder, MaxBorder, location, radius);
-		if(!getLocs().containsKey(Team.RED.Name())) getLocs().put(Team.RED.Name(), new ArrayList<Location>());
-		for(File file : list.keySet()){
-			for(int i = 0; i <= list.get(file); i++){
-				if(l.isEmpty())break;
-				for(int lo = 0; lo < l.size(); lo++){
-					if(l.isEmpty())break;
-					UtilSchematic.pastePlate(l.get(lo), file);
-					getLocs().get(Team.RED.Name()).add(l.get(lo));
-					l.remove(lo);
-				}
-			}
-		}
-	}
-	
-	public void setIsland(File schematic,int amount,int MinBorder,int MaxBorder,Location location,int radius){
-		ArrayList<Location> list = UtilLocation.LocWithBorder(getWorld(), amount, MinBorder, MaxBorder, location, radius);
-		
+	public void setIsland(File[] schematic,int amount,int border,Location location,int radius){
+		ArrayList<Location> list = UtilLocation.RandomLocs(getWorld(), amount, border, location);
+		if(!locs.containsKey(Team.RED.Name()))locs.put(Team.RED.Name(), new ArrayList<Location>());
+		Block block;
 		for(Location loc : list){
-			UtilSchematic.pastePlate(loc, schematic);
+			loc.setY(UtilMath.RandomInt(80, 65));
+			UtilSchematic.pastePlate(loc, schematic[UtilMath.r(schematic.length)]);
+			block=UtilLocation.searchBlock(Material.ENDER_PORTAL_FRAME, 20, loc);
+			if(block==null){
+				System.out.println("WorlData: LOCATION NICHT GEFUNDEN!!!!");
+				continue;
+			}
+			locs.get(Team.RED.Name()).add(block.getLocation());
+			block.setType(Material.AIR);
+			block=null;
 		}
 	}
 	
@@ -250,6 +244,14 @@ public class WorldData {
 		    			this.MapName=tokens[1];
 		    		}else if(tokens[0].equalsIgnoreCase(Team.SOLO.Name())){
 		    			locs.put(Team.SOLO.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SILBER.Name())){
+		    			locs.put(Team.SILBER.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.GOLD.Name())){
+		    			locs.put(Team.GOLD.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.DIAMOND.Name())){
+		    			locs.put(Team.DIAMOND.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.BRONZE.Name())){
+		    			locs.put(Team.BRONZE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.ORANGE.Name())){
 		    			locs.put(Team.ORANGE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.PURPLE.Name())){

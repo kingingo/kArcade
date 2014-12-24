@@ -27,7 +27,7 @@ public class AddonDropItems extends kListener {
 	
 	//GOLD ORANGE
 	//IRON PURPLE
-	//BRICK WHITE
+	//BRONZE WHITE
 	
 	@EventHandler
 	public void Interact(PlayerPickupItemEvent ev){	

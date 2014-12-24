@@ -15,10 +15,10 @@ import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
-import me.kingingo.karcade.Game.addons.AddonEntityKing;
+import me.kingingo.karcade.Game.addons.AddonEntityTeamKing;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
-import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
+import me.kingingo.karcade.Game.addons.Events.AddonEntityTeamKingDeathEvent;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
@@ -97,7 +97,7 @@ public class SheepWars extends TeamGame{
 	WorldData wd;
 	Hologram hm;
 	AddonEnterhacken aeh;
-	AddonEntityKing aek;
+	AddonEntityTeamKing aek;
 	AddonDropItems adi;
 	AddonPlaceBlockCanBreak apbcb;
 	@Getter
@@ -171,7 +171,7 @@ public class SheepWars extends TeamGame{
 				new PerkNoKnockback(getManager().getInstance())
 			}),
 			new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),Permission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkStopPerk(10)
+				new PerkStopPerk(25)
 			}),
 			new Kit( "§eTNTer",new String[]{"Der TNT hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.TNT),Permission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
@@ -680,7 +680,7 @@ public class SheepWars extends TeamGame{
 		}
 		
 		adi= new AddonDropItems(this);
-		aek=new AddonEntityKing(getManager(), teams,this, sh_et);
+		aek=new AddonEntityTeamKing(getManager(), teams,this, sh_et);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		aeh=new AddonEnterhacken(getManager().getInstance());
 		getWorldData().getWorld().setStorm(false);
@@ -786,7 +786,7 @@ public class SheepWars extends TeamGame{
 	}
 	
 	@EventHandler
-	public void SheepDeath(AddonEntityKingDeathEvent ev){
+	public void SheepDeath(AddonEntityTeamKingDeathEvent ev){
 		Team t = getTeam(ev.getKiller());
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());

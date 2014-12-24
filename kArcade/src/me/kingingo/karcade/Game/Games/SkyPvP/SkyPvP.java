@@ -12,26 +12,32 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Game.addons.AddonEntityKing;
+import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Hologram.Hologram;
-import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
-import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,10 +49,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class SkyPvP extends SoloGame{
 
-	KitShop kitshop;
 	HashMap<Player,Location> island = new HashMap<>();
 	HashMap<Player,Integer> life = new HashMap<>();
 	Hologram hm;
+	AddonEntityKing entity_king;
 	
 	public SkyPvP(kArcadeManager manager){
 		super(manager);
@@ -55,7 +61,7 @@ public class SkyPvP extends SoloGame{
 		getManager().setState(GameState.Laden);
 		setTyp(GameType.SkyPvP);
 		setMax_Players(12);
-		setMin_Players(1);
+		setMin_Players(3);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageSelf(true);
@@ -67,28 +73,31 @@ public class SkyPvP extends SoloGame{
 		setFoodChange(true);
 		setItemPickup(true);
 		setItemDrop(true);
-//		kitshop=new KitShop(manager.getInstance(),getCoins(),getTokens(),getManager().getPermManager(),"Shop",InventorySize._18,new Kit[]{
-//			new Kit("Ankerman",new ItemStack(Material.ANVIL),new ItemStack[]{new ItemStack(Material.STONE_SWORD)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkNoKnockback(manager.getInstance())}),
-//			new Kit("Panzer",new ItemStack(Material.DIAMOND_CHESTPLATE),new ItemStack[]{},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{new PerkSneakDamage(1.0)}),
-//			new Kit("Man of Steel",new ItemStack(Material.IRON_SWORD),new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.POTION,1,(byte)8265)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//			new Kit("Heiler",new ItemStack(Material.POTION,1,(byte)8229),new ItemStack[]{new ItemStack(Material.POTION,4,(byte)8229)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//			new Kit("Rusher",new ItemStack(Material.IRON_CHESTPLATE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_CHESTPLATE), new String[]{Enchantment.PROTECTION_PROJECTILE.getName()+":1",Enchantment.DURABILITY.getName()+":1"})},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//			new Kit("RockMan",new ItemStack(Material.WOOD_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD), Enchantment.DAMAGE_ALL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_PICKAXE), Enchantment.DURABILITY.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SPADE), Enchantment.DURABILITY.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//			new Kit("Looter",new ItemStack(Material.COBBLESTONE),new ItemStack[]{new ItemStack(Material.COBBLESTONE,32),new ItemStack(Material.WOOD,16)},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//			new Kit("Berserker",new ItemStack(Material.LEATHER_HELMET),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.LEATHER_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.LEATHER_LEGGINGS), Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1"),UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//			new Kit("Miner",new ItemStack(Material.IRON_PICKAXE),new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.DIG_SPEED.getName()+":1")},Permission.NONE,KitType.KAUFEN,2000,new Perk[]{}),
-//		});
 		setRespawn(true);
 		WorldData wd=new WorldData(manager,getType());
 		setWorldData(wd);
-		wd.createWorld();
-		HashMap<File,Integer> list = new HashMap<>();
-		list.put(new File(kArcade.FilePath+"/SkyPvP/normal.schematic"), 7);
-		list.put(new File(kArcade.FilePath+"/SkyPvP/vip.schematic"), 2);
-		list.put(new File(kArcade.FilePath+"/SkyPvP/premium.schematic"), 2);
-		list.put(new File(kArcade.FilePath+"/SkyPvP/elite.schematic"), 1);
-		wd.setIslands(list,4, 30, new Location(wd.getWorld(),0,80,0), 70);
+		wd.createCleanWorld();
+		wd.setIsland(new File[]{new File(kArcade.FilePath+"/SkyPvP/elite.schematic"),new File(kArcade.FilePath+"/SkyPvP/premium.schematic"),new File(kArcade.FilePath+"/SkyPvP/vip.schematic")},12,30, new Location(wd.getWorld(),0,80,0), 50);
 		getManager().DebugLog(l, this.getClass().getName());
+		
+		Chest chest;
+		Block b;
+		for(Location loc : wd.getLocs(Team.RED.Name())){
+			b=UtilLocation.searchBlock(Material.CHEST, 10, loc);
+			if(b!=null&&b.getState() instanceof Chest){
+				chest=(Chest)b.getState();
+				chest.getInventory().addItem(new ItemStack(Material.LAVA_BUCKET));
+				chest.getInventory().addItem(new ItemStack(Material.BOW));
+				chest.getInventory().addItem(new ItemStack(Material.ARROW,2));
+				chest.getInventory().addItem(new ItemStack(Material.EGG,2));
+				chest.getInventory().addItem(new ItemStack(Material.SNOW_BALL,2));
+				chest.getInventory().addItem(new ItemStack(Material.COAL,5));
+				chest.getInventory().addItem(new ItemStack(Material.CARROT_ITEM,2));
+				chest.getInventory().addItem(new ItemStack(Material.BONE,2));
+			}
+			chest=null;
+			b=null;
+		}
 	}
 	
 	@EventHandler
@@ -192,7 +201,6 @@ public class SkyPvP extends SoloGame{
 		"Gewonnene Spiele: "+win,
 		"Verlorene Spiele: "+lose
 		});
-		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
 	@EventHandler
@@ -211,10 +219,24 @@ public class SkyPvP extends SoloGame{
 				life.put(p, 3);
 			}
 			p.teleport(locs.get(0));
+			
+			p.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
+			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
+			p.getInventory().addItem(new ItemStack(Material.STONE_AXE));
+			p.getInventory().addItem(new ItemStack(Material.STONE_SPADE));
+			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+			
 			island.put(p, locs.get(0));
 			locs.remove(0);
 		}
-		new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+		
+		if(!locs.isEmpty()){
+			entity_king=new AddonEntityKing(getManager(), locs, EntityType.IRON_GOLEM, "§c§lIronGolem");
+			entity_king.setDamage(true);
+			entity_king.setMove(true);
+		}
+		
+		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		getManager().setStart((60*30)+1);
 		getManager().setState(GameState.InGame);
 	}

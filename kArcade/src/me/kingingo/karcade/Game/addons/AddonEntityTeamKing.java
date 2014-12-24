@@ -7,13 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
+import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Game.Games.TeamGame;
+import me.kingingo.karcade.Game.addons.Events.AddonEntityTeamKingDeathEvent;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -27,15 +31,16 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class AddonEntityKing implements Listener {
+public class AddonEntityTeamKing implements Listener {
 	
 	@Getter
 	kArcadeManager manager;;
 	@Getter
-	ArrayList<Creature> creature = new ArrayList<>();
+	HashMap<Team,Creature> teams = new HashMap<>();
 	@Getter
 	@Setter
 	boolean move=false;
@@ -49,29 +54,35 @@ public class AddonEntityKing implements Listener {
 	HashMap<Creature,Double> Heal = new HashMap<>();
 	@Getter
 	HashMap<Creature, NameTagMessage> NameTagMessage = new HashMap<>();
+	@Getter
+	TeamGame team;
+	@Getter
+	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SUGAR), "§bSchaf-Heiler");
 	
-	public AddonEntityKing(kArcadeManager manager,Location[] locs,EntityType type,String Name){
+	public AddonEntityTeamKing(kArcadeManager manager,Team[] teams,TeamGame team,EntityType type){
 		this.manager=manager;
+		this.team=team;
 		Creature e;
-		for(Location loc : locs){
+		Location loc = null;
+		for(Team t : teams){
+			loc=manager.getGame().getWorldData().getLocs(getSheep(t).Name()).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-			e=manager.getPetManager().AddPetWithOutOwner(Name,false, type, loc);
-			this.creature.add(e);
+			e=manager.getPetManager().AddPetWithOutOwner(t.getColor()+"Schaf",true, type, loc);
+			this.teams.put(t, e);
 			this.Heal.put(e, 100D);
 		}
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	
-	public AddonEntityKing(kArcadeManager manager,ArrayList<Location> locs,EntityType type,String Name){
-		this.manager=manager;
-		Creature e;
-		for(Location loc : locs){
-			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-			e=manager.getPetManager().AddPetWithOutOwner(Name,false, type, loc);
-			this.creature.add(e);
-			this.Heal.put(e, 100D);
+	public Team getSheep(Team team){
+		switch(team){
+		case RED:return Team.SHEEP_RED;
+		case BLUE:return Team.SHEEP_BLUE;
+		case YELLOW:return Team.SHEEP_YELLOW;
+		case GREEN:return Team.SHEEP_GREEN;
+		default:
+		return Team.SHEEP_RED;
 		}
-		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	
 	public void setHealt(Creature e,double h){
@@ -84,40 +95,70 @@ public class AddonEntityKing implements Listener {
 		return getHeal().get(e);
 	}
 	
+	public Entity getEntity(Team t){
+		return teams.get(t);
+	}
+	
+	public Team get(Entity e){
+		for(Team team : getTeams().keySet()){
+			if(getTeams().get(team).getEntityId()==e.getEntityId())return team;
+		}
+		return null;
+	}
+	
 	public boolean is(Entity e){
-		for(Creature c : getCreature()){
-			if(c.getEntityId()==e.getEntityId()){
+		for(Entity entity : getTeams().values()){
+			if(entity.getEntityId()==e.getEntityId()){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	ArrayList<Creature> list = new ArrayList<>();
+	ArrayList<Team> list = new ArrayList<>();
 	@EventHandler
 	public void Testeer(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.MIN_005)return;
-
-		for(Creature c : creature){
+		
+//		System.out.println("Eintrag: "+teams.size());
+//		for(Team t : teams.keySet()){
+//			try{
+//			System.out.println("TEAM: "+t.Name());
+//			System.out.println("eeeeENTITY: "+teams.get(t)==null);
+//			System.out.println("ENTITYddd: "+teams.get(t).isDead());
+//			}catch(NullPointerException e){
+//				System.err.println("[AddonEntityKing] Fehler: dddddd NullPointer!");
+//			}
+//		}
+//		
+		for(Team t : teams.keySet()){
 			try{
-				if(c.isDead()){
-					AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(c,null);
+				if(teams.get(t).isDead()){
+					AddonEntityTeamKingDeathEvent e = new AddonEntityTeamKingDeathEvent(t,teams.get(t),null);
 					Bukkit.getPluginManager().callEvent(e);
-					list.add(c);
+					list.add(t);
 				}
 			}catch(NullPointerException e){
 				System.err.println("[AddonEntityKing] Fehler: Testeer NullPointerException!");
 			}
 		}
 		
-		for(Creature c : list)creature.remove(c);
+		for(Team t : list)teams.remove(t);
 		list.clear();
 	}
 	
 	@EventHandler
 	public void Death(EntityDeathEvent ev){
 		if(is(ev.getEntity())){
-			AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(ev.getEntity(),ev.getEntity().getKiller());
+			Team t = Team.BLACK;
+			for(Team tt : getTeams().keySet()){
+				if(getTeams().get(tt).getEntityId()==ev.getEntity().getEntityId()){
+					t=tt;
+					break;
+				}
+			}
+			teams.remove(t);
+			AddonEntityTeamKingDeathEvent e = new AddonEntityTeamKingDeathEvent(t,ev.getEntity(),ev.getEntity().getKiller());
 			Bukkit.getPluginManager().callEvent(e);
 		}
 	}
@@ -126,6 +167,16 @@ public class AddonEntityKing implements Listener {
 	public void Target(EntityTargetEvent ev){
 		if(is(ev.getEntity())){
 			if(!move)ev.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void Click(PlayerInteractEntityEvent ev){
+		if(ev.getRightClicked() instanceof Creature&&is(ev.getRightClicked())){
+			if(UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())){
+				ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
+				setHealt(((Creature)ev.getRightClicked()),20);
+			}
 		}
 	}
 	
@@ -148,7 +199,8 @@ public class AddonEntityKing implements Listener {
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
 		if(!(ev.getDamager() instanceof Player))return;
 		if(ev.getEntity() instanceof Creature&&is(ev.getEntity())){
-			if(manager.getGame().getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
+			Team t = get(ev.getEntity());
+			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t || manager.getGame().getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
 				ev.setCancelled(true);
 				return;
 			}
@@ -160,7 +212,6 @@ public class AddonEntityKing implements Listener {
 				}else{
 					ev.setDamage(0);
 				}
-				((Creature)ev.getEntity()).setTarget(((Player)ev.getDamager()));
 				setHealt(((Creature)ev.getEntity()), h);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getManager().getInstance(), new Runnable() {
                     public void run() {
@@ -173,9 +224,8 @@ public class AddonEntityKing implements Listener {
 	public int getD(ItemStack i){
 		switch(i.getType()){
 		case WOOD_SWORD:return 5;
-		case IRON_SWORD:return 7;
-		case STONE_SWORD:return 6;
-		case DIAMOND_SWORD:return 8;
+		case IRON_SWORD:return 6;
+		case DIAMOND_SWORD:return 7;
 		case GOLD_SWORD:return 5;
 		default:
 			return 4;

@@ -163,6 +163,36 @@ public class WorldParser {
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
+		        	}else if(block.getRelative(BlockFace.UP).getType()==Material.DIAMOND_BLOCK){
+		        			if(block.getType()==Material.GOLD_BLOCK){
+			        			if(!list.containsKey(Team.GOLD.Name())){
+				        			list.put(Team.GOLD.Name(), new ArrayList<Location>());
+				        		}
+				        		((ArrayList)list.get(Team.GOLD.Name())).add(block.getLocation());
+				        		block.setTypeId(0);
+				        		block.getRelative(BlockFace.UP).setTypeId(0);	
+		        			}else if(block.getType()==Material.DIAMOND_BLOCK){
+			        			if(!list.containsKey(Team.DIAMOND.Name())){
+				        			list.put(Team.DIAMOND.Name(), new ArrayList<Location>());
+				        		}
+				        		((ArrayList)list.get(Team.DIAMOND.Name())).add(block.getLocation());
+				        		block.setTypeId(0);
+				        		block.getRelative(BlockFace.UP).setTypeId(0);	
+		        			}else if(block.getType()==Material.IRON_BLOCK){
+			        			if(!list.containsKey(Team.SILBER.Name())){
+				        			list.put(Team.SILBER.Name(), new ArrayList<Location>());
+				        		}
+				        		((ArrayList)list.get(Team.SILBER.Name())).add(block.getLocation());
+				        		block.setTypeId(0);
+				        		block.getRelative(BlockFace.UP).setTypeId(0);	
+		        			}else if(block.getType()==Material.COAL_BLOCK){
+			        			if(!list.containsKey(Team.BRONZE.Name())){
+				        			list.put(Team.BRONZE.Name(), new ArrayList<Location>());
+				        		}
+				        		((ArrayList)list.get(Team.BRONZE.Name())).add(block.getLocation());
+				        		block.setTypeId(0);
+				        		block.getRelative(BlockFace.UP).setTypeId(0);	
+		        			}
 		        	}
 				}  
 			}
@@ -217,6 +247,22 @@ public class WorldParser {
 			}
 			if(list.containsKey(Team.BLUE.Name())){
 				out.write("BLUE:"+LocListTOStringList(list.get(Team.BLUE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.BRONZE.Name())){
+				out.write("BRONZE:"+LocListTOStringList(list.get(Team.BRONZE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.SILBER.Name())){
+				out.write("SILBER:"+LocListTOStringList(list.get(Team.SILBER.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.DIAMOND.Name())){
+				out.write("DIAMOND:"+LocListTOStringList(list.get(Team.GOLD.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.GOLD.Name())){
+				out.write("GOLD:"+LocListTOStringList(list.get(Team.GOLD.Name())));
 				out.write("\n");
 			}
 			if(list.containsKey(Team.VILLAGE_BLUE.Name())){

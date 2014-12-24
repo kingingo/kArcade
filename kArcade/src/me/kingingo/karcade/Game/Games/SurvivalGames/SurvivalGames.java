@@ -310,11 +310,11 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void EntityChange (EntityChangeBlockEvent ev) {
 		if (ev.getEntityType() == EntityType.FALLING_BLOCK) {
-					if(jump){
-						fb=ev.getEntity().getLocation().getWorld().spawnFallingBlock(ev.getEntity().getLocation().add(0,0.5,0),33,(byte) 6);
-						fb.setVelocity( new Vector(0,1.8,0) );
-						ev.setCancelled(true);
-					}
+			if(jump){
+				fb=ev.getEntity().getLocation().getWorld().spawnFallingBlock(ev.getEntity().getLocation().add(0,0.5,0),33,(byte) 6);
+				fb.setVelocity( new Vector(0,1.8,0) );
+				ev.setCancelled(true);
+			}
 		}
 	 }
 	
