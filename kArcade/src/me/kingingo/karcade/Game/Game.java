@@ -343,7 +343,6 @@ public class Game implements Listener{
 			ev.setCancelled(true);
 		}else if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)&&!DamagePvP){
 			//P vs P
-			//if(((Player)ev.getEntity()).getName().equalsIgnoreCase(((Player)ev.getDamager()).getName()))ev.setCancelled(true);
 			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamagePvP");
 			ev.setCancelled(true);
 		}else if(((ev.getEntity() instanceof Player && ev.getDamager() instanceof Creature))&&!DamageEvP){
@@ -359,17 +358,6 @@ public class Game implements Listener{
 			ev.setCancelled(true);
 		}
 	}
-	
-//	@EventHandler(priority=EventPriority.HIGHEST)
-//	public void InteractBlockWater(PlayerInteractEvent ev){
-//		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getPlayer().getItemInHand()!=null){
-//			if(InteractDeny.contains(ev.getPlayer().getItemInHand().getType())){
-//				if(Replace_Water&&ev.getClickedBlock().getTypeId()==8||ev.getClickedBlock().getTypeId()==9)ev.setCancelled(true);
-//				if(Replace_Lava&&ev.getClickedBlock().getTypeId()==10||ev.getClickedBlock().getTypeId()==11)ev.setCancelled(true);
-//				if(Replace_Fire&&ev.getClickedBlock().getTypeId()==51)ev.setCancelled(true);
-//			}
-//		}
-//	}
 	
 	@EventHandler
 	public void PlaceBlockInMap(BlockPlaceEvent ev){

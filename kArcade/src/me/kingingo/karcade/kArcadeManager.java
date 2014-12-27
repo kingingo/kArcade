@@ -115,8 +115,8 @@ public class kArcadeManager implements Listener{
 	private CommandHandler cmd;
 	private PetManager pet;
 	private DisguiseManager disguiseManager;
-	@Getter
-	private NickManager nManager;
+	//@Getter
+	//private NickManager nManager;
 	@Getter
 	private CommandService service;
 	@Getter
@@ -130,7 +130,7 @@ public class kArcadeManager implements Listener{
 		this.mysql=mysql;
 		this.cmd=cmd;
 		this.pManager=pManager;
-		this.nManager=new NickManager(cmd,permManager);
+		//this.nManager=new NickManager(cmd,permManager);
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.holiday=Calendar.getHoliday();
@@ -473,6 +473,12 @@ public class kArcadeManager implements Listener{
 	      event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/bukkit:kill")) {
+		      event.setCancelled(true);
+		       p.sendMessage(ChatColor.RED + "Nope :3");
+	     } else if (cmd.equalsIgnoreCase("/bukkit:msg")) {
+		      event.setCancelled(true);
+		       p.sendMessage(ChatColor.RED + "Nope :3");
+	     } else if (cmd.equalsIgnoreCase("/bukkit:tell")) {
 		      event.setCancelled(true);
 		       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/bukkit:me")) {

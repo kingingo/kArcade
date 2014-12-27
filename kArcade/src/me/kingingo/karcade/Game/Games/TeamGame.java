@@ -204,9 +204,8 @@ public class TeamGame extends Game{
 			TeamList.remove(ev.getPlayer());
 		}
 		if(getManager().isState(GameState.Restart)||getManager().isState(GameState.LobbyPhase))return;
-		
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
-		if(islastTeam()&&getManager().getState()==GameState.InGame){
+		if(islastTeam()&&(getManager().getState()==GameState.InGame||getManager().getState()==GameState.DeathMatch)){
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
 		}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
@@ -216,8 +215,8 @@ public class TeamGame extends Game{
 	@EventHandler
 	public void SpectaterAndRespawn(PlayerRespawnEvent ev){
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
-			SetSpectator(ev,ev.getPlayer());
 			ev.setRespawnLocation(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+			SetSpectator(ev,ev.getPlayer());
 		}
 	}
 	
@@ -251,7 +250,8 @@ public class TeamGame extends Game{
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
 	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
-	    if(islastTeam()&&getManager().getState()==GameState.InGame){
+	    
+	    if(islastTeam()&& (getManager().getState()==GameState.InGame||getManager().getState()==GameState.DeathMatch)){
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
 		}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);

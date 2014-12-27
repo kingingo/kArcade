@@ -168,8 +168,8 @@ public class TroubleInMinecraft extends TeamGame{
 		wd = new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
+		getManager().getPermManager().setAllowTab(false);
 		manager.setState(GameState.LobbyPhase);
-		manager.getPermManager().setSetAllowTab(false);
 		manager.DebugLog(t, this.getClass().getName());
 	}
 

@@ -133,7 +133,6 @@ public class SheepWars extends TeamGame{
 		setReplace_Lava(true);
 		setReplace_Water(true);
 		setCompassAddon(true);
-		getManager().getPermManager().setSetAllowTab(false);
 		setDamage(true);
 		setDamageEvP(false);
 		setDamagePvE(true);
@@ -207,7 +206,7 @@ public class SheepWars extends TeamGame{
 		this.wd=new WorldData(manager,getType());
 		wd.Initialize();
 		setWorldData(wd);
-		
+		getManager().getPermManager().setAllowTab(false);
 		manager.DebugLog(t, this.getClass().getName());
 		
 		manager.setState(GameState.LobbyPhase);

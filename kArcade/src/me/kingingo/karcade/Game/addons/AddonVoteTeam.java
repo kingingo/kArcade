@@ -132,13 +132,13 @@ public class AddonVoteTeam implements Listener{
 		int i =1;
 		for(Player p : vote.keySet()){
 			if(vote.get(p)==t){
-				if(getManager().getNManager().getName().containsKey(p)){
-					l.add("§6"+i+".§7 "+getManager().getNManager().getName().get(p));
-					i++;
-				}else{
+//				if(getManager().getNManager().getName().containsKey(p)){
+//					l.add("§6"+i+".§7 "+getManager().getNManager().getName().get(p));
+//					i++;
+//				}else{
 					l.add("§6"+i+".§7 "+p.getName());
 					i++;
-				}
+				//}
 			}
 		}
 	}

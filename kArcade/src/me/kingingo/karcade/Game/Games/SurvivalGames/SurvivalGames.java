@@ -426,7 +426,11 @@ public class SurvivalGames extends TeamGame{
 			Player t = TeamPartner(victim);
 			if(t!=null){
 				getBoards().get(t).resetScore("§a"+victim.getName(), DisplaySlot.SIDEBAR);
-				getBoards().get(t).setScore("§c"+victim.getName(), DisplaySlot.SIDEBAR, 8);
+				if(victim.getName().length()>12){
+					getBoards().get(t).setScore("§c"+victim.getName().substring(0, 11), DisplaySlot.SIDEBAR, 8);
+				}else{
+					getBoards().get(t).setScore("§c"+victim.getName(), DisplaySlot.SIDEBAR, 8);
+				}
 			}
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
@@ -456,9 +460,10 @@ public class SurvivalGames extends TeamGame{
 		if(ev.isCancelled())return;
 		ev.setCancelled(true);
 		if(!getManager().isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
-			UtilServer.broadcast("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+			for(Player player : getGameList().getPlayers(PlayerState.IN))player.sendMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 		}else if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
+			for(Player player : getGameList().getPlayers(PlayerState.OUT))player.sendMessage("§7[§6Spectator§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
