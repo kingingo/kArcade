@@ -372,13 +372,13 @@ public class TroubleInMinecraft extends TeamGame{
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, Stats.TTT_KARMA);
 						k=-50;
 					}else if(t==Team.INOCCENT){
-						getCoins().addCoins(((Player)ev.getEntity()), false, 5);
+						getCoins().addCoins(((Player)ev.getEntity().getKiller()), false, 5);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+10, Stats.TTT_KARMA);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_TRAITOR_PUNKTE);
 						k=10;
 						tr=2;
 					}else if(t==Team.DETECTIVE){
-						getCoins().addCoins(((Player)ev.getEntity()), false, 5);
+						getCoins().addCoins(((Player)ev.getEntity().getKiller()), false, 5);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+4, Stats.TTT_TRAITOR_PUNKTE);
 						k=20;
@@ -386,7 +386,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}else if(t1==Team.INOCCENT){
 					if(t==Team.TRAITOR){
-						getCoins().addCoins(((Player)ev.getEntity()), false, 5);
+						getCoins().addCoins(((Player)ev.getEntity().getKiller()), false, 5);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, Stats.TTT_KARMA);
 						k=20;
 					}else if(t==Team.INOCCENT){
@@ -398,7 +398,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}else if(t1==Team.DETECTIVE){
 					if(t==Team.TRAITOR){
-						getCoins().addCoins(((Player)ev.getEntity()), false, 10);
+						getCoins().addCoins(((Player)ev.getEntity().getKiller()), false, 10);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+30, Stats.TTT_KARMA);
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, (Player)ev.getEntity().getKiller())+2, Stats.TTT_DETECTIVE_PUNKTE);
 						k=30;
@@ -708,7 +708,7 @@ public class TroubleInMinecraft extends TeamGame{
 			ps.setScore(C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
 			ps.setBoard();
 		}else if(ev.getStats()==Stats.WIN){
-			getCoins().addCoins(ev.getPlayer(), false, 15);
+			getCoins().addCoins(ev.getPlayer(), false, 25);
 		}
 	}
 	

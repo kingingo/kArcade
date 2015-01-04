@@ -13,8 +13,9 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.addons.AddonEntityKing;
+import me.kingingo.karcade.Game.addons.AddonTargetNextPlayer;
+import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Addons.AddonDay;
-import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
@@ -26,33 +27,48 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilLocation;
+import me.kingingo.kcore.Util.UtilMap;
+import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilParticle;
+import me.kingingo.kcore.Util.UtilParticle.UtilParticlePacket;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class SkyPvP extends SoloGame{
 
 	HashMap<Player,Location> island = new HashMap<>();
 	HashMap<Player,Integer> life = new HashMap<>();
+	HashMap<Location,Inventory> enderchests = new HashMap<>();
+	ArrayList<ItemStack> enderchest_material = new ArrayList<>();
 	Hologram hm;
 	AddonEntityKing entity_king;
+	AddonTargetNextPlayer TargetNextPlayer;
 	
 	public SkyPvP(kArcadeManager manager){
 		super(manager);
@@ -61,7 +77,7 @@ public class SkyPvP extends SoloGame{
 		getManager().setState(GameState.Laden);
 		setTyp(GameType.SkyPvP);
 		setMax_Players(12);
-		setMin_Players(3);
+		setMin_Players(2);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageSelf(true);
@@ -77,13 +93,50 @@ public class SkyPvP extends SoloGame{
 		WorldData wd=new WorldData(manager,getType());
 		setWorldData(wd);
 		wd.createCleanWorld();
-		wd.setIsland(new File[]{new File(kArcade.FilePath+"/SkyPvP/elite.schematic"),new File(kArcade.FilePath+"/SkyPvP/premium.schematic"),new File(kArcade.FilePath+"/SkyPvP/vip.schematic")},12,30, new Location(wd.getWorld(),0,80,0), 50);
-		getManager().DebugLog(l, this.getClass().getName());
+		HashMap<File[],Integer> list = new HashMap<>();
+		File[] files = wd.loadSchematicFiles();
+		int p=0;
+		int c=0;
+		int o=0;
+		for(File file : files){
+			if(file.getName().contains("PLAYER_ISLAND")){
+				p++;
+			}else if(file.getName().contains("CHEST_ISLAND")){
+				c++;
+			}else if(file.getName().contains("OBSIDIAN_ISLAND")){
+				o++;
+			}
+		}
 		
+		File[] p_files = new File[p];
+		File[] c_files = new File[c];
+		File[] o_files = new File[o];
+		p=0;
+		c=0;
+		o=0;
+		for(File file : files){
+			if(file.getName().contains("PLAYER_ISLAND")){
+				p_files[p]=file;
+				p++;
+			}else if(file.getName().contains("CHEST_ISLAND")){
+				c_files[c]=file;
+				c++;
+			}else if(file.getName().contains("OBSIDIAN_ISLAND")){
+				o_files[o]=file;
+				o++;
+			}
+		}
+		
+		list.put(c_files, 1);
+		list.put(p_files, getMax_Players());
+		list.put(o_files, UtilMath.RandomInt(4, 2));
+		
+		wd.setIsland(list,20, new Location(wd.getWorld(),0,80,0));
+	
 		Chest chest;
 		Block b;
 		for(Location loc : wd.getLocs(Team.RED.Name())){
-			b=UtilLocation.searchBlock(Material.CHEST, 10, loc);
+			b=UtilLocation.searchBlock(Material.CHEST, 15, loc);
 			if(b!=null&&b.getState() instanceof Chest){
 				chest=(Chest)b.getState();
 				chest.getInventory().addItem(new ItemStack(Material.LAVA_BUCKET));
@@ -97,6 +150,46 @@ public class SkyPvP extends SoloGame{
 			}
 			chest=null;
 			b=null;
+		}
+		
+		UtilMap.loadChunks(new Location(wd.getWorld(),0,80,0), 700);
+		getManager().DebugLog(l, this.getClass().getName());
+	}
+	
+	public void loadMaterialList(){
+		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8257));
+		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8259));
+		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8226));
+		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8233));
+		
+
+		enderchest_material.add(new ItemStack(Material.EXP_BOTTLE,16));
+		enderchest_material.add(new ItemStack(Material.DIAMOND,3));
+		enderchest_material.add(new ItemStack(Material.DIAMOND_HELMET,1));
+		enderchest_material.add(new ItemStack(Material.GOLDEN_APPLE,2));
+		enderchest_material.add(new ItemStack(Material.MONSTER_EGG,2,(byte)50));
+	}
+	
+	@EventHandler
+	public void Enderchest(PlayerInteractEvent ev){
+		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+			if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
+				if(enderchests.containsKey(ev.getClickedBlock().getLocation())){
+					ev.setCancelled(true);
+					ev.getPlayer().openInventory(enderchests.get(ev.getClickedBlock().getLocation()));
+				}else{
+					if(enderchest_material.isEmpty())loadMaterialList();
+					Inventory inv = Bukkit.createInventory(null, 9, "EnderChest");
+					
+					for(int i = 0; i < UtilMath.RandomInt(4, 2); i++){
+						inv.addItem( enderchest_material.get(UtilMath.r(enderchest_material.size())).clone() );
+					}
+					enderchests.put(ev.getClickedBlock().getLocation(), inv);
+					
+					ev.setCancelled(true);
+					ev.getPlayer().openInventory(enderchests.get(ev.getClickedBlock().getLocation()));
+				}
+			}
 		}
 	}
 	
@@ -114,7 +207,12 @@ public class SkyPvP extends SoloGame{
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void RespawnLocation(PlayerRespawnEvent ev){
-		if(island.containsKey(ev.getPlayer()))ev.setRespawnLocation(island.get(ev.getPlayer()));
+		if(island.containsKey(ev.getPlayer())){
+			ev.setRespawnLocation(island.get(ev.getPlayer()));
+			if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+				ev.getPlayer().getInventory().addItem(new ItemStack(Material.COMPASS));
+			}
+		}
 	}
 	
 	@EventHandler
@@ -158,6 +256,7 @@ public class SkyPvP extends SoloGame{
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
+				getCoins().addCoins(a, false, 5);
 				getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
 			}
@@ -172,6 +271,7 @@ public class SkyPvP extends SoloGame{
 		if(ev.getFrom()==GameState.InGame&&ev.getTo()==GameState.Restart){
 			if(getGameList().getPlayers(PlayerState.IN).size()==1){
 				Player win = getGameList().getPlayers(PlayerState.IN).get(0);
+				getCoins().addCoins(win, false, 25);
 				getStats().setInt(win, getStats().getInt(Stats.WIN, win)+1, Stats.WIN);
 				getManager().broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(win.getName()));
 			}
@@ -204,12 +304,19 @@ public class SkyPvP extends SoloGame{
 	}
 	
 	@EventHandler
+	public void Chunk(ChunkLoadEvent ev){
+		
+	}
+	
+	@EventHandler
 	public void GameStartSkyPvP(GameStartEvent ev){
+		getWorldData().clearWorld();
 		ArrayList<Location> locs = getWorldData().getLocs(Team.RED.Name());
-		for(Location loc : locs){
-			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-		}
+		TargetNextPlayer = new AddonTargetNextPlayer(250,getManager());
+		TargetNextPlayer.setAktiv(true);
+		
 		if(locs.size()<UtilServer.getPlayers().length)System.err.println("[SkyPvP] Es sind zu wenig Location's angegeben!");
+		int r;
 		for(Player p : UtilServer.getPlayers()){
 			getGameList().addPlayer(p, PlayerState.IN);
 			getManager().Clear(p);
@@ -218,27 +325,56 @@ public class SkyPvP extends SoloGame{
 			}else{
 				life.put(p, 3);
 			}
-			p.teleport(locs.get(0));
+			r=UtilMath.r(locs.size());
+			p.teleport(locs.get(r));
 			
 			p.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
 			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 			p.getInventory().addItem(new ItemStack(Material.STONE_AXE));
 			p.getInventory().addItem(new ItemStack(Material.STONE_SPADE));
 			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-			
-			island.put(p, locs.get(0));
-			locs.remove(0);
+			p.getInventory().addItem(new ItemStack(Material.COMPASS));
+			island.put(p, locs.get(r));
+			locs.remove(r);
 		}
 		
 		if(!locs.isEmpty()){
-			entity_king=new AddonEntityKing(getManager(), locs, EntityType.IRON_GOLEM, "§c§lIronGolem");
+			entity_king=new AddonEntityKing(getManager());
+			entity_king.spawnMobs(locs, EntityType.WOLF, "§c§lWolf");
+			entity_king.spawnMobs(getWorldData().getLocs(Team.BLUE.Name()), EntityType.IRON_GOLEM, "§6§lIronGolem");
 			entity_king.setDamage(true);
 			entity_king.setMove(true);
+			entity_king.setAttack(true);
+			entity_king.setAttack_damage(5.0);
+		}
+		
+		for(Creature c : entity_king.getCreature()){
+			if(c instanceof Wolf){
+				((Wolf)c).setAngry(true);
+			}
 		}
 		
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		getManager().setStart((60*30)+1);
 		getManager().setState(GameState.InGame);
+	}
+	
+	@EventHandler
+	public void EntityKingDeath(AddonEntityKingDeathEvent ev){
+		if(ev.getEntity().getType()==EntityType.IRON_GOLEM){
+			ev.getEntity().getLocation().getBlock().setType(Material.CHEST);
+			
+			if(enderchest_material.isEmpty())loadMaterialList();
+			
+			Chest c = (Chest)ev.getEntity().getLocation().getBlock().getState();
+			
+			for(int i = 0; i < UtilMath.RandomInt(8, 3); i++){
+				c.getInventory().addItem( enderchest_material.get(UtilMath.r(enderchest_material.size())).clone() );
+			}
+			
+			ev.getEntity().getLocation().getWorld().strikeLightningEffect(ev.getEntity().getLocation());
+			UtilParticle.LARGE_SMOKE.display(1, 100, ev.getEntity().getLocation(), 20);
+		}
 	}
 	
 	@EventHandler

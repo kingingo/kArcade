@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.addons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,14 +12,20 @@ import me.kingingo.karcade.Game.addons.Events.AddonEntityKingDeathEvent;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilPlayer;
+import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,37 +40,43 @@ import org.bukkit.util.Vector;
 public class AddonEntityKing implements Listener {
 	
 	@Getter
-	kArcadeManager manager;;
+	private kArcadeManager manager;;
 	@Getter
-	ArrayList<Creature> creature = new ArrayList<>();
-	@Getter
-	@Setter
-	boolean move=false;
+	private ArrayList<Creature> creature = new ArrayList<>();
 	@Getter
 	@Setter
-	boolean Damage=false;
+	private boolean move=false;
 	@Getter
 	@Setter
-	boolean ProjectileDamage=false;
+	private boolean Damage=false;
 	@Getter
-	HashMap<Creature,Double> Heal = new HashMap<>();
+	@Setter
+	private boolean attack=false;
 	@Getter
-	HashMap<Creature, NameTagMessage> NameTagMessage = new HashMap<>();
+	@Setter
+	private double attack_damage=1.0;
+	@Getter
+	@Setter
+	private boolean ProjectileDamage=false;
+	@Getter
+	private HashMap<Creature,Double> Heal = new HashMap<>();
+	@Getter
+	private HashMap<Creature, NameTagMessage> NameTagMessage = new HashMap<>();
 	
-	public AddonEntityKing(kArcadeManager manager,Location[] locs,EntityType type,String Name){
+	public AddonEntityKing(kArcadeManager manager){
 		this.manager=manager;
-		Creature e;
-		for(Location loc : locs){
-			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-			e=manager.getPetManager().AddPetWithOutOwner(Name,false, type, loc);
-			this.creature.add(e);
-			this.Heal.put(e, 100D);
-		}
+		getManager().getPetManager().setDistance(24);
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	
-	public AddonEntityKing(kArcadeManager manager,ArrayList<Location> locs,EntityType type,String Name){
-		this.manager=manager;
+	public void spawnMob(Location loc,EntityType type,String Name){
+			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
+			Creature e=manager.getPetManager().AddPetWithOutOwner(Name,false, type, loc);
+			this.creature.add(e);
+			this.Heal.put(e, 100D);
+	}
+	
+	public void spawnMobs(Location[] locs,EntityType type,String Name){
 		Creature e;
 		for(Location loc : locs){
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
@@ -71,7 +84,16 @@ public class AddonEntityKing implements Listener {
 			this.creature.add(e);
 			this.Heal.put(e, 100D);
 		}
-		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
+	}
+	
+	public void spawnMobs(ArrayList<Location> locs,EntityType type,String Name){
+		Creature e;
+		for(Location loc : locs){
+			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
+			e=manager.getPetManager().AddPetWithOutOwner(Name,false, type, loc);
+			this.creature.add(e);
+			this.Heal.put(e, 100D);
+		}
 	}
 	
 	public void setHealt(Creature e,double h){
@@ -91,6 +113,22 @@ public class AddonEntityKing implements Listener {
 			}
 		}
 		return false;
+	}
+	
+	LinkedList<Player> l;
+	Player random;
+	@EventHandler
+	public void Attack(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.SLOW)return;
+		if(!attack)return;
+		for(Creature c : getCreature()){
+			l=UtilPlayer.getNearby(c.getLocation(), 5);
+			if(!l.isEmpty()){
+				random=(Player)l.get(UtilMath.r(l.size()));
+				if(c.getTarget()!=null&&c.getTarget()==random)continue;
+				c.setTarget(random);
+			}
+		}
 	}
 	
 	ArrayList<Creature> list = new ArrayList<>();
@@ -146,27 +184,45 @@ public class AddonEntityKing implements Listener {
 	double h;
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
-		if(!(ev.getDamager() instanceof Player))return;
 		if(ev.getEntity() instanceof Creature&&is(ev.getEntity())){
-			if(manager.getGame().getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
-				ev.setCancelled(true);
-				return;
-			}
-				ev.setCancelled(false);
-				h = getHealt(ev.getEntity());
-				h=h-getD( ((Player)ev.getDamager()).getItemInHand() );
-				if(h<=0){
-					ev.setDamage(50);
-				}else{
-					ev.setDamage(0);
+			ev.setCancelled(false);
+			if(ev.getDamager() instanceof Player){
+				if(manager.getGame().getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
+					ev.setCancelled(true);
+					return;
 				}
-				((Creature)ev.getEntity()).setTarget(((Player)ev.getDamager()));
-				setHealt(((Creature)ev.getEntity()), h);
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getManager().getInstance(), new Runnable() {
-                    public void run() {
-                        ev.getEntity().setVelocity(new Vector());
-                    }
-                }, 1L);
+				if(!(ev.getDamage()<=0)){
+					h = getHealt(ev.getEntity());
+					h=h-getD( ((Player)ev.getDamager()).getItemInHand() );
+					if(h<=0){
+						ev.setDamage(50);
+					}else{
+						ev.setDamage(0);
+					}
+					setHealt(((Creature)ev.getEntity()), h);
+				}
+			}else if(ev.getDamager() instanceof Projectile){
+				ev.setCancelled(true);
+				if(!(ev.getDamage()<=0)){
+					h = getHealt(ev.getEntity());
+					h=h-7;
+					if(h<=0){
+						ev.setDamage(50);
+					}else{
+						ev.setDamage(0);
+					}
+					setHealt(((Creature)ev.getEntity()), h);
+				}
+			}
+				
+			if(ev.getEntity() instanceof Wolf)((Wolf)ev.getEntity()).setAngry(true);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getManager().getInstance(), new Runnable() {
+                  public void run() {
+                	  ev.getEntity().setVelocity(new Vector());
+                   }
+               }, 1L);
+		}else if(ev.getDamager() instanceof Creature && is(ev.getDamager())){
+			ev.setDamage(getAttack_damage());
 		}
 	}
 	

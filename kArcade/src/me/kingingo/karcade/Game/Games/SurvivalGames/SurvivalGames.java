@@ -90,6 +90,7 @@ public class SurvivalGames extends TeamGame{
 	getBlockPlaceAllow().add(Material.CAKE);
 	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
 	getBlockPlaceAllow().add(Material.FIRE);
+	getBlockPlaceAllow().add(Material.WEB);
 	bp=new AddonBagPack(manager);
 	//tnp = new AddonTargetNextPlayer(getTeamList(),getManager());
 	//tnp.setRadius(40);
@@ -133,6 +134,11 @@ public class SurvivalGames extends TeamGame{
 	          inv.setItem(rdmplace, item); 
 	        }
 		chest.put(loc, inv);
+	}
+	
+	@EventHandler
+	public void Ranking(RankingEvent ev){
+		getManager().setRanking(Stats.WIN);
 	}
 	
 	public ItemStack rdmItem(){
@@ -179,11 +185,6 @@ public class SurvivalGames extends TeamGame{
 		}
 		
 		return i;
-	}
-	
-	@EventHandler
-	public void Ranking(RankingEvent ev){
-		getManager().setRanking(Stats.WIN);
 	}
 	
 	public ItemStack LOWER(){
@@ -464,7 +465,7 @@ public class SurvivalGames extends TeamGame{
 		}else if(getManager().getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			for(Player player : getGameList().getPlayers(PlayerState.OUT))player.sendMessage("§7[§6Spectator§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			//UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}

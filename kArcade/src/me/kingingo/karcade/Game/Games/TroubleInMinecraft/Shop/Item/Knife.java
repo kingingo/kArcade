@@ -55,7 +55,6 @@ public class Knife implements Listener,IShop{
 			if(attacker.getItemInHand()==null||!UtilItem.ItemNameEquals(attacker.getItemInHand(), item))return;
 			Player defender = (Player)ev.getEntity();
 			UtilInv.remove(attacker, attacker.getItemInHand().getType(), attacker.getItemInHand().getData().getData(), 1);
-			//attacker.getInventory().remove(attacker.getItemInHand());
 			attacker.playSound(defender.getLocation(), Sound.ITEM_BREAK, 1.0F, 1.0F);
 			ev.setDamage(50);
 		}

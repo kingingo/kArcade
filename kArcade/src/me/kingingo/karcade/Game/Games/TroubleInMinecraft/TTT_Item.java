@@ -8,7 +8,6 @@ import me.kingingo.kcore.Util.UtilMath;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public enum TTT_Item {
 SCHWERT_HOLZ(UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "§7Holzschwert"),"SCHWERT"),

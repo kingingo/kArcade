@@ -1,11 +1,8 @@
 package me.kingingo.karcade.Game.World.Event;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.World.WorldData;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

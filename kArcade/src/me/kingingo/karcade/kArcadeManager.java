@@ -33,7 +33,6 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.MySQL.MySQL;
-import me.kingingo.kcore.Nick.NickManager;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Permission.PermissionManager;
@@ -277,35 +276,6 @@ public class kArcadeManager implements Listener{
 			return new OneInTheChamber(this);
 		}
 	}
-	
-	public ArrayList<String> LoadFiles(String gameName){
-	    File folder = new File(kArcade.FilePath+File.separator+gameName);
-	    if (!folder.exists()) folder.mkdirs();
-	    ArrayList<String> maps = new ArrayList<>();
-	    System.out.println("Suche Maps in: " + folder);
-
-	    for (File file : folder.listFiles())
-	    {
-	      if (file.isFile())
-	      {
-	        String name = file.getName();
-
-	        if (name.length() >= 5)
-	        {
-	          name = name.substring(name.length() - 4, name.length());
-
-	          if (!file.getName().equals(".zip"))
-	          {
-	            maps.add(kArcade.FilePath+File.separator+gameName+File.separator+file.getName().substring(0, file.getName().length() - 4)+".zip");
-	          }
-	        }
-	      }
-	    }
-	    for (String map : maps) {
-	      System.out.println("Maps: " + map);
-	    }
-	    return maps;
-	  }
 	
 	public void DebugLog(long time,String c){
 		System.err.println("[DebugMode]: Class: "+c);

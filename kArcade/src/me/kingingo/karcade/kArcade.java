@@ -7,16 +7,18 @@ import me.kingingo.karcade.Command.CommandSend;
 import me.kingingo.karcade.Command.CommandStart;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
-import me.kingingo.kcore.Command.Admin.CommandMuteAll;
+import me.kingingo.kcore.Command.Admin.CommandChatMute;
+import me.kingingo.kcore.Command.Admin.CommandMute;
+import me.kingingo.kcore.Command.Admin.CommandToggle;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Update.Updater;
-import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.FileUtil;
 import me.kingingo.kcore.Util.UtilBG;
+import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.memory.MemoryFix;
 
@@ -58,7 +60,9 @@ public class kArcade extends JavaPlugin{
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
 			cmd.register(CommandSend.class, new CommandSend(c));
 			cmd.register(CommandStart.class, new CommandStart(manager));
-			cmd.register(CommandMuteAll.class, new CommandMuteAll(permManager));
+			cmd.register(CommandMute.class, new CommandMute(permManager));
+			cmd.register(CommandChatMute.class, new CommandChatMute(permManager));
+			cmd.register(CommandToggle.class, new CommandToggle(permManager));
 			new MemoryFix(this);
 			manager.DebugLog(time, this.getClass().getName());
 		}catch(Exception e){
