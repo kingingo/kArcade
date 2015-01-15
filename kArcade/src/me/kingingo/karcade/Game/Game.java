@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -458,6 +459,9 @@ public class Game implements Listener{
 					  getManager().setStart(16);
 				  }
 			  }
+		  }
+		  if(getType()!=null){
+			  ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.WHEREIS_TEXT.getText(getType().getTyp()+" "+kArcade.id));
 		  }
 	  }
 	  
