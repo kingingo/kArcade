@@ -34,7 +34,9 @@ import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
+import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
+import me.kingingo.kcore.Packet.Packets.SERVER_TYPE_CHANGE;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.PlayerStats.Stats;
@@ -332,13 +334,6 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(){
-//		System.out.println("S:"+state.string());
-//		System.out.println("O: "+UtilServer.getPlayers().length);
-//		System.out.println("O1: "+getGame()==null);
-//		System.out.println("O: "+getGame().getMax_Players());
-//		System.out.println("O: "+getGame().getWorldData().getMapName());
-//		System.out.println("O: "+getGame().getType());
-//		System.out.println("O: "+"a"+kArcade.id);
 		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
@@ -355,7 +350,7 @@ public class kArcadeManager implements Listener{
 	
 	@EventHandler
 	public void Q(PlayerQuitEvent ev){
-		/*if(state==GameState.LobbyPhase)*/updateInfo(UtilServer.getPlayers().length-1);
+		updateInfo(UtilServer.getPlayers().length-1);
 	}
 	
 	@EventHandler
@@ -488,6 +483,16 @@ public class kArcadeManager implements Listener{
 	    	 
 	     }
 	   }
+	
+	@EventHandler
+	public void Packet(PacketReceiveEvent ev){
+		if(ev.getPacket() instanceof SERVER_TYPE_CHANGE){
+			SERVER_TYPE_CHANGE packet = (SERVER_TYPE_CHANGE)ev.getPacket();
+			getInstance().getConfig().set("Config.Server.Game", packet.getTyp().getTyp());
+			getInstance().saveConfig();
+			setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
+		}
+	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void GameStateForCoins(GameStateChangeEvent ev){

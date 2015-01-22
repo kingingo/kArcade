@@ -23,6 +23,7 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -59,6 +60,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
 
 public class SkyPvP extends SoloGame{
 
@@ -248,6 +250,8 @@ public class SkyPvP extends SoloGame{
 				getStats().setInt(v, getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
 				getGameList().addPlayer(v, PlayerState.OUT);
 				b=true;
+				getBoards().get(v).resetScore("§bLeben: ", DisplaySlot.SIDEBAR);
+				getBoards().get(v).setScore("§bLeben: ", DisplaySlot.SIDEBAR, life.get(v));
 			}else{
 				life.remove(v);
 				life.put(v, i);
@@ -317,6 +321,7 @@ public class SkyPvP extends SoloGame{
 		
 		if(locs.size()<UtilServer.getPlayers().length)System.err.println("[SkyPvP] Es sind zu wenig Location's angegeben!");
 		int r;
+		PlayerScoreboard ps;
 		for(Player p : UtilServer.getPlayers()){
 			getGameList().addPlayer(p, PlayerState.IN);
 			getManager().Clear(p);
@@ -327,7 +332,11 @@ public class SkyPvP extends SoloGame{
 			}
 			r=UtilMath.r(locs.size());
 			p.teleport(locs.get(r));
-			
+			getBoards().put(p, new PlayerScoreboard(p));
+			ps=getBoards().get(p);
+			ps.addBoard(DisplaySlot.SIDEBAR,"§6§lEpicPvP.eu");
+			ps.setScore("§bLeben: ", DisplaySlot.SIDEBAR, life.get(p));
+			ps.setBoard();
 			p.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
 			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 			p.getInventory().addItem(new ItemStack(Material.STONE_AXE));

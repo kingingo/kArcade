@@ -894,7 +894,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void GameStateChange(GameStateChangeEvent ev){
-		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=GameState.Restart){
+		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=GameState.Restart&&ev.getReason()!=GameStateChangeReason.CHANGE_TYPE){
 			System.err.println("[TTT] GameStateChangeReason: "+ev.getReason().getName());
 			if(traitor.isEmpty()){
 				String t = "";
