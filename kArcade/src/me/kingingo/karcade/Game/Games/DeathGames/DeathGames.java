@@ -609,8 +609,8 @@ public class DeathGames extends SoloGame{
 				Location l = chest1.get(ev.getInventory());
 				chest.remove(l);
 				chest1.remove(ev.getInventory());
-				if(l.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, l, 7);
-				if(l.getBlock().getType()==Material.ENDER_CHEST){
+				if(l!=null&&l.getBlock()!=null&&l.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, l, 7);
+				if(l!=null&&l.getBlock()!=null&&l.getBlock().getType()==Material.ENDER_CHEST){
 					l.getWorld().playEffect(l,Effect.ENDER_SIGNAL, 3);
 					extra_chest_anzahl=0;
 				}

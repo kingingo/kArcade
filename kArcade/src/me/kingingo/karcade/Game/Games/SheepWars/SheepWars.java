@@ -180,7 +180,7 @@ public class SheepWars extends TeamGame{
 				new PerkSneakDamage(3.0)
 			}),
 			new Kit( "§eTheDeath",new String[]{"Der TheDeath drop beim Tod","ein Blindheits Trank."}, new ItemStack(Material.IRON_SWORD),Permission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
-				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,20*5,1),"Blindheit")
+				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,20*5,1))
 			}),
 			new Kit( "§eSpringer",new String[]{"Der Springer bekommt kein Fallschaden."}, new ItemStack(Material.FEATHER),Permission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoFalldamage()
