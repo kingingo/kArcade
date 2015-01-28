@@ -79,7 +79,7 @@ public class SkyPvP extends SoloGame{
 		getManager().setState(GameState.Laden);
 		setTyp(GameType.SkyPvP);
 		setMax_Players(12);
-		setMin_Players(2);
+		setMin_Players(5);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageSelf(true);
@@ -143,7 +143,7 @@ public class SkyPvP extends SoloGame{
 				chest=(Chest)b.getState();
 				chest.getInventory().addItem(new ItemStack(Material.LAVA_BUCKET));
 				chest.getInventory().addItem(new ItemStack(Material.BOW));
-				chest.getInventory().addItem(new ItemStack(Material.ARROW,2));
+				chest.getInventory().addItem(new ItemStack(Material.ARROW,1));
 				chest.getInventory().addItem(new ItemStack(Material.EGG,2));
 				chest.getInventory().addItem(new ItemStack(Material.SNOW_BALL,2));
 				chest.getInventory().addItem(new ItemStack(Material.COAL,5));
@@ -174,7 +174,7 @@ public class SkyPvP extends SoloGame{
 	
 	@EventHandler
 	public void Enderchest(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer())){
 			if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
 				if(enderchests.containsKey(ev.getClickedBlock().getLocation())){
 					ev.setCancelled(true);
@@ -255,6 +255,8 @@ public class SkyPvP extends SoloGame{
 			}else{
 				life.remove(v);
 				life.put(v, i);
+				getBoards().get(v).resetScore("§bLeben: ", DisplaySlot.SIDEBAR);
+				getBoards().get(v).setScore("§bLeben: ", DisplaySlot.SIDEBAR, life.get(v));
 			}
 			
 			if(ev.getEntity().getKiller() instanceof Player){
@@ -290,7 +292,7 @@ public class SkyPvP extends SoloGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().add(0, 0.3, 0),new String[]{
+		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.3, 0),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SkyPvP §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
@@ -308,11 +310,6 @@ public class SkyPvP extends SoloGame{
 	}
 	
 	@EventHandler
-	public void Chunk(ChunkLoadEvent ev){
-		
-	}
-	
-	@EventHandler
 	public void GameStartSkyPvP(GameStartEvent ev){
 		getWorldData().clearWorld();
 		ArrayList<Location> locs = getWorldData().getLocs(Team.RED.Name());
@@ -323,12 +320,13 @@ public class SkyPvP extends SoloGame{
 		int r;
 		PlayerScoreboard ps;
 		for(Player p : UtilServer.getPlayers()){
+			if(locs.isEmpty())break;
 			getGameList().addPlayer(p, PlayerState.IN);
 			getManager().Clear(p);
 			if(getManager().getPermManager().hasPermission(p, Permission.SkyPvP_Mehr_Leben)){
-				life.put(p, 5);
-			}else{
 				life.put(p, 3);
+			}else{
+				life.put(p, 2);
 			}
 			r=UtilMath.r(locs.size());
 			p.teleport(locs.get(r));
@@ -341,7 +339,6 @@ public class SkyPvP extends SoloGame{
 			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 			p.getInventory().addItem(new ItemStack(Material.STONE_AXE));
 			p.getInventory().addItem(new ItemStack(Material.STONE_SPADE));
-			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			island.put(p, locs.get(r));
 			locs.remove(r);
@@ -355,11 +352,11 @@ public class SkyPvP extends SoloGame{
 			entity_king.setMove(true);
 			entity_king.setAttack(true);
 			entity_king.setAttack_damage(5.0);
-		}
-		
-		for(Creature c : entity_king.getCreature()){
-			if(c instanceof Wolf){
-				((Wolf)c).setAngry(true);
+			
+			for(Creature c : entity_king.getCreature()){
+				if(c instanceof Wolf){
+					((Wolf)c).setAngry(true);
+				}
 			}
 		}
 		
