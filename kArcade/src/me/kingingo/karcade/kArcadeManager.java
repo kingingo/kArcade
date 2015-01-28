@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Games.ArcadeGanes.ArcadeGames;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
+import me.kingingo.karcade.Game.Games.Falldown.Falldown;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
@@ -269,6 +270,8 @@ public class kArcadeManager implements Listener{
 			return new SkyPvP(this);
 		}else if(GameType.DeathGames.getTyp().equalsIgnoreCase(game)){
 			return new DeathGames(this);
+		}else if(GameType.Falldown.getTyp().equalsIgnoreCase(game)){
+			return new Falldown(this);
 		}else if(GameType.SurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
 		}else if(GameType.ArcadeGames.getTyp().equalsIgnoreCase(game)){

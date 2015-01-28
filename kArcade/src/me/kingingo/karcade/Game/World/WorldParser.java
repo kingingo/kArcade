@@ -306,6 +306,10 @@ public class WorldParser {
 	}
 	
 	public static String LocListTOStringList(ArrayList<Location> list){
+		if(list==null||list.isEmpty()){
+			System.err.println("[WorldData]: LIST Leer!");
+			return "";
+		}
 		String l="";
 		for(Location loc : list){
 			l=l+loc.getBlockX()+";"+loc.getBlockY()+";"+loc.getBlockZ()+",";

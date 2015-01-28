@@ -29,9 +29,15 @@ import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
 import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
+import me.kingingo.kcore.Kit.Perks.PerkArrowInfinity;
 import me.kingingo.kcore.Kit.Perks.PerkDeathDropOnly;
+import me.kingingo.kcore.Kit.Perks.PerkEquipment;
 import me.kingingo.kcore.Kit.Perks.PerkHeal;
+import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
+import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
+import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
 import me.kingingo.kcore.Kit.Perks.PerkNoDropsByDeath;
+import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
@@ -42,6 +48,8 @@ import me.kingingo.kcore.Kit.Perks.PerkRespawnBuff;
 import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Perks.PerkSpawnByDeath;
 import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
+import me.kingingo.kcore.Kit.Perks.PerkTNT;
+import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
@@ -65,6 +73,7 @@ import me.kingingo.kcore.Villager.VillagerShop;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -194,10 +203,29 @@ public class SheepWars extends TeamGame{
 			new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","für 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), Permission.SHEEPWARS_KIT_ZOMBIE, KitType.PREMIUM,0,new Perk[]{
 				new PerkPoisen(3,30)
 			}),
-			new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","5% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), Permission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{
+			new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","10% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), Permission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{
 				new PerkNoFiredamage(),
 				new PerkArrowFire(15),
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,5)
+				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
+			}),
+			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SheepWars!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.SHEEPWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
+				new PerkNoHunger(),
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_CHESTPLATE,1)}),
+				new PerkSneakDamage(1),
+				new PerkPoisen(10,50),
+				new PerkHolzfäller(),
+				new PerkNoFiredamage(),
+				new PerkNoFalldamage(),
+				new PerkArrowFire(80),
+				new PerkNoExplosionDamage(),
+				new PerkTNT(),
+				new PerkHealByHit(60, 6),
+				new PerkHeal(6),
+				new PerkMoreHearth(6, 60),
+				new PerkArrowInfinity(),
+				new PerkWalkEffect(Effect.HEART,10),
+				new PerkSpawnByDeath(EntityType.PRIMED_TNT,80),
+				new PerkNoKnockback(getManager().getInstance())
 			})
 		});
 
@@ -438,7 +466,7 @@ public class SheepWars extends TeamGame{
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8229), "Heilung II")));
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8225), "Regeneration II")));
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8233), "Stärke II")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mir mir Drogen nehmen?"}, "§cTränke"), trank, 14);
+		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mit mir Drogen nehmen?"}, "§cTränke"), trank, 14);
 		
 		Merchant gold = new Merchant();
 		gold.addOffer(new MerchantOffer(Gold(30), aek.getItem().clone()));
