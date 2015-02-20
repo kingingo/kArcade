@@ -10,6 +10,7 @@ import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Command.Admin.CommandChatMute;
 import me.kingingo.kcore.Command.Admin.CommandMute;
 import me.kingingo.kcore.Command.Admin.CommandToggle;
+import me.kingingo.kcore.Command.Admin.CommandkFly;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.MySQL.MySQL;
@@ -23,6 +24,7 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.memory.MemoryFix;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -58,12 +60,15 @@ public class kArcade extends JavaPlugin{
 			pManager=new PacketManager(this,c);
 			permManager=new PermissionManager(this,pManager,mysql);
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
+			cmd.register(CommandkFly.class, new CommandkFly(permManager));
 			cmd.register(CommandSend.class, new CommandSend(c));
 			cmd.register(CommandStart.class, new CommandStart(manager));
 			cmd.register(CommandMute.class, new CommandMute(permManager));
 			cmd.register(CommandChatMute.class, new CommandChatMute(permManager));
 			cmd.register(CommandToggle.class, new CommandToggle(permManager));
 			new MemoryFix(this);
+			for(World w : getServer().getWorlds())w.setAutoSave( getConfig().getBoolean("Config.Server.World-Save") );
+			if( !getConfig().getBoolean("Config.Server.World-Save") )Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
 			manager.DebugLog(time, this.getClass().getName());
 		}catch(Exception e){
 			UtilException.catchException(e, getConfig().getString("Config.Server.ID"), Bukkit.getIp(), mysql);
@@ -87,6 +92,7 @@ public class kArcade extends JavaPlugin{
 		getConfig().addDefault("Config.Server.ID", 1);
 	    getConfig().addDefault("Config.Server.Game", "OneInTheChamber");
 	    getConfig().addDefault("Config.Server.World-Save", false);
+	    getConfig().addDefault("Config.Server.Word-Parser", false);
 	    getConfig().addDefault("Config.Server.FilePath", File.separator+"root"+File.separator+"Maps");
 		getConfig().addDefault("Config.MySQL.Host", "NONE");
 	    getConfig().addDefault("Config.MySQL.DB", "NONE");

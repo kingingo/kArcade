@@ -12,6 +12,9 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
+import me.kingingo.karcade.Game.Games.SheepWars.Items.Bomb;
+import me.kingingo.karcade.Game.Games.SheepWars.Items.Bright;
+import me.kingingo.karcade.Game.Games.SheepWars.Items.ProtectWall;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
@@ -19,6 +22,7 @@ import me.kingingo.karcade.Game.addons.AddonEntityTeamKing;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.addons.Events.AddonEntityTeamKingDeathEvent;
+import me.kingingo.karcade.Service.Games.ServiceSheepWars;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
@@ -51,6 +55,7 @@ import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.Permission;
@@ -113,6 +118,13 @@ public class SheepWars extends TeamGame{
 	@Getter
 	SheepWarsType typ;
 	HashMap<Player,String> kits = new HashMap<>();
+	LaunchItemManager liManager;
+	@Getter
+	Bomb bomb;
+	@Getter
+	Bright bright;
+	@Getter
+	ProtectWall wall;
 	
 	public SheepWars(kArcadeManager manager,SheepWarsType typ){
 		super(manager);
@@ -156,7 +168,11 @@ public class SheepWars extends TeamGame{
 		setMin_Players(getTyp().getMin());
 		setMax_Players(getTyp().getMax());
 		setVoteTeam(new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,4));
-		
+		ServiceSheepWars.setSheepWars(this);
+		liManager=new LaunchItemManager( manager.getInstance() );
+		bright=new Bright(manager.getInstance());
+		wall=new ProtectWall(manager.getInstance());
+		bomb=new Bomb(manager.getInstance(),liManager);
 		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoHunger()

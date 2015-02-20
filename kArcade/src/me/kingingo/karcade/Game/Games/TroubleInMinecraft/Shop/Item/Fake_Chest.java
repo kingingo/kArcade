@@ -56,7 +56,7 @@ public class Fake_Chest implements Listener,IShop {
 					@Override
 					public void onLaunchItem(LaunchItemEvent ev) {
 						TTT_Item i = getSkull();
-						ItemFake k = i.setItemFake(ev.getItem().getDroppedItem().getLocation());
+						ItemFake k = i.setItemFake(ev.getItem().getDroppedItem()[0].getLocation());
 						list.put(k, ev.getItem().getPlayer());
 					}
 				});

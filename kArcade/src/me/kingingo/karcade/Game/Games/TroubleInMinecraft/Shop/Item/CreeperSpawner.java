@@ -93,9 +93,9 @@ public class CreeperSpawner extends kListener implements IShop{
 				LaunchItem item = new LaunchItem(event.getPlayer(),4,new LaunchItem.LaunchItemEventHandler(){
 					@Override
 					public void onLaunchItem(LaunchItemEvent ev) {
-						Creature c = (Creature)ev.getItem().getDroppedItem().getLocation().getWorld().spawnCreature(ev.getItem().getDroppedItem().getLocation(), CreatureType.CREEPER);
+						Creature c = (Creature)ev.getItem().getDroppedItem()[0].getLocation().getWorld().spawnCreature(ev.getItem().getDroppedItem()[0].getLocation(), CreatureType.CREEPER);
 						Player p = null;
-						LinkedList<Player> l = UtilPlayer.getNearby(ev.getItem().getDroppedItem().getLocation(), 9);
+						LinkedList<Player> l = UtilPlayer.getNearby(ev.getItem().getDroppedItem()[0].getLocation(), 9);
 						if(!l.isEmpty())p=l.get(UtilMath.r(l.size()));
 						c.setTarget(p);
 						list.put(c, event.getPlayer());

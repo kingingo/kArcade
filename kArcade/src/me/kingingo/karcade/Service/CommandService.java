@@ -2,6 +2,7 @@ package me.kingingo.karcade.Service;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.Service.Games.ServiceSheepWars;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.Permission.PermissionManager;
@@ -41,6 +42,8 @@ public class CommandService implements CommandExecutor{
 				setDamage(true);
 				Bukkit.broadcastMessage("§e[Service]:§7 Die Damage Nachrichten wurden §aAktiviert!");
 			}
+		}else if(args[0].equalsIgnoreCase("SW")){
+			ServiceSheepWars.Service(p, args);
 		}
 		
 		return false;

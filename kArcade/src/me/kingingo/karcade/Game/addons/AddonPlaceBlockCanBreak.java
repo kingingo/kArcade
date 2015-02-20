@@ -68,8 +68,9 @@ public class AddonPlaceBlockCanBreak implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Place(BlockPlaceEvent ev){
+		if(ev.isCancelled())return;
 		if(!getBlocks().contains(ev.getBlock().getLocation())){
 			getBlocks().add(ev.getBlock().getLocation());
 		}
