@@ -716,7 +716,7 @@ public class TroubleInMinecraft extends TeamGame{
 		if(getManager().getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.5, 0),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
