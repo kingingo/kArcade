@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.Bomb;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.Bright;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.ProtectWall;
+import me.kingingo.karcade.Game.Games.SheepWars.Items.SpezialVillager;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
@@ -107,7 +108,6 @@ import org.bukkit.potion.PotionEffectType;
 public class SheepWars extends TeamGame{
 
 	WorldData wd;
-	Hologram hm;
 	AddonEnterhacken aeh;
 	AddonEntityTeamKing aek;
 	AddonDropItems adi;
@@ -125,6 +125,8 @@ public class SheepWars extends TeamGame{
 	Bright bright;
 	@Getter
 	ProtectWall wall;
+	@Getter
+	SpezialVillager villager;
 	
 	public SheepWars(kArcadeManager manager,SheepWarsType typ){
 		super(manager);
@@ -173,6 +175,7 @@ public class SheepWars extends TeamGame{
 		bright=new Bright(manager.getInstance());
 		wall=new ProtectWall(manager.getInstance());
 		bomb=new Bomb(manager.getInstance(),liManager);
+		villager=new SpezialVillager(this);
 		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoHunger()
@@ -489,6 +492,9 @@ public class SheepWars extends TeamGame{
 		gold.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldener Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(10), UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL), "Enderpearl")));
+		gold.addOffer(new MerchantOffer(Gold(15), getWall().getItem()));
+		gold.addOffer(new MerchantOffer(Gold(15), getBright().getItem()));
+		gold.addOffer(new MerchantOffer(Gold(15), getBomb().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in größter Not!"}, "§cSpezial"), gold, 16);
 		
 		v.finish();
@@ -613,6 +619,7 @@ public class SheepWars extends TeamGame{
 		
 		Merchant kisten = new Merchant();
 		kisten.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.CHEST), "Kiste")));
+		kisten.addOffer(new MerchantOffer(Gold(11), getVillager().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "§cKisten"), kisten, 15);
 		
 		Merchant trank = new Merchant();
@@ -627,7 +634,6 @@ public class SheepWars extends TeamGame{
 		spezial.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.TNT), "TNT")));
 		spezial.addOffer(new MerchantOffer(Gold(1), UtilItem.RenameItem(new ItemStack(Material.FLINT_AND_STEEL), "Feuerzeug")));
 		spezial.addOffer(new MerchantOffer(Bronze(5), UtilItem.RenameItem(new ItemStack(Material.LADDER), "Leiter")));
-		//spezial.addOffer(new MerchantOffer(Gold(3), UtilItem.RenameItem(new ItemStack(346), "Angel")));
 		spezial.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.getMaterial(30)), "Spinnennetz")));
 		v.addShop(UtilItem.Item(new ItemStack(46), new String[]{"§aZeige deinen Gegnern wer der Chef auf dem Schlachtfeld ist!"}, "§cSpezial"), spezial, 17);
 		v.finish();
@@ -739,7 +745,7 @@ public class SheepWars extends TeamGame{
 				setSpezialVillager(loc,et);
 			}
 		}
-		hm.RemoveAllText();
+		getManager().getHologram().RemoveAllText();
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
@@ -865,12 +871,9 @@ public class SheepWars extends TeamGame{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase)return;
-		if(hm==null)hm=new Hologram(getManager().getInstance());
-
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.4, 0),new String[]{
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SheepWars §a"+kArcade.id,
 		"Map: "+wd.getMapName(),

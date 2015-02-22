@@ -53,6 +53,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -210,6 +211,9 @@ public class Game implements Listener{
 	private Coins coins;
 	@Getter
 	private HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
+	@Getter
+	@Setter
+	private boolean soilChange=false;
 	
 	public Game(kArcadeManager manager) {
 		this.manager=manager;
@@ -226,6 +230,11 @@ public class Game implements Listener{
 	
 	public void registerListener(){
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
+	}
+	
+	@EventHandler
+	public void soilChangeEntity(EntityInteractEvent event){
+	    if (!isSoilChange() && (event.getEntityType() != EntityType.PLAYER) && (event.getBlock().getType() == Material.SOIL)) event.setCancelled(true);
 	}
 	
 	@EventHandler
@@ -450,6 +459,7 @@ public class Game implements Listener{
 		  TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
 		  ev.getPlayer().sendMessage(Text.PREFIX.getText()+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
+		  getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(), getManager().getString_ranking());
 		  if(getManager().isState(GameState.LobbyPhase)){
 			  getManager().getLobby().getWorld().setStorm(false);
 			  getManager().getLobby().getWorld().setTime(4000);

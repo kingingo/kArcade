@@ -111,11 +111,7 @@ public class DeathGames extends SoloGame{
 	private ArrayList<ItemStack> selten = new ArrayList<>();
 	private ArrayList<ItemStack> medium = new ArrayList<>();
 	private ArrayList<ItemStack> normal = new ArrayList<>();
-	
 	private KitShop kitShop;
-	
-	private Hologram hm;
-	
 	private HashMap<Integer,ArrayList<Location>> g = new HashMap<>();
 	
 	public DeathGames(kArcadeManager manager) {
@@ -703,12 +699,9 @@ public class DeathGames extends SoloGame{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase)return;
-		if(hm==null)hm=new Hologram(getManager().getInstance());
-
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.1, 0),new String[]{
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: DeathGames §a"+kArcade.id,
 		"Biom: "+getWorldData().getMapName(),

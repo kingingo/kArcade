@@ -92,7 +92,6 @@ public class TroubleInMinecraft extends TeamGame{
 	Shop dshop;
 	@Getter
 	NPCManager npcManager;
-	Hologram hm;
 	@Getter
 	ItemFakeManager ifm;
 	@Getter
@@ -414,33 +413,33 @@ public class TroubleInMinecraft extends TeamGame{
 			
 				if(d!=-1){
 					if(k>0){
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							"§aDu hast §e"+k+" Karma§a erhalten.",
 							"§bDu hast §e"+d+" Detective-Punke§b erhalten."
 						});
 					}else{
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							 "§cDu hast §e"+k+" Karma§c verloren.",
 							 "§bDu hast §e"+d+" Detective-Punke§b erhalten."
 						});
 					}
 				}else if(tr!=-1){
 					if(k>0){
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							"§aDu hast §e"+k+" Karma§a erhalten.",
 							"§bDu hast §e"+tr+" Traitor-Punke§b erhalten."
 						});
 					}else{
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
 							 "§cDu hast §e"+k+" Karma§c verloren.",
 							 "§bDu hast §e"+tr+" Traitor-Punke§b erhalten."
 						});
 					}
 				}else{
 					if(k>0){
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§aDu hast §e"+k+" Karma§a erhalten.");
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§aDu hast §e"+k+" Karma§a erhalten.");
 					}else{
-						hm.sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§cDu hast §e"+k+" Karma§c verloren.");
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§cDu hast §e"+k+" Karma§c verloren.");
 					}
 				}
 				
@@ -715,12 +714,9 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase)return;
-		if(hm==null)hm=new Hologram(getManager().getInstance());
-
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.8, 0),new String[]{
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
@@ -936,7 +932,7 @@ public class TroubleInMinecraft extends TeamGame{
 			p.getInventory().addItem(magnet.getStab());
 			getGameList().addPlayer(p,PlayerState.IN);
 		}
-		ifm=new ItemFakeManager(getManager().getInstance(),hm);
+		ifm=new ItemFakeManager(getManager().getInstance(),getManager().getHologram());
 		setItemFake(getWorldData().getLocs(Team.YELLOW.Name()));
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		setDamage(false);

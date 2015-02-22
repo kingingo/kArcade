@@ -3,6 +3,7 @@ package me.kingingo.karcade;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
@@ -99,12 +101,18 @@ public class kArcadeManager implements Listener{
 	private String BungeeCord_Fallback_Server = "falldown";
 	@Getter
 	@Setter
-	private Location lobby=new Location(Bukkit.getWorld("world"),789.415,29,680.2699);
+	private Location lobby=new Location(Bukkit.getWorld("world"),-148.28747,19,384.90493);
 	@Getter
 	private HashMap<Integer,Sign> ranking = new HashMap<>();
 	@Getter
 	@Setter
-	private Location loc_stats = new Location(Bukkit.getWorld("world"), 785.54191,24.5,615.49871);
+	private Location loc_stats = new Location(Bukkit.getWorld("world"), -128.57864,22.5,386.48775);
+	@Getter
+	@Setter
+	private Location loc_raking = new Location(Bukkit.getWorld("world"),-128.35064,22.5,380.57131);
+	@Getter
+	@Setter
+	private String[] string_ranking;
 	@Getter
 	private MySQL mysql;
 	@Getter
@@ -115,27 +123,29 @@ public class kArcadeManager implements Listener{
 	private CommandHandler cmd;
 	private PetManager pet;
 	private DisguiseManager disguiseManager;
-	//@Getter
-	//private NickManager nManager;
 	@Getter
 	private CommandService service;
 	@Getter
 	private CalendarType holiday;
+	private Hologram hologram;
 	
 	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
-		this.lobby.setPitch(2);
-		this.lobby.setYaw( (float)179.60071 );
+		this.lobby.setPitch(3);
+		this.lobby.setYaw( (float)-89.81317 );
 		this.permManager=permManager;
 		this.Instance=plugin;
 		this.mysql=mysql;
 		this.cmd=cmd;
 		this.pManager=pManager;
-		//this.nManager=new NickManager(cmd,permManager);
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.holiday=Calendar.getHoliday();
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
+		
+
+		getLoc_stats().getWorld().loadChunk(getLoc_stats().getWorld().getChunkAt(getLoc_stats()));
+		getLoc_raking().getWorld().loadChunk(getLoc_raking().getWorld().getChunkAt(getLoc_raking()));
 		
 		cmd.register(CommandService.class, this.service);
 		for(Entity e : getLobby().getWorld().getEntities()){
@@ -143,18 +153,6 @@ public class kArcadeManager implements Listener{
 				e.remove();
 			}
 		}
-		
-		new Location(Bukkit.getWorld("world"),756,23,610).getWorld().loadChunk(new Location(Bukkit.getWorld("world"),756,23,610).getWorld().getChunkAt(new Location(Bukkit.getWorld("world"),756,23,610)));
-		ranking.put(1, ((Sign)new Location(Bukkit.getWorld("world"),756,23,610).getBlock().getState()));
-		ranking.put(2, ((Sign)new Location(Bukkit.getWorld("world"),756,23,609).getBlock().getState()));
-		ranking.put(3, ((Sign)new Location(Bukkit.getWorld("world"),756,23,608).getBlock().getState()));
-		ranking.put(4, ((Sign)new Location(Bukkit.getWorld("world"),756,23,607).getBlock().getState()));
-		ranking.put(5, ((Sign)new Location(Bukkit.getWorld("world"),756,23,606).getBlock().getState()));
-		ranking.put(6, ((Sign)new Location(Bukkit.getWorld("world"),756,21,610).getBlock().getState()));
-		ranking.put(7, ((Sign)new Location(Bukkit.getWorld("world"),756,21,609).getBlock().getState()));
-		ranking.put(8, ((Sign)new Location(Bukkit.getWorld("world"),756,21,608).getBlock().getState()));
-		ranking.put(9, ((Sign)new Location(Bukkit.getWorld("world"),756,21,607).getBlock().getState()));
-		ranking.put(10, ((Sign)new Location(Bukkit.getWorld("world"),756,21,606).getBlock().getState()));
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
 		setState(GameState.LobbyPhase);
 	}
@@ -177,6 +175,11 @@ public class kArcadeManager implements Listener{
 		}else{
 			return true;
 		}
+	}
+	
+	public Hologram getHologram(){
+		if(hologram==null)hologram=new Hologram(getInstance());
+		return hologram;
 	}
 	
 	public DisguiseManager getDisguiseManager(){
@@ -238,20 +241,12 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void setRanking(Stats s){
-		HashMap<Integer,String> list = getGame().getStats().getRanking(s, 10);
-		Sign sign;
-		Skull sk;
-		for(int i : ranking.keySet()){
+		HashMap<Integer,UUID> list = getGame().getStats().getRanking(s, 10);
+		setString_ranking(new String[11]);
+		getString_ranking()[0]=C.cGreen+getGame().getType().getTyp()+C.mOrange+C.Bold+" Ranking";
+		for(int i : list.keySet()){
 			if(list.get(i)==null)break;
-			sign=ranking.get(i);
-			sign.setLine(0, "---- "+C.Bold+"#"+i+"§r ----");
-			sign.setLine(1, list.get(i));
-			sign.setLine(2, s.getKÜRZEL()+" "+getGame().getStats().getIntWithString(s, list.get(i)));
-			sign.setLine(3, "K/D "+getGame().getStats().getKDR(getGame().getStats().getIntWithString(Stats.KILLS, list.get(i)), getGame().getStats().getIntWithString(Stats.DEATHS,list.get(i))));
-			sign.update(true);
-			sk = (Skull)sign.getLocation().add(0,1,0).getBlock().getState();
-			sk.setOwner(list.get(i));
-			sk.update(true);
+			getString_ranking()[i]=C.Bold+"#"+i+"§r "+getGame().getStats().getName(list.get(i))+" "+s.getKÜRZEL()+": "+getGame().getStats().getIntWithUUID(s, list.get(i) );
 		}
 	}
 	

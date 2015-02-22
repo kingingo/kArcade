@@ -64,7 +64,6 @@ public class SkyPvP extends SoloGame{
 	HashMap<Player,Integer> life = new HashMap<>();
 	HashMap<Location,Inventory> enderchests = new HashMap<>();
 	ArrayList<ItemStack> enderchest_material = new ArrayList<>();
-	Hologram hm;
 	AddonEntityKing entity_king;
 	AddonTargetNextPlayer TargetNextPlayer;
 	
@@ -284,11 +283,9 @@ public class SkyPvP extends SoloGame{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getManager().getState()!=GameState.LobbyPhase)return;
-		if(hm==null)hm=new Hologram(getManager().getInstance());
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getLoc_stats().getWorld().loadChunk(getManager().getLoc_stats().getWorld().getChunkAt(getManager().getLoc_stats()));
-		hm.sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.3, 0),new String[]{
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
 		"Server: SkyPvP §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
