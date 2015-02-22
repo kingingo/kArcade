@@ -3,7 +3,7 @@ package me.kingingo.karcade.Game.Games.SheepWars.Addon;
 import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
-import me.kingingo.kcore.kListener;
+import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;

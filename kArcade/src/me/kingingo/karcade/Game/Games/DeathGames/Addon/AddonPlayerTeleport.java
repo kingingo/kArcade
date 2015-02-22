@@ -6,9 +6,9 @@ import java.util.List;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.PlayerStateChangeEvent;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
-import me.kingingo.kcore.kListener;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 

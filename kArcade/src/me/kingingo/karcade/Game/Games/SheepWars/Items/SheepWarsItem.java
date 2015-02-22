@@ -1,7 +1,7 @@
 package me.kingingo.karcade.Game.Games.SheepWars.Items;
 
 import lombok.Setter;
-import me.kingingo.kcore.kListener;
+import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.entity.Player;

@@ -19,7 +19,7 @@ import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import me.kingingo.kcore.Enum.GameType;
-import me.kingingo.kcore.Util.FileUtil;
+import me.kingingo.kcore.Util.UtilFile;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
@@ -111,7 +111,7 @@ public class WorldData {
 	    new File(folder + File.separator + "region"+File.separator).mkdir();
 	    new File(folder + File.separator + "data"+File.separator).mkdir();
 	    try {
-	    	FileUtil.unzip(new File(f), new File(getFolder()));
+	    	UtilFile.unzip(new File(f), new File(getFolder()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -225,7 +225,7 @@ public class WorldData {
 	 
 	 public void Uninitialize(){
 		UtilMap.UnloadWorld(manager.getInstance(), world);
-		FileUtil.DeleteFolder(new File(world.getName()));
+		UtilFile.DeleteFolder(new File(world.getName()));
 		world=null;
 	 }
 	 
@@ -244,7 +244,7 @@ public class WorldData {
 	 public void removeWorld(){
 		 if(Bukkit.getWorld(getFolder())!=null||world!=null){
 			 Bukkit.unloadWorld(getFolder(), false);
-			 FileUtil.DeleteFolder(new File(getFolder()));
+			 UtilFile.DeleteFolder(new File(getFolder()));
 			 world=null;
 		 }
 	 }

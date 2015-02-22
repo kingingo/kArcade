@@ -57,8 +57,9 @@ import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.Permission;
 import me.kingingo.kcore.PlayerStats.Stats;
-import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
+import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
@@ -71,7 +72,6 @@ import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.Scheduler.kScheduler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;

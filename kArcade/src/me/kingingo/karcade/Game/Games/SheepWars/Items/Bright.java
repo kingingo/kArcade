@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game.Games.SheepWars.Items;
 import me.kingingo.kcore.Util.UtilDirection;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Material;
@@ -24,6 +25,7 @@ public class Bright extends SheepWarsItem{
 		if(ev.hasBlock()){
 			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
 				if(equal(ev.getPlayer().getItemInHand())){
+					UtilInv.remove(ev.getPlayer(), ev.getPlayer().getItemInHand().getType(), ev.getPlayer().getItemInHand().getData().getData(), 1);
 					UtilDirection d = UtilDirection.getCardinalDirection(ev.getPlayer());
 					Block b = ev.getClickedBlock();		
 					for(int i = 100; i>0;i--){

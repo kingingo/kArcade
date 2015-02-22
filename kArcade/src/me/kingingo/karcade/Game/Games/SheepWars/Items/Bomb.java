@@ -6,6 +6,7 @@ import me.kingingo.kcore.LaunchItem.LaunchItemEvent;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 
 import org.bukkit.Material;
@@ -33,20 +34,23 @@ public class Bomb extends SheepWarsItem{
 				LaunchItem item = new LaunchItem(event.getPlayer(),4,new LaunchItem.LaunchItemEventHandler(){
 					@Override
 					public void onLaunchItem(LaunchItemEvent ev) {
-						LaunchItem item = new LaunchItem(event.getPlayer(),Material.TNT.getId(),9,3,new LaunchItem.LaunchItemEventHandler(){
+						
+						LaunchItem item = new LaunchItem(event.getPlayer(),ev.getItem().getDroppedItem()[0].getLocation(),Material.TNT.getId(),3,3,new LaunchItem.LaunchItemEventHandler(){
 							@Override
 							public void onLaunchItem(LaunchItemEvent ev) {
 								for(Entity e : ev.getItem().getDroppedItem()){
-									e.getWorld().createExplosion(e.getLocation(), 1.0f);
+									e.getWorld().createExplosion(e.getLocation(), 0.5f);
 									e.getWorld().strikeLightningEffect(e.getLocation());
 									e.getWorld().createExplosion(e.getLocation(), 4.0F, false);
 								}
 							}
 						});
 						getManager().LaunchItem(item);
+						
 					}
 				});
 				getManager().LaunchItem(item);
+				UtilInv.remove(event.getPlayer(), event.getPlayer().getItemInHand().getType(), event.getPlayer().getItemInHand().getData().getData(), 1);
 			}
 		}
 	}

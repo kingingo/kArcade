@@ -16,6 +16,7 @@ public class ServiceSheepWars {
 		if(args.length==1){
 			p.sendMessage("§e/Service SW Bombe §7|§e Gibt eine Bombe.");
 			p.sendMessage("§e/Service SW Bright §7|§e Gibt eine Bright.");
+			p.sendMessage("§e/Service SW wall §7|§e Gibt eine wall.");
 		}else{
 			if(args[1].equalsIgnoreCase("bombe")){
 				getSheepWars().getBomb().add(p);

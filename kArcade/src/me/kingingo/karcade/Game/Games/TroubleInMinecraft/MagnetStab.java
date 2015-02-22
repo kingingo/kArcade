@@ -1,7 +1,7 @@
 package me.kingingo.karcade.Game.Games.TroubleInMinecraft;
 
 import lombok.Getter;
-import me.kingingo.kcore.kListener;
+import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.Util.UtilItem;
