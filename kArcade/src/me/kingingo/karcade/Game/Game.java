@@ -384,9 +384,9 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void TNT (ExplosionPrimeEvent ev){
-			if(!Explosion){
-				ev.setCancelled(true);
-			}
+		if(!Explosion){
+			ev.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
@@ -453,13 +453,17 @@ public class Game implements Listener{
 		return this.typ;
 	}
 	
+	 @EventHandler(priority=EventPriority.HIGHEST)
+	 public void JoinRanking(PlayerJoinEvent ev){
+		 TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
+		 getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(), getManager().getString_ranking());
+	 }
+	
 	  @EventHandler
 	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
-		  TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
 		  ev.getPlayer().sendMessage(Text.PREFIX.getText()+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
-		  getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(), getManager().getString_ranking());
 		  if(getManager().isState(GameState.LobbyPhase)){
 			  getManager().getLobby().getWorld().setStorm(false);
 			  getManager().getLobby().getWorld().setTime(4000);

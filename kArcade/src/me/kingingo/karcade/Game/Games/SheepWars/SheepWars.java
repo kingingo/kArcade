@@ -493,7 +493,6 @@ public class SheepWars extends TeamGame{
 		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(10), UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL), "Enderpearl")));
 		gold.addOffer(new MerchantOffer(Gold(15), getWall().getItem()));
-		gold.addOffer(new MerchantOffer(Gold(15), getBright().getItem()));
 		gold.addOffer(new MerchantOffer(Gold(15), getBomb().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in größter Not!"}, "§cSpezial"), gold, 16);
 		
@@ -620,6 +619,7 @@ public class SheepWars extends TeamGame{
 		Merchant kisten = new Merchant();
 		kisten.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.CHEST), "Kiste")));
 		kisten.addOffer(new MerchantOffer(Gold(11), getVillager().getItem()));
+		kisten.addOffer(new MerchantOffer(Gold(15), getBright().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "§cKisten"), kisten, 15);
 		
 		Merchant trank = new Merchant();

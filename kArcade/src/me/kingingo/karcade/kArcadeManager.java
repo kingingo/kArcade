@@ -142,7 +142,7 @@ public class kArcadeManager implements Listener{
 		this.holiday=Calendar.getHoliday();
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
-		
+		this.hologram=new Hologram(getInstance());
 
 		getLoc_stats().getWorld().loadChunk(getLoc_stats().getWorld().getChunkAt(getLoc_stats()));
 		getLoc_raking().getWorld().loadChunk(getLoc_raking().getWorld().getChunkAt(getLoc_raking()));
@@ -388,7 +388,6 @@ public class kArcadeManager implements Listener{
 	
 	public void broadcast(String message){
 		if(UtilServer.getPlayers().length==0)return;
-	    for (Player player : UtilServer.getPlayers())player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
 	    UtilServer.broadcast(message);
 	}
 	
