@@ -19,7 +19,6 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
