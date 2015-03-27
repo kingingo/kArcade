@@ -12,7 +12,7 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
-import me.kingingo.karcade.Game.Games.ArcadeGanes.ArcadeGames;
+import me.kingingo.karcade.Game.Games.ArcadeGames.ArcadeGames;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
 import me.kingingo.karcade.Game.Games.Falldown.Falldown;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
@@ -33,6 +33,7 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Hologram.Hologram;
+import me.kingingo.kcore.LogHandler.Event.LogEvent;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
@@ -44,6 +45,7 @@ import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
+import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
@@ -210,6 +212,18 @@ public class kArcadeManager implements Listener{
 			field.set(ws.chunkProvider, "false");
 		}catch(Exception e){
 			
+		}
+	}
+	
+	@EventHandler
+	public void Log(LogEvent ev){
+		if(ev.getMessage().contains("net.minecraft.util.io.netty.handler.codec.DecoderException: java.lang.LinkageError")){
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+			try {
+				Runtime.getRuntime().exec("./start.sh");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -492,6 +506,20 @@ public class kArcadeManager implements Listener{
 		if(ev.getTo()==GameState.Restart){
 			if(getGame().isCoinsAktiv())getGame().getCoins().SaveAll();
 			if(getGame().isTokensAktiv())getGame().getTokens().SaveAll();
+		}
+	}
+	
+	@EventHandler
+	public void Time_Start(UpdateEvent ev){
+		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase){
+			if(TimeSpan.HOUR*3 < (System.currentTimeMillis() - kArcade.start_time) ){
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+				try {
+					Runtime.getRuntime().exec("./start.sh");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	

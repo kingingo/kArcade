@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games.ArcadeGanes;
+package me.kingingo.karcade.Game.Games.ArcadeGames;
 
 import java.util.ArrayList;
 

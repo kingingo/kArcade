@@ -181,7 +181,7 @@ public class DeathGames extends SoloGame{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,4)}),
 				new PerkArrowFire(30)
 			}),
-			new Kit( "§aBogenmeister",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 8 Pfeilen.","60% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aBogenmeister",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 8 Pfeilen.","60% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_BOGENMEISTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,8)}),
 				new PerkArrowFire(60)
 			}),

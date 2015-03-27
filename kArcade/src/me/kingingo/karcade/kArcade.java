@@ -39,10 +39,11 @@ public class kArcade extends JavaPlugin{
 	public static int id;
 	private CommandHandler cmd;
 	public static String FilePath;
+	public static long start_time;
 	
 	public void onEnable(){
 		try{
-			long time = System.currentTimeMillis();
+			start_time = System.currentTimeMillis();
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel()));
@@ -68,7 +69,7 @@ public class kArcade extends JavaPlugin{
 			new MemoryFix(this);
 			for(World w : getServer().getWorlds())w.setAutoSave( getConfig().getBoolean("Config.Server.World-Save") );
 			if( !getConfig().getBoolean("Config.Server.World-Save") )Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
-			manager.DebugLog(time, this.getClass().getName());
+			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){
 			UtilException.catchException(e, getConfig().getString("Config.Server.ID"), Bukkit.getIp(), mysql);
 		}
