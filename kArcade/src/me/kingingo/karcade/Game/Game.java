@@ -15,7 +15,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Util.Coins;
@@ -371,7 +371,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void PlaceBlockInMap(BlockPlaceEvent ev){
-		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
+		if(getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
 		if(getManager().isState(GameState.DeathMatch)){
 			ev.setCancelled(false);
@@ -391,7 +391,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void BreakBlockInMap(BlockBreakEvent ev){
-		if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
+		if(getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()) || !ev.getBlock().getWorld().getName().equalsIgnoreCase(getWorldData().getWorld().getName()))ev.setCancelled(true);
 		if((getManager().isState(GameState.LobbyPhase))||BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))){
 			ev.setCancelled(true);
@@ -482,10 +482,10 @@ public class Game implements Listener{
 	  @EventHandler
 	  public void Login(PlayerLoginEvent ev){
 		 if(UtilServer.getPlayers().length>=getMax_Players()&&getManager().isState(GameState.LobbyPhase)){
-			  if(getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.JOIN_FULL_SERVER)){
+			  if(getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.JOIN_FULL_SERVER)||getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.JOIN_FULL_SERVER)){
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
-					  if(!getManager().getPermManager().hasPermission(p, Permission.JOIN_FULL_SERVER)){
+					  if(!getManager().getPermManager().hasPermission(p, kPermission.JOIN_FULL_SERVER)){
 						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getType().getTyp())+Text.KICKED_BY_PREMIUM.getText());
 						  UtilBG.sendToServer(p, getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
 						  b=true;
@@ -494,15 +494,16 @@ public class Game implements Listener{
 				  }
 				  if(!b){
 					  ev.disallow(Result.KICK_FULL, Text.SERVER_FULL_WITH_PREMIUM.getText());
-					  return;
 				  }
 			  }else{
 				  ev.disallow(Result.KICK_FULL, Text.SERVER_FULL.getText());
-				  return;
 			  }
-		  }else  if(!getManager().isState(GameState.LobbyPhase)&&!getManager().getPermManager().hasPermission(ev.getPlayer(), Permission.SERVER_JOIN_SPECTATE)){
-			  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
-			  return;
+		  }else  if(!getManager().isState(GameState.LobbyPhase)){
+			  if(!getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.SERVER_JOIN_SPECTATE)){
+				  if(!getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.SERVER_JOIN_SPECTATE)){
+					  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
+				  }
+			  }
 		  }
 	  }
 	  

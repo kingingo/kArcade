@@ -31,6 +31,9 @@ public class AddonTargetNextPlayer implements Listener {
 	@Setter
 	private boolean aktiv=false;
 	@Getter
+	@Setter
+	private boolean msg=true;
+	@Getter
 	private kArcadeManager manager;
 	
 	public AddonTargetNextPlayer(kArcadeManager Manager){
@@ -73,7 +76,7 @@ public class AddonTargetNextPlayer implements Listener {
 				}
 			}
 			if(target!=null){
-				if(p.getItemInHand().getType()==Material.COMPASS)p.sendMessage(Text.PREFIX_GAME.getText(getManager().getGame().getType().name())+Text.SPIELER_ENTFERNT_COMPASS.getText(new String[]{target.getName(),String.valueOf( Math.round(target.getLocation().distance(p.getLocation())) )}));
+				if(msg&&p.getItemInHand().getType()==Material.COMPASS)p.sendMessage(Text.PREFIX_GAME.getText(getManager().getGame().getType().name())+Text.SPIELER_ENTFERNT_COMPASS.getText(new String[]{target.getName(),String.valueOf( Math.round(target.getLocation().distance(p.getLocation())) )}));
 				p.setCompassTarget(target.getLocation());
 			}else{
 				if(!pl.containsKey(p)){

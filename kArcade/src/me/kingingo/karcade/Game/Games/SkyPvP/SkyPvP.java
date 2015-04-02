@@ -20,7 +20,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
@@ -315,7 +315,7 @@ public class SkyPvP extends SoloGame{
 			if(locs.isEmpty())break;
 			getGameList().addPlayer(p, PlayerState.IN);
 			getManager().Clear(p);
-			if(getManager().getPermManager().hasPermission(p, Permission.SkyPvP_Mehr_Leben)){
+			if(getManager().getPermManager().hasPermission(p, kPermission.SkyPvP_Mehr_Leben)){
 				life.put(p, 3);
 			}else{
 				life.put(p, 2);

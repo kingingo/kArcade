@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -55,10 +58,21 @@ public class WorldData {
 	@Setter
 	HashMap<String,Location> biomes = null;
 	
+	public WorldData(kArcadeManager manager,String gameName,String kürzel){
+		this.manager=manager;
+		this.gameName=gameName;
+		this.folder=kürzel;
+	}
+	
 	public WorldData(kArcadeManager manager,GameType type){
 		this.manager=manager;
 		this.gameName=type.name();
 		this.folder=type.getKürzel();
+	}
+	
+	public void addLoc(String s,Location loc){
+		if(!locs.containsKey(s))locs.put(s, new ArrayList<Location>());
+		locs.get(s).add(loc);
 	}
 	
 	public HashMap<String,ArrayList<Location>> getLocs(){
@@ -98,6 +112,8 @@ public class WorldData {
 		if(files.size()==1)return files.get(0);
 		return files.get(UtilMath.RandomInt(files.size(), 0));
 	}
+	
+	//new File(f).lastModified();
 	
 	 protected void UnzipWorld(){
 	    String folder = getFolder();

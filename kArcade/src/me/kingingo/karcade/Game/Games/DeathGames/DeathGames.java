@@ -54,7 +54,7 @@ import me.kingingo.kcore.Kit.Perks.PerkSnowballSwitcher;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
-import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
@@ -177,79 +177,79 @@ public class DeathGames extends SoloGame{
 		
 		this.kitShop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			
-			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,4)}),
 				new PerkArrowFire(30)
 			}),
-			new Kit( "§aBogenmeister",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 8 Pfeilen.","60% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),Permission.SHEEPWARS_KIT_BOGENMEISTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aBogenmeister",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 8 Pfeilen.","60% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),kPermission.SHEEPWARS_KIT_BOGENMEISTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,8)}),
 				new PerkArrowFire(60)
 			}),
-			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),Permission.DEATHGAMES_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),kPermission.DEATHGAMES_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoKnockback(manager.getInstance())
 			}),
-			new Kit( "§aBomber",new String[]{"Der Bomber bekommt kein Explosion Schaden und","TNT zündet direkt beim setzten."}, new ItemStack(Material.TNT),Permission.DEATHGAMES_KIT_BOMBER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aBomber",new String[]{"Der Bomber bekommt kein Explosion Schaden und","TNT zündet direkt beim setzten."}, new ItemStack(Material.TNT),kPermission.DEATHGAMES_KIT_BOMBER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,2)}),
 				new PerkNoExplosionDamage(),
 				new PerkTNT()
 			}),
-			new Kit( "§aFireman",new String[]{"Der Fireman bekommt kein Feuerschaden","und bekommt einen","Lava Eimer und "," ein Feuerzeug."}, new ItemStack(Material.LAVA_BUCKET),Permission.DEATHGAMES_KIT_FIREMAN,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aFireman",new String[]{"Der Fireman bekommt kein Feuerschaden","und bekommt einen","Lava Eimer und "," ein Feuerzeug."}, new ItemStack(Material.LAVA_BUCKET),kPermission.DEATHGAMES_KIT_FIREMAN,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoFiredamage(),
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.LAVA,2),new ItemStack(Material.FLINT_AND_STEEL)})
 			}),
-			new Kit( "§aSwitcher",new String[]{"Der Switcher hat ein unendlichen Schneeball"," im Inventar welcher ihn mit seinem"," Gegner Tauscht sobald"," er ihn abwirft"}, new ItemStack(Material.SNOW_BALL),Permission.DEATHGAMES_KIT_SWITCHER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aSwitcher",new String[]{"Der Switcher hat ein unendlichen Schneeball"," im Inventar welcher ihn mit seinem"," Gegner Tauscht sobald"," er ihn abwirft"}, new ItemStack(Material.SNOW_BALL),kPermission.DEATHGAMES_KIT_SWITCHER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSnowballSwitcher()
 			}),
-			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),Permission.DEATHGAMES_KIT_HOLZ,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aHolzfäller",new String[]{"Der Holzfäller kann schnell","Baeume abbauen."}, new ItemStack(Material.WOOD_AXE),kPermission.DEATHGAMES_KIT_HOLZ,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.WOOD_AXE)}),
 				new PerkHolzfäller()
 			}),
-			new Kit( "§aPanzer",new String[]{"Der Panzer bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),Permission.DEATHGAMES_KIT_PANZER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aPanzer",new String[]{"Der Panzer bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),kPermission.DEATHGAMES_KIT_PANZER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSneakDamage(3)
 			}),
-			new Kit( "§aSkorpion",new String[]{"Der Skorpion hat die Chance von 80%"," einen Spieler mit einem Schlag"," 5 Sek lang zu vergiften"}, new ItemStack(351,1,(byte)10),Permission.DEATHGAMES_KIT_SKORPION,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aSkorpion",new String[]{"Der Skorpion hat die Chance von 80%"," einen Spieler mit einem Schlag"," 5 Sek lang zu vergiften"}, new ItemStack(351,1,(byte)10),kPermission.DEATHGAMES_KIT_SKORPION,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPoisen(2, 80)
 			}),
-			new Kit( "§aVersorger",new String[]{"Der Versorger bekommt kein Hunger."}, new ItemStack(Material.BAKED_POTATO),Permission.DEATHGAMES_KIT_VERSORGER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aVersorger",new String[]{"Der Versorger bekommt kein Hunger."}, new ItemStack(Material.BAKED_POTATO),kPermission.DEATHGAMES_KIT_VERSORGER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoHunger()
 			}),
-			new Kit( "§aVampire",new String[]{"Der Vampire wird für jedem","getöteten Mob 3 Herzen geheilt"}, new ItemStack(Material.GHAST_TEAR),Permission.DEATHGAMES_KIT_VAMPIRE,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aVampire",new String[]{"Der Vampire wird für jedem","getöteten Mob 3 Herzen geheilt"}, new ItemStack(Material.GHAST_TEAR),kPermission.DEATHGAMES_KIT_VAMPIRE,KitType.KAUFEN,2000,new Perk[]{
 				new PerkHealByKill(6)
 			}),
-			new Kit( "§aAngler",new String[]{"Der Angler kann seine","Gegner zu sich ziehen"}, new ItemStack(Material.RAW_FISH),Permission.DEATHGAMES_KIT_ANGLE,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aAngler",new String[]{"Der Angler kann seine","Gegner zu sich ziehen"}, new ItemStack(Material.RAW_FISH),kPermission.DEATHGAMES_KIT_ANGLE,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD)}),
 				new PerkAngle()
 			}),
-			new Kit( "§aEnterhaken",new String[]{"Mit dem Enterhaken kannst du","dich schnell zu Gegner und ","Blöcken ziehen um"," dich schneller fortzubewegen"}, new ItemStack(Material.FISHING_ROD),Permission.DEATHGAMES_KIT_ENTERHARKEN,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aEnterhaken",new String[]{"Mit dem Enterhaken kannst du","dich schnell zu Gegner und ","Blöcken ziehen um"," dich schneller fortzubewegen"}, new ItemStack(Material.FISHING_ROD),kPermission.DEATHGAMES_KIT_ENTERHARKEN,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD)}),
 				new PerkEnterhacken()
 			}),
-			new Kit( "§aJumper",new String[]{"Der Jumper kann höher","als normal springen"}, new ItemStack(Material.FEATHER),Permission.DEATHGAMES_KIT_JUMPER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aJumper",new String[]{"Der Jumper kann höher","als normal springen"}, new ItemStack(Material.FEATHER),kPermission.DEATHGAMES_KIT_JUMPER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionEffect(PotionEffectType.JUMP, 16*60, 3)
 			}),
-			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),Permission.DEATHGAMES_KIT_RUNNER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),kPermission.DEATHGAMES_KIT_RUNNER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkRunner(0.35F)
 			}),
-			new Kit( "§aHai",new String[]{"Der Hai erhält","im Wasser Regeneration"}, new ItemStack(Material.CLAY_BALL),Permission.DEATHGAMES_KIT_HAI,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aHai",new String[]{"Der Hai erhält","im Wasser Regeneration"}, new ItemStack(Material.CLAY_BALL),kPermission.DEATHGAMES_KIT_HAI,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionInWater(PotionEffectType.REGENERATION, 5, 1)
 			}),
-			new Kit( "§aSchildkroete",new String[]{"Die Schildkroete hat 5 Herzen mehr!","macht aber dennoch ","weniger Schaden!"}, new ItemStack(Material.IRON_CHESTPLATE),Permission.DEATHGAMES_KIT_SCHILDKROETE,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aSchildkroete",new String[]{"Die Schildkroete hat 5 Herzen mehr!","macht aber dennoch ","weniger Schaden!"}, new ItemStack(Material.IRON_CHESTPLATE),kPermission.DEATHGAMES_KIT_SCHILDKROETE,KitType.KAUFEN,2000,new Perk[]{
 				new PerkMoreHeart(30),
 				new PerkLessDamage(75)
 			}),
-			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),Permission.DEATHGAMES_KIT_RITTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),kPermission.DEATHGAMES_KIT_RITTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkPotionEffectByHearth(PotionEffectType.INCREASE_DAMAGE, 1, 7)
 			}),
-			new Kit( "§aToxin",new String[]{"Wenn er einen Gegner schlägt"," wird dieser für ","5 Sekunden lang blind."}, new ItemStack(Material.FLINT),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aToxin",new String[]{"Wenn er einen Gegner schlägt"," wird dieser für ","5 Sekunden lang blind."}, new ItemStack(Material.FLINT),kPermission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkHitEffect(5, 90, PotionEffectType.BLINDNESS)
 			}),
-			new Kit( "§aYeti",new String[]{"Sobald er einen Gegner"," schlägt erhält dieser","Langsamkeit für"," 5 Sekunden."}, new ItemStack(Material.SOUL_SAND),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aYeti",new String[]{"Sobald er einen Gegner"," schlägt erhält dieser","Langsamkeit für"," 5 Sekunden."}, new ItemStack(Material.SOUL_SAND),kPermission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkHitEffect(5, 90, PotionEffectType.SLOW)
 			}),
-			new Kit( "§aTeleporter",new String[]{"Der Teleporter kann","sich 1x mit","einem Spieler ","tauschen lassen!"}, new ItemStack(Material.WATCH),Permission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§aTeleporter",new String[]{"Der Teleporter kann","sich 1x mit","einem Spieler ","tauschen lassen!"}, new ItemStack(Material.WATCH),kPermission.DEATHGAMES_KIT_TELEPORTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkTeleporter(getManager())
 			}),
-			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),Permission.DEATHGAMES_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
+			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in DeathGames!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.DEATHGAMES_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_SWORD,1), new ItemStack(Material.LEATHER_HELMET,1), new ItemStack(Material.IRON_CHESTPLATE,1), new ItemStack(Material.LEATHER_LEGGINGS,1), new ItemStack(Material.LEATHER_BOOTS)}),
 				new PerkSneakDamage(1),
@@ -293,7 +293,7 @@ public class DeathGames extends SoloGame{
 			Player p = event.getPlayer();
 			String msg = event.getMessage();
 			msg=msg.replaceAll("%","");
-			if(manager.getPermManager().hasPermission(p, Permission.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
+			if(manager.getPermManager().hasPermission(p, kPermission.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
 			event.setFormat(manager.getPermManager().getPrefix(p) + p.getName() + "§7: "+ msg);
 		}
 	}

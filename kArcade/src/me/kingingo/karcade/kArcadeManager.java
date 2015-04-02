@@ -13,6 +13,8 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Games.ArcadeGames.ArcadeGames;
+import me.kingingo.karcade.Game.Games.CaveWars.CaveWars;
+import me.kingingo.karcade.Game.Games.CaveWars.CaveWarsType;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
 import me.kingingo.karcade.Game.Games.Falldown.Falldown;
 import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
@@ -76,6 +78,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -216,6 +219,11 @@ public class kArcadeManager implements Listener{
 	}
 	
 	@EventHandler
+	public void Kick(PlayerKickEvent ev){
+		System.out.println("[EpicPvP] PlayerKickEvent: PLAYER:"+ev.getPlayer().getName()+" REASON:"+ev.getReason()+" LEAVE:"+ev.getLeaveMessage());
+	}
+	
+	@EventHandler
 	public void Log(LogEvent ev){
 		if(ev.getMessage().contains("net.minecraft.util.io.netty.handler.codec.DecoderException: java.lang.LinkageError")){
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
@@ -265,11 +273,47 @@ public class kArcadeManager implements Listener{
 	public Game Game(String game){
 		if(GameType.OneInTheChamber.getTyp().equalsIgnoreCase(game)){
 			return new OneInTheChamber(this);
-		}else if((GameType.SheepWars8.getTyp()).equalsIgnoreCase(game)){
-			return new SheepWars(this,SheepWarsType._2);
-		}else if((GameType.SheepWars16.getTyp()).equalsIgnoreCase(game)){
-			return new SheepWars(this,SheepWarsType._4);
-		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
+		}else if(game.substring(0, GameType.CaveWars.getTyp().length()).equalsIgnoreCase(GameType.CaveWars.getTyp())){
+			CaveWarsType type=CaveWarsType._2x4;
+			try{
+				int a = Integer.valueOf(game.substring(GameType.CaveWars.getTyp().length(), game.length()));
+				if(a==16){
+					type=CaveWarsType._4x4;
+				}else if(a==8){
+					type=CaveWarsType._2x4;
+				}else if(a==16){
+					type=CaveWarsType._2x4;
+				}else{
+					System.out.println("[EpicPvP] CaveWarsType konnte nicht erkannt werden.");
+				}
+			}catch(NumberFormatException e){
+				System.out.println("[EpicPvP] CaveWarsType konnte nicht erkannt werden.");
+			}
+			
+			return new CaveWars(this,type);
+		}else if(game.substring(0, GameType.SheepWars.getTyp().length()).equalsIgnoreCase(GameType.SheepWars.getTyp())){
+			SheepWarsType type=SheepWarsType._2x4;
+			try{
+				int a = Integer.valueOf(game.substring(GameType.SheepWars.getTyp().length(), game.length()));
+				if(a==16){
+					type=SheepWarsType._4x4;
+				}else if(a==8){
+					type=SheepWarsType._2x4;
+				}else if(a==16){
+					type=SheepWarsType._2x4;
+				}else{
+					System.out.println("[EpicPvP] SheepWarsType konnte nicht erkannt werden.");
+				}
+			}catch(NumberFormatException e){
+				System.out.println("[EpicPvP] SheepWarsType konnte nicht erkannt werden.");
+			}
+			
+			return new SheepWars(this,type);
+		}
+//		else if((GameType.SheepWars16.getTyp()).equalsIgnoreCase(game)){
+//			return new SheepWars(this,SheepWarsType._4);
+//		}
+		else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SkyPvP.getTyp().equalsIgnoreCase(game)){
 			return new SkyPvP(this);
@@ -285,6 +329,12 @@ public class kArcadeManager implements Listener{
 		}else{
 			return new OneInTheChamber(this);
 		}
+	}
+	
+	public void DebugLog(long time,String Reason,String c){
+		System.err.println("[DebugMode]: Class: "+c);
+		System.err.println("[DebugMode]: Reason: "+Reason);
+		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
 	}
 	
 	public void DebugLog(long time,String c){
@@ -511,7 +561,7 @@ public class kArcadeManager implements Listener{
 	
 	@EventHandler
 	public void Time_Start(UpdateEvent ev){
-		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase){
+		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase&&UtilServer.getPlayers().length<=0){
 			if(TimeSpan.HOUR*3 < (System.currentTimeMillis() - kArcade.start_time) ){
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				try {

@@ -71,7 +71,7 @@ public class ArcadeGames extends kListener{
 	}
 
 	public void loadGames(){
-		games.add(new SheepWars(manager,SheepWarsType._4));
+		games.add(new SheepWars(manager,SheepWarsType._4x4));
 		games.add(new DeathGames(manager));
 		//games.add(new TroubleInMinecraft(manager));
 		//games.add(new SurvivalGames(manager));

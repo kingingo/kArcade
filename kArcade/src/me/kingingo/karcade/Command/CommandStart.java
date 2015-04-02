@@ -3,7 +3,7 @@ package me.kingingo.karcade.Command;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Util.AnvilGUI;
 import me.kingingo.kcore.Util.AnvilGUI.AnvilClickEvent;
 import me.kingingo.kcore.Util.UtilItem;
@@ -26,7 +26,7 @@ public class CommandStart implements CommandExecutor{
 	
 	@me.kingingo.kcore.Command.CommandHandler.Command(command = "start", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
-		if((Manager.getPermManager().hasPermission(((Player)cs), Permission.START_SERVER)||((Player)cs).isOp())){
+		if((Manager.getPermManager().hasPermission(((Player)cs), kPermission.START_SERVER)||((Player)cs).isOp())){
 			final Player p = (Player)cs;
 			
 			AnvilGUI gui = new AnvilGUI(p,Manager.getInstance(), new AnvilGUI.AnvilClickEventHandler(){

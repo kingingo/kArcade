@@ -12,7 +12,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Permission.Permission;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilDisplay;
@@ -141,7 +141,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	
 	public void getSpawnInventory(Player p){
 			getManager().Clear(p);
-			if(getManager().getPermManager().hasPermission(p, Permission.OneInTheChamber_KIT)){
+			if(getManager().getPermManager().hasPermission(p, kPermission.OneInTheChamber_KIT)){
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.YELLOW));
 				int r = UtilMath.RandomInt(5, 1);
 				switch(r){
