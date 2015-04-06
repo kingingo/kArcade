@@ -20,7 +20,6 @@ import me.kingingo.kcore.PlayerStats.StatsManager;
 import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Util.Coins;
 import me.kingingo.kcore.Util.TabTitle;
-import me.kingingo.kcore.Util.Tokens;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -204,7 +203,6 @@ public class Game implements Listener{
 	private ArrayList<InventoryType> InventoryTypDisallow = new ArrayList<>(); 
 	@Getter
 	private ArrayList<DamageCause> EntityDamage = new ArrayList<>();
-	private Tokens tokens;
 	@Setter
 	@Getter
 	private WorldData worldData;
@@ -242,10 +240,6 @@ public class Game implements Listener{
 		if(PlayerShearEntity)ev.setCancelled(true);
 	}
 	
-	public boolean isTokensAktiv(){
-		return tokens!=null;
-	}
-	
 	public boolean isCoinsAktiv(){
 		return coins!=null;
 	}
@@ -253,11 +247,6 @@ public class Game implements Listener{
 	public Coins getCoins(){
 		if(coins==null)coins=new Coins(getManager().getInstance(),getManager().getMysql());
 		return coins;
-	}
-	
-	public Tokens getTokens(){
-		if(tokens==null)tokens=new Tokens(getManager().getInstance(),getManager().getMysql());
-		return tokens;
 	}
 	
 	@EventHandler

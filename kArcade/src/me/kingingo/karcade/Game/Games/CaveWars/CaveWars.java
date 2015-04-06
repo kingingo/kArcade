@@ -166,7 +166,7 @@ public class CaveWars extends TeamGame{
 		setMax_Players(getTyp().getMax());
 		setVoteTeam(new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
 		
-		kitshop=new KitShop(getManager().getInstance(), getCoins(),getTokens(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+		kitshop=new KitShop(getManager().getInstance(), getCoins(),getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoHunger()
 			}),
