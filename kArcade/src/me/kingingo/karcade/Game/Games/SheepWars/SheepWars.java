@@ -9,6 +9,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
@@ -17,7 +18,6 @@ import me.kingingo.karcade.Game.Games.SheepWars.Items.Bright;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.ProtectWall;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.SpezialVillager;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.addons.AddonEntityTeamKing;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
@@ -258,6 +258,13 @@ public class SheepWars extends TeamGame{
 		manager.setState(GameState.LobbyPhase);
 	}
 	
+	public String shortMap(String map,String t){
+		if( (map+t).length() > 16 ){
+			return map.substring(0, (16-(t.length()+1)) )+t;
+		}
+		return map+t;
+	}
+	
 	//GOLD ORANGE
 	//IRON PURPLE
 	//BRICK WHITE
@@ -281,6 +288,11 @@ public class SheepWars extends TeamGame{
 //			}
 //		}
 //	}
+	
+	@EventHandler
+	public void WorldLoad(WorldLoadEvent ev){
+		wd.setMapName( shortMap(wd.getMapName()," "+getTyp().getTeam().length+"x"+getTyp().getTeam_size()) );
+	}
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){

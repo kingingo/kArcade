@@ -1,24 +1,18 @@
 package me.kingingo.karcade.Game.Games.CaveWars.Map;
 
-import me.kingingo.karcade.Enum.Team;
-import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.kcore.Util.UtilMap;
-
-import org.bukkit.generator.ChunkGenerator;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Game.World.WorldData;
+
 import org.bukkit.Location;
-import org.bukkit.generator.BlockPopulator;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 

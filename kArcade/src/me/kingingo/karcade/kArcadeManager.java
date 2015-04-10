@@ -52,6 +52,7 @@ import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
+import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 import net.minecraft.server.v1_7_R4.WorldServer;
 
@@ -218,6 +219,11 @@ public class kArcadeManager implements Listener{
 		}
 	}
 	
+//	@EventHandler(priority=EventPriority.HIGHEST)
+//	public void QuitErr(PlayerQuitEvent ev){
+//		System.out.println("[EpicPvP] PlayerQuitEvent: PLAYER:"+ev.getPlayer().getName()+" REASON:"+ev.getQuitMessage());
+//	}
+	
 	@EventHandler
 	public void Kick(PlayerKickEvent ev){
 		System.out.println("[EpicPvP] PlayerKickEvent: PLAYER:"+ev.getPlayer().getName()+" REASON:"+ev.getReason()+" LEAVE:"+ev.getLeaveMessage());
@@ -273,47 +279,11 @@ public class kArcadeManager implements Listener{
 	public Game Game(String game){
 		if(GameType.OneInTheChamber.getTyp().equalsIgnoreCase(game)){
 			return new OneInTheChamber(this);
-		}else if(game.substring(0, GameType.CaveWars.getTyp().length()).equalsIgnoreCase(GameType.CaveWars.getTyp())){
-			CaveWarsType type=CaveWarsType._2x4;
-			try{
-				int a = Integer.valueOf(game.substring(GameType.CaveWars.getTyp().length(), game.length()));
-				if(a==16){
-					type=CaveWarsType._4x4;
-				}else if(a==8){
-					type=CaveWarsType._2x4;
-				}else if(a==16){
-					type=CaveWarsType._2x4;
-				}else{
-					System.out.println("[EpicPvP] CaveWarsType konnte nicht erkannt werden.");
-				}
-			}catch(NumberFormatException e){
-				System.out.println("[EpicPvP] CaveWarsType konnte nicht erkannt werden.");
-			}
-			
-			return new CaveWars(this,type);
-		}else if(game.substring(0, GameType.SheepWars.getTyp().length()).equalsIgnoreCase(GameType.SheepWars.getTyp())){
-			SheepWarsType type=SheepWarsType._2x4;
-			try{
-				int a = Integer.valueOf(game.substring(GameType.SheepWars.getTyp().length(), game.length()));
-				if(a==16){
-					type=SheepWarsType._4x4;
-				}else if(a==8){
-					type=SheepWarsType._2x4;
-				}else if(a==16){
-					type=SheepWarsType._2x4;
-				}else{
-					System.out.println("[EpicPvP] SheepWarsType konnte nicht erkannt werden.");
-				}
-			}catch(NumberFormatException e){
-				System.out.println("[EpicPvP] SheepWarsType konnte nicht erkannt werden.");
-			}
-			
-			return new SheepWars(this,type);
-		}
-//		else if((GameType.SheepWars16.getTyp()).equalsIgnoreCase(game)){
-//			return new SheepWars(this,SheepWarsType._4);
-//		}
-		else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
+		}else if(GameType.CaveWars.getTyp().equalsIgnoreCase(game)){
+			return new CaveWars(this,CaveWarsType.values()[UtilMath.RandomInt(CaveWarsType.values().length, 0)]);
+		}else if(GameType.SheepWars.getTyp().equalsIgnoreCase(game)){
+			return new SheepWars(this,SheepWarsType.values()[UtilMath.RandomInt(SheepWarsType.values().length, 0)]);
+		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SkyPvP.getTyp().equalsIgnoreCase(game)){
 			return new SkyPvP(this);
@@ -600,12 +570,7 @@ public class kArcadeManager implements Listener{
 		case 2:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 0: 
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
-			try {
-				Runtime.getRuntime().exec("./start.sh");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 			;break;
 		}
 	}

@@ -8,9 +8,9 @@ import me.kingingo.karcade.Command.CommandStart;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Command.Admin.CommandChatMute;
+import me.kingingo.kcore.Command.Admin.CommandFly;
 import me.kingingo.kcore.Command.Admin.CommandMute;
 import me.kingingo.kcore.Command.Admin.CommandToggle;
-import me.kingingo.kcore.Command.Commands.CommandkFly;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.MySQL.MySQL;
@@ -60,8 +60,12 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandScan.class, new CommandScan(permManager));
 			pManager=new PacketManager(this,c);
 			permManager=new PermissionManager(this,GroupTyp.GAME,pManager,mysql);
+			if(getConfig().getString("Config.Server.Game").equalsIgnoreCase("SheepWars16")||getConfig().getString("Config.Server.Game").equalsIgnoreCase("SheepWars8")){
+				getConfig().set("Config.Server.Game", "SheepWars");
+				saveConfig();
+			}
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
-			cmd.register(CommandkFly.class, new CommandkFly(permManager));
+			cmd.register(CommandFly.class, new CommandFly());
 			cmd.register(CommandSend.class, new CommandSend(c));
 			cmd.register(CommandStart.class, new CommandStart(manager));
 			cmd.register(CommandMute.class, new CommandMute(permManager));
