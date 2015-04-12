@@ -68,9 +68,9 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandFly.class, new CommandFly());
 			cmd.register(CommandSend.class, new CommandSend(c));
 			cmd.register(CommandStart.class, new CommandStart(manager));
-			cmd.register(CommandMute.class, new CommandMute(permManager));
-			cmd.register(CommandChatMute.class, new CommandChatMute(permManager));
-			cmd.register(CommandToggle.class, new CommandToggle(permManager));
+			cmd.register(CommandMute.class, new CommandMute(this));
+			cmd.register(CommandChatMute.class, new CommandChatMute(this));
+			cmd.register(CommandToggle.class, new CommandToggle(this));
 			new MemoryFix(this);
 			for(World w : getServer().getWorlds())w.setAutoSave( getConfig().getBoolean("Config.Server.World-Save") );
 			if( !getConfig().getBoolean("Config.Server.World-Save") )Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
