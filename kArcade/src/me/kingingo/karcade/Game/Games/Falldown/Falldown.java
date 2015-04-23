@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
-public class Falldown  extends SoloGame{
+public class Falldown extends SoloGame{
 
 	@Getter
 	private WorldData worldData;

@@ -442,13 +442,13 @@ public class Game implements Listener{
 		return this.typ;
 	}
 	
-	 @EventHandler(priority=EventPriority.HIGHEST)
+	 @EventHandler(priority=EventPriority.NORMAL)
 	 public void JoinRanking(PlayerJoinEvent ev){
 		 TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
 		 getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(), getManager().getString_ranking());
 	 }
 	
-	  @EventHandler
+	  @EventHandler(priority=EventPriority.LOWEST)
 	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
 		  ev.getPlayer().sendMessage(Text.PREFIX.getText()+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");

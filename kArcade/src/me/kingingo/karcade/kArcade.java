@@ -50,6 +50,7 @@ public class kArcade extends JavaPlugin{
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel()));
 			id=getConfig().getInt("Config.Server.ID");
 			FilePath=getConfig().getString("Config.Server.FilePath");
+			saveConfig();
 			updater=new Updater(this);
 			if(id==-1){
 				c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER",this,updater);
@@ -65,7 +66,7 @@ public class kArcade extends JavaPlugin{
 				saveConfig();
 			}
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
-			cmd.register(CommandFly.class, new CommandFly());
+			cmd.register(CommandFly.class, new CommandFly(this));
 			cmd.register(CommandSend.class, new CommandSend(c));
 			cmd.register(CommandStart.class, new CommandStart(manager));
 			cmd.register(CommandMute.class, new CommandMute(this));
