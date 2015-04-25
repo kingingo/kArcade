@@ -9,6 +9,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -34,6 +35,8 @@ public class Falldown extends SoloGame{
 	private WorldData worldData;
 	@Getter
 	private kArcadeManager manager;
+	@Getter
+	private LaunchItemManager ilManager;
 	
 	public Falldown(kArcadeManager manager) {
 		super(manager);
@@ -64,6 +67,7 @@ public class Falldown extends SoloGame{
 		getWorldData().Initialize();
 		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 25, 5000);
 		manager.setState(GameState.LobbyPhase);
+		ilManager=new LaunchItemManager(getManager().getInstance());
 		manager.DebugLog(t, this.getClass().getName());
 	}
 	

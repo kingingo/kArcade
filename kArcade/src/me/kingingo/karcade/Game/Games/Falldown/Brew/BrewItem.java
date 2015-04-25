@@ -1,27 +1,44 @@
 package me.kingingo.karcade.Game.Games.Falldown.Brew;
 
 import lombok.Getter;
+import me.kingingo.karcade.Game.Games.Falldown.Falldown;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Events.PlayerUseBrewItemEvent;
+import me.kingingo.kcore.Listener.kListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class BrewingItem implements Listener{
+public class BrewItem extends kListener{
 
-	@Getter
 	private ItemStack item;
 	@Getter
 	private ItemStack[] brewing_items;
 	@Getter
 	private int power;
+	@Getter
+	private Falldown falldown;
 	
-	public BrewingItem(int power,ItemStack item,ItemStack[] brewing_items,JavaPlugin instance){
+	public BrewItem(int power,ItemStack item,ItemStack[] brewing_items,Falldown falldown){
+		super(falldown.getManager().getInstance(),item.getItemMeta().getDisplayName());
 		this.item=item;
 		this.brewing_items=brewing_items;
 		this.power=power;
-		Bukkit.getPluginManager().registerEvents(this, instance);
+		this.falldown=falldown;
+	}
+	
+	public ItemStack getRealItem(){
+		return item;
+	}
+	
+	public ItemStack getItem() {
+		return item.clone();
+	}
+	
+	public boolean fireEvent(Player player){
+		PlayerUseBrewItemEvent ev = new PlayerUseBrewItemEvent(player, this);
+		Bukkit.getPluginManager().callEvent(ev);
+		return ev.isCancelled();
 	}
 	
 	public boolean check(Integer[] id,Player player) {

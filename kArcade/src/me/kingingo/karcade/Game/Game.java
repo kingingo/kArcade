@@ -490,7 +490,11 @@ public class Game implements Listener{
 		  }else  if(!getManager().isState(GameState.LobbyPhase)){
 			  if(!getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.SERVER_JOIN_SPECTATE)){
 				  if(!getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.SERVER_JOIN_SPECTATE)){
-					  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
+					  if(!getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)){
+						  if(!getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)){
+							  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
+						  }
+					  }
 				  }
 			  }
 		  }
