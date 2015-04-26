@@ -257,7 +257,7 @@ public class Falldown extends SoloGame{
 		int b = 288;// FEATHER
 		int c = 331;// REDSTONE
 		int d = 348;// GLOWSTONE DUST
-		int e = 378;// MAGMA CREAM
+		int e = 378;// MAGMA CREAM  11 / 3
 		
 		ItemStack i = null;
 		int high = 10;
