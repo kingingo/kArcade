@@ -13,13 +13,13 @@ public class BrewItem extends kListener{
 
 	private ItemStack item;
 	@Getter
-	private ItemStack[] brewing_items;
+	private Integer[] brewing_items;
 	@Getter
 	private int power;
 	@Getter
 	private Falldown falldown;
 	
-	public BrewItem(int power,ItemStack item,ItemStack[] brewing_items,Falldown falldown){
+	public BrewItem(int power,ItemStack item,Integer[] brewing_items,Falldown falldown){
 		super(falldown.getManager().getInstance(),item.getItemMeta().getDisplayName());
 		this.item=item;
 		this.brewing_items=brewing_items;
@@ -44,9 +44,7 @@ public class BrewItem extends kListener{
 	public boolean check(Integer[] id,Player player) {
 		boolean ok = false;
 		Integer[] ids = new Integer[3];
-		ids[0] = getBrewing_items()[0].getTypeId();
-		ids[1] = getBrewing_items()[1].getTypeId();
-		ids[2] = getBrewing_items()[2].getTypeId();
+		ids=brewing_items.clone();
 
 		boolean unsortiert = true;
 		int temp;

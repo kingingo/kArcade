@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Sugar extends BrewItem{
 
-	public Sugar(ItemStack[] brewing_items,Falldown falldown) {
+	public Sugar(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.SUGAR), new String[]{""}, "§bSpeed"), brewing_items, falldown);
 	}
 

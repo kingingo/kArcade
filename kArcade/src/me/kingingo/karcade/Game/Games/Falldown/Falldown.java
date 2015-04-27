@@ -1,9 +1,24 @@
 package me.kingingo.karcade.Game.Games.Falldown;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Games.SoloGame;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.BrewItem;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Blocked;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Creeper;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Firestorm;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Magnet;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Poison;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Radar;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Sethbling;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Snowball;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Sugar;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Wolf;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -14,6 +29,9 @@ import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
@@ -27,6 +45,8 @@ import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Falldown extends SoloGame{
@@ -37,6 +57,9 @@ public class Falldown extends SoloGame{
 	private kArcadeManager manager;
 	@Getter
 	private LaunchItemManager ilManager;
+	private HashMap<Player,Integer[]> playerbrauen = new HashMap<Player,Integer[]>();
+	private HashMap<Player,Integer> power = new HashMap<>();
+	private ArrayList<BrewItem> brewItems = new ArrayList<>();
 	
 	public Falldown(kArcadeManager manager) {
 		super(manager);
@@ -64,6 +87,26 @@ public class Falldown extends SoloGame{
 		setFoodChange(true);
 		setCompassAddon(true);
 		setItemPickup(true);
+		
+		int a = 377; // BLAZE POWDER
+		int b = 288;// FEATHER
+		int c = 331;// Redstone
+		int d = 348;// GLOWSTONE DUST
+		int e = 378;// MAGMA CREAM
+		int f = 353;//Sugar
+		
+		brewItems.add(new Blocked(new Integer[]{d,e,f}, this));
+		brewItems.add(new Creeper(new Integer[]{a,b,c}, this));
+		brewItems.add(new Firestorm(new Integer[]{a, b, d}, this));
+		brewItems.add(new Magnet(new Integer[]{a, b, e}, this));
+		brewItems.add(new Poison(new Integer[]{a, c, d}, this));
+		brewItems.add(new Radar(new Integer[]{a, c, e}, this));
+		brewItems.add(new Sethbling(new Integer[]{a,d,e}, this));
+		brewItems.add(new Snowball(new Integer[]{b,c,d}, this));
+		brewItems.add(new Sugar(new Integer[]{b,c,e}, this));
+		brewItems.add(new me.kingingo.karcade.Game.Games.Falldown.Brew.Items.TNT(new Integer[]{b,d,e}, this));
+		brewItems.add(new Wolf(new Integer[]{c,d,e}, this));
+		
 		getWorldData().Initialize();
 		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 25, 5000);
 		manager.setState(GameState.LobbyPhase);
@@ -73,9 +116,40 @@ public class Falldown extends SoloGame{
 	
 	//TEAM RED
 	
+	Player player;
+	int lvl;
+	@EventHandler
+	public void PowerCounter(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.FAST){
+			for(int i = 0; i<power.size(); i++){
+				lvl=power.get(i);
+				player=((Player)power.keySet().toArray()[i]);
+
+				if(lvl<0){
+					player.setLevel(player.getLevel() - 1);
+					lvl+=1;
+				}else{
+					player.setLevel(player.getLevel() + 1);
+					lvl-=1;
+				}
+				
+				power.remove(i);
+				if(lvl==0){
+					power.put(player, lvl);
+				}
+			}
+		}
+	}
+	
 	public void setlevel(Player player, int lvl){
-		player.setLevel(player.getLevel() + lvl);
-		getStats().setInt(player, player.getLevel(), Stats.POWER);
+		getStats().setInt(player, player.getLevel()+lvl, Stats.POWER);
+		if(power.containsKey(player)){
+			int l = power.get(player);
+			power.remove(player);
+			power.put(player, (lvl+l) );
+		}else{
+			power.put(player, lvl);
+		}
 	}
 	
 	@EventHandler
@@ -182,7 +256,7 @@ public class Falldown extends SoloGame{
 	      }
 	}
 	
-	public String is(ItemStack i) {
+	private String is(ItemStack i) {
 		String item = "null";
 		int id = i.getTypeId();
 
@@ -197,7 +271,7 @@ public class Falldown extends SoloGame{
 		return item;
 	}
 	
-	public void EnchantSword(ItemStack i, Player p) {
+	private void EnchantSword(ItemStack i, Player p) {
 		int lvl = p.getLevel();
 
 		if(lvl < 40){
@@ -225,7 +299,7 @@ public class Falldown extends SoloGame{
 		
 	}
 	
-	public ItemStack RandomBow() {
+	private ItemStack RandomBow() {
 		ItemStack i = null;
 		int high = 3;
 		int low = 1;
@@ -240,7 +314,7 @@ public class Falldown extends SoloGame{
 		return i;
 	}
 
-	public ItemStack RandomArmor() {
+	private ItemStack RandomArmor() {
 		ItemStack i = null;
 		int high = 317;
 		int low = 298;
@@ -252,7 +326,7 @@ public class Falldown extends SoloGame{
 		return i;
 	}
 	
-	public ItemStack RandomBrau() {
+	private ItemStack RandomBrau() {
 		int a = 377; // BLAZE POWDER
 		int b = 288;// FEATHER
 		int c = 331;// REDSTONE
@@ -278,7 +352,7 @@ public class Falldown extends SoloGame{
 		return i;
 	}
 	
-	public ItemStack RandomSword() {
+	private ItemStack RandomSword() {
 		ItemStack i = null;
 		int high = 5;
 		int low = 1;
@@ -297,6 +371,169 @@ public class Falldown extends SoloGame{
 		}
 
 		return i;
+	}
+	
+	@EventHandler
+	public void Brew(PlayerInteractEvent ev){
+		if (UtilEvent.isAction(ev, ActionType.R_BLOCK) && ev.getClickedBlock().getType() == Material.BREWING_STAND) {
+			final Player p = ev.getPlayer();
+			ev.setCancelled(true);
+
+			if (ev.getPlayer().getItemInHand().getType() == Material.BLAZE_POWDER
+					|| ev.getPlayer().getItemInHand().getType() == Material.REDSTONE
+					|| ev.getPlayer().getItemInHand().getType() == Material.GLOWSTONE_DUST
+					|| ev.getPlayer().getItemInHand().getType() == Material.FEATHER
+					|| ev.getPlayer().getItemInHand().getType() == Material.MAGMA_CREAM) {
+				if (playerbrauen.containsKey(p)) {
+					Integer[] id = playerbrauen.get(p);
+					if (id[1] == null) {
+						id[1] = ev.getPlayer().getItemInHand().getTypeId();
+						final Location loc = ev.getClickedBlock().getLocation();
+						
+						Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
+
+							@Override
+							public void run() {
+								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)3);
+								
+							}
+							
+						},2);
+							
+						
+						
+						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");
+					} else if (id[2] == null) {
+						id[2] = p.getItemInHand().getTypeId();
+						final Location loc = ev.getClickedBlock().getLocation();
+						Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
+
+							@Override
+							public void run() {
+								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)7);
+								
+							}
+							
+						},2);
+
+						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt Du kannst Jetzt mit den Magic Stick dir was Brauen.");
+					} else {
+						final Location loc = ev.getClickedBlock().getLocation();
+						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())
+								+ "§bBraustand voll!");
+						Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
+
+							@Override
+							public void run() {
+								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)2);
+								
+							}
+							
+						},2);
+					}
+					playerbrauen.put(p, id);
+					UtilInv.remove(p, p.getItemInHand(), 1);
+				} else {
+					Integer[] id = new Integer[3];
+					id[0] = p.getItemInHand().getTypeId();
+					playerbrauen.put(p, id);
+					UtilInv.remove(p, p.getItemInHand(), 1);
+					final Location loc = ev.getClickedBlock().getLocation();
+					Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
+
+						@Override
+						public void run() {
+							p.sendBlockChange(loc, Material.BREWING_STAND, (byte)2);
+							
+						}
+						
+					},10);
+
+					p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");
+					
+				}
+				return;
+			} else if (p.getItemInHand().getType() == Material.STICK) {
+				if (playerbrauen.containsKey(p)) {
+					Integer[] id = playerbrauen.get(p);
+					if (id[0] == null) {
+						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())
+								+ "§cDer Braustand ist leer!");
+					} else if (id[1] == null) {
+						p.getInventory().addItem(
+								new ItemStack(id[0], 1));
+						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§cEs Fehlen 2 Items min 3");
+					} else if (id[2] == null) {
+						p.getInventory().addItem(
+								new ItemStack(id[0], 1));
+						p.getInventory().addItem(
+								new ItemStack(id[1], 1));
+						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§cEs Fehlt 1 Item min 3");
+					} else {
+
+						boolean have = Brauen(id, p);
+
+						if (!have) {
+							p.getInventory().addItem(
+									new ItemStack(id[0], 1));
+							p.getInventory().addItem(
+									new ItemStack(id[1], 1));
+							p.getInventory().addItem(
+									new ItemStack(id[2], 1));
+							p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+"§cDie Kombination stimmt nicht!");
+						}
+					}
+					p.updateInventory();
+					playerbrauen.remove(p);
+				} else {
+					p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())
+							+ "§cDer Braustand ist leer!");
+				}
+			}
+
+			return;
+		}
+	}
+	
+	Player p;
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent ev){
+		p = ev.getPlayer();
+		
+		if(getManager().getState() == GameState.SchutzModus){
+			if(getGameList().isPlayerState(p)==PlayerState.IN){
+				
+			}
+		}
+	}
+	
+	public boolean Brauen(Integer[] id, Player p) {
+		boolean have = false;
+		for(BrewItem item : brewItems){
+			if(item.check(id, player)){
+				p.getInventory().addItem(item.getItem());
+				setlevel(player, -50);
+				have=true;
+				break;
+			}
+		}
+		return have;
+	}
+	
+	String t;
+	@EventHandler
+	public void Enchant(PlayerInteractEvent ev){
+		if (UtilEvent.isAction(ev, ActionType.R_BLOCK )&& ev.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE) {
+			t = is(ev.getPlayer().getItemInHand());
+			ev.setCancelled(true);
+			if (t.equalsIgnoreCase("SWORD")) {
+				EnchantSword(ev.getPlayer().getItemInHand(),ev.getPlayer());
+			} else if (t.equalsIgnoreCase("BOW")) {
+				EnchantBow(ev.getPlayer().getItemInHand(),ev.getPlayer());
+			} else if (t.equalsIgnoreCase("ARMOR")) {
+				EnchantArmor(ev.getPlayer().getItemInHand(),ev.getPlayer());
+			}
+		}
 	}
 	
 	@EventHandler
@@ -333,6 +570,7 @@ public class Falldown extends SoloGame{
 			player.teleport(spawn);
 			getManager().Clear(player);
 			player.setLevel( getStats().getInt(Stats.POWER, player) );
+			getGameList().addPlayer(player,PlayerState.IN);
 			player.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.STICK), "§cMagic Stick"));
 		}
 		getManager().setStart(60*2);

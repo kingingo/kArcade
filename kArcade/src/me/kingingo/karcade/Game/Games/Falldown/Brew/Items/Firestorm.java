@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Firestorm extends BrewItem{
 
-	public Firestorm(ItemStack[] brewing_items,Falldown falldown) {
+	public Firestorm(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.LAVA_BUCKET,1), new String[]{""}, "§eFirestorm"), brewing_items, falldown);
 	}
 

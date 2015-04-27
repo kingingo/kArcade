@@ -20,7 +20,7 @@ public class Blocked extends BrewItem{
 
 	private long time = -1;
 	
-	public Blocked(ItemStack[] brewing_items,Falldown falldown) {
+	public Blocked(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.IRON_BARDING,1), new String[]{""}, "§cBlocked"), brewing_items, falldown);
 	}
 	

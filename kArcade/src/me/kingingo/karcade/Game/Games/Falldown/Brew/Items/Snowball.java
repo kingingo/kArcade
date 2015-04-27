@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Snowball extends BrewItem{
 
-	public Snowball(ItemStack[] brewing_items,Falldown falldown) {
+	public Snowball(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.SNOW_BALL,1), new String[]{""}, "§aSnowball"), brewing_items, falldown);
 	}
 	

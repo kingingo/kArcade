@@ -28,7 +28,7 @@ public class Creeper extends BrewItem{
 	@Getter
 	private HashMap<Creature,Player> list = new HashMap<>();
 
-	public Creeper(ItemStack[] items,Falldown instance) {
+	public Creeper(Integer[] items,Falldown instance) {
 		super(100, UtilItem.Item(new ItemStack(Material.MONSTER_EGG,UtilMath.RandomInt(6, 3),(byte)91), new String[]{""}, "§aCreeper Spawner"), items, instance);
 	}
 	

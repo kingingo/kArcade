@@ -17,7 +17,7 @@ import org.bukkit.util.Vector;
 
 public class Magnet extends BrewItem{
 
-	public Magnet(ItemStack[] brewing_items,Falldown falldown) {
+	public Magnet(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.GOLD_NUGGET), new String[]{""}, "§bMagnet"), brewing_items, falldown);
 	}
 

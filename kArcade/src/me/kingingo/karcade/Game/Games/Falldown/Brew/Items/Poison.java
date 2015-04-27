@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Poison extends BrewItem{
 
-	public Poison(ItemStack[] brewing_items,Falldown falldown) {
+	public Poison(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.POTION,1,(byte)8228), new String[]{""}, "§aPoison"), brewing_items, falldown);
 	}
 

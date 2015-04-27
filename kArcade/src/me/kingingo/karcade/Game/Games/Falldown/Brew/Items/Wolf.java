@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Wolf extends BrewItem{
 
-	public Wolf(ItemStack[] brewing_items,Falldown falldown) {
+	public Wolf(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.BONE,UtilMath.RandomInt(6, 3)), new String[]{""}, "§bWolf"), brewing_items, falldown);
 	}
 

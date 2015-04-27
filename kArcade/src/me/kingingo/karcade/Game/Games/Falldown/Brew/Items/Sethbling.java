@@ -3,15 +3,25 @@ package me.kingingo.karcade.Game.Games.Falldown.Brew.Items;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import me.kingingo.karcade.Game.Games.Falldown.Falldown;
+import me.kingingo.karcade.Game.Games.Falldown.Brew.BrewItem;
+import me.kingingo.kcore.Update.UpdateType;
+import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilFirework;
+import me.kingingo.kcore.Util.UtilInv;
+import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Color;
 import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,19 +29,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
-
-import me.kingingo.karcade.Game.Games.Falldown.Falldown;
-import me.kingingo.karcade.Game.Games.Falldown.Brew.BrewItem;
-import me.kingingo.kcore.Update.UpdateType;
-import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilFirework;
-import me.kingingo.kcore.Util.UtilInv;
-import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilMath;
-import me.kingingo.kcore.Util.UtilPlayer;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
 
 public class Sethbling extends BrewItem{
 
@@ -39,7 +36,7 @@ public class Sethbling extends BrewItem{
 	private HashMap<Block,Long> blocke = new HashMap<>();
 	private HashMap<Block,List<Player>> blocke_list = new HashMap<>();
 	
-	public Sethbling(ItemStack[] brewing_items,Falldown falldown) {
+	public Sethbling(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.DIODE,1), new String[]{""}, "§6Sethbling"), brewing_items, falldown);
 	}
 	

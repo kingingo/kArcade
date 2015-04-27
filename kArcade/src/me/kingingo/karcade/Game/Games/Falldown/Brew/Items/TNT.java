@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class TNT extends BrewItem{
 
-	public TNT(ItemStack[] brewing_items,Falldown falldown) {
+	public TNT(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.TNT), new String[]{""}, "§cTNT"), brewing_items, falldown);
 	}
 

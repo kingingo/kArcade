@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Radar extends BrewItem{
 
-	public Radar(ItemStack[] brewing_items,Falldown falldown) {
+	public Radar(Integer[] brewing_items,Falldown falldown) {
 		super(100, UtilItem.Item(new ItemStack(Material.COMPASS,1), new String[]{""}, "§7Radar"), brewing_items, falldown);
 	}
 
