@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import lombok.Getter;
+import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Games.SoloGame;
 import me.kingingo.karcade.Game.Games.Falldown.Brew.BrewItem;
 import me.kingingo.karcade.Game.Games.Falldown.Brew.Items.Blocked;
@@ -28,10 +30,10 @@ import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
@@ -43,9 +45,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -69,9 +75,9 @@ public class Falldown extends SoloGame{
 		manager.setState(GameState.Laden);
 		this.manager=manager;
 		this.worldData=new WorldData(manager,getType());
-		setWorldData(getWorldData());
-		setCreatureSpawn(true);
-		setMin_Players(6);
+		setWorldData(worldData);
+		setMin_Players(2);
+		setCreatureSpawn(false);
 		setMax_Players(16);
 		setDamage(false);
 		setDamagePvP(false);
@@ -79,12 +85,11 @@ public class Falldown extends SoloGame{
 		setDamagePvE(false);
 		setDamageSelf(false);
 		setBlockSpread(false);
-		setCreatureSpawn(false);
 		setDeathDropItems(true);
 		setBlockBreak(false);
 		setBlockPlace(false);
 		setItemDrop(true);
-		setFoodChange(true);
+		setFoodChange(false);
 		setCompassAddon(true);
 		setItemPickup(true);
 		
@@ -107,14 +112,18 @@ public class Falldown extends SoloGame{
 		brewItems.add(new me.kingingo.karcade.Game.Games.Falldown.Brew.Items.TNT(new Integer[]{b,d,e}, this));
 		brewItems.add(new Wolf(new Integer[]{c,d,e}, this));
 		
-		getWorldData().Initialize();
-		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 25, 5000);
-		manager.setState(GameState.LobbyPhase);
 		ilManager=new LaunchItemManager(getManager().getInstance());
+		this.worldData.Initialize();
+		manager.setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
 	
 	//TEAM RED
+	
+	@EventHandler
+	public void World(WorldLoadEvent ev){
+		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 25, 5000);
+	}
 	
 	Player player;
 	int lvl;
@@ -122,8 +131,8 @@ public class Falldown extends SoloGame{
 	public void PowerCounter(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.FAST){
 			for(int i = 0; i<power.size(); i++){
-				lvl=power.get(i);
 				player=((Player)power.keySet().toArray()[i]);
+				lvl=power.get(player);
 
 				if(lvl<0){
 					player.setLevel(player.getLevel() - 1);
@@ -133,7 +142,7 @@ public class Falldown extends SoloGame{
 					lvl-=1;
 				}
 				
-				power.remove(i);
+				power.remove(player);
 				if(lvl==0){
 					power.put(player, lvl);
 				}
@@ -150,6 +159,27 @@ public class Falldown extends SoloGame{
 		}else{
 			power.put(player, lvl);
 		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void JoinHologram(PlayerJoinEvent ev){
+		if(getManager().getState()!=GameState.LobbyPhase)return;
+		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+		"Server: Falldown §a"+kArcade.id,
+		"Map: "+getWorldData().getMapName(),
+		" ",
+		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",	
+		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
+		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
+		"Power: "+getStats().getInt(Stats.POWER, ev.getPlayer()),
+		" ",
+		"Gespielte Spiele: "+(win+lose),
+		"Gewonnene Spiele: "+win,
+		"Verlorene Spiele: "+lose
+		});
 	}
 	
 	@EventHandler
@@ -173,6 +203,10 @@ public class Falldown extends SoloGame{
 			setDamage(true);
 			setDamagePvP(true);
 			getManager().setStart( 60*10 );
+			setDamagePvP(true);
+			setDamageEvP(true);
+			setDamagePvE(true);
+			setDamageSelf(true);
 			getManager().setState(GameState.InGame);
 			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END.getText());
 		break;
@@ -373,6 +407,24 @@ public class Falldown extends SoloGame{
 		return i;
 	}
 	
+	public static void RemoveItem(Player p) {
+
+		int a = p.getItemInHand().getAmount();
+		ItemStack hand = p.getItemInHand();
+
+		if (a == 1) {
+
+			p.getInventory().remove(p.getItemInHand());
+
+		}
+
+		if (a > 1) {
+
+			hand.setAmount(hand.getAmount() - 1);
+		}
+
+	}
+	
 	@EventHandler
 	public void Brew(PlayerInteractEvent ev){
 		if (UtilEvent.isAction(ev, ActionType.R_BLOCK) && ev.getClickedBlock().getType() == Material.BREWING_STAND) {
@@ -395,13 +447,11 @@ public class Falldown extends SoloGame{
 							@Override
 							public void run() {
 								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)3);
-								
 							}
 							
 						},2);
-							
-						
-						
+
+						RemoveItem(p);
 						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");
 					} else if (id[2] == null) {
 						id[2] = p.getItemInHand().getTypeId();
@@ -416,6 +466,7 @@ public class Falldown extends SoloGame{
 							
 						},2);
 
+						RemoveItem(p);
 						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt Du kannst Jetzt mit den Magic Stick dir was Brauen.");
 					} else {
 						final Location loc = ev.getClickedBlock().getLocation();
@@ -432,12 +483,12 @@ public class Falldown extends SoloGame{
 						},2);
 					}
 					playerbrauen.put(p, id);
-					UtilInv.remove(p, p.getItemInHand(), 1);
+					RemoveItem(p);
 				} else {
 					Integer[] id = new Integer[3];
 					id[0] = p.getItemInHand().getTypeId();
 					playerbrauen.put(p, id);
-					UtilInv.remove(p, p.getItemInHand(), 1);
+					RemoveItem(p);
 					final Location loc = ev.getClickedBlock().getLocation();
 					Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
 
@@ -448,9 +499,8 @@ public class Falldown extends SoloGame{
 						}
 						
 					},10);
-
-					p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");
-					
+					RemoveItem(p);
+					p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");		
 				}
 				return;
 			} else if (p.getItemInHand().getType() == Material.STICK) {
@@ -495,14 +545,33 @@ public class Falldown extends SoloGame{
 		}
 	}
 	
+	String i;
 	Player p;
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent ev){
-		p = ev.getPlayer();
-		
 		if(getManager().getState() == GameState.SchutzModus){
-			if(getGameList().isPlayerState(p)==PlayerState.IN){
-				
+			p = ev.getPlayer();
+			if(!p.isOnGround()&&getGameList().isPlayerState(p)==PlayerState.IN){
+				for (Entity e : p.getLocation().getChunk().getEntities()) {
+					if (e instanceof EnderCrystal) {
+						if (p.getLocation().distanceSquared(e.getLocation()) <= 3) {
+							i = RandomItem();
+							if(i.equalsIgnoreCase("POWER")){
+								setlevel(p, 10);
+							} else if (i.equalsIgnoreCase("ARMOR")) {
+								p.getInventory().addItem(RandomArmor());
+							} else if (i.equalsIgnoreCase("SWORD")) {
+								p.getInventory().addItem(RandomSword());
+							} else if (i.equalsIgnoreCase("BOW")) {
+								p.getInventory().addItem(RandomBow());
+							} else if (i.equalsIgnoreCase("BRAUITEMS")) {
+								p.getInventory().addItem(RandomBrau());
+							}
+							p.updateInventory();
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -510,9 +579,9 @@ public class Falldown extends SoloGame{
 	public boolean Brauen(Integer[] id, Player p) {
 		boolean have = false;
 		for(BrewItem item : brewItems){
-			if(item.check(id, player)){
+			if(item.check(id, p)){
 				p.getInventory().addItem(item.getItem());
-				setlevel(player, -50);
+				setlevel(p, -50);
 				have=true;
 				break;
 			}

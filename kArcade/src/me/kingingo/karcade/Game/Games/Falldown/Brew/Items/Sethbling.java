@@ -10,6 +10,7 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilFirework;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
@@ -32,7 +33,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Sethbling extends BrewItem{
 
-	private HashMap<Player,Integer> timer = new HashMap<>();
+	private HashMap<Player,Long> timer = new HashMap<>();
 	private HashMap<Block,Long> blocke = new HashMap<>();
 	private HashMap<Block,List<Player>> blocke_list = new HashMap<>();
 	
@@ -47,7 +48,7 @@ public class Sethbling extends BrewItem{
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
 					UtilInv.remove(event.getPlayer(),event.getPlayer().getItemInHand().getType(),event.getPlayer().getItemInHand().getData().getData(), 1);
-					timer.put(event.getPlayer(), 15);
+					timer.put(event.getPlayer(), (System.currentTimeMillis()+TimeSpan.SECOND*17) );
 				}
 			}
 		}
@@ -61,10 +62,10 @@ public class Sethbling extends BrewItem{
 	public void Update(UpdateEvent ev){
 		if(ev.getType() == UpdateType.SEC){
 			for(int i = 0; i < timer.size(); i++){
-				if(timer.get(i)<System.currentTimeMillis()){
+				player=(Player)timer.keySet().toArray()[i];
+				if(timer.get(player)<System.currentTimeMillis()){
 					timer.remove(i);
 				}else{
-					player=(Player)timer.keySet().toArray()[i];
 					UtilFirework.start(player.getLocation(), Color.RED, Type.BALL_LARGE);
 					player.getWorld().playSound(player.getLocation(), Sound.HURT_FLESH, 1.0F, 1.0F);
 					
@@ -89,13 +90,13 @@ public class Sethbling extends BrewItem{
 			}
 			
 			for(int i = 0; i < blocke.size() ; i++){
-				if(blocke.get(i)<=System.currentTimeMillis()){
-					block=(Block)blocke.keySet().toArray()[i];
-					for (Player player : blocke_list.get(i))player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
+				block=(Block)blocke.keySet().toArray()[i];
+				if(blocke.get(block)<=System.currentTimeMillis()){
+					for (Player player : blocke_list.get(block))player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 
 		            block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
-					blocke_list.remove(i);
-					blocke.remove(i);
+					blocke_list.remove(block);
+					blocke.remove(block);
 				}
 			}
 			
