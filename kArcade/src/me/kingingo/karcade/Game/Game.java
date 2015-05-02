@@ -457,7 +457,7 @@ public class Game implements Listener{
 			  getManager().getLobby().getWorld().setStorm(false);
 			  getManager().getLobby().getWorld().setTime(4000);
 			  ev.getPlayer().teleport(getManager().getLobby());
-			  if(getMax_Players() <= Bukkit.getOnlinePlayers().length ){
+			  if(getMax_Players() <= UtilServer.getPlayers().size() ){
 				  if(getManager().getStart() > 16){
 					  getManager().setStart(16);
 				  }
@@ -470,7 +470,7 @@ public class Game implements Listener{
 	  
 	  @EventHandler
 	  public void Login(PlayerLoginEvent ev){
-		 if(UtilServer.getPlayers().length>=getMax_Players()&&getManager().isState(GameState.LobbyPhase)){
+		 if(UtilServer.getPlayers().size()>=getMax_Players()&&getManager().isState(GameState.LobbyPhase)){
 			  if(getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.JOIN_FULL_SERVER)||getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.JOIN_FULL_SERVER)){
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){

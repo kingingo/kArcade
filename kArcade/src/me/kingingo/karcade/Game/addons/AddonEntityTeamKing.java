@@ -119,18 +119,7 @@ public class AddonEntityTeamKing implements Listener {
 	@EventHandler
 	public void Testeer(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.MIN_005)return;
-		
-//		System.out.println("Eintrag: "+teams.size());
-//		for(Team t : teams.keySet()){
-//			try{
-//			System.out.println("TEAM: "+t.Name());
-//			System.out.println("eeeeENTITY: "+teams.get(t)==null);
-//			System.out.println("ENTITYddd: "+teams.get(t).isDead());
-//			}catch(NullPointerException e){
-//				System.err.println("[AddonEntityKing] Fehler: dddddd NullPointer!");
-//			}
-//		}
-//		
+
 		for(Team t : teams.keySet()){
 			try{
 				if(teams.get(t).isDead()){
@@ -175,7 +164,7 @@ public class AddonEntityTeamKing implements Listener {
 		if(ev.getRightClicked() instanceof Creature&&is(ev.getRightClicked())){
 			if(UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())){
 				ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
-				setHealt(((Creature)ev.getRightClicked()),20);
+				setHealt(((Creature)ev.getRightClicked()),getHealt(((Creature)ev.getRightClicked()))+20);
 			}
 		}
 	}

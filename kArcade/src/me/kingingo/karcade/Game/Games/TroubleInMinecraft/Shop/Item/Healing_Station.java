@@ -10,12 +10,12 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -77,12 +77,12 @@ public class Healing_Station implements Listener,IShop {
 			}
 			
 			for(Player p : TTT.getGameList().getPlayers(PlayerState.IN)){
-				if(b.getLocation().distance(p.getLocation()) < 3&&((CraftPlayer)p).getHealth()!=((CraftPlayer)p).getMaxHealth()){
+				if(b.getLocation().distance(p.getLocation()) < 3&&UtilPlayer.getHealth(p)!=UtilPlayer.getMaxHealth(p)){
 					d=d-0.4;
-					if(((CraftPlayer)p).getHealth()+0.4>((CraftPlayer)p).getMaxHealth()){
-						p.setHealth( ((CraftPlayer)p).getMaxHealth() );
+					if(UtilPlayer.getHealth(p)+0.4>UtilPlayer.getMaxHealth(p)){
+						p.setHealth( UtilPlayer.getMaxHealth(p) );
 					}else{
-						p.setHealth( ((CraftPlayer)p).getHealth()+0.4 );
+						p.setHealth( UtilPlayer.getHealth(p)+0.4 );
 					}
 				}
 			}

@@ -80,7 +80,7 @@ public class AddonVoteTeam implements Listener{
 					ev.setCancelled(true);
 					p.closeInventory();
 					
-					if(UtilServer.getPlayers().length<=Manager.getGame().getMin_Players()){
+					if(UtilServer.getPlayers().size()<=Manager.getGame().getMin_Players()){
 						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+Text.VOTE_TEAM_MIN_PLAYER.getText(Manager.getGame().getMin_Players()+1));
 						return;
 					}

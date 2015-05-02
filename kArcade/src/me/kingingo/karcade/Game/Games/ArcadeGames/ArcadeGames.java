@@ -65,7 +65,7 @@ public class ArcadeGames extends kListener{
 	public void UpdateInfo(GameUpdateInfoEvent ev){
 		packet=ev.getPacket();
 		packet.setMax_online(12);
-		packet.setOnline(UtilServer.getPlayers().length);
+		packet.setOnline(UtilServer.getPlayers().size());
 		packet.setMap( last_game.getType().getKürzel() );
 		packet.setTyp(GameType.ArcadeGames);
 	}

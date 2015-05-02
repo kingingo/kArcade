@@ -9,11 +9,13 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -80,6 +82,7 @@ public class SoloGame extends Game{
 	    ((CraftPlayer)player).getHandle().k = false;
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(getManager()));
 	    player.getInventory().addItem(getCompass().getCompassItem());
+	    Bukkit.getPluginManager().callEvent(new KitShopPlayerDeleteEvent(player));
 	  }
 	
 }

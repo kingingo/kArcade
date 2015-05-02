@@ -14,10 +14,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Bright extends SheepWarsItem{
+public class Bridge extends SheepWarsItem{
 
-	public Bright(JavaPlugin instance) {
-		super(instance, UtilItem.addEnchantmentGlow(UtilItem.RenameItem(new ItemStack(Material.SANDSTONE), "§bBright")));
+	public Bridge(JavaPlugin instance) {
+		super(instance, UtilItem.addEnchantmentGlow(UtilItem.RenameItem(new ItemStack(Material.SANDSTONE), "§bBrigde")));
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)

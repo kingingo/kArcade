@@ -33,8 +33,8 @@ public class MagnetStab extends kListener{
 			if(manager.getNPCList()==null||manager.getNPCList().isEmpty())return;
 			for(Integer i : manager.getNPCList().keySet()){
 				NPC npc = manager.getNPCList().get(i);
-				if(!npc.getLoc().getWorld().getName().equalsIgnoreCase(ev.getPlayer().getWorld().getName()))continue;
-				if(npc.getLoc().distance(ev.getPlayer().getLocation()) <= 4){
+				if(!npc.getLocation().getWorld().getName().equalsIgnoreCase(ev.getPlayer().getWorld().getName()))continue;
+				if(npc.getLocation().distance(ev.getPlayer().getLocation()) <= 4){
 					loc = ev.getPlayer().getLocation().add(0,2,0);
 					npc.walk(loc);
 					break;

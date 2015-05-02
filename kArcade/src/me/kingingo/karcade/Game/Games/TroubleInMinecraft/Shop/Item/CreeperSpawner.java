@@ -80,6 +80,7 @@ public class CreeperSpawner extends kListener implements IShop{
 		Player a = list.get( ((Creature)ev.getEntity()) );
 		l = UtilPlayer.getInRadius(ev.getLocation(), 5);
 		for(Player player : l.keySet()){
+			if(getTTT().getTeam(player)==Team.TRAITOR)continue;
 			d=l.get(player);
 			player.damage(12/d, a);
 		}

@@ -277,12 +277,12 @@ public class SurvivalGames extends TeamGame{
 		switch(getManager().getStart()){
 			case 20:
 				setDamage(false);
-				if(wd.getLocs().containsKey(Team.BLUE.Name())){
-					for(Location loc : wd.getLocs().get(Team.BLUE.Name())){
-						loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-						loc.getWorld().spawnFallingBlock(loc.add(0,70,0), 33, (byte)6);
-					}
-				}
+//				if(wd.getLocs().containsKey(Team.BLUE.Name())){
+//					for(Location loc : wd.getLocs().get(Team.BLUE.Name())){
+//						loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
+//						loc.getWorld().spawnFallingBlock(loc.add(0,70,0), 33, (byte)6);
+//					}
+//				}
 			break;
 			case 15:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getManager().getStart()));break;
 			case 10:getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getManager().getStart()));break;
@@ -471,12 +471,12 @@ public class SurvivalGames extends TeamGame{
 		Team[] t = new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
 				,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12};
 		
-		 int a = UtilServer.getPlayers().length/2;
+		 int a = UtilServer.getPlayers().size()/2;
 		 for(int i=0;i<a;i++){
 			 list.put(t[i], 2);
 		 }
 		
-		 if (!((UtilServer.getPlayers().length%2) == 0)){
+		 if (!((UtilServer.getPlayers().size()%2) == 0)){
           list.put(t[a], 1);
         }
 		

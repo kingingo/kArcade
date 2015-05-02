@@ -1,7 +1,6 @@
 package me.kingingo.karcade;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -48,25 +47,21 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.TimeSpan;
-import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
-import net.minecraft.server.v1_7_R4.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -163,7 +158,7 @@ public class kArcadeManager implements Listener{
 
 	public void setNewGame(GameType typ){
 		getInstance().getConfig().set("Config.Server.Game", typ.getTyp());
-		if(UtilServer.getPlayers().length!=0)for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+		if(UtilServer.getPlayers().size()!=0)for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 		try {
 			Runtime.getRuntime().exec("./start.sh");
@@ -207,22 +202,6 @@ public class kArcadeManager implements Listener{
 		}
 		return null;
 	}
-	
-	public void setWorldUnSave(World w){
-		WorldServer ws = ((CraftWorld)w).getHandle();
-		try{
-			Field field = ws.chunkProvider.getClass().getDeclaredField("CanSave");
-			field.setAccessible(true);
-			field.set(ws.chunkProvider, "false");
-		}catch(Exception e){
-			
-		}
-	}
-	
-//	@EventHandler(priority=EventPriority.HIGHEST)
-//	public void QuitErr(PlayerQuitEvent ev){
-//		System.out.println("[EpicPvP] PlayerQuitEvent: PLAYER:"+ev.getPlayer().getName()+" REASON:"+ev.getQuitMessage());
-//	}
 	
 	@EventHandler
 	public void Kick(PlayerKickEvent ev){
@@ -341,8 +320,14 @@ public class kArcadeManager implements Listener{
 	    for(PotionEffect pe : player.getActivePotionEffects())player.removePotionEffect(pe.getType());
 	    
 	    ((CraftPlayer)player).getHandle().k = true;
-
-	    ((CraftPlayer)player).getHandle().p(0);
+//	    EntityPlayer ep = ((CraftPlayer)player).getHandle();
+//	    EntityHuman eh = (EntityHuman)ep;
+//	    EntityLiving el = (EntityLiving)eh;
+//	    Entity e = (Entity)el;
+//	    DataWatcher data = (DataWatcher) UtilReflection.getValue("datawatcher",e);
+//	    data.watch(9, Byte.valueOf((byte)0));
+	    ((CraftEntity)player).getHandle().getDataWatcher().watch(9, Byte.valueOf((byte)0));
+	    //((CraftPlayer)player).getHandle().p(0);
 	}
 	
 	public void updateInfo(int o){
@@ -354,7 +339,7 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(GameState s){
-		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().size(), getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
@@ -362,7 +347,7 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void updateInfo(){
-		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().length, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().size(), getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
@@ -378,7 +363,7 @@ public class kArcadeManager implements Listener{
 	
 	@EventHandler
 	public void Q(PlayerQuitEvent ev){
-		updateInfo(UtilServer.getPlayers().length-1);
+		updateInfo(UtilServer.getPlayers().size()-1);
 	}
 	
 	@EventHandler
@@ -419,7 +404,7 @@ public class kArcadeManager implements Listener{
 	}
 	
 	public void broadcast(String message){
-		if(UtilServer.getPlayers().length==0)return;
+		if(UtilServer.getPlayers().size()==0)return;
 	    UtilServer.broadcast(message);
 	}
 	
@@ -530,7 +515,7 @@ public class kArcadeManager implements Listener{
 	
 	@EventHandler
 	public void Time_Start(UpdateEvent ev){
-		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase&&UtilServer.getPlayers().length<=0){
+		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase&&UtilServer.getPlayers().size()<=0){
 			if(TimeSpan.HOUR*3 < (System.currentTimeMillis() - kArcade.start_time) ){
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				try {
@@ -599,17 +584,14 @@ public class kArcadeManager implements Listener{
 			case 90:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 60:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 30:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 15:
-				broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
-				for(Player p : UtilServer.getPlayers())Title.sendTitle(p, "§aMap:§6 "+getGame().getWorldData().getMapName());
-				break;
+			case 15:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 10:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 3:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 2:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
 			}
 		}else{
-			if(UtilServer.getPlayers().length>=getGame().getMin_Players()){
+			if(UtilServer.getPlayers().size()>=getGame().getMin_Players()){
 				Bukkit.getPluginManager().callEvent(new GameStartEvent(getGame().getType()));
 				updateInfo(GameState.InGame);
 			}else{

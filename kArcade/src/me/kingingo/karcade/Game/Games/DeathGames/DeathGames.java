@@ -731,7 +731,7 @@ public class DeathGames extends SoloGame{
 		long time = System.currentTimeMillis();
 		getWorldData().getWorld().setStorm(false);
 		NoCheatToggle();
-		chest_anzahl=UtilServer.getPlayers().length*10;
+		chest_anzahl=UtilServer.getPlayers().size()*10;
 		
 		grenze.setList(chest_anzahl, g.get( chest_anzahl ));
 		g.remove(chest_anzahl);

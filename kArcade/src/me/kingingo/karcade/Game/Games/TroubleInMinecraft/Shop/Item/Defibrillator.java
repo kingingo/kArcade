@@ -105,7 +105,7 @@ public class Defibrillator implements Listener,IShop{
 		if(p.getItemInHand()==null||!UtilItem.ItemNameEquals(p.getItemInHand(), item))return;
 		NPC npc = ev.getNpc();
 		
-		if(!TTT.getNpclist().containsKey(npc.getP().getId())){
+		if(!TTT.getNpclist().containsKey(npc.getEntityID())){
 			String name = npc.getName();
 			Player r=null;
 			for(Player p1 : TTT.getGameList().getPlayers(PlayerState.OUT)){
@@ -118,7 +118,7 @@ public class Defibrillator implements Listener,IShop{
 			if(r!=null){
 				UtilInv.remove(p, p.getItemInHand().getType(), p.getItemInHand().getData().getData(), 1);
 				l.add(r);
-				npc.remove();
+				npc.despawn();
 				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
 				UtilPlayer.sendMessage(r,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
 			}else{

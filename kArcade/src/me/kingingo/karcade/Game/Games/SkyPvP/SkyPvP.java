@@ -308,7 +308,7 @@ public class SkyPvP extends SoloGame{
 		TargetNextPlayer = new AddonTargetNextPlayer(250,getManager());
 		TargetNextPlayer.setAktiv(true);
 		
-		if(locs.size()<UtilServer.getPlayers().length)System.err.println("[SkyPvP] Es sind zu wenig Location's angegeben!");
+		if(locs.size()<UtilServer.getPlayers().size())System.err.println("[SkyPvP] Es sind zu wenig Location's angegeben!");
 		int r;
 		PlayerScoreboard ps;
 		for(Player p : UtilServer.getPlayers()){

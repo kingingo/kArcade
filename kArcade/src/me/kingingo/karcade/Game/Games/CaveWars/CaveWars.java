@@ -1,6 +1,7 @@
 package me.kingingo.karcade.Game.Games.CaveWars;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import lombok.Getter;
@@ -383,15 +384,15 @@ public class CaveWars extends TeamGame{
 	
 	public HashMap<Team,Integer> verteilung(Team[] t){
 		HashMap<Team,Integer> list = new HashMap<>();
-		Player[] l = UtilServer.getPlayers();
+		Collection<? extends Player> l = UtilServer.getPlayers();
 	
 		for(Team team : t){
-			list.put(team, l.length/t.length);
+			list.put(team, l.size()/t.length);
 		}
 		
-		if(l.length%t.length!=0){
+		if(l.size()%t.length!=0){
 			list.remove(t[0]);
-			list.put(t[0], (l.length/t.length)+1);
+			list.put(t[0], (l.size()/t.length)+1);
 		}
 
 		return list;

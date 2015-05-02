@@ -22,10 +22,10 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.UtilFile;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.WorldUtil;
 import me.kingingo.kcore.memory.MemoryFix;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,6 +48,8 @@ public class kArcade extends JavaPlugin{
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel()));
+		
+//			UtilFile.DeleteFolder(new File("plugins/NoCheatPlus/"));
 			id=getConfig().getInt("Config.Server.ID");
 			FilePath=getConfig().getString("Config.Server.FilePath");
 			saveConfig();
@@ -73,8 +75,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandChatMute.class, new CommandChatMute(this));
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			new MemoryFix(this);
-			for(World w : getServer().getWorlds())w.setAutoSave( getConfig().getBoolean("Config.Server.World-Save") );
-			if( !getConfig().getBoolean("Config.Server.World-Save") )Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
+			if( !getConfig().getBoolean("Config.Server.World-Save") )WorldUtil.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){
 			UtilException.catchException(e, getConfig().getString("Config.Server.ID"), Bukkit.getIp(), mysql);

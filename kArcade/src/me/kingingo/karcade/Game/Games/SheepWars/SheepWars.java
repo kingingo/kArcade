@@ -1,6 +1,7 @@
 package me.kingingo.karcade.Game.Games.SheepWars;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import lombok.Getter;
@@ -14,7 +15,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.Addon.AddonDropItems;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.Bomb;
-import me.kingingo.karcade.Game.Games.SheepWars.Items.Bright;
+import me.kingingo.karcade.Game.Games.SheepWars.Items.Bridge;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.ProtectWall;
 import me.kingingo.karcade.Game.Games.SheepWars.Items.SpezialVillager;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -123,7 +124,7 @@ public class SheepWars extends TeamGame{
 	@Getter
 	Bomb bomb;
 	@Getter
-	Bright bright;
+	Bridge bridge;
 	@Getter
 	ProtectWall wall;
 	@Getter
@@ -173,7 +174,7 @@ public class SheepWars extends TeamGame{
 		setVoteTeam(new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
 		ServiceSheepWars.setSheepWars(this);
 		liManager=new LaunchItemManager( manager.getInstance() );
-		bright=new Bright(manager.getInstance());
+		bridge=new Bridge(manager.getInstance());
 		wall=new ProtectWall(manager.getInstance());
 		bomb=new Bomb(manager.getInstance(),liManager);
 		villager=new SpezialVillager(this);
@@ -188,7 +189,7 @@ public class SheepWars extends TeamGame{
 				new PerkDeathDropOnly(10)
 			}),
 			new Kit( "§eHealer",new String[]{"Der Healer heilt schneller."}, new ItemStack(Material.APPLE),kPermission.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkHeal(10)
+				new PerkHeal(5)
 			}),
 			new Kit( "§eDropper",new String[]{"Der Dropper lässt seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),kPermission.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkNoDropsByDeath()
@@ -197,7 +198,7 @@ public class SheepWars extends TeamGame{
 				new PerkNoKnockback(getManager().getInstance())
 			}),
 			new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),kPermission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkStopPerk(25)
+				new PerkStopPerk(10)
 			}),
 			new Kit( "§eTNTer",new String[]{"Der TNT hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.TNT),kPermission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
@@ -318,15 +319,6 @@ public class SheepWars extends TeamGame{
 		 }
 	}
 	
-//	@EventHandler
-//	public void Explosion(EntityExplodeEvent ev){
-//		for(int i = 0; i<ev.blockList().size(); i++){
-//			if(ev.blockList().get(i).getType()==Material.GLOWSTONE){
-//				ev.blockList().remove(i);
-//			}
-//		}
-//	}
-	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Explode (EntityExplodeEvent ev){
 		for(Block b : ev.blockList()){
@@ -437,15 +429,15 @@ public class SheepWars extends TeamGame{
 	
 	public HashMap<Team,Integer> verteilung(Team[] t){
 		HashMap<Team,Integer> list = new HashMap<>();
-		Player[] l = UtilServer.getPlayers();
+		Collection<? extends Player> l = UtilServer.getPlayers();
 	
 		for(Team team : t){
-			list.put(team, l.length/t.length);
+			list.put(team, l.size()/t.length);
 		}
 		
-		if(l.length%t.length!=0){
+		if(l.size()%t.length!=0){
 			list.remove(t[0]);
-			list.put(t[0], (l.length/t.length)+1);
+			list.put(t[0], (l.size()/t.length)+1);
 		}
 
 		return list;
@@ -519,10 +511,10 @@ public class SheepWars extends TeamGame{
 		v.setMove(false);
 		
 		Merchant bloecke = new Merchant();
-		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(Material.getMaterial(43),4,(byte)9)));
+		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(24,4)));
 		bloecke.addOffer(new MerchantOffer(Bronze(3), new ItemStack(Material.GLOWSTONE)));
 		bloecke.addOffer(new MerchantOffer(Bronze(7),new ItemStack(Material.ENDER_STONE)));
-		v.addShop(UtilItem.Item(new ItemStack(Material.getMaterial(43),1,(byte)9), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBlöcke"), bloecke, 9);
+		v.addShop(UtilItem.Item(new ItemStack(24), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBlöcke"), bloecke, 9);
 	
 		Merchant spitzhacken = new Merchant();
 		ItemStack spitzhack1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_PICKAXE), "Holzhacke");
@@ -632,7 +624,7 @@ public class SheepWars extends TeamGame{
 		Merchant kisten = new Merchant();
 		kisten.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.CHEST), "Kiste")));
 		kisten.addOffer(new MerchantOffer(Gold(11), getVillager().getItem()));
-		kisten.addOffer(new MerchantOffer(Gold(15), getBright().getItem()));
+		kisten.addOffer(new MerchantOffer(Gold(15), getBridge().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "§cKisten"), kisten, 15);
 		
 		Merchant trank = new Merchant();

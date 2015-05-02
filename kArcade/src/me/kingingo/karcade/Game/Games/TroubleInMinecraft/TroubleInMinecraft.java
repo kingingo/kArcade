@@ -32,6 +32,7 @@ import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Games.TroubleInMinecraft.Weapon.Sniper;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Service.Games.ServiceTroubleInMinecraft;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -167,6 +168,7 @@ public class TroubleInMinecraft extends TeamGame{
 		wd.Initialize();
 		setWorldData(wd);
 		getManager().getPermManager().setAllowTab(false);
+		ServiceTroubleInMinecraft.setTtt(this);
 		manager.setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
@@ -284,11 +286,11 @@ public class TroubleInMinecraft extends TeamGame{
 		public void Aufdecken(PlayerInteractNPCEvent ev){
 		 	if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
 		 		NPC npc = ev.getNpc();
-				if(npclist.containsKey(npc.getP().getId())){
-					String name = npclist.get(npc.getP().getId());
-					Location loc = npc.getLoc();
-					npclist.remove(npc.getP().getId());
-					npc.remove();
+				if(npclist.containsKey(npc.getEntityID())){
+					String name = npclist.get(npc.getEntityID());
+					Location loc = npc.getLocation();
+					npclist.remove(npc.getEntityID());
+					npc.despawn();
 					Team t = defi.getTeams().get(name.toLowerCase());
 					if(t!=null)UtilServer.broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_LEICHE_IDENTIFIZIERT.getText(new String[]{t.getColor()+name,t.getColor()+t.Name()}));
 //					if(t==Team.TRAITOR){
@@ -304,9 +306,9 @@ public class TroubleInMinecraft extends TeamGame{
 //					}else if(t==Team.INOCCENT){
 //						for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+name.getName(), p, false);
 //					}
-					npc = npcManager.createNPC( name );
-					npc.spawn(loc);
-					npc.sleep();
+					npc = npcManager.createNPC( name , loc);
+					npc.spawn();
+					//npc.sleep();
 					if(getTeam(ev.getPlayer())==Team.DETECTIVE){
 						getStats().setInt(ev.getPlayer(),getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, Stats.TTT_DETECTIVE_PUNKTE);	
 					}
@@ -339,9 +341,9 @@ public class TroubleInMinecraft extends TeamGame{
 			}
 			ev.getDrops().clear();
 			Team t = getTeam(((Player)ev.getEntity()));
-			NPC npc = npcManager.createNPC( "Unidentifiziert" );
-			npc.spawn( ((Player)ev.getEntity()).getLocation());
-			npc.sleep();
+			NPC npc = npcManager.createNPC( "Unidentifiziert" , ((Player)ev.getEntity()).getLocation());
+			npc.spawn();
+			//npc.sleep();
 //			if(t==Team.TRAITOR){
 //				for(Player p : getGameList().getPlayers(PlayerState.IN)){
 //					if(getTeam(p)==t){
@@ -355,7 +357,7 @@ public class TroubleInMinecraft extends TeamGame{
 //			}else if(t==Team.INOCCENT){
 //				for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+((Player)ev.getEntity()).getName(), p, true);
 //			}
-			npclist.put(npc.getP().getId(), ((Player)ev.getEntity()).getName());
+			npclist.put(npc.getEntityID(), ((Player)ev.getEntity()).getName());
 			if(ev.getEntity().getKiller() instanceof Player){
 				getStats().setInt(((Player)ev.getEntity().getKiller()),getStats().getInt(Stats.KILLS, ((Player)ev.getEntity().getKiller()))+1, Stats.KILLS);
 				
@@ -943,13 +945,13 @@ public class TroubleInMinecraft extends TeamGame{
 		HashMap<Team,Integer> list = new HashMap<>();
 		list.put(Team.DETECTIVE, getDetective());
 		list.put(Team.TRAITOR, getTraitor());
-		list.put(Team.INOCCENT,UtilServer.getPlayers().length-(getTraitor()+getDetective()));
+		list.put(Team.INOCCENT,UtilServer.getPlayers().size()-(getTraitor()+getDetective()));
 		
 		return list;
 	}
 	
 	public int getTraitor(){
-		switch(UtilServer.getPlayers().length){
+		switch(UtilServer.getPlayers().size()){
 		case 3: return 1;
 		case 4: return 1;
 		case 5: return 1;
@@ -977,7 +979,7 @@ public class TroubleInMinecraft extends TeamGame{
 	}
 	
 	public int getDetective(){
-		switch(UtilServer.getPlayers().length){
+		switch(UtilServer.getPlayers().size()){
 		case 3: return 1;
 		case 4: return 1;
 		case 5: return 1;

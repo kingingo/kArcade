@@ -23,7 +23,7 @@ public class ServiceSheepWars {
 				getSheepWars().getBomb().add(p);
 				p.sendMessage("§aDu hast eine Bombe erhalten.");
 			}else if(args[1].equalsIgnoreCase("bright")){
-				getSheepWars().getBright().add(p);
+				getSheepWars().getBridge().add(p);
 				p.sendMessage("§aDu hast eine Bright erhalten.");
 			}else if(args[1].equalsIgnoreCase("wall")){
 				getSheepWars().getWall().add(p);

@@ -17,6 +17,7 @@ import me.kingingo.karcade.Game.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.addons.AddonSpectator;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -256,7 +257,8 @@ public class TeamGame extends Game{
 		}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
 			getManager().setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
-	    
+
+	    Bukkit.getPluginManager().callEvent(new KitShopPlayerDeleteEvent(player));
 	}
 	
 	@EventHandler(priority=EventPriority.NORMAL,ignoreCancelled=true)
