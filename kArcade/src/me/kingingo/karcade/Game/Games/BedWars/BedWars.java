@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Games.SheepWars;
+package me.kingingo.karcade.Game.Games.BedWars;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,63 +13,30 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Games.TeamGame;
-import me.kingingo.karcade.Game.Games.SheepWars.Items.Bomb;
-import me.kingingo.karcade.Game.Games.SheepWars.Items.Bridge;
-import me.kingingo.karcade.Game.Games.SheepWars.Items.ProtectWall;
-import me.kingingo.karcade.Game.Games.SheepWars.Items.SpezialVillager;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Game.addons.AddonBedTeamKing;
 import me.kingingo.karcade.Game.addons.AddonDropItems;
 import me.kingingo.karcade.Game.addons.AddonEnterhacken;
-import me.kingingo.karcade.Game.addons.AddonEntityTeamKing;
 import me.kingingo.karcade.Game.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.addons.AddonVoteTeam;
-import me.kingingo.karcade.Game.addons.Events.AddonEntityTeamKingDeathEvent;
-import me.kingingo.karcade.Service.Games.ServiceSheepWars;
+import me.kingingo.karcade.Game.addons.Events.AddonBedKingDeathEvent;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Kit.Kit;
-import me.kingingo.kcore.Kit.KitType;
-import me.kingingo.kcore.Kit.Perk;
-import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
-import me.kingingo.kcore.Kit.Perks.PerkArrowInfinity;
-import me.kingingo.kcore.Kit.Perks.PerkDeathDropOnly;
-import me.kingingo.kcore.Kit.Perks.PerkEquipment;
-import me.kingingo.kcore.Kit.Perks.PerkHeal;
-import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
-import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
-import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
-import me.kingingo.kcore.Kit.Perks.PerkNoDropsByDeath;
-import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
-import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
-import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
-import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
-import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
-import me.kingingo.kcore.Kit.Perks.PerkPoisen;
-import me.kingingo.kcore.Kit.Perks.PerkPotionByDeath;
-import me.kingingo.kcore.Kit.Perks.PerkRespawnBuff;
-import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
-import me.kingingo.kcore.Kit.Perks.PerkSpawnByDeath;
-import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
-import me.kingingo.kcore.Kit.Perks.PerkTNT;
-import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
-import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
-import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
-import me.kingingo.kcore.Util.UtilEvent;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
@@ -81,16 +48,13 @@ import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -100,43 +64,30 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
-public class SheepWars extends TeamGame{
+public class BedWars extends TeamGame{
 
 	WorldData wd;
 	AddonEnterhacken aeh;
-	AddonEntityTeamKing aek;
+	AddonBedTeamKing abtk;
 	AddonDropItems adi;
 	AddonPlaceBlockCanBreak apbcb;
 	@Getter
 	HashMap<Team,Boolean> teams = new HashMap<>();
-	KitShop kitshop;
 	@Getter
-	SheepWarsType typ;
-	HashMap<Player,String> kits = new HashMap<>();
+	BedWarsType typ;
 	LaunchItemManager liManager;
-	@Getter
-	Bomb bomb;
-	@Getter
-	Bridge bridge;
-	@Getter
-	ProtectWall wall;
-	@Getter
-	SpezialVillager villager;
 	
-	public SheepWars(kArcadeManager manager,SheepWarsType typ){
+	public BedWars(kArcadeManager manager,BedWarsType typ){
 		super(manager);
 		registerListener();
 		long t = System.currentTimeMillis();
 		this.typ=typ;
 		manager.setState(GameState.Laden);
-		setTyp(GameType.SheepWars);
+		setTyp(GameType.BedWars);
 		setItemDrop(true);
 		setItemPickup(true);
 		setReplace_Water(true);
@@ -172,84 +123,9 @@ public class SheepWars extends TeamGame{
 		setMin_Players(getTyp().getMin());
 		setMax_Players(getTyp().getMax());
 		setVoteTeam(new AddonVoteTeam(manager,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
-		ServiceSheepWars.setSheepWars(this);
+		
 		liManager=new LaunchItemManager( manager.getInstance() );
-		bridge=new Bridge(manager.getInstance());
-		wall=new ProtectWall(manager.getInstance());
-		bomb=new Bomb(manager.getInstance(),liManager);
-		villager=new SpezialVillager(this);
-		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
-			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkNoHunger()
-			}),
-			new Kit( "§eArrowMan",new String[]{"Der ArrowMan besitzt die 30% Chance","das seine Pfeile brennen."}, new ItemStack(Material.ARROW),kPermission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
-				new PerkArrowFire(30)
-			}),
-			new Kit( "§eItemStealer",new String[]{"Der ItemStealer hat nach seinem"," Tod 10 sekunden um seine","Sachen aufzuheben solange","kann er sie nur aufheben."}, new ItemStack(Material.SHEARS),kPermission.SHEEPWARS_KIT_ITEMSTEALER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkDeathDropOnly(10)
-			}),
-			new Kit( "§eHealer",new String[]{"Der Healer heilt schneller."}, new ItemStack(Material.APPLE),kPermission.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkHeal(5)
-			}),
-			new Kit( "§eDropper",new String[]{"Der Dropper lässt seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),kPermission.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkNoDropsByDeath()
-			}),
-			new Kit( "§eAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),kPermission.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkNoKnockback(getManager().getInstance())
-			}),
-			new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),kPermission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkStopPerk(10)
-			}),
-			new Kit( "§eTNTer",new String[]{"Der TNT hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.TNT),kPermission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
-			}),
-			new Kit( "§eBuffer",new String[]{"Der Buffer bekommt wenn er Respawn","Feuerresistance und Schadenresistance."}, new ItemStack(Material.POTION),kPermission.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)})
-			}),
-			new Kit( "§eKnight",new String[]{"Der Knight bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),kPermission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
-				new PerkSneakDamage(3.0)
-			}),
-			new Kit( "§eTheDeath",new String[]{"Der TheDeath drop beim Tod","ein Blindheits Trank."}, new ItemStack(Material.IRON_SWORD),kPermission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
-				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,20*5,1))
-			}),
-			new Kit( "§eSpringer",new String[]{"Der Springer bekommt kein Fallschaden."}, new ItemStack(Material.FEATHER),kPermission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,new Perk[]{
-				new PerkNoFalldamage()
-			}),
-			new Kit("§6PigZombie",new String[]{"Der PigZombie bekommt beim Respawnen","Speed und Regeneration"}, new ItemStack(Material.RAW_BEEF), kPermission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
-				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,15*20,1), new PotionEffect(PotionEffectType.REGENERATION,10*20,1)})
-			}),
-			new Kit("§6Creeper",new String[]{"Der Creeper hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.SKULL_ITEM,1,(byte)4), kPermission.SHEEPWARS_KIT_CREEPER,KitType.PREMIUM,0,new Perk[]{
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,30)
-			}),
-			new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","für 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), kPermission.SHEEPWARS_KIT_ZOMBIE, KitType.PREMIUM,0,new Perk[]{
-				new PerkPoisen(3,30)
-			}),
-			new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","10% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), kPermission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{
-				new PerkNoFiredamage(),
-				new PerkArrowFire(15),
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
-			}),
-			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SheepWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SHEEPWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
-				new PerkNoHunger(),
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_CHESTPLATE,1)}),
-				new PerkSneakDamage(1),
-				new PerkPoisen(10,50),
-				new PerkHolzfäller(),
-				new PerkNoFiredamage(),
-				new PerkNoFalldamage(),
-				new PerkArrowFire(80),
-				new PerkNoExplosionDamage(),
-				new PerkTNT(),
-				new PerkHealByHit(60, 6),
-				new PerkHeal(6),
-				new PerkMoreHearth(6, 60),
-				new PerkArrowInfinity(),
-				new PerkWalkEffect(Effect.HEART,10),
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,80),
-				new PerkNoKnockback(getManager().getInstance())
-			})
-		});
-
+		
 		this.wd=new WorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel());
 		wd.Initialize();
 		setWorldData(wd);
@@ -293,16 +169,6 @@ public class SheepWars extends TeamGame{
 	@EventHandler
 	public void WorldLoad(WorldLoadEvent ev){
 		wd.setMapName( shortMap(wd.getMapName()," "+getTyp().getTeam().length+"x"+getTyp().getTeam_size()) );
-	}
-	
-	@EventHandler
-	public void ShopOpen(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
-			if(getManager().getState()!=GameState.LobbyPhase)return;
-			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
-				ev.getPlayer().openInventory(kitshop.getInventory());
-			}
-		}
 	}
 	
 	@EventHandler
@@ -403,13 +269,6 @@ public class SheepWars extends TeamGame{
 				for(Player p : getTeamList().keySet()){
 					l.put(p, getTeamList().get(p).getColor());
 				}
-				for(Kit kit : kitshop.getKits()){
-					kit.StartGame(l);
-					for(Perk perk : kit.getPlayers().keySet()){
-						for(Player p : kit.getPlayers().get(perk))kits.put(p, kit.getName());
-						break;
-					}
-				}
 				
 				TeamTab(typ.getTeam());
 				break; 
@@ -493,12 +352,9 @@ public class SheepWars extends TeamGame{
 		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mit mir Drogen nehmen?"}, "§cTränke"), trank, 14);
 		
 		Merchant gold = new Merchant();
-		gold.addOffer(new MerchantOffer(Gold(30), aek.getItem().clone()));
 		gold.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldener Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(10), UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL), "Enderpearl")));
-		gold.addOffer(new MerchantOffer(Gold(15), getWall().getItem()));
-		gold.addOffer(new MerchantOffer(Gold(15), getBomb().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in größter Not!"}, "§cSpezial"), gold, 16);
 		
 		v.finish();
@@ -623,8 +479,6 @@ public class SheepWars extends TeamGame{
 		
 		Merchant kisten = new Merchant();
 		kisten.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.CHEST), "Kiste")));
-		kisten.addOffer(new MerchantOffer(Gold(11), getVillager().getItem()));
-		kisten.addOffer(new MerchantOffer(Gold(15), getBridge().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "§cKisten"), kisten, 15);
 		
 		Merchant trank = new Merchant();
@@ -691,20 +545,17 @@ public class SheepWars extends TeamGame{
 		}
 		
 		EntityType et = EntityType.VILLAGER;
-		EntityType sh_et=EntityType.SHEEP;
 		
 		if(getManager().getHoliday()!=null){
 			switch(getManager().getHoliday()){
 			case HELLOWEEN:
-				et=EntityType.WITCH;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
 				getWorldData().getWorld().setStorm(false);
 				break;
 			case WEIHNACHTEN:
-				et=EntityType.SNOWMAN;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				//getWorldData().setBiome(l, add, biome);
+				
 				getWorldData().getWorld().setStorm(true);
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
 
@@ -733,19 +584,11 @@ public class SheepWars extends TeamGame{
 				if(i==list.size())i=0;
 			}
 		}
-		
+
+		abtk=new AddonBedTeamKing(getManager(), teams,this);
 		adi= new AddonDropItems(this,getTyp().getDrop_rate());
-		aek=new AddonEntityTeamKing(getManager(), teams,this, sh_et);
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		aeh=new AddonEnterhacken(getManager().getInstance());
-		LivingEntity s;
-		for(Team t: aek.getTeams().keySet()){
-			s = (LivingEntity)aek.getTeams().get(t);
-			s.setCustomName(t.getColor()+getName(sh_et)+" ");
-			if(s instanceof Sheep){
-				((Sheep)s).setColor(cd(t.getColor()));
-			}
-		}
 		
 		if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
 			for(Location loc : getWorldData().getLocs(Team.BLACK.Name())){
@@ -760,16 +603,6 @@ public class SheepWars extends TeamGame{
 	public void VillagerShop(VillagerShopEvent ev){
 		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT){
 			ev.setCancelled(true);
-		}
-	}
-	
-	public String getName(EntityType e){
-		switch(e){
-		case SHEEP: return "Schaf";
-		case SPIDER: return "Spinne";
-		case ZOMBIE: return "Zombie";
-		case CAVE_SPIDER: return "Spinne";
-		default: return "Tier";
 		}
 	}
 	
@@ -798,13 +631,6 @@ public class SheepWars extends TeamGame{
 			v=t.getColor()+victim.getName();
 			k=getTeam(killer).getColor()+killer.getName();
 			
-			if(kits.containsKey(victim)){
-				v=v+"§a["+kits.get(victim)+"§a]";
-			}
-			if(kits.containsKey(killer)){
-				k=k+"§a["+kits.get(killer)+"§a]";
-			}
-			
 			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v,k}));
 			
 			if(getTeams().get(t)==false){
@@ -816,10 +642,6 @@ public class SheepWars extends TeamGame{
 			Team t = getTeam(victim);
 			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
 			v=t.getColor()+victim.getName();
-			
-			if(kits.containsKey(victim)){
-				v=v+"§a["+kits.get(victim)+"§a]";
-			}
 			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(new String[]{v}));
 
 			if(getTeams().get(t)==false){
@@ -847,17 +669,16 @@ public class SheepWars extends TeamGame{
 	}
 	
 	@EventHandler
-	public void SheepDeath(AddonEntityTeamKingDeathEvent ev){
-		//Team t = getTeam(ev.getKiller());
+	public void SheepDeath(AddonBedKingDeathEvent ev){
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
+		Title t = new Title(Text.BEDWARS_BED_BROKE.getText( ev.getTeam().getColor()+"§l"+ev.getTeam().Name() ));
 		if(ev.getKiller()!=null){
-			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
-		}else{
-			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),"FAIL"}));
+			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getKiller())+1, Stats.BEDWARS_ZERSTOERTE_BEDs);
 		}
+		
+		for(Player player : UtilServer.getPlayers())t.send(player);
 	}
 	
 	@EventHandler
@@ -889,20 +710,19 @@ public class SheepWars extends TeamGame{
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
-		"Server: SheepWars §a"+kArcade.id,
+		"Server: BedWars §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
 		" ",
 		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
 		//"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		"Schaf-Kills: "+getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer()),
+		"Betten Zerstört: "+getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getPlayer()),
 		" ",
 		"Gespielte Spiele: "+(win+lose),
 		"Gewonnene Spiele: "+win,
 		"Verlorene Spiele: "+lose
 		});
-		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
 }

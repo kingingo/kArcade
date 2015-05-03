@@ -35,12 +35,9 @@ import me.kingingo.kcore.Util.UtilTime;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -48,7 +45,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.util.Vector;
 
 public class SurvivalGames extends TeamGame{
 
@@ -261,7 +257,7 @@ public class SurvivalGames extends TeamGame{
 	public void Interact(PlayerInteractEvent ev){
 		if(getManager().getState()!=GameState.InGame)return;
 		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
-		if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getTypeId() == 33 && ev.getClickedBlock().getData() == 6){
+		if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getTypeId() == 33){
 			if(!chest.containsKey(ev.getClickedBlock().getLocation()))CreateChest(ev.getClickedBlock().getLocation());
 			ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
 		}
@@ -302,17 +298,17 @@ public class SurvivalGames extends TeamGame{
 		}
 	}
 	
-	FallingBlock fb;
-	@EventHandler
-	public void EntityChange (EntityChangeBlockEvent ev) {
-		if (ev.getEntityType() == EntityType.FALLING_BLOCK) {
-			if(jump){
-				fb=ev.getEntity().getLocation().getWorld().spawnFallingBlock(ev.getEntity().getLocation().add(0,0.5,0),33,(byte) 6);
-				fb.setVelocity( new Vector(0,1.8,0) );
-				ev.setCancelled(true);
-			}
-		}
-	 }
+//	FallingBlock fb;
+//	@EventHandler
+//	public void EntityChange (EntityChangeBlockEvent ev) {
+//		if (ev.getEntityType() == EntityType.FALLING_BLOCK) {
+//			if(jump){
+//				fb=ev.getEntity().getLocation().getWorld().spawnFallingBlock(ev.getEntity().getLocation().add(0,0.5,0),33,(byte) 6);
+//				fb.setVelocity( new Vector(0,1.8,0) );
+//				ev.setCancelled(true);
+//			}
+//		}
+//	 }
 	
 	@EventHandler
 	public void DeathMatch(UpdateEvent ev){

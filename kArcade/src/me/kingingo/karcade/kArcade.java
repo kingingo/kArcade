@@ -49,7 +49,6 @@ public class kArcade extends JavaPlugin{
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel()));
 		
-//			UtilFile.DeleteFolder(new File("plugins/NoCheatPlus/"));
 			id=getConfig().getInt("Config.Server.ID");
 			FilePath=getConfig().getString("Config.Server.FilePath");
 			saveConfig();

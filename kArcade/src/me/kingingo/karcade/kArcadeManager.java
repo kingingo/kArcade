@@ -12,6 +12,8 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Games.ArcadeGames.ArcadeGames;
+import me.kingingo.karcade.Game.Games.BedWars.BedWars;
+import me.kingingo.karcade.Game.Games.BedWars.BedWarsType;
 import me.kingingo.karcade.Game.Games.CaveWars.CaveWars;
 import me.kingingo.karcade.Game.Games.CaveWars.CaveWarsType;
 import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
@@ -262,6 +264,8 @@ public class kArcadeManager implements Listener{
 			return new CaveWars(this,CaveWarsType.values()[UtilMath.RandomInt(CaveWarsType.values().length, 0)]);
 		}else if(GameType.SheepWars.getTyp().equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType.values()[UtilMath.RandomInt(SheepWarsType.values().length, 0)]);
+		}else if(GameType.BedWars.getTyp().equalsIgnoreCase(game)){
+			return new BedWars(this,BedWarsType.values()[UtilMath.RandomInt(BedWarsType.values().length, 0)]);
 		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SkyPvP.getTyp().equalsIgnoreCase(game)){

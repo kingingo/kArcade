@@ -1,9 +1,9 @@
-package me.kingingo.karcade.Game.Games.SheepWars;
+package me.kingingo.karcade.Game.Games.BedWars;
 
 import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
 
-public enum SheepWarsType {
+public enum BedWarsType {
 _2x4(4,4,8,new Team[]{Team.RED,Team.BLUE},1),
 _2x8(8,8,16,new Team[]{Team.RED,Team.BLUE},3),
 _2x5(5,4,10,new Team[]{Team.RED,Team.BLUE},1),
@@ -23,7 +23,7 @@ int team_size;
 @Getter
 int drop_rate;
 
-private SheepWarsType(int team_size,int min,int max,Team[] team, int drop_rate){
+private BedWarsType(int team_size,int min,int max,Team[] team, int drop_rate){
 	this.max=max;
 	this.min=min;
 	this.drop_rate=drop_rate;

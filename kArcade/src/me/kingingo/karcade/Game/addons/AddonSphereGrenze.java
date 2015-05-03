@@ -56,6 +56,7 @@ public class AddonSphereGrenze implements Listener {
 	
 	@EventHandler
 	public void Move(PlayerMoveEvent e) {
+		if(!mitte.getWorld().getName().equalsIgnoreCase(e.getTo().getWorld().getName()))return;
 		if(mitte.distance(e.getTo())>=radius){
 			if(e.getPlayer().getGameMode()==GameMode.SURVIVAL){
 		e.getPlayer().teleport(e.getFrom());

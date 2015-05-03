@@ -1,7 +1,8 @@
-package me.kingingo.karcade.Game.Games.SheepWars.Addon;
+package me.kingingo.karcade.Game.addons;
 
 import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Game.Games.TeamGame;
 import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;
@@ -17,12 +18,14 @@ import org.bukkit.inventory.ItemStack;
 public class AddonDropItems extends kListener {
 
 	@Getter
-	private SheepWars instance;
+	private TeamGame instance;
 	private int i=0;
+	private int drop_rate=0;
 	
-	public AddonDropItems(SheepWars instance){
+	public AddonDropItems(TeamGame instance,int drop_rate){
 		super(instance.getManager().getInstance(),"[AddonDropItems]");
 		this.instance=instance;
+		this.drop_rate=drop_rate;
 	}
 	
 	//GOLD ORANGE
@@ -57,22 +60,22 @@ public class AddonDropItems extends kListener {
 	public void Update(UpdateEvent ev){
 		
 		if(ev.getType()==UpdateType.SEC){
-			for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),1);
+			for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),drop_rate);
 		}
 		
 		if(ev.getType()==UpdateType.SLOW){
 			if(getInstance().getWorldData().ExistLoc(Team.PURPLE.Name())){
-				for(Location loc : getInstance().getWorldData().getLocs(Team.PURPLE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.PURPLE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
 			}else{
-				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),1);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
 			}
 		}
 		
 		if(ev.getType()==UpdateType.SLOWER){
 			if(getInstance().getWorldData().ExistLoc(Team.ORANGE.Name())){
-				for(Location loc : getInstance().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1, "§bGold");
+				for(Location loc : getInstance().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate, "§bGold");
 			}else{
-				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),1);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate);
 			}
 		}
 	}
