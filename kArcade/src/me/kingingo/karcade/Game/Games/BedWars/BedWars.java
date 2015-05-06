@@ -31,6 +31,7 @@ import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
+import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -67,6 +68,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
 
 public class BedWars extends TeamGame{
 
@@ -127,6 +129,7 @@ public class BedWars extends TeamGame{
 		liManager=new LaunchItemManager( manager.getInstance() );
 		
 		this.wd=new WorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel());
+		wd.setCleanroomChunkGenerator(true);
 		wd.Initialize();
 		setWorldData(wd);
 		getManager().getPermManager().setAllowTab(false);
@@ -573,12 +576,17 @@ public class BedWars extends TeamGame{
 			}
 		}
 		
+		setBoard(new PlayerScoreboard());
+		getBoard().addBoard(DisplaySlot.SIDEBAR, "§eBedWars Teams");
+		
 		int i = 0;
 		for(Team t : teams){
+			getBoard().setScore(t.getColor()+t.Name()+" §a"+Text.HÄKCHEN_FETT.getText(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
 			setVillager(t,et);
 			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
+				getBoard().addPlayer(p, false);
 				p.teleport(list.get(i));
 				i++;
 				if(i==list.size())i=0;
@@ -673,10 +681,12 @@ public class BedWars extends TeamGame{
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
-		Title t = new Title(Text.BEDWARS_BED_BROKE.getText( ev.getTeam().getColor()+"§l"+ev.getTeam().Name() ));
+		Title t = new Title("",Text.BEDWARS_BED_BROKE.getText( ev.getTeam().getColor()+"§l"+ev.getTeam().Name() ));
 		if(ev.getKiller()!=null){
 			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getKiller())+1, Stats.BEDWARS_ZERSTOERTE_BEDs);
 		}
+		getBoard().resetScore(ev.getTeam().getColor()+ev.getTeam().Name()+" §a"+Text.HÄKCHEN_FETT.getText(), DisplaySlot.SIDEBAR);
+		getBoard().setScore(ev.getTeam().getColor()+ev.getTeam().Name()+" §4"+Text.MAHLZEICHEN_FETT.getText(), DisplaySlot.SIDEBAR, 1);
 		
 		for(Player player : UtilServer.getPlayers())t.send(player);
 	}

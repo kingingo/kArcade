@@ -63,6 +63,7 @@ import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
+import me.kingingo.kcore.Scoreboard.PlayerScoreboard;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
@@ -70,6 +71,7 @@ import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
@@ -106,6 +108,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.DisplaySlot;
 
 public class SheepWars extends TeamGame{
 
@@ -251,6 +254,7 @@ public class SheepWars extends TeamGame{
 		});
 
 		this.wd=new WorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel());
+		wd.setCleanroomChunkGenerator(true);
 		wd.Initialize();
 		setWorldData(wd);
 		getManager().getPermManager().setAllowTab(false);
@@ -722,12 +726,18 @@ public class SheepWars extends TeamGame{
 			}
 		}
 		
+
+		setBoard(new PlayerScoreboard());
+		getBoard().addBoard(DisplaySlot.SIDEBAR, "§eSheepWars Teams");
+		
 		int i = 0;
 		for(Team t : teams){
+			getBoard().setScore(t.getColor()+t.Name()+" §a"+Text.HÄKCHEN_FETT.getText(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
 			setVillager(t,et);
 			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
+				getBoard().addPlayer(p, false);
 				p.teleport(list.get(i));
 				i++;
 				if(i==list.size())i=0;
@@ -848,16 +858,18 @@ public class SheepWars extends TeamGame{
 	
 	@EventHandler
 	public void SheepDeath(AddonEntityTeamKingDeathEvent ev){
-		//Team t = getTeam(ev.getKiller());
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
+		Title t = new Title("",Text.SHEEPWARS_SHEEP_DEATH.getText( ev.getTeam().getColor()+"§l"+ev.getTeam().Name() ));
 		if(ev.getKiller()!=null){
 			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
-			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
-		}else{
-			getManager().broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SHEEPWARS_SHEEP_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),"FAIL"}));
 		}
+		
+		getBoard().resetScore(ev.getTeam().getColor()+ev.getTeam().Name()+" §a"+Text.HÄKCHEN_FETT.getText(), DisplaySlot.SIDEBAR);
+		getBoard().setScore(ev.getTeam().getColor()+ev.getTeam().Name()+" §4"+Text.MAHLZEICHEN_FETT.getText(), DisplaySlot.SIDEBAR, 1);
+
+		for(Player player : UtilServer.getPlayers())t.send(player);
 	}
 	
 	@EventHandler

@@ -68,6 +68,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class Game implements Listener{
 	@Getter
@@ -211,6 +212,9 @@ public class Game implements Listener{
 	private HashMap<Player,PlayerScoreboard> boards = new HashMap<>();
 	@Getter
 	@Setter
+	private PlayerScoreboard board;
+	@Getter
+	@Setter
 	private boolean soilChange=false;
 	
 	public Game(kArcadeManager manager) {
@@ -270,7 +274,7 @@ public class Game implements Listener{
 		if(UtilEvent.isAction(ev, ActionType.R)){
 			if(ev.getPlayer().getItemInHand()==null)return;
 			if(ev.getPlayer().getItemInHand().getTypeId()!=385)return;
-				UtilBG.sendToServer(ev.getPlayer(), getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
+				UtilBG.sendToServer(ev.getPlayer(), getManager().getInstance());
 				ev.setCancelled(true);
 			}
 	}
@@ -476,7 +480,7 @@ public class Game implements Listener{
 				  for(Player p : UtilServer.getPlayers()){
 					  if(!getManager().getPermManager().hasPermission(p, kPermission.JOIN_FULL_SERVER)){
 						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getType().getTyp())+Text.KICKED_BY_PREMIUM.getText());
-						  UtilBG.sendToServer(p, getManager().getBungeeCord_Fallback_Server(), getManager().getInstance());
+						  UtilBG.sendToServer(p, getManager().getInstance());
 						  b=true;
 						  break;
 					  }

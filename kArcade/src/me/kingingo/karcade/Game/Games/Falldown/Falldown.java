@@ -37,13 +37,18 @@ import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilParticle;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
+import net.minecraft.server.v1_8_R2.EntityEnderCrystal;
+import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntity;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
@@ -66,6 +71,7 @@ public class Falldown extends SoloGame{
 	private HashMap<Player,Integer[]> playerbrauen = new HashMap<Player,Integer[]>();
 	private HashMap<Player,Integer> power = new HashMap<>();
 	private ArrayList<BrewItem> brewItems = new ArrayList<>();
+	private HashMap<Integer, ArrayList<Location>> list = new HashMap<>();
 	
 	public Falldown(kArcadeManager manager) {
 		super(manager);
@@ -122,7 +128,8 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void World(WorldLoadEvent ev){
-		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 25, 5000);
+		//UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 40);
+		UtilMap.loadParticle(list, getWorldData().getLocs(Team.RED.Name()).get(0), 40);
 	}
 	
 	Player player;
@@ -545,6 +552,20 @@ public class Falldown extends SoloGame{
 		}
 	}
 	
+	@EventHandler
+	public void Update(UpdateEvent ev){
+		if(getManager().getState() == GameState.SchutzModus&&ev.getType()!=UpdateType.SEC){
+			for(Integer i : list.keySet()){
+				for(Player p : UtilServer.getPlayers()){
+					if(p.getLocation().getBlockY() <= i+50 && p.getLocation().getBlockY() >= i-250){
+						for(Location loc : list.get(i))UtilParticle.BARRIER.display(0.0F, 2, loc, 100);
+						//for(EntityEnderCrystal e : UtilMap.list_entitys.get(i))UtilPlayer.sendPacket(p, new PacketPlayOutSpawnEntity(e,51));
+					}
+				}
+			}
+		}
+	}
+	
 	String i;
 	Player p;
 	@EventHandler
@@ -552,6 +573,17 @@ public class Falldown extends SoloGame{
 		if(getManager().getState() == GameState.SchutzModus){
 			p = ev.getPlayer();
 			if(!p.isOnGround()&&getGameList().isPlayerState(p)==PlayerState.IN){
+				
+//				for(Integer i : UtilMap.list_entitys.keySet()){
+//					if(list.containsKey(p)&&list.get(p).contains(i))continue;
+//					if(p.getLocation().getBlockY() <= i+9 && p.getLocation().getBlockY() >= i){
+//						System.out.println("P: "+p.getName()+" Y:"+p.getLocation().getBlockY()+" I:"+i);
+//						if(!list.containsKey(p))list.put(p, new ArrayList<Integer>());
+//						list.get(p).add(i);
+//						for(EntityEnderCrystal e : UtilMap.list_entitys.get(i))UtilPlayer.sendPacket(p, new PacketPlayOutSpawnEntity(e, 51));
+//					}
+//				}
+				
 				for (Entity e : p.getLocation().getChunk().getEntities()) {
 					if (e instanceof EnderCrystal) {
 						if (p.getLocation().distanceSquared(e.getLocation()) <= 3) {

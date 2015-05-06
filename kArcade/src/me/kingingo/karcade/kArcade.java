@@ -83,7 +83,7 @@ public class kArcade extends JavaPlugin{
 	
 	public void onDisable(){
 		for(Player p : UtilServer.getPlayers()){
-			UtilBG.sendToServer(p, manager.getBungeeCord_Fallback_Server(),this);
+			UtilBG.sendToServer(p,this);
 		}
 		for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel().toLowerCase()));
 		mysql.close();

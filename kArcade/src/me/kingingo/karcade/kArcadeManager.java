@@ -99,9 +99,6 @@ public class kArcadeManager implements Listener{
 	private JavaPlugin Instance;
 	@Getter
 	@Setter
-	private String BungeeCord_Fallback_Server = "falldown";
-	@Getter
-	@Setter
 	private Location lobby=new Location(Bukkit.getWorld("world"),-148.28747,19,384.90493);
 	@Getter
 	private HashMap<Integer,Sign> ranking = new HashMap<>();
@@ -160,7 +157,7 @@ public class kArcadeManager implements Listener{
 
 	public void setNewGame(GameType typ){
 		getInstance().getConfig().set("Config.Server.Game", typ.getTyp());
-		if(UtilServer.getPlayers().size()!=0)for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+		if(UtilServer.getPlayers().size()!=0)for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getInstance());
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 		try {
 			Runtime.getRuntime().exec("./start.sh");
@@ -473,7 +470,7 @@ public class kArcadeManager implements Listener{
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     }else if (cmd.equalsIgnoreCase("/reload") && p.isOp()) {
 	    	 event.setCancelled(true);
-	    	 for(Player p1 : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p1, BungeeCord_Fallback_Server, getInstance());
+	    	 for(Player p1 : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p1, getInstance());
 	    	 
 	    	 Bukkit.getScheduler().scheduleSyncDelayedTask(getInstance(), new Runnable(){
 
@@ -486,7 +483,7 @@ public class kArcadeManager implements Listener{
 	    	 
 	     }else if (cmd.equalsIgnoreCase("/stop") && p.isOp()) {
 	    	 event.setCancelled(true);
-	    	 for(Player p1 : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p1, BungeeCord_Fallback_Server, getInstance());
+	    	 for(Player p1 : Bukkit.getOnlinePlayers())UtilBG.sendToServer(p1, getInstance());
 	    	 
 	    	 Bukkit.getScheduler().scheduleSyncDelayedTask(getInstance(), new Runnable(){
 
@@ -546,11 +543,11 @@ public class kArcadeManager implements Listener{
 		case 30:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 25:
 			broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
-			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getInstance());
 			break;
 		case 23:getGame().getStats().SaveAllData();break;
 		case 20:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
-		for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, BungeeCord_Fallback_Server, getInstance());
+		for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getInstance());
 			break;
 		case 10:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
 		case 5:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));

@@ -54,6 +54,9 @@ public class WorldData {
 	@Getter
 	@Setter
 	HashMap<String,Location> biomes = null;
+	@Getter
+	@Setter
+	boolean cleanroomChunkGenerator = false;
 	
 	public WorldData(kArcadeManager manager,String gameName,String kürzel){
 		this.manager=manager;
@@ -291,7 +294,11 @@ public class WorldData {
 	        {
 	          public void run()
 	          {
-	            world=WorldUtil.LoadWorld(new WorldCreator(getFolder()));
+	            if(isCleanroomChunkGenerator()){
+	            	world=WorldUtil.LoadWorld(new WorldCreator(getFolder()), new CleanroomChunkGenerator(".0,AIR"));
+	            }else{
+	            	world=WorldUtil.LoadWorld(new WorldCreator(getFolder()));
+	            }
 	            world.setDifficulty(Difficulty.HARD);
 	            LoadWorldConfig();
 	            Bukkit.getPluginManager().callEvent(new WorldDataInitializeEvent( wd ));
