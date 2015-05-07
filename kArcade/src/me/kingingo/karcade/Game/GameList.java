@@ -20,16 +20,12 @@ import org.bukkit.scoreboard.Scoreboard;
 
 public class GameList implements Listener{
 
-	private Game game;
 	@Getter
 	private HashMap<Player, PlayerState> players = new HashMap<>();
     private ArrayList<Location> spawns;
-    private kArcadeManager manager;
     
-    public GameList(Game game,kArcadeManager manager){
+    public GameList(kArcadeManager manager){
     	Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
-    	this.manager=manager;
-    	this.game=game;
     }
     
     public PlayerState isPlayerState(Player p){
@@ -48,15 +44,6 @@ public class GameList implements Listener{
     	if(players.containsKey(player))players.remove(player);
 		players.put(player, ps);
 		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,ps));
-//		for (Player other : getPlayers(ps))
-//	    {
-//	      if (!other.equals(player))
-//	      {
-//	        other.hidePlayer(player);
-//	        other.showPlayer(player);
-//	      }
-//	    }
-		
 	}
     
     public Scoreboard createScoreboard(DisplaySlot typ,Player p,String DisplayName){

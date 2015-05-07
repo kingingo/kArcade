@@ -219,7 +219,7 @@ public class Game implements Listener{
 	
 	public Game(kArcadeManager manager) {
 		this.manager=manager;
-		this.gamelist=new GameList(this,manager);
+		this.gamelist=new GameList(manager);
 	}
 	
 	public GameList getGameList(){

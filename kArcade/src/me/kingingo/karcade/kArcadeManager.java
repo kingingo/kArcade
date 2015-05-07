@@ -489,7 +489,7 @@ public class kArcadeManager implements Listener{
 
 	  			@Override
 	  			public void run() {
-	  				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+	  				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 	  			}
 	      		 
 	      	 }, 4*20);
@@ -518,12 +518,7 @@ public class kArcadeManager implements Listener{
 	public void Time_Start(UpdateEvent ev){
 		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase&&UtilServer.getPlayers().size()<=0){
 			if(TimeSpan.HOUR*3 < (System.currentTimeMillis() - kArcade.start_time) ){
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
-				try {
-					Runtime.getRuntime().exec("./start.sh");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 			}
 		}
 	}
