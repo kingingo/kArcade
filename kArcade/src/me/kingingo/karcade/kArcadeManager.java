@@ -10,47 +10,39 @@ import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
-import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
-import me.kingingo.karcade.Game.Games.ArcadeGames.ArcadeGames;
-import me.kingingo.karcade.Game.Games.BedWars.BedWars;
-import me.kingingo.karcade.Game.Games.BedWars.BedWarsType;
-import me.kingingo.karcade.Game.Games.CaveWars.CaveWars;
-import me.kingingo.karcade.Game.Games.CaveWars.CaveWarsType;
-import me.kingingo.karcade.Game.Games.DeathGames.DeathGames;
-import me.kingingo.karcade.Game.Games.Falldown.Falldown;
-import me.kingingo.karcade.Game.Games.OneInTheChamber.OneInTheChamber;
-import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
-import me.kingingo.karcade.Game.Games.SheepWars.SheepWarsType;
-import me.kingingo.karcade.Game.Games.SkyPvP.SkyPvP;
-import me.kingingo.karcade.Game.Games.SurvivalGames.SurvivalGames;
-import me.kingingo.karcade.Game.Games.TroubleInMinecraft.TroubleInMinecraft;
+import me.kingingo.karcade.Game.Multi.MultiGames;
+import me.kingingo.karcade.Game.Single.Games.BedWars.BedWars;
+import me.kingingo.karcade.Game.Single.Games.BedWars.BedWarsType;
+import me.kingingo.karcade.Game.Single.Games.CaveWars.CaveWars;
+import me.kingingo.karcade.Game.Single.Games.CaveWars.CaveWarsType;
+import me.kingingo.karcade.Game.Single.Games.DeathGames.DeathGames;
+import me.kingingo.karcade.Game.Single.Games.Falldown.Falldown;
+import me.kingingo.karcade.Game.Single.Games.OneInTheChamber.OneInTheChamber;
+import me.kingingo.karcade.Game.Single.Games.QuickSurvivalGames.QuickSurvivalGames;
+import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWars;
+import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWarsType;
+import me.kingingo.karcade.Game.Single.Games.SkyPvP.SkyPvP;
+import me.kingingo.karcade.Game.Single.Games.SurvivalGames.SurvivalGames;
+import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Service.CommandService;
 import me.kingingo.kcore.Calendar.Calendar;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Client.Client;
-import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Disguise.DisguiseManager;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
-import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.LogHandler.Event.LogEvent;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
-import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Packet.Packets.SERVER_TYPE_CHANGE;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.PlayerStats.Stats;
-import me.kingingo.kcore.Update.UpdateType;
-import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.C;
-import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilBG;
-import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
@@ -75,9 +67,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
@@ -88,12 +77,7 @@ public class kArcadeManager implements Listener{
 	private Game game = null;
 	@Getter
 	@Setter
-	int start=-1;
-	@Getter
-	@Setter
 	private PermissionManager permManager;
-	@Getter
-	private GameState state=GameState.NONE;
 	@Getter
 	@Setter
 	private JavaPlugin Instance;
@@ -116,7 +100,7 @@ public class kArcadeManager implements Listener{
 	@Getter
 	private Client c;
 	@Getter
-	private PacketManager pManager;
+	private PacketManager packetManager;
 	@Getter
 	private CommandHandler cmd;
 	private PetManager pet;
@@ -127,14 +111,14 @@ public class kArcadeManager implements Listener{
 	private CalendarType holiday;
 	private Hologram hologram;
 	
-	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager pManager,CommandHandler cmd) {
+	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager packetManager,CommandHandler cmd) {
+		this.Instance=plugin;
 		this.lobby.setPitch(3);
 		this.lobby.setYaw( (float)-89.81317 );
 		this.permManager=permManager;
-		this.Instance=plugin;
 		this.mysql=mysql;
 		this.cmd=cmd;
-		this.pManager=pManager;
+		this.packetManager=packetManager;
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 		this.holiday=Calendar.getHoliday();
@@ -152,7 +136,7 @@ public class kArcadeManager implements Listener{
 			}
 		}
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
-		setState(GameState.LobbyPhase);
+		getGame().setState(GameState.LobbyPhase);
 	}
 
 	public void setNewGame(GameType typ){
@@ -200,11 +184,6 @@ public class kArcadeManager implements Listener{
 			return ((Sign)south.getState());
 		}
 		return null;
-	}
-	
-	@EventHandler
-	public void Kick(PlayerKickEvent ev){
-		System.out.println("[EpicPvP] PlayerKickEvent: PLAYER:"+ev.getPlayer().getName()+" REASON:"+ev.getReason()+" LEAVE:"+ev.getLeaveMessage());
 	}
 	
 	@EventHandler
@@ -273,9 +252,10 @@ public class kArcadeManager implements Listener{
 			return new Falldown(this);
 		}else if(GameType.SurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
-		}else if(GameType.ArcadeGames.getTyp().equalsIgnoreCase(game)){
-			new ArcadeGames(this);
-			return null;
+		}else if(GameType.ONE_VS_ONE.getTyp().equalsIgnoreCase(game)){
+			return new MultiGames(this,game);
+		}else if(GameType.QuickSurvivalGames.getTyp().equalsIgnoreCase(game)){
+			return new QuickSurvivalGames(this);
 		}else{
 			return new OneInTheChamber(this);
 		}
@@ -321,50 +301,7 @@ public class kArcadeManager implements Listener{
 	    for(PotionEffect pe : player.getActivePotionEffects())player.removePotionEffect(pe.getType());
 	    
 	    ((CraftPlayer)player).getHandle().k = true;
-//	    EntityPlayer ep = ((CraftPlayer)player).getHandle();
-//	    EntityHuman eh = (EntityHuman)ep;
-//	    EntityLiving el = (EntityLiving)eh;
-//	    Entity e = (Entity)el;
-//	    DataWatcher data = (DataWatcher) UtilReflection.getValue("datawatcher",e);
-//	    data.watch(9, Byte.valueOf((byte)0));
 	    ((CraftEntity)player).getHandle().getDataWatcher().watch(9, Byte.valueOf((byte)0));
-	    //((CraftPlayer)player).getHandle().p(0);
-	}
-	
-	public void updateInfo(int o){
-		SERVER_STATUS ss = new SERVER_STATUS(state,o, getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
-		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
-		Bukkit.getPluginManager().callEvent(ev);
-		if(ev.isCancelled())return;
-		pManager.SendPacket("hub", ss);
-	}
-	
-	public void updateInfo(GameState s){
-		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().size(), getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
-		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
-		Bukkit.getPluginManager().callEvent(ev);
-		if(ev.isCancelled())return;
-		pManager.SendPacket("hub", ss);
-	}
-	
-	public void updateInfo(){
-		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().size(), getGame().getMax_Players(),getGame().getWorldData().getMapName(), getGame().getType(),"a"+kArcade.id);
-		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
-		Bukkit.getPluginManager().callEvent(ev);
-		if(ev.isCancelled())return;
-		pManager.SendPacket("hub", ss);
-	}
-	
-	@EventHandler
-	public void ClientC(ClientConnectEvent ev){
-		if(getState()!=GameState.Laden){
-			updateInfo();
-		}
-	}
-	
-	@EventHandler
-	public void Q(PlayerQuitEvent ev){
-		updateInfo(UtilServer.getPlayers().size()-1);
 	}
 	
 	@EventHandler
@@ -372,42 +309,7 @@ public class kArcadeManager implements Listener{
 		if(ev.getLocation().getWorld()==getLobby().getWorld())ev.setCancelled(true);
 	}
 	
-	@EventHandler
-	public void J(PlayerJoinEvent ev){
-		if(state==GameState.LobbyPhase)updateInfo();
-	}
 	
-	public void setState(GameState gs){
-		setState(gs, GameStateChangeReason.CUSTOM);
-	}
-	
-	public void setState(GameState gs,GameStateChangeReason reason){
-		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs,reason);
-		Bukkit.getPluginManager().callEvent(stateEvent);
-		if(stateEvent.isCancelled())return;
-		state=gs;
-		if(getGame()!=null){
-			System.out.println("["+getGame().getType().getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
-		}else{
-			System.out.println("[ArcadeManager] GameState wurde zu "+state.string()+" geändert.");
-		}
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void r(GameStateChangeEvent ev){
-		if(!ev.isCancelled()&&ev.getTo()==GameState.Restart){
-			setStart(-1);
-		}
-	}
-	
-	public boolean isState(GameState gs){
-		return gs==getState();
-	}
-	
-	public void broadcast(String message){
-		if(UtilServer.getPlayers().size()==0)return;
-	    UtilServer.broadcast(message);
-	}
 	
 	@EventHandler
 	   public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
@@ -503,7 +405,7 @@ public class kArcadeManager implements Listener{
 			SERVER_TYPE_CHANGE packet = (SERVER_TYPE_CHANGE)ev.getPacket();
 			getInstance().getConfig().set("Config.Server.Game", packet.getTyp().getTyp());
 			getInstance().saveConfig();
-			setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
+			getGame().setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
 		}
 	}
 	
@@ -514,87 +416,7 @@ public class kArcadeManager implements Listener{
 		}
 	}
 	
-	@EventHandler
-	public void Time_Start(UpdateEvent ev){
-		if(ev.getType()==UpdateType.MIN_04&&getState()==GameState.LobbyPhase&&UtilServer.getPlayers().size()<=0){
-			if(TimeSpan.HOUR*3 < (System.currentTimeMillis() - kArcade.start_time) ){
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
-			}
-		}
-	}
 	
-	@EventHandler
-	public void Restart(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.SEC)return;
-		if(getState()!=GameState.Restart)return;
-		if(start<0){
-			getGame().setDamage(false);
-			start=35;
-		}
-		start--;
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.RESTART_IN.getText(start));
-		
-		switch(start){
-		case 30:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 25:
-			broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
-			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getInstance());
-			break;
-		case 23:getGame().getStats().SaveAllData();break;
-		case 20:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
-		for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getInstance());
-			break;
-		case 10:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 5:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));
-		case 4:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 3:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 2:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+Text.RESTART_IN.getText(start));break;
-		case 0: 
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
-			;break;
-		}
-	}
 	
-	@EventHandler
-	public void Lobby(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.SEC)return;
-		if(getGame()==null)return;
-		if(getState()!=GameState.LobbyPhase)return;
-		if(start<0){
-			start=120;
-			updateInfo();
-		}
-		start--;
-		for(Player p : UtilServer.getPlayers()){
-			UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
-			if(p.getLocation().getY()<5)p.teleport(lobby);
-		}
-		if(start!=0){
-			switch(start){
-			case 120:
-				broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
-				Bukkit.getWorld("world").setWeatherDuration(0);
-				Bukkit.getWorld("world").setStorm(false);
-				break;
-			case 90:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 60:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 30:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 15:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-			}
-		}else{
-			if(UtilServer.getPlayers().size()>=getGame().getMin_Players()){
-				Bukkit.getPluginManager().callEvent(new GameStartEvent(getGame().getType()));
-				updateInfo(GameState.InGame);
-			}else{
-				start=-1;
-				broadcast(Text.PREFIX_GAME.getText(getGame().getType().getTyp())+C.cRed+"Es sind zu wenig Spieler(min. "+getGame().getMin_Players()+") online! Wartemodus wird neugestartet!");
-			}
-		}
-	}
 
 }

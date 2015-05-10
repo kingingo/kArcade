@@ -1,6 +1,7 @@
 package me.kingingo.karcade.Command;
 
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Permission.kPermission;
@@ -29,6 +30,8 @@ public class CommandStart implements CommandExecutor{
 		if((Manager.getPermManager().hasPermission(((Player)cs), kPermission.START_SERVER)||((Player)cs).isOp())){
 			final Player p = (Player)cs;
 			
+			if(!(Manager.getGame() instanceof SingleGame))return false;
+			
 			AnvilGUI gui = new AnvilGUI(p,Manager.getInstance(), new AnvilGUI.AnvilClickEventHandler(){
 
 				@Override
@@ -36,7 +39,7 @@ public class CommandStart implements CommandExecutor{
 					if(ev.getSlot() == AnvilGUI.AnvilSlot.OUTPUT){
 				        try{
 				        	Integer i = Integer.valueOf(ev.getName());
-				        	Manager.setStart(i);
+				        	((SingleGame)Manager.getGame()).setStart(i);
 				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+"Die Zeit wurde zu "+i+" geändert!");
 				        }catch(NumberFormatException e){
 				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+"Das ist keine Zahl "+ev.getName());

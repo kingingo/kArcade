@@ -2,7 +2,7 @@ package me.kingingo.karcade.Service.Games;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Game.Games.SheepWars.SheepWars;
+import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWars;
 
 import org.bukkit.entity.Player;
 

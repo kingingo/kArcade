@@ -22,7 +22,6 @@ public class GameList implements Listener{
 
 	@Getter
 	private HashMap<Player, PlayerState> players = new HashMap<>();
-    private ArrayList<Location> spawns;
     
     public GameList(kArcadeManager manager){
     	Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
@@ -59,10 +58,6 @@ public class GameList implements Listener{
     	p.setScoreboard(board);
     }
 	
-	public void SetSpawns(ArrayList<Location> spawns){
-		this.spawns=spawns;
-	}
-	
 	public void SetPlayerState(Player player, PlayerState state){
 		if(player==null)return;
 		players.put(player, state);
@@ -81,10 +76,6 @@ public class GameList implements Listener{
 		players.remove(player);
 		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,PlayerState.OUT));
     }
-	
-	public ArrayList<Location> getSpawns(){
-		return this.spawns;
-	}
 	
 	public void teleport(Player player,Location loc){
 	    player.leaveVehicle();

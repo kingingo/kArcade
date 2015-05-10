@@ -2,4 +2,4 @@ name: kArcade
 author: KingIngo
 version: 1.8
 main: me.kingingo.karcade.kArcade
-depend: [kCore,ProtocolLib]
+depend: [kCore]
