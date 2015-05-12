@@ -485,8 +485,6 @@ public class QuickSurvivalGames extends SoloGame{
 		ArrayList<Location> list = (ArrayList<Location>)getWorldData().getLocs(Team.RED.Name()).clone();
 		int r;
 
-		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,this);
-		a.setAktiv(true);
 		setBoard(getManager().getPermManager().getScoreboard());
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§6§l"+getType().getKürzel()+" Spieler:");
 		for(Player p : UtilServer.getPlayers()){
@@ -498,7 +496,6 @@ public class QuickSurvivalGames extends SoloGame{
 			}
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
-			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			p.teleport(list.get(r));
 			list.remove(r);
 			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+Text.BIG_HERZ.getText(), DisplaySlot.SIDEBAR, 0);
