@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -42,9 +43,9 @@ public class AddonSpecCompass implements Listener{
 		return i;
 	}
 
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Interact(PlayerInteractEvent ev){
-		if(!this.game.isCompassAddon()||game==null||game.getState()==GameState.LobbyPhase)return;
+		if(game==null||!this.game.isCompassAddon()||game.getState()==GameState.LobbyPhase)return;
 		if(ev.getPlayer().getItemInHand()==null)return;
 		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand().getType()==Material.COMPASS&&game.getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.getPlayer().openInventory(getCompassInv());

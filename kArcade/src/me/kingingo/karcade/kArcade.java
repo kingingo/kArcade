@@ -2,6 +2,7 @@ package me.kingingo.karcade;
 
 import java.io.File;
 
+import me.kingingo.karcade.Command.CommandForceStart;
 import me.kingingo.karcade.Command.CommandScan;
 import me.kingingo.karcade.Command.CommandSend;
 import me.kingingo.karcade.Command.CommandStart;
@@ -72,6 +73,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandMute.class, new CommandMute(this));
 			cmd.register(CommandChatMute.class, new CommandChatMute(this));
 			cmd.register(CommandToggle.class, new CommandToggle(this));
+			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			new MemoryFix(this);
 			if( !getConfig().getBoolean("Config.Server.World-Save") )WorldUtil.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());

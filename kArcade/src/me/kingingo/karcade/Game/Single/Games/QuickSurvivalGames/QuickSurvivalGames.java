@@ -12,6 +12,7 @@ import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.addons.AddonBagPack;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
+import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -37,10 +38,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -117,102 +121,179 @@ public class QuickSurvivalGames extends SoloGame{
 		getManager().setRanking(Stats.WIN);
 	}
 	
-	public ItemStack rdmItem(){
-		switch(UtilMath.RandomInt(81, 0)){
-		case 0: return new ItemStack(Material.FLINT_AND_STEEL,1);
-		case 1: return new ItemStack(Material.FLINT_AND_STEEL,1);
-		case 2: return new ItemStack(Material.FLINT_AND_STEEL,1);
-		case 3: return new ItemStack(Material.FLINT_AND_STEEL,1);
-		case 4: return new ItemStack(Material.ARROW,UtilMath.RandomInt(6, 1));
-		case 5: return new ItemStack(Material.WOOD_SWORD,1);
-		case 6: return new ItemStack(Material.WOOD_SWORD,1);
-		case 7: return new ItemStack(Material.IRON_HELMET,1);
-		case 8: return new ItemStack(Material.IRON_CHESTPLATE,1);
-		case 9: return new ItemStack(Material.IRON_LEGGINGS,1);
-		case 10: return new ItemStack(Material.IRON_BOOTS,1);
-		case 11: return new ItemStack(Material.IRON_HELMET,1);
-		case 12: return new ItemStack(Material.IRON_CHESTPLATE,1);
-		case 13: return new ItemStack(Material.IRON_LEGGINGS,1);
-		case 14: return new ItemStack(Material.IRON_BOOTS,1);
-		case 15: return new ItemStack(Material.STONE_AXE,1);
-		case 16: return new ItemStack(Material.STONE_AXE,1);
-		case 17: return new ItemStack(Material.STONE_AXE,1);
-		case 18: return new ItemStack(Material.BOW);
-		case 19: return new ItemStack(Material.BOW);
-		case 20: return new ItemStack(Material.BOW);
-		case 21: return new ItemStack(Material.BOW);
-		case 22: return new ItemStack(Material.CHAINMAIL_HELMET);
-		case 23: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-		case 24: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-		case 25: return new ItemStack(Material.CHAINMAIL_BOOTS);
-		case 26: return new ItemStack(Material.CHAINMAIL_HELMET);
-		case 27: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-		case 28: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-		case 29: return new ItemStack(Material.CHAINMAIL_BOOTS);
-		case 30: return new ItemStack(Material.CHAINMAIL_HELMET);
-		case 31: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-		case 32: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-		case 33: return new ItemStack(Material.CHAINMAIL_BOOTS);
-		case 34: return new ItemStack(Material.STONE_SWORD);
-		case 35: return new ItemStack(Material.IRON_SWORD);
-		case 36: return new ItemStack(Material.STONE_SWORD);
-		case 37: return new ItemStack(Material.IRON_SWORD);
-		case 38: return new ItemStack(Material.STONE_SWORD);
-		case 39: return new ItemStack(Material.IRON_SWORD);
-		case 40: return new ItemStack(Material.FLINT_AND_STEEL,1);
-		case 41: return new ItemStack(Material.FLINT_AND_STEEL,1);
-		case 42: return new ItemStack(Material.ARROW,UtilMath.RandomInt(6, 1));
-		case 43: return new ItemStack(Material.WOOD_SWORD,1);
-		case 44: return new ItemStack(Material.WOOD_SWORD,1);
-		case 45: return new ItemStack(Material.IRON_HELMET,1);
-		case 46: return new ItemStack(Material.IRON_CHESTPLATE,1);
-		case 47: return new ItemStack(Material.IRON_LEGGINGS,1);
-		case 48: return new ItemStack(Material.IRON_BOOTS,1);
-		case 49: return new ItemStack(Material.IRON_HELMET,1);
-		case 50: return new ItemStack(Material.IRON_CHESTPLATE,1);
-		case 51: return new ItemStack(Material.IRON_LEGGINGS,1);
-		case 52: return new ItemStack(Material.IRON_BOOTS,1);
-		case 53: return new ItemStack(Material.STONE_AXE,1);
-		case 54: return new ItemStack(Material.STONE_AXE,1);
-		case 55: return new ItemStack(Material.STONE_AXE,1);
-		case 56: return new ItemStack(Material.BOW);
-		case 57: return new ItemStack(Material.BOW);
-		case 58: return new ItemStack(Material.BOW);
-		case 59: return new ItemStack(Material.BOW);
-		case 60: return new ItemStack(Material.CHAINMAIL_HELMET);
-		case 61: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-		case 62: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-		case 63: return new ItemStack(Material.CHAINMAIL_BOOTS);
-		case 64: return new ItemStack(Material.CHAINMAIL_HELMET);
-		case 65: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-		case 66: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-		case 67: return new ItemStack(Material.CHAINMAIL_BOOTS);
-		case 68: return new ItemStack(Material.CHAINMAIL_HELMET);
-		case 69: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-		case 70: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-		case 71: return new ItemStack(Material.CHAINMAIL_BOOTS);
-		case 72: return new ItemStack(Material.STONE_SWORD);
-		case 73: return new ItemStack(Material.IRON_SWORD);
-		case 74: return new ItemStack(Material.STONE_SWORD);
-		case 75: return new ItemStack(Material.IRON_SWORD);
-		case 76: return new ItemStack(Material.STONE_SWORD);
-		case 77: return new ItemStack(Material.IRON_SWORD);
-		case 78: return new ItemStack(Material.DIAMOND_AXE);
-		case 79: return new ItemStack(Material.DIAMOND_SWORD);
-		case 80: return new ItemStack(Material.DIAMOND_CHESTPLATE);
-		case 81: return new ItemStack(Material.GOLDEN_APPLE);
+	@EventHandler
+	public void tnt(BlockPlaceEvent ev){
+		if(ev.getBlock().getType()==Material.TNT){
+			ev.getBlock().setType(Material.AIR);
+			ev.getBlock().getLocation().getWorld().spawnEntity(ev.getBlock().getLocation(),EntityType.PRIMED_TNT);
 		}
-		return new ItemStack(Material.GOLDEN_APPLE,1,(byte)1);
 	}
+	
+	public ItemStack Sonstiges(){
+		switch(UtilMath.RandomInt(7, 0)){
+		case 0: return new ItemStack(Material.FLINT_AND_STEEL);
+		case 1: return new ItemStack(Material.BOW);
+		case 2: return new ItemStack(Material.GOLDEN_APPLE);
+		case 3: return new ItemStack(Material.ARROW,UtilMath.RandomInt(8, 3));
+		case 4: return new ItemStack(Material.FISHING_ROD);
+		case 5: return new ItemStack(Material.TNT);
+		case 6: return new ItemStack(Material.POTION,1,(byte)16421);
+		case 7: return new ItemStack(Material.POTION,1,(byte)16389);
+		}
+		return null;
+	}
+	
+	public ItemStack Axt(){
+		if(UtilMath.RandomInt(100, 1) != 35){
+			switch(UtilMath.RandomInt(3, 0)){
+			case 0: return new ItemStack(271);
+			case 1: return new ItemStack(275);
+			case 2: return new ItemStack(286);
+			case 3: return new ItemStack(258);
+			}
+		}else{
+			return new ItemStack(279);
+		}
+		return null;
+	}
+	
+	public ItemStack Schwert(){
+		if(UtilMath.RandomInt(100, 1) != 35){
+			switch(UtilMath.RandomInt(3, 0)){
+			case 0: return new ItemStack(267);
+			case 1: return new ItemStack(268);
+			case 2: return new ItemStack(272);
+			case 3: return new ItemStack(283);
+			}
+		}else{
+			return new ItemStack(276);
+		}
+		return null;
+	}
+	
+	public ItemStack Rüstung(){
+		if(UtilMath.RandomInt(100, 1) != 35){
+			switch(UtilMath.RandomInt(3, 0)){
+			case 0: return new ItemStack(UtilMath.RandomInt(301, 298));
+			case 1: return new ItemStack(UtilMath.RandomInt(305, 302));
+			case 2: return new ItemStack(UtilMath.RandomInt(309, 306));
+			case 3: return new ItemStack(UtilMath.RandomInt(317, 314));
+			}
+		}else{
+			return new ItemStack(UtilMath.RandomInt(313, 310));
+		}
+		return null;
+	}
+	
+	public ItemStack rdmItem(){
+		switch(UtilMath.RandomInt(4, 0)){
+		case 0: return Rüstung();
+		case 1: return Axt();
+		case 2: return Schwert();
+		case 3: return Sonstiges();
+		case 4: return Sonstiges();
+		}
+		return null;
+	}
+	
+//	public ItemStack rdmItem(){
+//		switch(UtilMath.RandomInt(81, 0)){
+//		case 0: return new ItemStack(Material.FLINT_AND_STEEL,1);
+//		case 1: return new ItemStack(Material.FLINT_AND_STEEL,1);
+//		case 2: return new ItemStack(Material.FLINT_AND_STEEL,1);
+//		case 3: return new ItemStack(Material.FLINT_AND_STEEL,1);
+//		case 4: return new ItemStack(Material.ARROW,UtilMath.RandomInt(6, 1));
+//		case 5: return new ItemStack(Material.WOOD_SWORD,1);
+//		case 6: return new ItemStack(Material.WOOD_SWORD,1);
+//		case 7: return new ItemStack(Material.IRON_HELMET,1);
+//		case 8: return new ItemStack(Material.IRON_CHESTPLATE,1);
+//		case 9: return new ItemStack(Material.IRON_LEGGINGS,1);
+//		case 10: return new ItemStack(Material.IRON_BOOTS,1);
+//		case 11: return new ItemStack(Material.IRON_HELMET,1);
+//		case 12: return new ItemStack(Material.IRON_CHESTPLATE,1);
+//		case 13: return new ItemStack(Material.IRON_LEGGINGS,1);
+//		case 14: return new ItemStack(Material.IRON_BOOTS,1);
+//		case 15: return new ItemStack(Material.STONE_AXE,1);
+//		case 16: return new ItemStack(Material.STONE_AXE,1);
+//		case 17: return new ItemStack(Material.STONE_AXE,1);
+//		case 18: return new ItemStack(Material.BOW);
+//		case 19: return new ItemStack(Material.BOW);
+//		case 20: return new ItemStack(Material.BOW);
+//		case 21: return new ItemStack(Material.BOW);
+//		case 22: return new ItemStack(Material.CHAINMAIL_HELMET);
+//		case 23: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+//		case 24: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
+//		case 25: return new ItemStack(Material.CHAINMAIL_BOOTS);
+//		case 26: return new ItemStack(Material.CHAINMAIL_HELMET);
+//		case 27: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+//		case 28: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
+//		case 29: return new ItemStack(Material.CHAINMAIL_BOOTS);
+//		case 30: return new ItemStack(Material.CHAINMAIL_HELMET);
+//		case 31: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+//		case 32: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
+//		case 33: return new ItemStack(Material.CHAINMAIL_BOOTS);
+//		case 34: return new ItemStack(Material.STONE_SWORD);
+//		case 35: return new ItemStack(Material.IRON_SWORD);
+//		case 36: return new ItemStack(Material.STONE_SWORD);
+//		case 37: return new ItemStack(Material.IRON_SWORD);
+//		case 38: return new ItemStack(Material.STONE_SWORD);
+//		case 39: return new ItemStack(Material.IRON_SWORD);
+//		case 40: return new ItemStack(Material.FLINT_AND_STEEL,1);
+//		case 41: return new ItemStack(Material.FLINT_AND_STEEL,1);
+//		case 42: return new ItemStack(Material.ARROW,UtilMath.RandomInt(6, 1));
+//		case 43: return new ItemStack(Material.WOOD_SWORD,1);
+//		case 44: return new ItemStack(Material.WOOD_SWORD,1);
+//		case 45: return new ItemStack(Material.IRON_HELMET,1);
+//		case 46: return new ItemStack(Material.IRON_CHESTPLATE,1);
+//		case 47: return new ItemStack(Material.IRON_LEGGINGS,1);
+//		case 48: return new ItemStack(Material.IRON_BOOTS,1);
+//		case 49: return new ItemStack(Material.IRON_HELMET,1);
+//		case 50: return new ItemStack(Material.IRON_CHESTPLATE,1);
+//		case 51: return new ItemStack(Material.IRON_LEGGINGS,1);
+//		case 52: return new ItemStack(Material.IRON_BOOTS,1);
+//		case 53: return new ItemStack(Material.STONE_AXE,1);
+//		case 54: return new ItemStack(Material.STONE_AXE,1);
+//		case 55: return new ItemStack(Material.STONE_AXE,1);
+//		case 56: return new ItemStack(Material.BOW);
+//		case 57: return new ItemStack(Material.BOW);
+//		case 58: return new ItemStack(Material.BOW);
+//		case 59: return new ItemStack(Material.BOW);
+//		case 60: return new ItemStack(Material.CHAINMAIL_HELMET);
+//		case 61: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+//		case 62: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
+//		case 63: return new ItemStack(Material.CHAINMAIL_BOOTS);
+//		case 64: return new ItemStack(Material.CHAINMAIL_HELMET);
+//		case 65: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+//		case 66: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
+//		case 67: return new ItemStack(Material.CHAINMAIL_BOOTS);
+//		case 68: return new ItemStack(Material.CHAINMAIL_HELMET);
+//		case 69: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+//		case 70: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
+//		case 71: return new ItemStack(Material.CHAINMAIL_BOOTS);
+//		case 72: return new ItemStack(Material.STONE_SWORD);
+//		case 73: return new ItemStack(Material.IRON_SWORD);
+//		case 74: return new ItemStack(Material.STONE_SWORD);
+//		case 75: return new ItemStack(Material.IRON_SWORD);
+//		case 76: return new ItemStack(Material.STONE_SWORD);
+//		case 77: return new ItemStack(Material.IRON_SWORD);
+//		case 78: return new ItemStack(Material.DIAMOND_AXE);
+//		case 79: return new ItemStack(Material.DIAMOND_SWORD);
+//		case 80: return new ItemStack(Material.DIAMOND_CHESTPLATE);
+//		case 81: return new ItemStack(Material.GOLDEN_APPLE);
+//		}
+//		return new ItemStack(Material.GOLDEN_APPLE,1,(byte)1);
+//	}
 	
 	@EventHandler
 	public void InventoryCloseCCC(InventoryCloseEvent ev){
 		if(ev.getInventory().getTitle().equalsIgnoreCase("§lChest")){
 			if(UtilInv.isInventoryEmpty(ev.getInventory())){
 				Location l = chest1.get(ev.getInventory());
-				chest.remove(l);
-				chest1.remove(ev.getInventory());
-				l.getBlock().setType(Material.AIR);
+				if(ev.getInventory().getViewers().isEmpty()){
+					chest.remove(l);
+					chest1.remove(ev.getInventory());
+					l.getBlock().setType(Material.AIR);
+				}
 			}
 		}
 	}
@@ -299,6 +380,7 @@ public class QuickSurvivalGames extends SoloGame{
 				for(Player p : UtilServer.getPlayers())p.teleport( getWorldData().getLocs().get(Team.YELLOW.Name()).get(0) );
 				setDamage(false);
 				setProjectileDamage(false);
+				for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
 				setState(GameState.DeathMatch);
 			break;
 		}
@@ -372,7 +454,7 @@ public class QuickSurvivalGames extends SoloGame{
 			UtilScoreboard.setScore(getBoard(), killer.getName()+" §a"+Text.BIG_HERZ.getText(), DisplaySlot.SIDEBAR, k);
 			UtilScoreboard.setScore(getBoard(), victim.getName()+" §4"+Text.MAHLZEICHEN_FETT.getText(), DisplaySlot.SIDEBAR, -1);
 
-			UtilParticle.FLAME.display(1, 20, victim.getLocation(), 15);
+			UtilParticle.FLAME.display(1, 60, victim.getLocation(), 15);
 		}else if(ev.getEntity() instanceof Player){
 			Player victim = ev.getEntity();
 			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
@@ -382,7 +464,7 @@ public class QuickSurvivalGames extends SoloGame{
 
 			UtilScoreboard.resetScore(getBoard(), victim.getName()+" §a"+Text.BIG_HERZ.getText(), DisplaySlot.SIDEBAR);
 			UtilScoreboard.setScore(getBoard(), victim.getName()+" §4"+Text.MAHLZEICHEN_FETT.getText(), DisplaySlot.SIDEBAR, -1);
-			UtilParticle.FLAME.display(1, 20, victim.getLocation(), 15);
+			UtilParticle.FLAME.display(1, 60,  victim.getLocation(), 15);
 		}
 	}
 	
@@ -393,22 +475,30 @@ public class QuickSurvivalGames extends SoloGame{
 			String msg = event.getMessage();
 			msg=msg.replaceAll("%","");
 			if(getManager().getPermManager().hasPermission(p, kPermission.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
-			event.setFormat(getManager().getPermManager().getPrefix(p) + p.getName() + "§7: "+ msg);
+			event.setFormat(getManager().getPermManager().getPrefix(p) + p.getName() + "§7:§f "+ msg);
 		}
 	}
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
-		ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> list = (ArrayList<Location>)getWorldData().getLocs(Team.RED.Name()).clone();
 		int r;
-		
+
+		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,this);
+		a.setAktiv(true);
 		setBoard(getManager().getPermManager().getScoreboard());
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§6§l"+getType().getKürzel()+" Spieler:");
 		for(Player p : UtilServer.getPlayers()){
-			r=UtilMath.r(list.size());
+			if(list.isEmpty()){
+				r=0;
+				list.add(getWorldData().getLocs(Team.RED.Name()).get(0));
+			}else{
+				r=UtilMath.r(list.size());
+			}
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
+			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			p.teleport(list.get(r));
 			list.remove(r);
 			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+Text.BIG_HERZ.getText(), DisplaySlot.SIDEBAR, 0);
@@ -421,6 +511,8 @@ public class QuickSurvivalGames extends SoloGame{
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 		getManager().getHologram().RemoveAllText();
 		setState(GameState.StartGame);
+		
+		for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	

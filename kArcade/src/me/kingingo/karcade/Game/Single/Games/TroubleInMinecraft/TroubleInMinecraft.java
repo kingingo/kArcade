@@ -134,6 +134,7 @@ public class TroubleInMinecraft extends TeamGame{
 		setExplosion(true);
 		setDeathDropItems(true);
 		setFoodChange(false);
+		setCompassAddon(true);
 		setRespawn(true);
 		shotgun=new Shotgun(this);
 		sniper=new Sniper(this);
@@ -833,7 +834,7 @@ public class TroubleInMinecraft extends TeamGame{
 						s.addPlayer(p1);
 					}
 				}
-				
+				p.setScoreboard(ps);
 			}
 			
 			for(Player p : t){
