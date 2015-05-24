@@ -24,6 +24,7 @@ import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWarsType;
 import me.kingingo.karcade.Game.Single.Games.SkyPvP.SkyPvP;
 import me.kingingo.karcade.Game.Single.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
+import me.kingingo.karcade.Privat.PrivatServer;
 import me.kingingo.karcade.Service.CommandService;
 import me.kingingo.kcore.Calendar.Calendar;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
@@ -136,6 +137,7 @@ public class kArcadeManager implements Listener{
 			}
 		}
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
+		new PrivatServer(this);
 		getGame().setState(GameState.LobbyPhase);
 	}
 

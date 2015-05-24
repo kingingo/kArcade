@@ -52,6 +52,9 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	private int Max_Players=50;
+	@Setter
+	@Getter
+	private boolean apublic=true;
 	
 	public Game(kArcadeManager manager) {
 		this.manager=manager;
@@ -115,7 +118,7 @@ public class Game implements Listener{
 	}
 	
 	public void updateInfo(int o){
-		SERVER_STATUS ss = new SERVER_STATUS(state,o, getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,o, getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id,apublic);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
@@ -123,7 +126,7 @@ public class Game implements Listener{
 	}
 	
 	public void updateInfo(GameState s){
-		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().size(), getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().size(), getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id,apublic);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
@@ -131,7 +134,7 @@ public class Game implements Listener{
 	}
 	
 	public void updateInfo(){
-		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().size(), getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id);
+		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().size(), getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id,apublic);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;

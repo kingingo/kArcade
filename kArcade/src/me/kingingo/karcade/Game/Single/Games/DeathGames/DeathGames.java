@@ -17,12 +17,15 @@ import me.kingingo.karcade.Game.Single.Games.DeathGames.Perk.PerkTeleporter;
 import me.kingingo.karcade.Game.Single.addons.AddonQuadratGrenze;
 import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Privat.Events.PrivatServerSettingEvent;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Interface.DeathGamesInterface;
+import me.kingingo.kcore.Interface.Button.UtilInterface;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -54,6 +57,7 @@ import me.kingingo.kcore.Kit.Perks.PerkSnowballSwitcher;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Packet.Packets.SERVER_SETTINGS;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
@@ -107,6 +111,7 @@ public class DeathGames extends SoloGame{
 	private ArrayList<ItemStack> medium = new ArrayList<>();
 	private ArrayList<ItemStack> normal = new ArrayList<>();
 	private KitShop kitShop;
+	private boolean kits=true;
 	private HashMap<Integer,ArrayList<Location>> g = new HashMap<>();
 	
 	public DeathGames(kArcadeManager manager) {
@@ -269,6 +274,13 @@ public class DeathGames extends SoloGame{
 		
 		setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
+	}
+
+	@EventHandler
+	public void Setting(PrivatServerSettingEvent ev){
+		DeathGamesInterface dg = UtilInterface.StringToDG(ev.getSetting().getInfos());
+		this.chest_anzahl=dg.getChest_anzahl();
+		this.kits=dg.isKits();
 	}
 	
 	@EventHandler

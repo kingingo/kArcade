@@ -62,10 +62,6 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandScan.class, new CommandScan(permManager));
 			pManager=new PacketManager(this,c);
 			permManager=new PermissionManager(this,GroupTyp.GAME,pManager,mysql);
-			if(getConfig().getString("Config.Server.Game").equalsIgnoreCase("SheepWars16")||getConfig().getString("Config.Server.Game").equalsIgnoreCase("SheepWars8")){
-				getConfig().set("Config.Server.Game", "SheepWars");
-				saveConfig();
-			}
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
 			cmd.register(CommandFly.class, new CommandFly(this));
 			cmd.register(CommandSend.class, new CommandSend(c));
