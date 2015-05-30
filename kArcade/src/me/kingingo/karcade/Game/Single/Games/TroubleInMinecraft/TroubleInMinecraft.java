@@ -50,7 +50,6 @@ import me.kingingo.kcore.PlayerStats.Event.PlayerStatsChangeEvent;
 import me.kingingo.kcore.PlayerStats.Event.PlayerStatsCreateEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -62,7 +61,7 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -263,7 +262,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}else{
 					for(Player p : getGameList().getPlayers(PlayerState.OUT)){
-						p.sendMessage(C.mOrange+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+						p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 					}
 				}
 		}
@@ -693,11 +692,11 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void StatsChange(PlayerStatsChangeEvent ev){
 		if(ev.getStats()==Stats.TTT_KARMA){
-			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
+			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
 		}else if(ev.getStats()==Stats.TTT_DETECTIVE_PUNKTE){
-			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
+			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.AQUA+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
 		}else if(ev.getStats()==Stats.TTT_TRAITOR_PUNKTE){
-			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
+			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
 		}else if(ev.getStats()==Stats.WIN){
 			getCoins().addCoins(ev.getPlayer(), false, 25);
 		}
@@ -709,11 +708,11 @@ public class TroubleInMinecraft extends TeamGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0, 0.9, 0),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: TroubleInMinecraft §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Karma: "+getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()),
@@ -755,12 +754,12 @@ public class TroubleInMinecraft extends TeamGame{
 			Scoreboard ps;
 			for(Player p : d){
 				ps = Bukkit.getScoreboardManager().getNewScoreboard();
-				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, C.cBlue+"DetectiveBoard");
-				UtilScoreboard.setScore(ps,C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
-				UtilScoreboard.setScore(ps,C.cAqua+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, p));
+				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.BLUE+"DetectiveBoard");
+				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
+				UtilScoreboard.setScore(ps,Color.AQUA+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, p));
 				if(d.size()!=1){
 					UtilScoreboard.setScore(ps,"§7", DisplaySlot.SIDEBAR, -1);
-					UtilScoreboard.setScore(ps,C.cBlue+"Detective:", DisplaySlot.SIDEBAR, -2);
+					UtilScoreboard.setScore(ps,Color.BLUE+"Detective:", DisplaySlot.SIDEBAR, -2);
 					int t = -3;
 					for(Player p1 : d){
 						if(p1==p)continue;
@@ -787,7 +786,7 @@ public class TroubleInMinecraft extends TeamGame{
 				
 				p.setScoreboard(ps);
 				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_IS_NOW.getText(Team.DETECTIVE.Name()));
-				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE));
+				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
 			}
 			ArrayList<Player> t = (ArrayList<Player>)getPlayerFrom(Team.TRAITOR);
@@ -795,14 +794,14 @@ public class TroubleInMinecraft extends TeamGame{
 				traitor.add(p);
 				p.getInventory().addItem(traitor_shop.getShop_item());
 				ps=Bukkit.getScoreboardManager().getNewScoreboard();
-				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, C.cDRed+"TraitorBoard");
-				UtilScoreboard.setScore(ps,C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
-				UtilScoreboard.setScore(ps,C.cRed+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, p));
+				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"TraitorBoard");
+				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
+				UtilScoreboard.setScore(ps,Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, p));
 				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_IS_NOW.getText(Team.TRAITOR.Name()));
 				p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TTT_TRAITOR_CHAT.getText());
 				if(t.size()!=1){
 					UtilScoreboard.setScore(ps,"§7", DisplaySlot.SIDEBAR, -1);
-					UtilScoreboard.setScore(ps,C.cRed+"Traitor:", DisplaySlot.SIDEBAR, -2);
+					UtilScoreboard.setScore(ps,Color.RED+"Traitor:", DisplaySlot.SIDEBAR, -2);
 					int t1 = -3;
 					for(Player p1 : t){
 						if(p1==p)continue;
@@ -839,7 +838,7 @@ public class TroubleInMinecraft extends TeamGame{
 			
 			for(Player p : t){
 				for(Player p1 : t){
-					UtilPlayer.setPlayerFakeEquipment(p, p1, UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.RED), (short)2);
+					UtilPlayer.setPlayerFakeEquipment(p, p1, UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.RED), (short)2);
 				}
 			}
 			
@@ -847,8 +846,8 @@ public class TroubleInMinecraft extends TeamGame{
 			
 			for(Player p:i){
 				ps=Bukkit.getScoreboardManager().getNewScoreboard();
-				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, C.cRed+"InnocentBoard");
-				UtilScoreboard.setScore(ps,C.cGreen+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
+				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"InnocentBoard");
+				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, p));
 				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.Name());
 				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
 				for(Player p1 : getTeamList().keySet()){

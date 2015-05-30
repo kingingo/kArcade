@@ -58,7 +58,6 @@ import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -71,8 +70,8 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
+import me.kingingo.kcore.Util.Color;
 
-import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -594,27 +593,27 @@ public class CaveWars extends TeamGame{
 	}
 	
 	public DyeColor cd(String s){
-		if(s.equalsIgnoreCase(C.cRed))return DyeColor.RED;
-		if(s.equalsIgnoreCase(C.cYellow))return DyeColor.YELLOW;
-		if(s.equalsIgnoreCase(C.cBlue))return DyeColor.BLUE;
-		if(s.equalsIgnoreCase(C.cGreen))return DyeColor.GREEN;
-		if(s.equalsIgnoreCase(C.cGray))return DyeColor.GRAY;
-		if(s.equalsIgnoreCase(C.cWhite))return DyeColor.WHITE;
-		if(s.equalsIgnoreCase(C.mOrange))return DyeColor.ORANGE;
-		if(s.equalsIgnoreCase(C.cPurple))return DyeColor.PURPLE;
+		if(s.equalsIgnoreCase(Color.RED.toString()))return DyeColor.RED;
+		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return DyeColor.YELLOW;
+		if(s.equalsIgnoreCase(Color.BLUE.toString()))return DyeColor.BLUE;
+		if(s.equalsIgnoreCase(Color.GREEN.toString()))return DyeColor.GREEN;
+		if(s.equalsIgnoreCase(Color.GRAY.toString()))return DyeColor.GRAY;
+		if(s.equalsIgnoreCase(Color.WHITE.toString()))return DyeColor.WHITE;
+		if(s.equalsIgnoreCase(Color.ORANGE.toString()))return DyeColor.ORANGE;
+		if(s.equalsIgnoreCase(Color.PURPLE.toString()))return DyeColor.PURPLE;
 		return DyeColor.BLACK;
 	}
 	
-	public Color c(String s){
-		if(s.equalsIgnoreCase(C.cRed))return Color.RED;
-		if(s.equalsIgnoreCase(C.cYellow))return Color.YELLOW;
-		if(s.equalsIgnoreCase(C.cBlue))return Color.BLUE;
-		if(s.equalsIgnoreCase(C.cGreen))return Color.GREEN;
-		if(s.equalsIgnoreCase(C.cGray))return Color.GRAY;
-		if(s.equalsIgnoreCase(C.cWhite))return Color.WHITE;
-		if(s.equalsIgnoreCase(C.mOrange))return Color.ORANGE;
-		if(s.equalsIgnoreCase(C.cPurple))return Color.PURPLE;
-		return Color.BLACK;
+	public org.bukkit.Color c(String s){
+		if(s.equalsIgnoreCase(Color.RED.toString()))return org.bukkit.Color.RED;
+		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return org.bukkit.Color.YELLOW;
+		if(s.equalsIgnoreCase(Color.BLUE.toString()))return org.bukkit.Color.BLUE;
+		if(s.equalsIgnoreCase(Color.GREEN.toString()))return org.bukkit.Color.GREEN;
+		if(s.equalsIgnoreCase(Color.GRAY.toString()))return org.bukkit.Color.GRAY;
+		if(s.equalsIgnoreCase(Color.WHITE.toString()))return org.bukkit.Color.WHITE;
+		if(s.equalsIgnoreCase(Color.ORANGE.toString()))return org.bukkit.Color.ORANGE;
+		if(s.equalsIgnoreCase(Color.PURPLE.toString()))return org.bukkit.Color.PURPLE;
+		return org.bukkit.Color.BLACK;
 	}
 	
 	@EventHandler
@@ -849,11 +848,11 @@ public class CaveWars extends TeamGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: CaveWars §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Spinnen-Kills: "+getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer()),

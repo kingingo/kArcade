@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.kingingo.karcade.Enum.Team;
 
 public enum BedWarsType {
+//_8x1(1,4,8,new Team[]{Team.RED,Team.BLUE,Team.YELLOW,Team.GREEN,Team.GRAY,Team.PINK,Team.ORANGE,Team.PURPLE},1);
 _2x4(4,4,8,new Team[]{Team.RED,Team.BLUE},1),
 _2x8(8,8,16,new Team[]{Team.RED,Team.BLUE},3),
 _2x5(5,4,10,new Team[]{Team.RED,Team.BLUE},1),

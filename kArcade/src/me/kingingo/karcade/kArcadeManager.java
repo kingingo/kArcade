@@ -42,7 +42,6 @@ import me.kingingo.kcore.Packet.Packets.SERVER_TYPE_CHANGE;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Pet.PetManager;
 import me.kingingo.kcore.PlayerStats.Stats;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilMath;
@@ -50,6 +49,7 @@ import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -228,10 +228,10 @@ public class kArcadeManager implements Listener{
 	public void setRanking(Stats s){
 		HashMap<Integer,UUID> list = getGame().getStats().getRanking(s, 10);
 		setString_ranking(new String[11]);
-		getString_ranking()[0]=C.cGreen+getGame().getType().getTyp()+C.mOrange+C.Bold+" Ranking";
+		getString_ranking()[0]=Color.GREEN+getGame().getType().getTyp()+Color.ORANGE+"§l Ranking";
 		for(int i : list.keySet()){
 			if(list.get(i)==null)break;
-			getString_ranking()[i]=C.Bold+"#"+i+"§r "+getGame().getStats().getName(list.get(i))+" "+s.getKÜRZEL()+": "+getGame().getStats().getIntWithUUID(s, list.get(i) );
+			getString_ranking()[i]="§l#"+i+"§r "+getGame().getStats().getName(list.get(i))+" "+s.getKÜRZEL()+": "+getGame().getStats().getIntWithUUID(s, list.get(i) );
 		}
 	}
 	

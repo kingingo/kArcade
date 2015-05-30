@@ -57,6 +57,10 @@ public class AddonBedTeamKing implements Listener {
 		case BLUE:return Team.SHEEP_BLUE;
 		case YELLOW:return Team.SHEEP_YELLOW;
 		case GREEN:return Team.SHEEP_GREEN;
+		case PINK:return Team.SHEEP_PINK;
+		case GRAY:return Team.SHEEP_GRAY;
+		case ORANGE:return Team.SHEEP_ORANGE;
+		case PURPLE:return Team.SHEEP_PURPLE;
 		default:
 		return Team.SHEEP_RED;
 		}

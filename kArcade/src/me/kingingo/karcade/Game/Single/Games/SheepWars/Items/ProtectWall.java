@@ -1,5 +1,6 @@
 package me.kingingo.karcade.Game.Single.Games.SheepWars.Items;
 
+import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWars;
 import me.kingingo.kcore.Util.UtilDirection;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -13,12 +14,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class ProtectWall extends SheepWarsItem{
 
-	public ProtectWall(JavaPlugin instance) {
-		super(instance, UtilItem.addEnchantmentGlow(UtilItem.RenameItem(new ItemStack(Material.GLASS), "§bProtectWall")) );
+	private SheepWars instance;
+	
+	public ProtectWall(SheepWars instance) {
+		super(instance.getManager().getInstance(), UtilItem.addEnchantmentGlow(UtilItem.RenameItem(new ItemStack(Material.GLASS), "§bProtectWall")) );
+		this.instance=instance;
 	}
 
 	@EventHandler(priority=EventPriority.LOW)
@@ -32,11 +35,13 @@ public class ProtectWall extends SheepWarsItem{
 					Block b1;
 					b=b.getRelative(BlockFace.UP);
 					for(int i = 0; i<4; i++){
+						instance.getApbcb().getBlocks().add(b.getLocation());
 						b.setType(Material.SANDSTONE);
 						b1=b;
 						for(int a = 0; a<2; a++){
 							b1=b1.getRelative(BlockFace.UP);
 							b1.setType(Material.SANDSTONE);
+							instance.getApbcb().getBlocks().add(b1.getLocation());
 						}
 						b=b.getRelative(d.getBlockFace());
 					}

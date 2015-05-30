@@ -3,13 +3,13 @@ package me.kingingo.karcade.Game.Single.addons;
 import java.util.ArrayList;
 
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 
 import org.bukkit.Bukkit;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +31,7 @@ public class AddonRandomItemInventory implements Listener{
 	}
 	
 	public ItemStack getRandomItemInv(){
-		return UtilItem.RenameItem(new ItemStack(m), C.cPurple+"Zufalls Item");
+		return UtilItem.RenameItem(new ItemStack(m), Color.PURPLE+"Zufalls Item");
 	}
 	
 	@EventHandler

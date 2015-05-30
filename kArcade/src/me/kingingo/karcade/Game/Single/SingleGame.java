@@ -18,7 +18,6 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.TabTitle;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilBG;
@@ -29,6 +28,7 @@ import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -547,24 +547,24 @@ public class SingleGame extends Game{
 			}
 			start--;
 			for(Player p : UtilServer.getPlayers()){
-				UtilDisplay.displayTextBar(p, C.cGray+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
+				UtilDisplay.displayTextBar(p, Color.GRAY+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");
 				if(p.getLocation().getY()<5)p.teleport(getManager().getLobby());
 			}
 			if(start!=0){
 				switch(start){
 				case 120:
-					broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");
+					broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");
 					Bukkit.getWorld("world").setWeatherDuration(0);
 					Bukkit.getWorld("world").setStorm(false);
 					break;
-				case 90:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 60:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 30:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 15:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
-				case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+C.cDAqua+start+C.cGray+" sekunden.");break;
+				case 90:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 60:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 30:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 15:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
 				}
 			}else{
 				if(UtilServer.getPlayers().size()>=getMin_Players()){
@@ -572,7 +572,7 @@ public class SingleGame extends Game{
 					updateInfo(GameState.InGame);
 				}else{
 					start=-1;
-					broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+C.cRed+"Es sind zu wenig Spieler(min. "+getMin_Players()+") online! Wartemodus wird neugestartet!");
+					broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Color.RED+"Es sind zu wenig Spieler(min. "+getMin_Players()+") online! Wartemodus wird neugestartet!");
 				}
 			}
 		}

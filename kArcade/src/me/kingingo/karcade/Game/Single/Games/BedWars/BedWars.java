@@ -33,7 +33,6 @@ import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
@@ -48,7 +47,7 @@ import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -103,7 +102,6 @@ public class BedWars extends TeamGame{
 		getInventoryTypDisallow().add(InventoryType.BEACON);
 		getItemPickupDeny().add(Material.CACTUS.getId());
 		getInteractDeny().add(Material.getMaterial(43));
-		getInteractDeny().add(Material.GLOWSTONE);
 		getInteractDeny().add(Material.ENDER_STONE);
 		setReplace_Fire(true);
 		setReplace_Lava(true);
@@ -124,7 +122,7 @@ public class BedWars extends TeamGame{
 		setBlockPlace(true);
 		setMin_Players(getTyp().getMin());
 		setMax_Players(getTyp().getMax());
-		setVoteTeam(new AddonVoteTeam(this,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
+		if(getTyp().getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
 		
 		liManager=new LaunchItemManager( manager.getInstance() );
 		
@@ -186,15 +184,6 @@ public class BedWars extends TeamGame{
 		 }
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void Explode (EntityExplodeEvent ev){
-		for(Block b : ev.blockList()){
-			if(b.getType()==Material.GLOWSTONE){
-				b.setTypeId(0);
-			}
-		}
-	}
-	
 	HashMap<Team,ArrayList<Block>> block = new HashMap<>();
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Break(BlockBreakEvent ev){
@@ -202,18 +191,7 @@ public class BedWars extends TeamGame{
 			ev.setCancelled(true);
 			return;
 		}
-		if(ev.getBlock().getType()==Material.GLOWSTONE){
-			Team t = getTeam(ev.getPlayer());
-			if(block.containsKey(t)){
-				if(block.get(t).contains(ev.getBlock())){
-					block.get(t).remove(ev.getBlock());
-					ev.getBlock().getWorld().dropItem(ev.getBlock().getLocation().add(0,0.1,0),new ItemStack(Material.GLOWSTONE,1));
-					ev.getBlock().setTypeId(0);
-					return;
-				}
-			}
-			ev.setCancelled(true);
-		}else if(ev.getBlock().getTypeId()==43&&ev.getBlock().getData()==9&&!ev.isCancelled()){
+		if(ev.getBlock().getTypeId()==43&&ev.getBlock().getData()==9&&!ev.isCancelled()){
 			ev.getBlock().setTypeId(0);
 			ev.getBlock().getWorld().dropItem(ev.getBlock().getLocation().add(0,0.1,0),new ItemStack(Material.getMaterial(43),1,(byte)9));
 		}
@@ -224,10 +202,6 @@ public class BedWars extends TeamGame{
 		if(getState()==GameState.LobbyPhase){
 			ev.setCancelled(true);
 			return;
-		}
-		if(ev.getBlock().getType()==Material.GLOWSTONE){
-			if(!block.containsKey(getTeam(ev.getPlayer())))block.put(getTeam(ev.getPlayer()), new ArrayList<Block>());
-			block.get(getTeam(ev.getPlayer())).add(ev.getBlock());
 		}
 	}
 	
@@ -369,7 +343,6 @@ public class BedWars extends TeamGame{
 		
 		Merchant bloecke = new Merchant();
 		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(24,4)));
-		bloecke.addOffer(new MerchantOffer(Bronze(3), new ItemStack(Material.GLOWSTONE)));
 		bloecke.addOffer(new MerchantOffer(Bronze(7),new ItemStack(Material.ENDER_STONE)));
 		v.addShop(UtilItem.Item(new ItemStack(24), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBlöcke"), bloecke, 9);
 	
@@ -500,27 +473,27 @@ public class BedWars extends TeamGame{
 	}
 	
 	public DyeColor cd(String s){
-		if(s.equalsIgnoreCase(C.cRed))return DyeColor.RED;
-		if(s.equalsIgnoreCase(C.cYellow))return DyeColor.YELLOW;
-		if(s.equalsIgnoreCase(C.cBlue))return DyeColor.BLUE;
-		if(s.equalsIgnoreCase(C.cGreen))return DyeColor.GREEN;
-		if(s.equalsIgnoreCase(C.cGray))return DyeColor.GRAY;
-		if(s.equalsIgnoreCase(C.cWhite))return DyeColor.WHITE;
-		if(s.equalsIgnoreCase(C.mOrange))return DyeColor.ORANGE;
-		if(s.equalsIgnoreCase(C.cPurple))return DyeColor.PURPLE;
+		if(s.equalsIgnoreCase(Color.RED.toString()))return DyeColor.RED;
+		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return DyeColor.YELLOW;
+		if(s.equalsIgnoreCase(Color.BLUE.toString()))return DyeColor.BLUE;
+		if(s.equalsIgnoreCase(Color.GREEN.toString()))return DyeColor.GREEN;
+		if(s.equalsIgnoreCase(Color.GRAY.toString()))return DyeColor.GRAY;
+		if(s.equalsIgnoreCase(Color.WHITE.toString()))return DyeColor.WHITE;
+		if(s.equalsIgnoreCase(Color.ORANGE.toString()))return DyeColor.ORANGE;
+		if(s.equalsIgnoreCase(Color.PURPLE.toString()))return DyeColor.PURPLE;
 		return DyeColor.BLACK;
 	}
 	
-	public Color c(String s){
-		if(s.equalsIgnoreCase(C.cRed))return Color.RED;
-		if(s.equalsIgnoreCase(C.cYellow))return Color.YELLOW;
-		if(s.equalsIgnoreCase(C.cBlue))return Color.BLUE;
-		if(s.equalsIgnoreCase(C.cGreen))return Color.GREEN;
-		if(s.equalsIgnoreCase(C.cGray))return Color.GRAY;
-		if(s.equalsIgnoreCase(C.cWhite))return Color.WHITE;
-		if(s.equalsIgnoreCase(C.mOrange))return Color.ORANGE;
-		if(s.equalsIgnoreCase(C.cPurple))return Color.PURPLE;
-		return Color.BLACK;
+	public org.bukkit.Color c(String s){
+		if(s.equalsIgnoreCase(Color.RED.toString()))return org.bukkit.Color.RED;
+		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return org.bukkit.Color.YELLOW;
+		if(s.equalsIgnoreCase(Color.BLUE.toString()))return org.bukkit.Color.BLUE;
+		if(s.equalsIgnoreCase(Color.GREEN.toString()))return org.bukkit.Color.GREEN;
+		if(s.equalsIgnoreCase(Color.GRAY.toString()))return org.bukkit.Color.GRAY;
+		if(s.equalsIgnoreCase(Color.WHITE.toString()))return org.bukkit.Color.WHITE;
+		if(s.equalsIgnoreCase(Color.ORANGE.toString()))return org.bukkit.Color.ORANGE;
+		if(s.equalsIgnoreCase(Color.PURPLE.toString()))return org.bukkit.Color.PURPLE;
+		return org.bukkit.Color.BLACK;
 	}
 	
 	@EventHandler
@@ -618,6 +591,10 @@ public class BedWars extends TeamGame{
 		case BLUE:return Team.VILLAGE_BLUE;
 		case YELLOW:return Team.VILLAGE_YELLOW;
 		case GREEN:return Team.VILLAGE_GREEN;
+		case GRAY:return Team.VILLAGE_GRAY;
+		case PINK:return Team.VILLAGE_PINK;
+		case ORANGE:return Team.VILLAGE_ORANGE;
+		case PURPLE:return Team.VILLAGE_PURPLE;
 		default:
 		return Team.VILLAGE_RED;
 		}
@@ -717,11 +694,11 @@ public class BedWars extends TeamGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: BedWars §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Betten Zerstört: "+getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getPlayer()),

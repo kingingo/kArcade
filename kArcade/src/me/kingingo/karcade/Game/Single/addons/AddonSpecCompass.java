@@ -3,8 +3,6 @@ package me.kingingo.karcade.Game.Single.addons;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Util.C;
-import me.kingingo.kcore.Util.F;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilGear;
@@ -64,14 +62,12 @@ public class AddonSpecCompass implements Listener{
 	    }
 
 	    event.setCancelled(true);
-
-	    UtilPlayer.sendMessage(event.getPlayer(), F.main("Game", "You cannot drop " + F.item("Target Compass") + "."));
 	  }
 	
 	@EventHandler
 	public void Inv(InventoryClickEvent ev){
 		if (!game.isCompassAddon()||!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
-		if(ev.getInventory().getName().equalsIgnoreCase(C.Bold+"Teleporter")){
+		if(ev.getInventory().getName().equalsIgnoreCase("§lTeleporter")){
 			Player p = (Player)ev.getWhoClicked();
 			if(UtilGear.isMat(p.getItemInHand(), Material.COMPASS)){
 				if(game.getGameList().isPlayerState(p)==PlayerState.OUT){
@@ -89,7 +85,7 @@ public class AddonSpecCompass implements Listener{
 	}
 	
 	public Inventory getCompassInv(){
-		if(inv==null)inv=Bukkit.createInventory(null, 27,C.Bold+"Teleporter");
+		if(inv==null)inv=Bukkit.createInventory(null, 27,"§lTeleporter");
 		inv.clear();
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 		ItemMeta meta;

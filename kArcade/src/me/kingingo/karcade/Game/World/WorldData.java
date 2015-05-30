@@ -453,6 +453,24 @@ public class WorldData {
 		    			locs.put(Team.SHEEP_YELLOW.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_GREEN.Name())){
 		    			locs.put(Team.SHEEP_GREEN.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.PINK.Name())){
+		    			locs.put(Team.PINK.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_GRAY.Name())){
+		    			locs.put(Team.VILLAGE_GRAY.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_PINK.Name())){
+		    			locs.put(Team.VILLAGE_PINK.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_PURPLE.Name())){
+		    			locs.put(Team.VILLAGE_PURPLE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_ORANGE.Name())){
+		    			locs.put(Team.VILLAGE_ORANGE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_GRAY.Name())){
+		    			locs.put(Team.SHEEP_GRAY.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_ORANGE.Name())){
+		    			locs.put(Team.SHEEP_ORANGE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_PURPLE.Name())){
+		    			locs.put(Team.SHEEP_PURPLE.Name(), WorldParser.StringListTOLocList(tokens[1],world));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_PINK.Name())){
+		    			locs.put(Team.SHEEP_PINK.Name(), WorldParser.StringListTOLocList(tokens[1],world));
 		    		}
 		        }
 		    }

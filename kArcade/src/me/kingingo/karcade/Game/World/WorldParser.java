@@ -30,7 +30,7 @@ public class WorldParser {
 		        	if (processed % 20000000 == 0) {
 		                caller.sendMessage("Processed: " + processed);
 		            }
-		        	block = caller.getWorld().getBlockAt(caller.getLocation().getBlockX() + x, caller.getLocation().getBlockY() + y, caller.getLocation().getBlockZ() + z);
+		        	block = caller.getWorld().getBlockAt(caller.getLocation().getBlockX() + x, y, caller.getLocation().getBlockZ() + z);
 		        	if(block.getType()==Material.MELON_BLOCK&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
 		        		if(!list.containsKey(Team.SOLO.Name())){
 		        			list.put(Team.SOLO.Name(), new ArrayList<Location>());
@@ -53,7 +53,14 @@ public class WorldParser {
 			        		((ArrayList)list.get(Team.BLUE.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
-		        		}else if(block.getData()==8){
+		        		}else if(block.getData()==2){
+		        			if(!list.containsKey(Team.PINK.Name())){
+			        			list.put(Team.PINK.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.PINK.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==7){
 		        			if(!list.containsKey(Team.GRAY.Name())){
 			        			list.put(Team.GRAY.Name(), new ArrayList<Location>());
 			        		}
@@ -81,13 +88,6 @@ public class WorldParser {
 			        		((ArrayList)list.get(Team.YELLOW.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
-		        		}else if(block.getData()==0){
-		        			if(!list.containsKey(Team.WHITE.Name())){
-			        			list.put(Team.WHITE.Name(), new ArrayList<Location>());
-			        		}
-			        		((ArrayList)list.get(Team.WHITE.Name())).add(block.getLocation());
-			        		block.setTypeId(0);
-			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==10){
 		        			if(!list.containsKey(Team.PURPLE.Name())){
 			        			list.put(Team.PURPLE.Name(), new ArrayList<Location>());
@@ -100,6 +100,13 @@ public class WorldParser {
 			        			list.put(Team.ORANGE.Name(), new ArrayList<Location>());
 			        		}
 			        		((ArrayList)list.get(Team.ORANGE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==0){
+		        			if(!list.containsKey(Team.WHITE.Name())){
+			        			list.put(Team.WHITE.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.WHITE.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
@@ -132,6 +139,34 @@ public class WorldParser {
 			        		((ArrayList)list.get(Team.VILLAGE_YELLOW.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==10){
+		        			if(!list.containsKey(Team.VILLAGE_PURPLE.Name())){
+			        			list.put(Team.VILLAGE_PURPLE.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_PURPLE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==2){
+		        			if(!list.containsKey(Team.VILLAGE_PINK.Name())){
+			        			list.put(Team.VILLAGE_PINK.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_PINK.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==7){
+		        			if(!list.containsKey(Team.VILLAGE_GRAY.Name())){
+			        			list.put(Team.VILLAGE_GRAY.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_GRAY.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==1){
+		        			if(!list.containsKey(Team.VILLAGE_ORANGE.Name())){
+			        			list.put(Team.VILLAGE_ORANGE.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_ORANGE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.BEDROCK){
 		        		if(block.getData()==14){
@@ -160,6 +195,34 @@ public class WorldParser {
 			        			list.put(Team.SHEEP_YELLOW.Name(), new ArrayList<Location>());
 			        		}
 			        		((ArrayList)list.get(Team.SHEEP_YELLOW.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==1){
+		        			if(!list.containsKey(Team.SHEEP_ORANGE.Name())){
+			        			list.put(Team.SHEEP_ORANGE.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.SHEEP_ORANGE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==10){
+		        			if(!list.containsKey(Team.SHEEP_PURPLE.Name())){
+			        			list.put(Team.SHEEP_PURPLE.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.SHEEP_PURPLE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==2){
+		        			if(!list.containsKey(Team.SHEEP_PINK.Name())){
+			        			list.put(Team.SHEEP_PINK.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.SHEEP_PINK.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==7){
+		        			if(!list.containsKey(Team.SHEEP_GRAY.Name())){
+			        			list.put(Team.SHEEP_GRAY.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.SHEEP_GRAY.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
@@ -219,6 +282,10 @@ public class WorldParser {
 			}
 			if(list.containsKey(Team.WHITE.Name())){
 				out.write("WHITE:"+LocListTOStringList(list.get(Team.WHITE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.PINK.Name())){
+				out.write("PINK:"+LocListTOStringList(list.get(Team.PINK.Name())));
 				out.write("\n");
 			}
 			if(list.containsKey(Team.PURPLE.Name())){
@@ -281,6 +348,22 @@ public class WorldParser {
 				out.write("VILLAGE_YELLOW:"+LocListTOStringList(list.get(Team.VILLAGE_YELLOW.Name())));
 				out.write("\n");
 			}
+			if(list.containsKey(Team.VILLAGE_ORANGE.Name())){
+				out.write("VILLAGE_ORANGE:"+LocListTOStringList(list.get(Team.VILLAGE_ORANGE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_PINK.Name())){
+				out.write("VILLAGE_PINK:"+LocListTOStringList(list.get(Team.VILLAGE_PINK.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_PURPLE.Name())){
+				out.write("VILLAGE_PURPLE:"+LocListTOStringList(list.get(Team.VILLAGE_PURPLE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_GRAY.Name())){
+				out.write("VILLAGE_GRAY:"+LocListTOStringList(list.get(Team.VILLAGE_GRAY.Name())));
+				out.write("\n");
+			}
 			if(list.containsKey(Team.SHEEP_BLUE.Name())){
 				out.write("SHEEP_BLUE:"+LocListTOStringList(list.get(Team.SHEEP_BLUE.Name())));
 				out.write("\n");
@@ -295,6 +378,22 @@ public class WorldParser {
 			}
 			if(list.containsKey(Team.SHEEP_YELLOW.Name())){
 				out.write("SHEEP_YELLOW:"+LocListTOStringList(list.get(Team.SHEEP_YELLOW.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.SHEEP_ORANGE.Name())){
+				out.write("SHEEP_ORANGE:"+LocListTOStringList(list.get(Team.SHEEP_ORANGE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.SHEEP_PINK.Name())){
+				out.write("SHEEP_PINK:"+LocListTOStringList(list.get(Team.SHEEP_PINK.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.SHEEP_PURPLE.Name())){
+				out.write("SHEEP_PURPLE:"+LocListTOStringList(list.get(Team.SHEEP_PURPLE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.SHEEP_GRAY.Name())){
+				out.write("SHEEP_GRAY:"+LocListTOStringList(list.get(Team.SHEEP_GRAY.Name())));
 				out.write("\n");
 			}
 			out.close();

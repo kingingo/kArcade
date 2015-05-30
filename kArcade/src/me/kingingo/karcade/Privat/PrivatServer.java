@@ -16,7 +16,6 @@ import me.kingingo.kcore.kConfig.kConfig;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class PrivatServer extends kListener{
 

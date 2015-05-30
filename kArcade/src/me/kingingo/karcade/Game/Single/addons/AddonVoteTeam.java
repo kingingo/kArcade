@@ -9,7 +9,6 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -20,6 +19,7 @@ import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,7 +57,7 @@ public class AddonVoteTeam implements Listener{
 	@EventHandler
 	public void Join(PlayerJoinEvent ev){
 		if(game.getState()!=GameState.LobbyPhase)return;
-		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.PAPER,1), C.cDAqua+"Wähle dein Team"));
+		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.PAPER,1), Color.AQUA+"Wähle dein Team"));
 	}
 	
 	@EventHandler
@@ -75,7 +75,7 @@ public class AddonVoteTeam implements Listener{
 	public void Inv(InventoryClickEvent ev){
 		if(game.getState()!=GameState.LobbyPhase)return;
 		if (!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
-		if(ev.getInventory().getName().equalsIgnoreCase(C.Bold+"Vote:")){
+		if(ev.getInventory().getName().equalsIgnoreCase("§lVote:")){
 			Player p = (Player)ev.getWhoClicked();
 					ev.setCancelled(true);
 					p.closeInventory();
@@ -95,10 +95,11 @@ public class AddonVoteTeam implements Listener{
 					for(Team t : list){
 						if(UtilGear.isMat(ev.getCurrentItem(), t.getItem().getType())&&ev.getCurrentItem().getItemMeta().hasDisplayName()&&ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(t.getItem().getItemMeta().getDisplayName())){
 							if(isTeam(t)){
-								int a = isVotet(t);
-								vote.put(p, t);
-								fixItem(t);
-								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
+								if(isVotet(t)+1 != UtilServer.getPlayers().size()){
+									vote.put(p, t);
+									fixItem(t);
+									UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
+								}
 							}else{
 								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.getColor()+t.Name()));
 							}
@@ -132,13 +133,8 @@ public class AddonVoteTeam implements Listener{
 		int i =1;
 		for(Player p : vote.keySet()){
 			if(vote.get(p)==t){
-//				if(getgame().getNgame().getName().containsKey(p)){
-//					l.add("§6"+i+".§7 "+getgame().getNgame().getName().get(p));
-//					i++;
-//				}else{
-					l.add("§6"+i+".§7 "+p.getName());
-					i++;
-				//}
+				l.add("§6"+i+".§7 "+p.getName());
+				i++;
 			}
 		}
 	}
@@ -152,7 +148,7 @@ public class AddonVoteTeam implements Listener{
 	
 	public Inventory getVoteInv(){
 		if(inv==null){
-			inv=Bukkit.createInventory(null, invSize,C.Bold+"Vote:");
+			inv=Bukkit.createInventory(null, invSize,"§lVote:");
 			int slot = 0;
 			if(list.length==2){
 				slot=2;

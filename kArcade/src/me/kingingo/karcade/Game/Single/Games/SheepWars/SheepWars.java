@@ -65,7 +65,6 @@ import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
@@ -82,7 +81,9 @@ import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
+
+import me.kingingo.kcore.Util.Color;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -113,25 +114,29 @@ import org.bukkit.scoreboard.DisplaySlot;
 
 public class SheepWars extends TeamGame{
 
-	AddonEnterhacken aeh;
-	AddonEntityTeamKing aek;
-	AddonDropItems adi;
-	AddonPlaceBlockCanBreak apbcb;
 	@Getter
-	HashMap<Team,Boolean> teams = new HashMap<>();
-	KitShop kitshop;
+	private AddonEnterhacken aeh;
 	@Getter
-	SheepWarsType typ;
-	HashMap<Player,String> kits = new HashMap<>();
-	LaunchItemManager liManager;
+	private AddonEntityTeamKing aek;
 	@Getter
-	Bomb bomb;
+	private AddonDropItems adi;
 	@Getter
-	Bridge bridge;
+	private AddonPlaceBlockCanBreak apbcb;
 	@Getter
-	ProtectWall wall;
+	private HashMap<Team,Boolean> teams = new HashMap<>();
+	private KitShop kitshop;
 	@Getter
-	SpezialVillager villager;
+	private SheepWarsType typ;
+	private HashMap<Player,String> kits = new HashMap<>();
+	private LaunchItemManager liManager;
+	@Getter
+	private Bomb bomb;
+	@Getter
+	private Bridge bridge;
+	@Getter
+	private ProtectWall wall;
+	@Getter
+	private SpezialVillager villager;
 	
 	public SheepWars(kArcadeManager manager,SheepWarsType typ){
 		super(manager);
@@ -174,11 +179,11 @@ public class SheepWars extends TeamGame{
 		setBlockPlace(true);
 		setMin_Players(getTyp().getMin());
 		setMax_Players(getTyp().getMax());
-		setVoteTeam(new AddonVoteTeam(this,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
+		if(getTyp().getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
 		ServiceSheepWars.setSheepWars(this);
 		liManager=new LaunchItemManager( manager.getInstance() );
 		bridge=new Bridge(manager.getInstance());
-		wall=new ProtectWall(manager.getInstance());
+		wall=new ProtectWall(this);
 		bomb=new Bomb(manager.getInstance(),liManager);
 		villager=new SpezialVillager(this);
 		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
@@ -230,6 +235,7 @@ public class SheepWars extends TeamGame{
 			new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","10% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), kPermission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{
 				new PerkNoFiredamage(),
 				new PerkArrowFire(15),
+				new PerkNoFalldamage(),
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SheepWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SHEEPWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
@@ -626,7 +632,7 @@ public class SheepWars extends TeamGame{
 		Merchant kisten = new Merchant();
 		kisten.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.CHEST), "Kiste")));
 		kisten.addOffer(new MerchantOffer(Gold(11), getVillager().getItem()));
-		kisten.addOffer(new MerchantOffer(Gold(15), getBridge().getItem()));
+//		kisten.addOffer(new MerchantOffer(Gold(15), getBridge().getItem()));
 		v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "§cKisten"), kisten, 15);
 		
 		Merchant trank = new Merchant();
@@ -647,27 +653,27 @@ public class SheepWars extends TeamGame{
 	}
 	
 	public DyeColor cd(String s){
-		if(s.equalsIgnoreCase(C.cRed))return DyeColor.RED;
-		if(s.equalsIgnoreCase(C.cYellow))return DyeColor.YELLOW;
-		if(s.equalsIgnoreCase(C.cBlue))return DyeColor.BLUE;
-		if(s.equalsIgnoreCase(C.cGreen))return DyeColor.GREEN;
-		if(s.equalsIgnoreCase(C.cGray))return DyeColor.GRAY;
-		if(s.equalsIgnoreCase(C.cWhite))return DyeColor.WHITE;
-		if(s.equalsIgnoreCase(C.mOrange))return DyeColor.ORANGE;
-		if(s.equalsIgnoreCase(C.cPurple))return DyeColor.PURPLE;
+		if(s.equalsIgnoreCase(Color.RED.toString()))return DyeColor.RED;
+		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return DyeColor.YELLOW;
+		if(s.equalsIgnoreCase(Color.BLUE.toString()))return DyeColor.BLUE;
+		if(s.equalsIgnoreCase(Color.GREEN.toString()))return DyeColor.GREEN;
+		if(s.equalsIgnoreCase(Color.GRAY.toString()))return DyeColor.GRAY;
+		if(s.equalsIgnoreCase(Color.WHITE.toString()))return DyeColor.WHITE;
+		if(s.equalsIgnoreCase(Color.ORANGE.toString()))return DyeColor.ORANGE;
+		if(s.equalsIgnoreCase(Color.PURPLE.toString()))return DyeColor.PURPLE;
 		return DyeColor.BLACK;
 	}
 	
-	public Color c(String s){
-		if(s.equalsIgnoreCase(C.cRed))return Color.RED;
-		if(s.equalsIgnoreCase(C.cYellow))return Color.YELLOW;
-		if(s.equalsIgnoreCase(C.cBlue))return Color.BLUE;
-		if(s.equalsIgnoreCase(C.cGreen))return Color.GREEN;
-		if(s.equalsIgnoreCase(C.cGray))return Color.GRAY;
-		if(s.equalsIgnoreCase(C.cWhite))return Color.WHITE;
-		if(s.equalsIgnoreCase(C.mOrange))return Color.ORANGE;
-		if(s.equalsIgnoreCase(C.cPurple))return Color.PURPLE;
-		return Color.BLACK;
+	public org.bukkit.Color c(String s){
+		if(s.equalsIgnoreCase(Color.RED.toString()))return org.bukkit.Color.RED;
+		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return org.bukkit.Color.YELLOW;
+		if(s.equalsIgnoreCase(Color.BLUE.toString()))return org.bukkit.Color.BLUE;
+		if(s.equalsIgnoreCase(Color.GREEN.toString()))return org.bukkit.Color.GREEN;
+		if(s.equalsIgnoreCase(Color.GRAY.toString()))return org.bukkit.Color.GRAY;
+		if(s.equalsIgnoreCase(Color.WHITE.toString()))return org.bukkit.Color.WHITE;
+		if(s.equalsIgnoreCase(Color.ORANGE.toString()))return org.bukkit.Color.ORANGE;
+		if(s.equalsIgnoreCase(Color.PURPLE.toString()))return org.bukkit.Color.PURPLE;
+		return org.bukkit.Color.BLACK;
 	}
 	
 	@EventHandler
@@ -787,6 +793,10 @@ public class SheepWars extends TeamGame{
 		case BLUE:return Team.VILLAGE_BLUE;
 		case YELLOW:return Team.VILLAGE_YELLOW;
 		case GREEN:return Team.VILLAGE_GREEN;
+		case GRAY:return Team.VILLAGE_GRAY;
+		case PINK:return Team.VILLAGE_PINK;
+		case ORANGE:return Team.VILLAGE_ORANGE;
+		case PURPLE:return Team.VILLAGE_PURPLE;
 		default:
 		return Team.VILLAGE_RED;
 		}
@@ -897,11 +907,11 @@ public class SheepWars extends TeamGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: SheepWars §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		//"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),

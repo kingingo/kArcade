@@ -7,10 +7,10 @@ import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Listener.kListener;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -45,7 +45,7 @@ public class AddonChat extends kListener{
 				if(team_game.getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
 					if(spectator){
 						for(Player p : team_game.getGameList().getPlayers(PlayerState.IN)){
-							p.sendMessage(C.cGray+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
+							p.sendMessage(Color.GRAY+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
 						UtilServer.broadcast(team_game.getTeam(ev.getPlayer()).getColor()+team_game.getTeam(ev.getPlayer()).Name()+" "+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
@@ -53,7 +53,7 @@ public class AddonChat extends kListener{
 				}else{
 					if(spectator){
 						for(Player p : team_game.getGameList().getPlayers(PlayerState.OUT)){
-							p.sendMessage(C.mOrange+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
+							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
 						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(team_game.getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
@@ -63,7 +63,7 @@ public class AddonChat extends kListener{
 				if(game.getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
 					if(spectator){
 						for(Player p : game.getGameList().getPlayers(PlayerState.IN)){
-							p.sendMessage(C.cGray+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
+							p.sendMessage(Color.GRAY+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
 						UtilServer.broadcast(game.getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
@@ -71,7 +71,7 @@ public class AddonChat extends kListener{
 				}else{
 					if(spectator){
 						for(Player p : game.getGameList().getPlayers(PlayerState.OUT)){
-							p.sendMessage(C.mOrange+ev.getPlayer().getDisplayName()+":§7:§f "+ev.getMessage());
+							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7:§f "+ev.getMessage());
 						}
 					}else{
 						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(game.getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());

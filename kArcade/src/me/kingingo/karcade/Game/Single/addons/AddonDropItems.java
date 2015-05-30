@@ -27,10 +27,6 @@ public class AddonDropItems extends kListener {
 		this.drop_rate=drop_rate;
 	}
 	
-	//GOLD ORANGE
-	//IRON PURPLE
-	//BRONZE WHITE
-	
 	@EventHandler
 	public void Interact(PlayerPickupItemEvent ev){	
 		if(ev.getItem().getItemStack().getType()==Material.CLAY_BRICK){
@@ -59,22 +55,22 @@ public class AddonDropItems extends kListener {
 	public void Update(UpdateEvent ev){
 		
 		if(ev.getType()==UpdateType.SEC){
-			for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),drop_rate);
+			for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),drop_rate);
 		}
 		
 		if(ev.getType()==UpdateType.SLOW){
-			if(getInstance().getWorldData().ExistLoc(Team.PURPLE.Name())){
-				for(Location loc : getInstance().getWorldData().getLocs(Team.PURPLE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
+			if(getInstance().getWorldData().ExistLoc(Team.SILBER.Name())){
+				for(Location loc : getInstance().getWorldData().getLocs(Team.SILBER.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
 			}else{
-				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
 			}
 		}
 		
 		if(ev.getType()==UpdateType.SLOWER){
-			if(getInstance().getWorldData().ExistLoc(Team.ORANGE.Name())){
-				for(Location loc : getInstance().getWorldData().getLocs(Team.ORANGE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate, "§bGold");
+			if(getInstance().getWorldData().ExistLoc(Team.GOLD.Name())){
+				for(Location loc : getInstance().getWorldData().getLocs(Team.GOLD.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate, "§bGold");
 			}else{
-				for(Location loc : getInstance().getWorldData().getLocs(Team.WHITE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate);
 			}
 		}
 	}

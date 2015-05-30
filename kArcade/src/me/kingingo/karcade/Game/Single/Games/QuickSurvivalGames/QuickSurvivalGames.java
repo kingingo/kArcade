@@ -1,5 +1,6 @@
 package me.kingingo.karcade.Game.Single.Games.QuickSurvivalGames;
 
+import me.kingingo.kcore.Util.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,9 +11,7 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
-import me.kingingo.karcade.Game.Single.addons.AddonBagPack;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
-import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -22,20 +21,19 @@ import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilInv;
+import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilScoreboard;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -124,6 +122,7 @@ public class QuickSurvivalGames extends SoloGame{
 	@EventHandler
 	public void tnt(BlockPlaceEvent ev){
 		if(ev.getBlock().getType()==Material.TNT){
+			ev.getItemInHand().setType(null);
 			ev.getBlock().setType(Material.AIR);
 			ev.getBlock().getLocation().getWorld().spawnEntity(ev.getBlock().getLocation(),EntityType.PRIMED_TNT);
 		}
@@ -303,9 +302,10 @@ public class QuickSurvivalGames extends SoloGame{
 		if(getState()==GameState.InGame){
 			if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
 			if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getType()==Material.CHEST){
+				ev.setCancelled(true);
+				if(ev.getPlayer().getItemInHand()!=null&&UtilItem.isWeapon(ev.getPlayer().getItemInHand()))return;
 				if(!chest.containsKey(ev.getClickedBlock().getLocation()))CreateChest(ev.getClickedBlock().getLocation());
 				ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
-				ev.setCancelled(true);
 			}
 		}else{
 			if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getType()==Material.CHEST){
@@ -526,11 +526,11 @@ public class QuickSurvivalGames extends SoloGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: QuickSurvivalGames §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		" ",

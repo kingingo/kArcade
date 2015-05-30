@@ -19,11 +19,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AddonPlaceBlockCanBreak implements Listener{
 
 	@Getter
-	JavaPlugin instance;
+	private JavaPlugin instance;
 	@Getter
-	ArrayList<Location> blocks = new ArrayList<>();
+	private ArrayList<Location> blocks = new ArrayList<>();
 	@Getter
-	ArrayList<Material> ausnahmen;
+	private ArrayList<Material> ausnahmen;
 	
 	public AddonPlaceBlockCanBreak(JavaPlugin instance,Material[] ausnahmen){
 		this.instance=instance;

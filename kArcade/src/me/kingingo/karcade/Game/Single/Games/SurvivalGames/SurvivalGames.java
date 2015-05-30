@@ -22,7 +22,6 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -33,6 +32,7 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -499,7 +499,7 @@ public class SurvivalGames extends TeamGame{
 			r=UtilMath.r(list.size());
 			t = getTeamList().get(p);
 			ps=Bukkit.getScoreboardManager().getNewScoreboard();
-			UtilScoreboard.addBoard(ps, DisplaySlot.BELOW_NAME, C.cGray+t.Name().split(" ")[0]);
+			UtilScoreboard.addBoard(ps, DisplaySlot.BELOW_NAME, Color.GRAY+t.Name().split(" ")[0]);
 			for(Player p1 : UtilServer.getPlayers()){
 				if(!getTeamList().containsKey(p1))continue;
 				UtilScoreboard.setScore(ps, p1.getName(), DisplaySlot.BELOW_NAME, Integer.valueOf( getTeamList().get(p1).Name().split(" ")[1] ));
@@ -540,11 +540,11 @@ public class SurvivalGames extends TeamGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: SurvivalGames §a"+kArcade.id,
 		"Map: "+wd.getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		//"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),

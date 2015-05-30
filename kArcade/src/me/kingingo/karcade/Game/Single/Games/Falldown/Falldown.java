@@ -1,5 +1,6 @@
 package me.kingingo.karcade.Game.Single.Games.Falldown;
 
+import me.kingingo.kcore.Util.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,7 +31,6 @@ import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -164,11 +164,11 @@ public class Falldown extends SoloGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: Falldown §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",	
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
 		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
 		"Power: "+getStats().getInt(Stats.POWER, ev.getPlayer()),

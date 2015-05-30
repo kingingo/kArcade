@@ -24,7 +24,6 @@ import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
-import me.kingingo.kcore.Util.C;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -38,6 +37,7 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
+import me.kingingo.kcore.Util.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -285,11 +285,11 @@ public class SkyPvP extends SoloGame{
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0,0.3,0),new String[]{
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Info",
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 		"Server: SkyPvP §a"+kArcade.id,
 		"Map: "+getWorldData().getMapName(),
 		" ",
-		C.cGreen+getType().getTyp()+C.mOrange+C.Bold+" Stats",
+		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
 		"Coins: "+getCoins().getCoins(ev.getPlayer()),
 		"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
 		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
