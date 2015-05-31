@@ -5,7 +5,7 @@ import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecra
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;

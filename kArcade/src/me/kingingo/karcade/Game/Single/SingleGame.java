@@ -18,6 +18,7 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.TabTitle;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilBG;
@@ -28,7 +29,6 @@ import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
-import me.kingingo.kcore.Util.Color;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;

@@ -7,7 +7,6 @@ import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilGear;
 import me.kingingo.kcore.Util.UtilInv;
-import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -10,7 +10,7 @@ import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.TimeSpan;

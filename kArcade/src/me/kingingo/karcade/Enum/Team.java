@@ -1,8 +1,8 @@
 package me.kingingo.karcade.Enum;
 
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilItem;
 
-import me.kingingo.kcore.Util.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

@@ -61,10 +61,11 @@ import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.kPermission;
-import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Scheduler.kScheduler;
+import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
@@ -81,9 +82,6 @@ import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
 import org.bukkit.Bukkit;
-
-import me.kingingo.kcore.Util.Color;
-
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;

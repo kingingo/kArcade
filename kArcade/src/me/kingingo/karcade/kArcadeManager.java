@@ -41,7 +41,8 @@ import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.SERVER_TYPE_CHANGE;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Pet.PetManager;
-import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilMath;
@@ -49,7 +50,6 @@ import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import me.kingingo.kcore.Util.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

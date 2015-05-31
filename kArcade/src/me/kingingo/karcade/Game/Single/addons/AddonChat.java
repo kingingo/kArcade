@@ -7,10 +7,10 @@ import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Listener.kListener;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
-import me.kingingo.kcore.Util.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;

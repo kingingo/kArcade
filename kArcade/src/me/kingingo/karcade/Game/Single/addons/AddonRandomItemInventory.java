@@ -3,13 +3,13 @@ package me.kingingo.karcade.Game.Single.addons;
 import java.util.ArrayList;
 
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 
 import org.bukkit.Bukkit;
-import me.kingingo.kcore.Util.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
