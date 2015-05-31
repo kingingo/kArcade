@@ -372,18 +372,17 @@ public class SheepWars extends TeamGame{
 		}
 	}
 	
-	public boolean game_end(){
-		Team t=null;
-		for(Player p : getTeamList().keySet()){
-			t=getTeamList().get(p);
-			for(Player p1 : getTeamList().keySet()){
-				if(getTeamList().get(p1)!=t){
-					return false;
+	//ER PRÜFT OB NUR NOCH EIN TEAM ÜBRIG IST!
+		public boolean game_end(){
+			for(Player p : getTeamList().keySet()){
+				for(Player p1 : getTeamList().keySet()){
+					if(getTeamList().get(p1)!=getTeamList().get(p)){
+						return false;
+					}
 				}
 			}
+			return true;
 		}
-		return true;
-	}
 	
 	@EventHandler
 	public void InGame(UpdateEvent ev){
@@ -436,19 +435,25 @@ public class SheepWars extends TeamGame{
 	}
 	
 	public HashMap<Team,Integer> verteilung(Team[] t){
-		HashMap<Team,Integer> list = new HashMap<>();
-		Collection<? extends Player> l = UtilServer.getPlayers();
-	
-		for(Team team : t){
-			list.put(team, l.size()/t.length);
-		}
+		if(getTyp().getTeam_size()==1){
+			HashMap<Team,Integer> list = new HashMap<>();
+			for(Team team : t)list.put(team, 1);
+			return list;
+		}else{
+			HashMap<Team,Integer> list = new HashMap<>();
+			Collection<? extends Player> l = UtilServer.getPlayers();
 		
-		if(l.size()%t.length!=0){
-			list.remove(t[0]);
-			list.put(t[0], (l.size()/t.length)+1);
-		}
+			for(Team team : t){
+				list.put(team, l.size()/t.length);
+			}
+			
+			if(l.size()%t.length!=0){
+				list.remove(t[0]);
+				list.put(t[0], (l.size()/t.length)+1);
+			}
 
-		return list;
+			return list;	
+		}
 	}
 
 	public ItemStack Silber(int i){

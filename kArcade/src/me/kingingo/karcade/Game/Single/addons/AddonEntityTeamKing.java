@@ -17,7 +17,7 @@ import me.kingingo.kcore.Util.UtilItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -37,7 +37,7 @@ import org.bukkit.util.Vector;
 public class AddonEntityTeamKing implements Listener {
 	
 	@Getter
-	HashMap<Team,Creature> teams = new HashMap<>();
+	HashMap<Team,Entity> teams = new HashMap<>();
 	@Getter
 	@Setter
 	boolean move=false;
@@ -48,9 +48,9 @@ public class AddonEntityTeamKing implements Listener {
 	@Setter
 	boolean ProjectileDamage=false;
 	@Getter
-	HashMap<Creature,Double> Heal = new HashMap<>();
+	HashMap<Entity,Double> Heal = new HashMap<>();
 	@Getter
-	HashMap<Creature, NameTagMessage> NameTagMessage = new HashMap<>();
+	HashMap<Entity, NameTagMessage> NameTagMessage = new HashMap<>();
 	@Getter
 	TeamGame team;
 	@Getter
@@ -58,7 +58,7 @@ public class AddonEntityTeamKing implements Listener {
 	
 	public AddonEntityTeamKing(Team[] teams,TeamGame team,EntityType type){
 		this.team=team;
-		Creature e;
+		Entity e;
 		Location loc = null;
 		for(Team t : teams){
 			loc=team.getWorldData().getLocs(getSheep(t).Name()).get(0);
@@ -85,7 +85,7 @@ public class AddonEntityTeamKing implements Listener {
 		}
 	}
 	
-	public void setHealt(Creature e,double h){
+	public void setHealt(Entity e,double h){
 		getHeal().put(e, h);
 		if(!(e instanceof LivingEntity))return;
 		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+"�?�");
@@ -161,10 +161,10 @@ public class AddonEntityTeamKing implements Listener {
 	
 	@EventHandler
 	public void Click(PlayerInteractEntityEvent ev){
-		if(ev.getRightClicked() instanceof Creature&&is(ev.getRightClicked())){
+		if(ev.getRightClicked() instanceof Entity&&is(ev.getRightClicked())){
 			if(UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())){
 				ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
-				setHealt(((Creature)ev.getRightClicked()),getHealt(((Creature)ev.getRightClicked()))+20);
+				setHealt(((Entity)ev.getRightClicked()),getHealt(((Entity)ev.getRightClicked()))+20);
 			}
 		}
 	}
@@ -187,7 +187,7 @@ public class AddonEntityTeamKing implements Listener {
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
 		if(!(ev.getDamager() instanceof Player))return;
-		if(ev.getEntity() instanceof Creature&&is(ev.getEntity())){
+		if(ev.getEntity() instanceof Entity&&is(ev.getEntity())){
 			Team t = get(ev.getEntity());
 			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t || team.getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
 				ev.setCancelled(true);
@@ -201,7 +201,7 @@ public class AddonEntityTeamKing implements Listener {
 				}else{
 					ev.setDamage(0);
 				}
-				setHealt(((Creature)ev.getEntity()), h);
+				setHealt(((Entity)ev.getEntity()), h);
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(team.getManager().getInstance(), new Runnable() {
                     public void run() {
                         ev.getEntity().setVelocity(new Vector());

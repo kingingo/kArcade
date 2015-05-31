@@ -24,8 +24,8 @@ import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilWorld;
 import me.kingingo.kcore.Util.UtilWorldEdit;
-import me.kingingo.kcore.Util.WorldUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -249,7 +249,7 @@ public class WorldData {
 		 removeWorld();
 		 WorldCreator wc = new WorldCreator(getFolder());
 		 wc.generator(new CleanroomChunkGenerator(".0,AIR"));
-		 world= WorldUtil.LoadWorld(wc);
+		 world= UtilWorld.LoadWorld(wc);
 	 }
 	 
 	 public void createWorld(){
@@ -295,9 +295,9 @@ public class WorldData {
 	          public void run()
 	          {
 	            if(isCleanroomChunkGenerator()){
-	            	world=WorldUtil.LoadWorld(new WorldCreator(getFolder()), new CleanroomChunkGenerator(".0,AIR"));
+	            	world=UtilWorld.LoadWorld(new WorldCreator(getFolder()), new CleanroomChunkGenerator(".0,AIR"));
 	            }else{
-	            	world=WorldUtil.LoadWorld(new WorldCreator(getFolder()));
+	            	world=UtilWorld.LoadWorld(new WorldCreator(getFolder()));
 	            }
 	            world.setDifficulty(Difficulty.HARD);
 	            LoadWorldConfig();

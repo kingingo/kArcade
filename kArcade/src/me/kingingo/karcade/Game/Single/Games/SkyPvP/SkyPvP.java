@@ -24,6 +24,7 @@ import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -37,12 +38,12 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
-import me.kingingo.kcore.Util.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -344,7 +345,7 @@ public class SkyPvP extends SoloGame{
 			entity_king.setAttack(true);
 			entity_king.setAttack_damage(5.0);
 			
-			for(Creature c : entity_king.getCreature()){
+			for(Entity c : entity_king.getCreature()){
 				if(c instanceof Wolf){
 					((Wolf)c).setAngry(true);
 				}

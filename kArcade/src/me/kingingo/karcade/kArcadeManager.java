@@ -243,7 +243,8 @@ public class kArcadeManager implements Listener{
 		}else if(GameType.SheepWars.getTyp().equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType.values()[UtilMath.RandomInt(SheepWarsType.values().length, 0)]);
 		}else if(GameType.BedWars.getTyp().equalsIgnoreCase(game)){
-			return new BedWars(this,BedWarsType.values()[UtilMath.RandomInt(BedWarsType.values().length, 0)]);
+			//return new BedWars(this,BedWarsType.values()[UtilMath.RandomInt(BedWarsType.values().length, 0)]);
+			return new BedWars(this, BedWarsType.random());
 		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
 		}else if(GameType.SkyPvP.getTyp().equalsIgnoreCase(game)){

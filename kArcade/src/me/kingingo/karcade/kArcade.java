@@ -22,7 +22,7 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.UtilFile;
 import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Util.WorldUtil;
+import me.kingingo.kcore.Util.UtilWorld;
 import me.kingingo.kcore.memory.MemoryFix;
 
 import org.bukkit.Bukkit;
@@ -71,7 +71,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			new MemoryFix(this);
-			if( !getConfig().getBoolean("Config.Server.World-Save") )WorldUtil.setSave(false);
+			if( !getConfig().getBoolean("Config.Server.World-Save") )UtilWorld.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){
 			UtilException.catchException(e, getConfig().getString("Config.Server.ID"), Bukkit.getIp(), mysql);

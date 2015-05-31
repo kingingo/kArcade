@@ -1,6 +1,7 @@
 package me.kingingo.karcade.Game.Single.addons;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Listener.kListener;
@@ -20,6 +21,9 @@ public class AddonDropItems extends kListener {
 	private TeamGame instance;
 	private int i=0;
 	private int drop_rate=0;
+	@Setter
+	@Getter
+	private boolean drop_name = true;
 	
 	public AddonDropItems(TeamGame instance,int drop_rate){
 		super(instance.getManager().getInstance(),"[AddonDropItems]");
@@ -48,7 +52,7 @@ public class AddonDropItems extends kListener {
 	}
 	
 	public void drop(Location loc,ItemStack item, int anzahl){
-		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, getName()));
+		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, (drop_name ? UtilItem.RenameItem(item, getName() ) : item) );
 	}
 	
 	@EventHandler

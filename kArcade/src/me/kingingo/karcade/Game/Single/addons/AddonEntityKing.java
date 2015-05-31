@@ -40,7 +40,7 @@ public class AddonEntityKing implements Listener {
 	@Getter
 	private SingleGame game;
 	@Getter
-	private ArrayList<Creature> creature = new ArrayList<>();
+	private ArrayList<Entity> creature = new ArrayList<>();
 	@Getter
 	@Setter
 	private boolean move=false;
@@ -57,9 +57,9 @@ public class AddonEntityKing implements Listener {
 	@Setter
 	private boolean ProjectileDamage=false;
 	@Getter
-	private HashMap<Creature,Double> Heal = new HashMap<>();
+	private HashMap<Entity,Double> Heal = new HashMap<>();
 	@Getter
-	private HashMap<Creature, NameTagMessage> NameTagMessage = new HashMap<>();
+	private HashMap<Entity, NameTagMessage> NameTagMessage = new HashMap<>();
 	
 	public AddonEntityKing(SingleGame game){
 		this.game=game;
@@ -69,13 +69,13 @@ public class AddonEntityKing implements Listener {
 	
 	public void spawnMob(Location loc,EntityType type,String Name){
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-			Creature e=game.getManager().getPetManager().AddPetWithOutOwner(Name,false, type, loc);
+			Entity e=game.getManager().getPetManager().AddPetWithOutOwner(Name,false, type, loc);
 			this.creature.add(e);
 			this.Heal.put(e, 100D);
 	}
 	
 	public void spawnMobs(Location[] locs,EntityType type,String Name){
-		Creature e;
+		Entity e;
 		for(Location loc : locs){
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 			e=game.getManager().getPetManager().AddPetWithOutOwner(Name,false, type, loc);
@@ -85,7 +85,7 @@ public class AddonEntityKing implements Listener {
 	}
 	
 	public void spawnMobs(ArrayList<Location> locs,EntityType type,String Name){
-		Creature e;
+		Entity e;
 		for(Location loc : locs){
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 			e=game.getManager().getPetManager().AddPetWithOutOwner(Name,false, type, loc);
@@ -105,7 +105,7 @@ public class AddonEntityKing implements Listener {
 	}
 	
 	public boolean is(Entity e){
-		for(Creature c : getCreature()){
+		for(Entity c : getCreature()){
 			if(c.getEntityId()==e.getEntityId()){
 				return true;
 			}
@@ -119,22 +119,22 @@ public class AddonEntityKing implements Listener {
 	public void Attack(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SLOW)return;
 		if(!attack)return;
-		for(Creature c : getCreature()){
+		for(Entity c : getCreature()){
 			l=UtilPlayer.getNearby(c.getLocation(), 5);
 			if(!l.isEmpty()){
 				random=(Player)l.get(UtilMath.r(l.size()));
-				if(c.getTarget()!=null&&c.getTarget()==random)continue;
-				c.setTarget(random);
+				if(((Creature)c).getTarget()!=null&&((Creature)c).getTarget()==random)continue;
+				((Creature)c).setTarget(random);
 			}
 		}
 	}
 	
-	ArrayList<Creature> list = new ArrayList<>();
+	ArrayList<Entity> list = new ArrayList<>();
 	@EventHandler
 	public void Testeer(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.MIN_005)return;
 
-		for(Creature c : creature){
+		for(Entity c : creature){
 			try{
 				if(c.isDead()){
 					AddonEntityKingDeathEvent e = new AddonEntityKingDeathEvent(c,null);
@@ -146,7 +146,7 @@ public class AddonEntityKing implements Listener {
 			}
 		}
 		
-		for(Creature c : list)creature.remove(c);
+		for(Entity c : list)creature.remove(c);
 		list.clear();
 	}
 	

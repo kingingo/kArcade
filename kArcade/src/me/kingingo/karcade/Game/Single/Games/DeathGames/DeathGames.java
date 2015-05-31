@@ -1,6 +1,5 @@
 package me.kingingo.karcade.Game.Single.Games.DeathGames;
 
-import me.kingingo.kcore.Util.Color;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -25,8 +24,6 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Interface.DeathGamesInterface;
-import me.kingingo.kcore.Interface.Button.UtilInterface;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -60,9 +57,12 @@ import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.PlayerStats.Stats;
+import me.kingingo.kcore.PrivatServer.Interface.DeathGamesInterface;
+import me.kingingo.kcore.PrivatServer.Interface.Button.UtilInterface;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -277,9 +277,8 @@ public class DeathGames extends SoloGame{
 
 	@EventHandler
 	public void Setting(PrivatServerSettingEvent ev){
-		DeathGamesInterface dg = UtilInterface.StringToDG(ev.getSetting().getInfos());
-		this.chest_anzahl=dg.getChest_anzahl();
-		this.kits=dg.isKits();
+		this.chest_anzahl=UtilInterface.DG_Chest(ev.getSetting().getInfos());
+		this.kits=UtilInterface.DG_Kits(ev.getSetting().getInfos());
 	}
 	
 	@EventHandler
