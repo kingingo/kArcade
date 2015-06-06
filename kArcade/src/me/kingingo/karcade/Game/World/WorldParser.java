@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import me.kingingo.karcade.Enum.Team;
+import me.kingingo.kcore.Enum.Team;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

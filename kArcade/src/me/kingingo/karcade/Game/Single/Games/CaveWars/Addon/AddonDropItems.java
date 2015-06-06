@@ -1,8 +1,8 @@
 package me.kingingo.karcade.Game.Single.Games.CaveWars.Addon;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.Games.CaveWars.CaveWars;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;

@@ -1,7 +1,7 @@
 package me.kingingo.karcade.Game.Single.Games.SheepWars;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.Team;
+import me.kingingo.kcore.Enum.Team;
 
 public enum SheepWarsType {
 //_8x1(1,4,8,new Team[]{Team.RED,Team.BLUE,Team.YELLOW,Team.GREEN,Team.GRAY,Team.PINK,Team.ORANGE,Team.PURPLE},1);

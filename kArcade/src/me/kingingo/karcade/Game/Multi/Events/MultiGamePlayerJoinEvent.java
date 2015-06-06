@@ -1,22 +1,23 @@
-package me.kingingo.karcade.Game.Events;
+package me.kingingo.karcade.Game.Multi.Events;
 
 import lombok.Getter;
-import me.kingingo.kcore.Enum.Team;
+import lombok.Setter;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class TeamAddEvent  extends Event{
+public class MultiGamePlayerJoinEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();
 	@Getter
 	private Player player;
 	@Getter
-	private Team team;
+	@Setter
+	private boolean cancelled=false;
 	
-	public TeamAddEvent(Player player,Team team){
+	public MultiGamePlayerJoinEvent(Player player){
 		this.player=player;
-		this.team=team;
 	}
 	
 	@Override
@@ -27,5 +28,4 @@ public class TeamAddEvent  extends Event{
 	public static HandlerList getHandlerList() {
         return handlers;
     }
-
 }

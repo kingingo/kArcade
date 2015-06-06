@@ -11,6 +11,7 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.MultiGames;
+import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.Single.Games.BedWars.BedWars;
 import me.kingingo.karcade.Game.Single.Games.BedWars.BedWarsType;
 import me.kingingo.karcade.Game.Single.Games.CaveWars.CaveWars;
@@ -138,7 +139,8 @@ public class kArcadeManager implements Listener{
 		}
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
 		new PrivatServer(this);
-		getGame().setState(GameState.LobbyPhase);
+		
+		if(getGame() instanceof SingleGame)getGame().setState(GameState.LobbyPhase);
 	}
 
 	public void setNewGame(GameType typ){
@@ -243,7 +245,6 @@ public class kArcadeManager implements Listener{
 		}else if(GameType.SheepWars.getTyp().equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType.values()[UtilMath.RandomInt(SheepWarsType.values().length, 0)]);
 		}else if(GameType.BedWars.getTyp().equalsIgnoreCase(game)){
-			//return new BedWars(this,BedWarsType.values()[UtilMath.RandomInt(BedWarsType.values().length, 0)]);
 			return new BedWars(this, BedWarsType.random());
 		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
 			return new TroubleInMinecraft(this);
@@ -255,7 +256,7 @@ public class kArcadeManager implements Listener{
 			return new Falldown(this);
 		}else if(GameType.SurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new SurvivalGames(this);
-		}else if(GameType.ONE_VS_ONE.getTyp().equalsIgnoreCase(game)){
+		}else if(GameType.Versus.getTyp().equalsIgnoreCase(game)){
 			return new MultiGames(this,game);
 		}else if(GameType.QuickSurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new QuickSurvivalGames(this);
@@ -312,8 +313,6 @@ public class kArcadeManager implements Listener{
 		if(ev.getLocation().getWorld()==getLobby().getWorld())ev.setCancelled(true);
 	}
 	
-	
-	
 	@EventHandler
 	   public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	   {
@@ -331,6 +330,9 @@ public class kArcadeManager implements Listener{
 	     if (cmd.equalsIgnoreCase("/msg")) {
 	      event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
+	     }else if (cmd.equalsIgnoreCase("/minecraft")) {
+	         event.setCancelled(true);
+	         p.sendMessage(ChatColor.RED + "Nope :3");
 	     }else if (cmd.equalsIgnoreCase("/kill")) {
 	         event.setCancelled(true);
 	         p.sendMessage(ChatColor.RED + "Nope :3");
@@ -341,7 +343,6 @@ public class kArcadeManager implements Listener{
 	      event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/pl")||cmd.equalsIgnoreCase("/plugins")) {
-
 	       event.setCancelled(true);
 	      p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/about")) {
@@ -349,7 +350,6 @@ public class kArcadeManager implements Listener{
 	       event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/version")) {
-
 	     event.setCancelled(true);
 	       p.sendMessage(ChatColor.RED + "Nope :3");
 	     } else if (cmd.equalsIgnoreCase("/me")) {

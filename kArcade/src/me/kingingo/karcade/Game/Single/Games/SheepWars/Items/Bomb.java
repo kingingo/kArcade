@@ -39,7 +39,6 @@ public class Bomb extends SheepWarsItem{
 							@Override
 							public void onLaunchItem(LaunchItemEvent ev) {
 								for(Entity e : ev.getItem().getDroppedItem()){
-									e.getWorld().createExplosion(e.getLocation(), 0.5f);
 									e.getWorld().strikeLightningEffect(e.getLocation());
 									e.getWorld().createExplosion(e.getLocation(), 4.0F, false);
 								}

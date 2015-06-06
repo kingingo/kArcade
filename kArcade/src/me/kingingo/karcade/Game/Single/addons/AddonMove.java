@@ -17,6 +17,7 @@ public class AddonMove implements Listener{
 	@Getter
 	private kArcadeManager manager;
 	private boolean notMove = false;
+	@Getter
 	private ArrayList<Player> movelist = new ArrayList<>();
 	
 	public AddonMove(kArcadeManager manager){

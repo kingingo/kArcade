@@ -3,7 +3,7 @@ package me.kingingo.karcade.Game.Single.Games.BedWars;
 import java.util.HashMap;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.Team;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilMath;
 
 public enum BedWarsType {

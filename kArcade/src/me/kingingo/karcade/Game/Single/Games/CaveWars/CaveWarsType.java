@@ -1,7 +1,7 @@
 package me.kingingo.karcade.Game.Single.Games.CaveWars;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.Team;
+import me.kingingo.kcore.Enum.Team;
 
 public enum CaveWarsType {
 _2x4(4,4,8,new Team[]{Team.RED,Team.BLUE}),

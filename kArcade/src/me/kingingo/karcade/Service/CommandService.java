@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Service.Games.ServiceSheepWars;
 import me.kingingo.karcade.Service.Games.ServiceTroubleInMinecraft;
+import me.kingingo.karcade.Service.Games.ServiceMultiGames;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Permission.PermissionManager;
 import me.kingingo.kcore.Permission.kPermission;
@@ -58,6 +59,8 @@ public class CommandService implements CommandExecutor{
 			ServiceSheepWars.Service(p, args);
 		}else if(args[0].equalsIgnoreCase("TTT")){
 			ServiceTroubleInMinecraft.Service(p,args);
+		}else if(args[0].equalsIgnoreCase("mg")){
+			ServiceMultiGames.Service(p,args);
 		}
 		
 		return false;

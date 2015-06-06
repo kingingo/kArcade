@@ -39,12 +39,9 @@ public class AddonPlaceBlockCanBreak implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
 	}
 	
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler
 	public void Explose(EntityExplodeEvent ev){
-		if(getBlocks().isEmpty()){
-			ev.blockList().clear();
-			return;
-		}
+		if(getBlocks().isEmpty())return;
 
 		for(Block b : ev.blockList()){
 			if(getBlocks().contains(b.getLocation())){

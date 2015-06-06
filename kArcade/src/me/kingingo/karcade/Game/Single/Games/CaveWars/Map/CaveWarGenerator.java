@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.kcore.Enum.Team;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

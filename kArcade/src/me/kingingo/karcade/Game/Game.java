@@ -7,6 +7,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
+import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Enum.GameState;
@@ -170,7 +171,8 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void J(PlayerJoinEvent ev){
-		if(state==GameState.LobbyPhase)updateInfo();
+		ev.setJoinMessage(null);
+		if(this instanceof SingleGame&&state==GameState.LobbyPhase)updateInfo();
 	}
 
 }

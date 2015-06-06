@@ -1,9 +1,9 @@
 package me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Command;
 
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 
 import org.bukkit.command.Command;

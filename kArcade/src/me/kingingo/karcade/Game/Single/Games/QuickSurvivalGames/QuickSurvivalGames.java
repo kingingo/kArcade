@@ -6,7 +6,6 @@ import java.util.HashMap;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
@@ -14,6 +13,7 @@ import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Permission.kPermission;
@@ -172,14 +172,14 @@ public class QuickSurvivalGames extends SoloGame{
 	
 	public ItemStack Rüstung(){
 		if(UtilMath.RandomInt(100, 1) != 35){
-			switch(UtilMath.RandomInt(3, 0)){
+			switch(UtilMath.r(4)){
 			case 0: return new ItemStack(UtilMath.RandomInt(301, 298));
 			case 1: return new ItemStack(UtilMath.RandomInt(305, 302));
 			case 2: return new ItemStack(UtilMath.RandomInt(309, 306));
 			case 3: return new ItemStack(UtilMath.RandomInt(317, 314));
 			}
 		}else{
-			return new ItemStack(UtilMath.RandomInt(313, 310));
+			return new ItemStack(UtilMath.RandomInt(317, 314));
 		}
 		return null;
 	}
@@ -194,94 +194,6 @@ public class QuickSurvivalGames extends SoloGame{
 		}
 		return null;
 	}
-	
-//	public ItemStack rdmItem(){
-//		switch(UtilMath.RandomInt(81, 0)){
-//		case 0: return new ItemStack(Material.FLINT_AND_STEEL,1);
-//		case 1: return new ItemStack(Material.FLINT_AND_STEEL,1);
-//		case 2: return new ItemStack(Material.FLINT_AND_STEEL,1);
-//		case 3: return new ItemStack(Material.FLINT_AND_STEEL,1);
-//		case 4: return new ItemStack(Material.ARROW,UtilMath.RandomInt(6, 1));
-//		case 5: return new ItemStack(Material.WOOD_SWORD,1);
-//		case 6: return new ItemStack(Material.WOOD_SWORD,1);
-//		case 7: return new ItemStack(Material.IRON_HELMET,1);
-//		case 8: return new ItemStack(Material.IRON_CHESTPLATE,1);
-//		case 9: return new ItemStack(Material.IRON_LEGGINGS,1);
-//		case 10: return new ItemStack(Material.IRON_BOOTS,1);
-//		case 11: return new ItemStack(Material.IRON_HELMET,1);
-//		case 12: return new ItemStack(Material.IRON_CHESTPLATE,1);
-//		case 13: return new ItemStack(Material.IRON_LEGGINGS,1);
-//		case 14: return new ItemStack(Material.IRON_BOOTS,1);
-//		case 15: return new ItemStack(Material.STONE_AXE,1);
-//		case 16: return new ItemStack(Material.STONE_AXE,1);
-//		case 17: return new ItemStack(Material.STONE_AXE,1);
-//		case 18: return new ItemStack(Material.BOW);
-//		case 19: return new ItemStack(Material.BOW);
-//		case 20: return new ItemStack(Material.BOW);
-//		case 21: return new ItemStack(Material.BOW);
-//		case 22: return new ItemStack(Material.CHAINMAIL_HELMET);
-//		case 23: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-//		case 24: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-//		case 25: return new ItemStack(Material.CHAINMAIL_BOOTS);
-//		case 26: return new ItemStack(Material.CHAINMAIL_HELMET);
-//		case 27: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-//		case 28: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-//		case 29: return new ItemStack(Material.CHAINMAIL_BOOTS);
-//		case 30: return new ItemStack(Material.CHAINMAIL_HELMET);
-//		case 31: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-//		case 32: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-//		case 33: return new ItemStack(Material.CHAINMAIL_BOOTS);
-//		case 34: return new ItemStack(Material.STONE_SWORD);
-//		case 35: return new ItemStack(Material.IRON_SWORD);
-//		case 36: return new ItemStack(Material.STONE_SWORD);
-//		case 37: return new ItemStack(Material.IRON_SWORD);
-//		case 38: return new ItemStack(Material.STONE_SWORD);
-//		case 39: return new ItemStack(Material.IRON_SWORD);
-//		case 40: return new ItemStack(Material.FLINT_AND_STEEL,1);
-//		case 41: return new ItemStack(Material.FLINT_AND_STEEL,1);
-//		case 42: return new ItemStack(Material.ARROW,UtilMath.RandomInt(6, 1));
-//		case 43: return new ItemStack(Material.WOOD_SWORD,1);
-//		case 44: return new ItemStack(Material.WOOD_SWORD,1);
-//		case 45: return new ItemStack(Material.IRON_HELMET,1);
-//		case 46: return new ItemStack(Material.IRON_CHESTPLATE,1);
-//		case 47: return new ItemStack(Material.IRON_LEGGINGS,1);
-//		case 48: return new ItemStack(Material.IRON_BOOTS,1);
-//		case 49: return new ItemStack(Material.IRON_HELMET,1);
-//		case 50: return new ItemStack(Material.IRON_CHESTPLATE,1);
-//		case 51: return new ItemStack(Material.IRON_LEGGINGS,1);
-//		case 52: return new ItemStack(Material.IRON_BOOTS,1);
-//		case 53: return new ItemStack(Material.STONE_AXE,1);
-//		case 54: return new ItemStack(Material.STONE_AXE,1);
-//		case 55: return new ItemStack(Material.STONE_AXE,1);
-//		case 56: return new ItemStack(Material.BOW);
-//		case 57: return new ItemStack(Material.BOW);
-//		case 58: return new ItemStack(Material.BOW);
-//		case 59: return new ItemStack(Material.BOW);
-//		case 60: return new ItemStack(Material.CHAINMAIL_HELMET);
-//		case 61: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-//		case 62: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-//		case 63: return new ItemStack(Material.CHAINMAIL_BOOTS);
-//		case 64: return new ItemStack(Material.CHAINMAIL_HELMET);
-//		case 65: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-//		case 66: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-//		case 67: return new ItemStack(Material.CHAINMAIL_BOOTS);
-//		case 68: return new ItemStack(Material.CHAINMAIL_HELMET);
-//		case 69: return new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-//		case 70: return new ItemStack(Material.CHAINMAIL_LEGGINGS);
-//		case 71: return new ItemStack(Material.CHAINMAIL_BOOTS);
-//		case 72: return new ItemStack(Material.STONE_SWORD);
-//		case 73: return new ItemStack(Material.IRON_SWORD);
-//		case 74: return new ItemStack(Material.STONE_SWORD);
-//		case 75: return new ItemStack(Material.IRON_SWORD);
-//		case 76: return new ItemStack(Material.STONE_SWORD);
-//		case 77: return new ItemStack(Material.IRON_SWORD);
-//		case 78: return new ItemStack(Material.DIAMOND_AXE);
-//		case 79: return new ItemStack(Material.DIAMOND_SWORD);
-//		case 80: return new ItemStack(Material.DIAMOND_CHESTPLATE);
-//		case 81: return new ItemStack(Material.GOLDEN_APPLE);
-//		}
-//		return new ItemStack(Material.GOLDEN_APPLE,1,(byte)1);
-//	}
 	
 	@EventHandler
 	public void InventoryCloseCCC(InventoryCloseEvent ev){

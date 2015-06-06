@@ -2,13 +2,12 @@ package me.kingingo.karcade.Game.Single.addons;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilItem;
-
+import me.kingingo.kcore.Enum.Team;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;

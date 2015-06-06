@@ -5,10 +5,10 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;

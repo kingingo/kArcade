@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.LaunchItem.LaunchItem;
 import me.kingingo.kcore.LaunchItem.LaunchItemEvent;
 import me.kingingo.kcore.Listener.kListener;

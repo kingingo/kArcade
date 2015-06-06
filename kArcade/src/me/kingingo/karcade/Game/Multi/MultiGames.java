@@ -4,60 +4,173 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.Team;
+import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
+import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
-import me.kingingo.karcade.Game.Multi.Games.One_VS_One.One_VS_One;
+import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Service.Games.ServiceMultiGames;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
+import me.kingingo.kcore.Packet.Packets.VERSUS_SETTINGS;
+import me.kingingo.kcore.Util.TabTitle;
 import me.kingingo.kcore.Util.UtilWorldEdit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class MultiGames extends Game{
 	
 	@Getter
-	private ArrayList<MultiGame> games = new ArrayList<>();
+	private ArrayList<MultiGame> games = new ArrayList<>(); // Auflistung aller MutltiGame Arenas
 	@Getter
-	private HashMap<MultiGame,HashMap<Team,ArrayList<Location>>> locs = new HashMap<>();
+	private HashMap<MultiGame,HashMap<Team,ArrayList<Location>>> locs = new HashMap<>(); //Alle Team Locations der einzelnen MultiGame Arenas
 	@Getter
 	@Setter
 	private WorldData worldData;
-	@Getter
-	private ArrayList<String[]> list = new ArrayList<>();
+	private ArrayList<Player> warte_liste = new ArrayList<>(); //Warte Liste falls Spieler zu früh auf dem Server kommen...
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
-		setWorldData(new WorldData(getManager(), GameType.valueOf(type)));
+		registerListener();
+		ServiceMultiGames.setGames(this);
+		setTyp(GameType.valueOf(type));
+		setWorldData(new WorldData(getManager(), getType()));
+		createGames(getType());
 	}
 	
 	public void createGames(GameType type){
-		if(GameType.ONE_VS_ONE==type){
+		if(GameType.Versus==type){
 			getWorldData().createCleanWorld();
 			File[] schematics = getWorldData().loadSchematicFiles();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);
 			
 			for(File file : schematics){
 				UtilWorldEdit.pastePlate(loc, file);
-				games.add(new One_VS_One(this,loc));
+				games.add(new Versus(this,loc));
+				loc=loc.add(0, 0, 100);
 			}
 		}
 	}
 	
 	@EventHandler
-	public void Join(PlayerJoinEvent ev){
-		
+	public void PLACE(BlockPlaceEvent event) {
+		//LOBBY PLACE CHANGE CANCEL
+		if(event.getPlayer().getWorld() == getManager().getLobby().getWorld()){
+			event.setCancelled(true);
+		}
+    }
+	
+	@EventHandler
+	public void BREAK(BlockBreakEvent event) {
+		//LOBBY BREAK CHANGE CANCEL
+		if(event.getPlayer().getWorld() == getManager().getLobby().getWorld()){
+			event.setCancelled(true);
+		}
+    }
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		//LOBBY INTERACT CHANGE CANCEL
+		if(event.getPlayer().getWorld() == getManager().getLobby().getWorld()){
+			event.setCancelled(true);
+		}
+    }
+	
+	@EventHandler
+	public void Food(FoodLevelChangeEvent ev){
+		//LOBBY FOOD CHANGE CANCEL
+		if(ev.getEntity().getWorld() == getManager().getLobby().getWorld()){
+			ev.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
-	public void PacketReceive(PacketReceiveEvent ev){
+	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
+		//LOBBY DAMAGE CANCEL
+		if(ev.getEntity().getWorld() == getManager().getLobby().getWorld()){
+			ev.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void EntityDamage(EntityDamageEvent ev){
+		//LOBBY DAMAGE CANCEL
+		if(ev.getEntity().getWorld() == getManager().getLobby().getWorld()){
+			ev.setCancelled(true);
+		}
+	}
+	
+	MultiGamePlayerJoinEvent event;
+	@EventHandler
+	public void JoinMutliGame(PlayerJoinEvent ev){
+		getManager().Clear(ev.getPlayer());
+		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
+		event=new MultiGamePlayerJoinEvent(ev.getPlayer());
+		Bukkit.getPluginManager().callEvent(event);
 		
+		//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
+		if(!event.isCancelled()){
+			warte_liste.add(ev.getPlayer());
+			
+			//Spieler wird in die Lobby zum warten Teleportiert!
+			getManager().getLobby().getWorld().setStorm(false);
+			getManager().getLobby().getWorld().setTime(4000);
+			ev.getPlayer().teleport(getManager().getLobby());
+		}
+	}
+	
+	MultiGame game;
+	@EventHandler
+	public void PacketReceive(PacketReceiveEvent ev){
+		System.out.println("PACKET RECEIVE");
+		if(getType()==GameType.Versus&&ev.getPacket() instanceof VERSUS_SETTINGS){
+			System.out.println("PACKET VERSUS_SETTINGS");
+			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)ev.getPacket();
+			
+			for(MultiGame g : games){
+				if(g instanceof Versus){
+					if(((Versus)g).getType()==settings.getType()&&g.getState() == GameState.LobbyPhase){
+							g.setTeamList(settings.getPlayers());
+							((Versus)g).setKit(settings.getKit());
+							
+							for(Player player : settings.getPlayers().keySet()){
+								g.getGameList().addPlayer(player, PlayerState.IN);
+							}
+							this.game=g;
+						break;
+					}
+				}
+			}
+			
+			//Prüft ob ein Spieler zu früh auf dem Server angekommen ist!
+			for(Player player : settings.getPlayers().keySet()){
+				if(warte_liste.contains(player)){
+					//Entfernt den Spieler von der Warte Liste
+					warte_liste.remove(player);
+					
+					//Sendet das Event zu den Arenen damit sie prüfen ob dieser Spieler bei denen Angemeldet ist!
+					event=new MultiGamePlayerJoinEvent(player);
+					Bukkit.getPluginManager().callEvent(event);
+				}
+			}
+		}
 	}
 	
 }

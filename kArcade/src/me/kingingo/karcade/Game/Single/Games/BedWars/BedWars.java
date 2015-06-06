@@ -3,12 +3,11 @@ package me.kingingo.karcade.Game.Single.Games.BedWars;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-
+import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;

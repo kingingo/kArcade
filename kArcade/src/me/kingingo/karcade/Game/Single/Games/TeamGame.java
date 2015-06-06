@@ -3,13 +3,12 @@ package me.kingingo.karcade.Game.Single.Games;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
-import me.kingingo.karcade.Enum.Team;
 import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Events.TeamDelEvent;
 import me.kingingo.karcade.Game.Single.SingleGame;
@@ -158,7 +157,7 @@ public class TeamGame extends SingleGame{
 	
 	public void TeamTab(Team[] teams){
 	    if(getBoard()==null)setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
-	    for (me.kingingo.karcade.Enum.Team team : teams) {
+	    for (Team team : teams) {
 	    	ArrayList<Player> list = getPlayerFrom(team);
 	    	UtilScoreboard.addTeam(getBoard(), team.Name(), team.getColor(), list);
 	    	for(Player p : list){
