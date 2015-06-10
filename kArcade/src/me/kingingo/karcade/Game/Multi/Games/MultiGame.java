@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.GameList;
@@ -15,11 +16,14 @@ import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
+import me.kingingo.karcade.Game.Multi.Events.MultiGameUpdateInfo;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Listener.kListener;
+import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -53,7 +57,7 @@ public class MultiGame extends kListener{
 	@Getter
 	private MultiGames games;
 	@Getter
-	private GameState state;
+	private GameState state=GameState.Laden;
 	@Getter
 	@Setter
 	private boolean Damage = true;
@@ -88,11 +92,27 @@ public class MultiGame extends kListener{
 	@Getter
 	@Setter
 	private int timer=-1; // FÜR DIE SCHEDULER EIN TIMER
+	@Getter
+	@Setter
+	private String arena="arena";
 	
 	public MultiGame(MultiGames games) {
 		super(games.getManager().getInstance(), "MultiGame");
 		this.games=games;
 		this.gameList=new GameList(games.getManager());
+		this.arena="arena"+games.getGames().size();
+	}
+	
+	public void updateInfo(){
+		updateInfo(null, 0, null, null, true);
+	}
+	
+	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
+	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , (teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic));
+		Bukkit.getPluginManager().callEvent(ev);
+		if(ev.isCancelled())return;
+		getGames().getManager().getPacketManager().SendPacket("hub", ev.getPacket());
 	}
 
 	public void addTeam(Player p, Team t){
@@ -199,6 +219,7 @@ public class MultiGame extends kListener{
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		this.state=gs;
+		updateInfo();
 		Log("GameState wurde zu "+state.string()+" geändert.");
 	}
 	
@@ -213,7 +234,7 @@ public class MultiGame extends kListener{
 	public void StateChange(MultiGameStateChangeEvent ev){
 		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
 			//Wenn nur noch ein Team da ist
-			if(islastTeam()){
+			if(islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM||ev.getReason()==GameStateChangeReason.LAST_PLAYER||ev.getReason()==GameStateChangeReason.GAME_END){
 				for(Player player : getGameList().getPlayers(PlayerState.IN)){
 					getGames().getStats().setInt(player, getGames().getStats().getInt(Stats.WIN, player)+1, Stats.WIN);
 				}
@@ -329,6 +350,7 @@ public class MultiGame extends kListener{
 						Bukkit.getPluginManager().callEvent(new MultiGameStartEvent(this));
 					}else{
 						setTimer(31);
+						updateInfo();
 						broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Color.RED+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
 					}
 				}
@@ -386,6 +408,7 @@ public class MultiGame extends kListener{
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
 			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0) );
+			ev.setCancelled(true);
 		}
 	}
 	

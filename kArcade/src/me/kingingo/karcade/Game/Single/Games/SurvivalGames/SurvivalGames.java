@@ -19,6 +19,7 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -26,6 +27,7 @@ import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilScoreboard;
@@ -452,6 +454,12 @@ public class SurvivalGames extends TeamGame{
 	public void Chat(AsyncPlayerChatEvent ev){
 		if(ev.isCancelled())return;
 		ev.setCancelled(true);
+		
+		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
+			ev.setMessage("Ich heul rum!");
+			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+		}
+		
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
 			for(Player player : getGameList().getPlayers(PlayerState.IN))player.sendMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 		}else if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){

@@ -45,6 +45,7 @@ import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.NPCManager;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.StatsManager.Event.PlayerStatsChangeEvent;
 import me.kingingo.kcore.StatsManager.Event.PlayerStatsCreateEvent;
@@ -59,6 +60,7 @@ import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
@@ -240,6 +242,12 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
 		ev.setCancelled(true);
+		
+		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
+			ev.setMessage("Ich heul rum!");
+			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+		}
+		
 		if(getState()!=GameState.InGame){
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}else{

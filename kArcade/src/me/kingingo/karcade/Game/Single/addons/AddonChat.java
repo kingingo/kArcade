@@ -7,9 +7,11 @@ import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Listener.kListener;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilString;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,6 +40,12 @@ public class AddonChat extends kListener{
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
 		ev.setCancelled(true);
+		
+		 if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
+				ev.setMessage("Ich heul rum!");
+				ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+		}
+		
 		if(game.getState()==GameState.LobbyPhase){
 			UtilServer.broadcast(game.getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 		}else{

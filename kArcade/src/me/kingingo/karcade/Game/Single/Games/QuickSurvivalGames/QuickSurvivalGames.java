@@ -31,6 +31,7 @@ import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
@@ -383,6 +384,12 @@ public class QuickSurvivalGames extends SoloGame{
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChatd(AsyncPlayerChatEvent event) {
 		if (!event.isCancelled()) {
+			
+			if((!event.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
+				event.setMessage("Ich heul rum!");
+				event.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+			}
+			
 			Player p = event.getPlayer();
 			String msg = event.getMessage();
 			msg=msg.replaceAll("%","");

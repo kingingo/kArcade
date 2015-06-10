@@ -35,6 +35,7 @@ import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
@@ -194,6 +195,12 @@ public class SkyPvP extends SoloGame{
 	public void Chat(AsyncPlayerChatEvent ev){
 		if(ev.isCancelled())return;
 		ev.setCancelled(true);
+		
+		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
+			ev.setMessage("Ich heul rum!");
+			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+		}
+		
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());

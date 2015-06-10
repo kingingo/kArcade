@@ -1,9 +1,12 @@
 package me.kingingo.karcade.Game.Multi;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import me.kingingo.kcore.Client.Events.ClientReceiveMessageEvent;
+import me.kingingo.kcore.Client.Events.ClientSendMessageEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
@@ -11,6 +14,7 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
+import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
@@ -19,8 +23,12 @@ import me.kingingo.karcade.Service.Games.ServiceMultiGames;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.VERSUS_SETTINGS;
+import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Util.TabTitle;
+import me.kingingo.kcore.Util.UtilInv;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilWorldEdit;
+import me.kingingo.kcore.Versus.VersusKit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,7 +52,7 @@ public class MultiGames extends Game{
 	@Getter
 	@Setter
 	private WorldData worldData;
-	private ArrayList<Player> warte_liste = new ArrayList<>(); //Warte Liste falls Spieler zu früh auf dem Server kommen...
+	private HashMap<String,VERSUS_SETTINGS> warte_liste = new HashMap<>(); //Warte Liste falls Spieler zu früh auf dem Server kommen...
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
@@ -67,6 +75,16 @@ public class MultiGames extends Game{
 				loc=loc.add(0, 0, 100);
 			}
 		}
+	}
+	
+	@EventHandler
+	public void GameUpdateInfo(GameUpdateInfoEvent ev){
+		ev.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void Re(ClientReceiveMessageEvent ev){
+		if(ev.getMessage().contains("VERSUS_SETTINGS"))System.out.println("PACKET: "+ev.getMessage());
 	}
 	
 	@EventHandler
@@ -122,13 +140,39 @@ public class MultiGames extends Game{
 	public void JoinMutliGame(PlayerJoinEvent ev){
 		getManager().Clear(ev.getPlayer());
 		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
+		
+		if(warte_liste.containsKey(ev.getPlayer().getName())){
+			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)warte_liste.get(ev.getPlayer().getName());
+			for(MultiGame g : games){
+				if(g instanceof Versus){
+					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&&g.getState() == GameState.LobbyPhase){
+							if(UtilPlayer.isOnline(settings.getPlayer())){
+								if(warte_liste.containsKey(settings.getPlayer())){
+									warte_liste.remove(settings.getPlayer());
+								}
+								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+								
+								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+									try {
+										((Versus)g).setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+							this.game=g;
+						break;
+					}
+				}
+			}
+		}
+		
 		event=new MultiGamePlayerJoinEvent(ev.getPlayer());
 		Bukkit.getPluginManager().callEvent(event);
 		
 		//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
 		if(!event.isCancelled()){
-			warte_liste.add(ev.getPlayer());
-			
 			//Spieler wird in die Lobby zum warten Teleportiert!
 			getManager().getLobby().getWorld().setStorm(false);
 			getManager().getLobby().getWorld().setTime(4000);
@@ -143,31 +187,30 @@ public class MultiGames extends Game{
 		if(getType()==GameType.Versus&&ev.getPacket() instanceof VERSUS_SETTINGS){
 			System.out.println("PACKET VERSUS_SETTINGS");
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)ev.getPacket();
-			
 			for(MultiGame g : games){
 				if(g instanceof Versus){
-					if(((Versus)g).getType()==settings.getType()&&g.getState() == GameState.LobbyPhase){
-							g.setTeamList(settings.getPlayers());
-							((Versus)g).setKit(settings.getKit());
-							
-							for(Player player : settings.getPlayers().keySet()){
-								g.getGameList().addPlayer(player, PlayerState.IN);
+					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&&g.getState() == GameState.LobbyPhase){
+							if(UtilPlayer.isOnline(settings.getPlayer())){
+								if(warte_liste.containsKey(settings.getPlayer())){
+									warte_liste.remove(settings.getPlayer());
+								}
+								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()));
+								Bukkit.getPluginManager().callEvent(event);
+								
+								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+									try {
+										((Versus)g).setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							}else{
+								warte_liste.put(settings.getPlayer(),settings);
 							}
-							this.game=g;
 						break;
 					}
-				}
-			}
-			
-			//Prüft ob ein Spieler zu früh auf dem Server angekommen ist!
-			for(Player player : settings.getPlayers().keySet()){
-				if(warte_liste.contains(player)){
-					//Entfernt den Spieler von der Warte Liste
-					warte_liste.remove(player);
-					
-					//Sendet das Event zu den Arenen damit sie prüfen ob dieser Spieler bei denen Angemeldet ist!
-					event=new MultiGamePlayerJoinEvent(player);
-					Bukkit.getPluginManager().callEvent(event);
 				}
 			}
 		}

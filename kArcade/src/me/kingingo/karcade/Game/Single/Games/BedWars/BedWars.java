@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game.Single.Games.BedWars;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+
 import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
 import me.kingingo.karcade.kArcade;
@@ -28,6 +29,7 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -42,6 +44,7 @@ import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
@@ -674,6 +677,12 @@ public class BedWars extends TeamGame{
 	public void Chat(AsyncPlayerChatEvent ev){
 		if(ev.isCancelled())return;
 		ev.setCancelled(true);
+		
+		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
+			ev.setMessage("Ich heul rum!");
+			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+		}
+		
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
 			if(ev.getMessage().toCharArray()[0]=='#'){
 				Team t = getTeam(ev.getPlayer());

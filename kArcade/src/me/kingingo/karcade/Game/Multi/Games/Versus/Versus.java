@@ -50,7 +50,6 @@ public class Versus extends MultiGame{
 	
 	public Versus(MultiGames games,Location location) {
 		super(games);
-		setState(GameState.Laden);
 		
 		getGames().getLocs().put(this, new HashMap<Team,ArrayList<Location>>());
 		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 40, location)){
@@ -143,6 +142,15 @@ public class Versus extends MultiGame{
 	public void Start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
 			addonMove.setnotMove(false);
+			
+			for(Player player : getTeamList().keySet()){
+				player.getInventory().setHelmet(kit.helm);
+				player.getInventory().setChestplate(kit.chestplate);
+				player.getInventory().setLeggings(kit.leggings);
+				player.getInventory().setBoots(kit.boots);
+				for(ItemStack item : kit.inv)player.getInventory().addItem(item);
+			}
+			
 			setState(GameState.InGame);
 		}
 	}
@@ -152,11 +160,6 @@ public class Versus extends MultiGame{
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Fügt Spieler zu AddonMove hinzu
-			ev.getPlayer().getInventory().setHelmet(kit.helm);
-			ev.getPlayer().getInventory().setChestplate(kit.chestplate);
-			ev.getPlayer().getInventory().setLeggings(kit.leggings);
-			ev.getPlayer().getInventory().setBoots(kit.boots);
-			for(ItemStack item : kit.inv)ev.getPlayer().getInventory().addItem(item);
 			addonMove.getMovelist().add(ev.getPlayer());
 		}
 	}

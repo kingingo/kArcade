@@ -72,6 +72,7 @@ import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
@@ -293,6 +294,12 @@ public class DeathGames extends SoloGame{
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChatd(AsyncPlayerChatEvent event) {
 		if (!event.isCancelled()) {
+			
+			if((!event.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
+				event.setMessage("Ich heul rum!");
+				event.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+			}
+			
 			Player p = event.getPlayer();
 			String msg = event.getMessage();
 			msg=msg.replaceAll("%","");
@@ -385,6 +392,11 @@ public class DeathGames extends SoloGame{
 		normal.add(new ItemStack(Material.CARROT_ITEM, 3));
 		normal.add(new ItemStack(Material.WORKBENCH, 1));
 		normal.add(new ItemStack(Material.ROTTEN_FLESH, 4));
+		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
+		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
+		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
+		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
+		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
 	}
 	
 	public Inventory setupInv() {
