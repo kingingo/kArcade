@@ -48,8 +48,9 @@ public class Versus extends MultiGame{
 	@Setter
 	private VersusKit kit;
 	
-	public Versus(MultiGames games,Location location) {
+	public Versus(MultiGames games,String Map,Location location) {
 		super(games);
+		setMap(Map);
 		
 		getGames().getLocs().put(this, new HashMap<Team,ArrayList<Location>>());
 		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 40, location)){

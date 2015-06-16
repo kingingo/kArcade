@@ -1,8 +1,10 @@
 package me.kingingo.karcade.Game.Single.Games;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+
 import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,6 +52,28 @@ public class TeamGame extends SingleGame{
 	public void addTeam(Player p, Team t){
 		TeamList.put(p, t);
 		Bukkit.getPluginManager().callEvent(new TeamAddEvent(p,t));
+	}
+	
+	public HashMap<Team,Integer> verteilung(Team[] t,int size){
+		if(size==1){
+			HashMap<Team,Integer> list = new HashMap<>();
+			for(Team team : t)list.put(team, 1);
+			return list;
+		}else{
+			HashMap<Team,Integer> list = new HashMap<>();
+			Collection<? extends Player> l = UtilServer.getPlayers();
+		
+			for(Team team : t){
+				list.put(team, l.size()/t.length);
+			}
+			
+			if(l.size()%t.length!=0){
+				list.remove(t[0]);
+				list.put(t[0], (l.size()/t.length)+1);
+			}
+
+			return list;
+		}
 	}
 	
 	public Team littleTeam(){
@@ -236,7 +260,7 @@ public class TeamGame extends SingleGame{
 	    	}
 	    	setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 	    }
-	    player.setGameMode(GameMode.CREATIVE);
+	    player.setGameMode(GameMode.SPECTATOR);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
 	    for(Player p : UtilServer.getPlayers()){

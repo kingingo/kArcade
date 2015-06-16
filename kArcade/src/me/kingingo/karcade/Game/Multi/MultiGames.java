@@ -71,7 +71,7 @@ public class MultiGames extends Game{
 			
 			for(File file : schematics){
 				UtilWorldEdit.pastePlate(loc, file);
-				games.add(new Versus(this,loc));
+				games.add(new Versus(this, file.getName().replaceAll(".schematic", "") ,loc));
 				loc=loc.add(0, 0, 100);
 			}
 		}

@@ -23,6 +23,8 @@ import me.kingingo.karcade.Game.Single.Games.QuickSurvivalGames.QuickSurvivalGam
 import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWars;
 import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWarsType;
 import me.kingingo.karcade.Game.Single.Games.SkyPvP.SkyPvP;
+import me.kingingo.karcade.Game.Single.Games.SkyWars.SkyWars;
+import me.kingingo.karcade.Game.Single.Games.SkyWars.SkyWarsType;
 import me.kingingo.karcade.Game.Single.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Privat.PrivatServer;
@@ -260,6 +262,8 @@ public class kArcadeManager implements Listener{
 			return new MultiGames(this,game);
 		}else if(GameType.QuickSurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new QuickSurvivalGames(this);
+		}else if(GameType.SkyWars.getTyp().equalsIgnoreCase(game)){
+			return new SkyWars(this,SkyWarsType.random());
 		}else{
 			return new OneInTheChamber(this);
 		}
