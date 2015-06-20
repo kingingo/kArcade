@@ -19,14 +19,11 @@ int max;
 @Getter
 int team_size;
 @Getter
-int drop_rate;
-@Getter
 int h;
 
 private SkyWarsType(int h,int team_size,int min,int max,Team[] team){
 	this.max=max;
 	this.min=min;
-	this.drop_rate=drop_rate;
 	this.team=team;
 	this.team_size=team_size;
 	this.h=h;

@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
-import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

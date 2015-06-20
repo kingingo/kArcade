@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.Single.Events;
 
 import lombok.Getter;
 import me.kingingo.kcore.Enum.Team;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

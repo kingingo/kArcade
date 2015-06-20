@@ -1,22 +1,10 @@
 package me.kingingo.karcade.Service.Games;
 
-import java.util.HashMap;
-
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
-import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
-import me.kingingo.kcore.Packet.Packets.VERSUS_SETTINGS;
-import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Versus.VersusKit;
-import me.kingingo.kcore.Versus.VersusType;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class ServiceMultiGames {
 

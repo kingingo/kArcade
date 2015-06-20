@@ -2,11 +2,12 @@ package me.kingingo.karcade.Game.Single.addons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import me.kingingo.kcore.Enum.Team;
+
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;

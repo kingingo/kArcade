@@ -1,11 +1,8 @@
 package me.kingingo.karcade.Game.Multi.Events;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

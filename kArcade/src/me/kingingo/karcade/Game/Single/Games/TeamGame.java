@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import me.kingingo.kcore.Enum.Team;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
@@ -18,6 +17,7 @@ import me.kingingo.karcade.Game.Single.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.Single.addons.AddonSpectator;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;

@@ -1,13 +1,15 @@
 package me.kingingo.karcade.Game.Single.addons;
 
 import java.util.HashMap;
-import me.kingingo.kcore.Enum.Team;
+
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.Events.AddonBedKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilBlock;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,19 +1,15 @@
 package me.kingingo.karcade.Game.Single.Games.SkyWars;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
-import me.kingingo.karcade.Game.Single.Events.AddonEntityKingDeathEvent;
-import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
-import me.kingingo.karcade.Game.Single.addons.AddonEntityKing;
-import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
@@ -25,42 +21,19 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
-import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
-import me.kingingo.kcore.Kit.Perks.PerkArrowInfinity;
-import me.kingingo.kcore.Kit.Perks.PerkDeathDropOnly;
-import me.kingingo.kcore.Kit.Perks.PerkEquipment;
-import me.kingingo.kcore.Kit.Perks.PerkHeal;
-import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
-import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
-import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
-import me.kingingo.kcore.Kit.Perks.PerkNoDropsByDeath;
-import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
-import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
-import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
-import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
-import me.kingingo.kcore.Kit.Perks.PerkPoisen;
-import me.kingingo.kcore.Kit.Perks.PerkPotionByDeath;
-import me.kingingo.kcore.Kit.Perks.PerkRespawnBuff;
-import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
-import me.kingingo.kcore.Kit.Perks.PerkSpawnByDeath;
-import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
-import me.kingingo.kcore.Kit.Perks.PerkTNT;
-import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
-import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
@@ -68,38 +41,30 @@ import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 public class SkyWars extends TeamGame{
 
-	private HashMap<Location,Inventory> chests = new HashMap<>();
 	private ArrayList<ItemStack> chest_material = new ArrayList<>();
-	private AddonTargetNextPlayer TargetNextPlayer;
 	private SkyWarsType type;
 	private KitShop kitshop;
-	private HashMap<Player,String> kits = new HashMap<>();
 	
 	public SkyWars(kArcadeManager manager,SkyWarsType type){
 		super(manager);
@@ -123,35 +88,352 @@ public class SkyWars extends TeamGame{
 		setItemDrop(true);
 		setRespawn(true);
 		setWorldData(new WorldData(manager,getType()));
-		getWorldData().LoadWorldConfig();
-		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._27,type.getTeam_size()));
+		getWorldData().Initialize();
+		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
 		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoHunger()
-			}),
-			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SheepWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SHEEPWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
-				new PerkNoHunger(),
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_CHESTPLATE,1)}),
-				new PerkSneakDamage(1),
-				new PerkPoisen(10,50),
-				new PerkHolzfäller(),
-				new PerkNoFiredamage(),
-				new PerkNoFalldamage(),
-				new PerkArrowFire(80),
-				new PerkNoExplosionDamage(),
-				new PerkTNT(),
-				new PerkHealByHit(60, 6),
-				new PerkHeal(6),
-				new PerkMoreHearth(6, 60),
-				new PerkArrowInfinity(),
-				new PerkWalkEffect(Effect.HEART,10),
-				new PerkSpawnByDeath(EntityType.PRIMED_TNT,80),
-				new PerkNoKnockback(getManager().getInstance())
 			})
 		});
 		
 		getManager().DebugLog(l, this.getClass().getName());
+	}
+	
+	@EventHandler
+	public void load(WorldLoadEvent ev){
+		int i=0;
+		Chest[] chests;
+		for(Team t : type.getTeam()){
+			chests=new Chest[getWorldData().getLocs(getChestSpawn(t).Name()).size()];
+			
+			for(Location loc : getWorldData().getLocs(getChestSpawn(t).Name())){
+				loc.getBlock().setType(Material.CHEST);
+				chests[i]=((Chest)loc.getBlock().getState());
+				i++;
+			}
+			i=0;
+			
+			fillIslandChests(t,chests);
+		}
+		
+		Chest chest;
+		for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED.Name())){
+			loc.getBlock().setType(Material.CHEST);
+			if(loc.getBlock().getState() instanceof Chest){
+				chest=(Chest)loc.getBlock().getState();
+				
+				
+				
+			}
+		}
+	}
+	
+	public Team getChestSpawn(Team team){
+		switch(team){
+		case RED:return Team.SHEEP_RED;
+		case BLUE:return Team.SHEEP_BLUE;
+		case YELLOW:return Team.SHEEP_YELLOW;
+		case GREEN:return Team.SHEEP_GREEN;
+		case GRAY:return Team.SHEEP_GRAY;
+		case PINK:return Team.SHEEP_PINK;
+		case ORANGE:return Team.SHEEP_ORANGE;
+		case PURPLE:return Team.SHEEP_PURPLE;
+		case WHITE:return Team.SHEEP_WHITE;
+		case BLACK:return Team.SHEEP_BLACK;
+		case CYAN:return Team.SHEEP_CYAN;
+		case AQUA:return Team.SHEEP_AQUA;
+		default:
+		return Team.SHEEP_RED;
+		}
+	}
+	
+	public Material rdmBlock(){
+		switch(UtilMath.r(3)){
+		case 0:return Material.STONE;
+		case 1:return Material.DIRT;
+		case 2:return Material.WOOD;
+		default: return Material.BEDROCK;
+		}
+	}
+	
+	public ItemStack rdmFood(){
+		switch(UtilMath.r(4)){
+		case 0:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(16, 8));
+		case 1:return new ItemStack(Material.BREAD,UtilMath.RandomInt(16, 8));
+		case 2:return new ItemStack(Material.CAKE);
+		case 3:return new ItemStack(Material.CARROT,UtilMath.RandomInt(16, 8));
+		default: return new ItemStack(Material.GOLDEN_CARROT,UtilMath.RandomInt(16, 8));
+		}
+	}
+	
+	public Material rdmHelm(){
+		switch(UtilMath.r(4)){
+		case 0:return Material.DIAMOND_HELMET;
+		case 1:return Material.GOLD_HELMET;
+		case 2:return Material.IRON_HELMET;
+		case 3:return Material.CHAINMAIL_HELMET;
+		default: return Material.LEATHER_HELMET;
+		}
+	}
+	
+	public Material rdmChestplate(){
+		switch(UtilMath.r(4)){
+		case 0:return Material.DIAMOND_CHESTPLATE;
+		case 1:return Material.GOLD_CHESTPLATE;
+		case 2:return Material.IRON_CHESTPLATE;
+		case 3:return Material.CHAINMAIL_CHESTPLATE;
+		default: return Material.LEATHER_CHESTPLATE;
+		}
+	}
+	
+	public Material rdmLeggings(){
+		switch(UtilMath.r(4)){
+		case 0:return Material.DIAMOND_LEGGINGS;
+		case 1:return Material.GOLD_LEGGINGS;
+		case 2:return Material.IRON_LEGGINGS;
+		case 3:return Material.CHAINMAIL_LEGGINGS;
+		default: return Material.LEATHER_LEGGINGS;
+		}
+	}
+	
+	public Material rdmTool(){
+		switch(2){
+		case 0: return Material.IRON_PICKAXE;
+		case 1: return Material.IRON_AXE;
+		default: return Material.DIAMOND_PICKAXE;
+		}
+	}
+	
+	public Material rdmBoots(){
+		switch(UtilMath.r(4)){
+		case 0:return Material.DIAMOND_BOOTS;
+		case 1:return Material.GOLD_BOOTS;
+		case 2:return Material.IRON_BOOTS;
+		case 3:return Material.CHAINMAIL_BOOTS;
+		default: return Material.LEATHER_BOOTS;
+		}
+	}
+	
+	public ItemStack rdmPotion(){
+		switch(UtilMath.r(5)){
+		case 0:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
+		case 1:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
+		case 2:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
+		case 3:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
+		case 4:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
+		default: return new ItemStack(Material.POTION,1);
+		}
+	}
+	
+	private HashMap<Chest,ArrayList<String>> template = new HashMap<>();
+	private HashMap<String,Integer> template_type = new HashMap<>();
+	public void fillIslandChests(Team t,Chest[] chests){
+		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
+		template.clear();
+		template_type.clear();
+		
+		template_type.put("SWORD",3);
+		template_type.put("BLOCK",3);
+		template_type.put("HELM",2);
+		template_type.put("CHESTPLATE",2);
+		template_type.put("LEGGINGS",2);
+		template_type.put("BOOTS",2);
+		template_type.put("ARROW",1);
+		template_type.put("POTION",4);
+		template_type.put("FOOD",3);
+		template_type.put("SNOWBALL",3);
+		template_type.put("EGG",3);
+		template_type.put("WEB",3);
+		template_type.put("LAVA-BUCKET",1);
+		template_type.put("WATER-BUCKET",1);
+		template_type.put("TNT",1);
+		template_type.put("FIRE",1);
+		template_type.put("BOW",1);
+		template_type.put("TOOL",2);
+		
+		for(Chest chest : chests)template.put(chest, new ArrayList<String>());
+		
+		
+		if(UtilMath.r(100)>70){
+			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
+			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
+		}
+
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+		
+		int r;
+		ArrayList<String> list;
+		for(Chest chest : template.keySet()){
+			list=template.get(chest);
+			r=UtilMath.RandomInt(8, 5);
+			if(r<=list.size())continue;
+			for(int i = 0; i < (r-list.size()); i++){
+				add(chest, (String)this.template_type.keySet().toArray()[UtilMath.r(this.template_type.size())]);
+			}
+		}
+		
+		for(Chest chest : template.keySet()){
+			for(String i : template.get(chest)){
+				switch(i){
+				case "SWORD":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(UtilItem.rdmSchwert()) );
+					break;
+				case "HELM":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmHelm()));
+					break;
+				case "CHESTPLATE":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmChestplate()));
+					break;
+				case "LEGGINGS":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmLeggings()));
+					break;
+				case "BOOTS":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBoots()));
+					break;
+				case "BOW":
+					chest.getBlock().getRelative(BlockFace.UP).setType(Material.ANVIL);
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.BOW));
+					break;
+				case "ARROW":
+					chest.getBlock().getRelative(BlockFace.UP).setType(Material.BRICK);
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ARROW,UtilMath.RandomInt(16, 8)));
+					break;
+				case "BLOCK":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBlock(),UtilMath.RandomInt(32, 16)));
+					break;
+				case "POTION":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmPotion()));
+					break;
+				case "FOOD":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , rdmFood());
+					break;
+				case "SNOWBALL":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16, 8)));
+					break;
+				case "EGG":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(16, 8)));
+					break;
+				case "WEB":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(16, 8)));
+					break;
+				case "LAVA-BUCKET":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LAVA_BUCKET));
+					break;
+				case "WATER-BUCKET":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WATER_BUCKET));
+					break;
+				case "TNT":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.TNT,UtilMath.RandomInt(3, 1)));
+					break;
+				case "FIRE":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.FLINT_AND_STEEL));
+					break;
+				default:
+					System.out.println("Island Chest FAIL: "+i);
+					break;
+				}
+			}
+			template.get(chest).clear();
+		}
+		
+		for(Chest chest : template.keySet()){
+			for(ItemStack item : chest.getInventory().getContents()){
+				if(item!=null&&item.getType()!=Material.AIR){
+					if(item.getType()==Material.BOW){
+						switch(UtilMath.r(3)){
+						case 0:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);break;
+						case 1:item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);break;
+						case 2:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);item.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);break;
+						default:break;
+						}
+					}else if(UtilItem.isSword(item)){
+						if(item.getType()==Material.WOOD_SWORD){
+							item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+						}else if(item.getType()==Material.DIAMOND_SWORD){
+							r=UtilMath.r(100);
+							if(r>=50&&r<=55){
+								item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+							}else if(r>=0&&r<=40){
+								item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+							}
+						}else if(item.getType()==Material.GOLD_SWORD){
+							r=UtilMath.r(100);
+							item.addEnchantment(Enchantment.DURABILITY, 1);
+							if(r>=0&&r<=60){
+								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+							}else if(r>=60&&r<=100){
+								item.addEnchantment(Enchantment.KNOCKBACK, 1);
+							}
+						}else if(item.getType()==Material.STONE_SWORD){
+							item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+						}else if(item.getType()==Material.IRON_SWORD){
+							r=UtilMath.r(100);
+							if(r>=40&&r<=80){
+								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+							}
+						}
+					}else if(UtilItem.isArmor(item)){
+						if(UtilItem.isGoldArmor(item)){
+							r=UtilMath.r(100);
+							if(r>=0&&r<=60){
+								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+							}else{
+								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+							}
+						}else if(UtilItem.isChainmailArmor(item)){
+							if(UtilItem.isChestplate(item)){
+								r=UtilMath.r(100);
+								if(r>=60&&r<=80){
+									item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+								}
+							}
+							item.addEnchantment(Enchantment.PROTECTION_FIRE, 3);
+						}else if(UtilItem.isIronArmor(item)){
+							r=UtilMath.r(100);
+							if(r>=60&&r<=80){
+								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+							}
+							item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, 3);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public int emptySlot(Inventory inv){
+		int slot=0;
+		for(int i = 0 ; i<2000; i++){
+			slot=UtilMath.r(inv.getSize());
+			if(inv.getItem(slot)==null||inv.getItem(slot).getType()==Material.AIR){
+				return slot;
+			}
+		}
+		System.out.println("1");
+		return 0;
+	}
+	
+	int a=0;
+	public void add(Chest g,String type){
+		template.get(g).add(type);
+		a=template_type.get(type);
+		a--;
+		template_type.remove(type);
+		if(a!=0)template_type.put(type, a);
+		a=0;
+	}
+	
+	@EventHandler
+	public void Enchant(InventoryOpenEvent ev){
+		if(ev.getInventory() instanceof EnchantingInventory){
+			EnchantingInventory inv = (EnchantingInventory)ev.getInventory();
+			inv.setSecondary(new ItemStack(351,16 ,(short)4));
+		}
 	}
 	
 	public void loadMaterialList(){
@@ -189,69 +471,6 @@ public class SkyWars extends TeamGame{
 		chest_material.add(new ItemStack(Material.GOLDEN_APPLE,2));
 	}
 	
-	Enchantment[] enchs;
-	Enchantment e;
-	@EventHandler
-	public void chest(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer())){
-			if(ev.getClickedBlock().getType()==Material.CHEST){
-				if(chests.containsKey(ev.getClickedBlock().getLocation())){
-					ev.setCancelled(true);
-					ev.getPlayer().openInventory(chests.get(ev.getClickedBlock().getLocation()));
-				}else{
-					if(chest_material.isEmpty())loadMaterialList();
-					Inventory inv = Bukkit.createInventory(null, 9, "Chest: ");
-					ItemStack item;
-					for(int i = 0; i < UtilMath.RandomInt(4, 2); i++){
-						item=chest_material.get(UtilMath.r(chest_material.size())).clone();
-						
-						if(getStart()>=300){
-							if(UtilItem.isArmor(item)){
-								if(UtilItem.isHelm(item)&&UtilMath.RandomInt(10, 1)>5){
-									enchs = UtilItem.enchantmentsHelm();
-									e = enchs[UtilMath.r(enchs.length)];
-									item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-								}else if(UtilItem.isChestplate(item)&&UtilMath.RandomInt(10, 1)>5){
-									enchs = UtilItem.enchantmentsChestplate();
-									e = enchs[UtilMath.r(enchs.length)];
-									item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-								}else if(UtilItem.isLeggings(item)&&UtilMath.RandomInt(10, 1)>5){
-									enchs = UtilItem.enchantmentsLeggings();
-									e = enchs[UtilMath.r(enchs.length)];
-									item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-								}else if(UtilItem.isBoots(item)&&UtilMath.RandomInt(10, 1)>5){
-									enchs = UtilItem.enchantmentsBoots();
-									e = enchs[UtilMath.r(enchs.length)];
-									item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-								}
-							}else if(UtilItem.isWeapon(item)){
-								if(UtilItem.isSword(item)&&UtilMath.RandomInt(10, 1)>5){
-									enchs = UtilItem.enchantmentsSword();
-									e = enchs[UtilMath.r(enchs.length)];
-									item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-								}else if(UtilItem.isAxt(item)&&UtilMath.RandomInt(10, 1)>5){
-									enchs = UtilItem.enchantmentsAxt();
-									e = enchs[UtilMath.r(enchs.length)];
-									item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-								}
-							}else if(item.getType()==Material.BOW){
-								enchs = UtilItem.enchantmentsBow();
-								e = enchs[UtilMath.r(enchs.length)];
-								item.addEnchantment(e, UtilMath.RandomInt(e.getMaxLevel(), e.getStartLevel()));
-							}
-						}
-						
-						inv.addItem( item );
-					}
-					chests.put(ev.getClickedBlock().getLocation(), inv);
-					
-					ev.setCancelled(true);
-					ev.getPlayer().openInventory(chests.get(ev.getClickedBlock().getLocation()));
-				}
-			}
-		}
-	}
-	
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
 		if(ev.isCancelled())return;
@@ -277,7 +496,7 @@ public class SkyWars extends TeamGame{
 		setStart(getStart()-1);
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
-		case 300: chests.clear();broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+"§eChest refill" );break;
+		case 300: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+"§eChest refill" );break;
 		case 30: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
 		case 15: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
 		case 10: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
@@ -290,6 +509,16 @@ public class SkyWars extends TeamGame{
 			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText() );
 			setState(GameState.Restart);
 			break;
+		}
+	}
+	
+	@EventHandler
+	public void ShopOpen(PlayerInteractEvent ev){
+		if(UtilEvent.isAction(ev, ActionType.R)){
+			if(getState()!=GameState.LobbyPhase)return;
+			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
+				ev.getPlayer().openInventory(kitshop.getInventory());
+			}
 		}
 	}
 	
@@ -350,13 +579,12 @@ public class SkyWars extends TeamGame{
 		"Gewonnene Spiele: "+win,
 		"Verlorene Spiele: "+lose
 		});
+		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
 	@EventHandler
 	public void GameStartSkyWars(GameStartEvent ev){
 		getWorldData().clearWorld();
-		TargetNextPlayer = new AddonTargetNextPlayer(250,this);
-		TargetNextPlayer.setAktiv(true);
 		
 		HashMap<Player,String> kits = new HashMap<>();
 		
@@ -368,42 +596,45 @@ public class SkyWars extends TeamGame{
 			}
 		}
 		
-		Scoreboard board;
 		ArrayList<Player> plist = new ArrayList<>();
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
-			board=Bukkit.getScoreboardManager().getNewScoreboard();
-			
-			UtilScoreboard.addBoard(board, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu");
-			UtilScoreboard.setScore(board, "§7Kills: ", DisplaySlot.SIDEBAR, 8);
-			UtilScoreboard.setScore(board, "§e"+getStats().getInt(Stats.KILLS, p), DisplaySlot.SIDEBAR, 7);
-			UtilScoreboard.setScore(board, " ", DisplaySlot.SIDEBAR, 6);
-			UtilScoreboard.setScore(board, "§7Kit: ", DisplaySlot.SIDEBAR, 5);
-			UtilScoreboard.setScore(board, "§e"+kits.get(p), DisplaySlot.SIDEBAR, 4);
-			UtilScoreboard.setScore(board, " ", DisplaySlot.SIDEBAR, 3);
-			UtilScoreboard.setScore(board, "§ewww.EpicPvP.me", DisplaySlot.SIDEBAR, 2);
-			p.setScoreboard(board);
-			
-			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			plist.add(p);
 		}
 		PlayerVerteilung(verteilung(type.getTeam(),type.getTeam_size()), plist);
 		
-		int i = 0;
-		ArrayList<Location> list;
-		for(Team t : type.getTeam()){
-			list = getWorldData().getLocs(t.Name());
-			for(Player p : getPlayerFrom(t)){
-				p.teleport(list.get(i));
-				i++;
-				if(i==list.size())i=0;
-			}
+		for(Player player : getTeamList().keySet()){
+			player.teleport(getWorldData().getLocs(getTeamList().get(player).Name()).get(0));
 		}
 		
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 
-		TeamTab(type.getTeam());
+		Scoreboard ps;
+		for(Player p : UtilServer.getPlayers()){
+			ps=Bukkit.getScoreboardManager().getNewScoreboard();
+			
+			UtilScoreboard.addBoard(ps, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu");
+			UtilScoreboard.setScore(ps, "§7Kills: ", DisplaySlot.SIDEBAR, 6);
+			UtilScoreboard.setScore(ps, "§e"+getStats().getInt(Stats.KILLS, p), DisplaySlot.SIDEBAR, 5);
+			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 4);
+			UtilScoreboard.setScore(ps, "§7Kit: ", DisplaySlot.SIDEBAR, 3);
+			UtilScoreboard.setScore(ps, "§e"+ (kits.containsKey(p) ? kits.get(p) : "Kein Kit") , DisplaySlot.SIDEBAR,2);
+			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 1);
+			UtilScoreboard.setScore(ps, "§ewww.EpicPvP.me", DisplaySlot.SIDEBAR, 0);
+			UtilScoreboard.addTeam(ps, "friend", Color.GREEN);
+			UtilScoreboard.addTeam(ps, "enemy", Color.RED);
+			
+			for(Player player : UtilServer.getPlayers()){
+				if(getTeam(p)!=getTeam(player)){
+					UtilScoreboard.addPlayerToTeam(ps, "enemy", player);
+				}else{
+					UtilScoreboard.addPlayerToTeam(ps, "friend", player);
+				}
+			}
+			
+			p.setScoreboard(ps);
+		}
 		
 		setStart((60*10)+1);
 		setState(GameState.InGame);

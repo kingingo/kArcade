@@ -3,10 +3,11 @@ package me.kingingo.karcade.Game.Single.addons;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import me.kingingo.kcore.Enum.Team;
+
 import lombok.Getter;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;

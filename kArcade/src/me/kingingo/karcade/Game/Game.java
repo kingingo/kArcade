@@ -152,7 +152,7 @@ public class Game implements Listener{
 		UtilPlayer.setScoreboard(ev.getPlayer(), getCoins(), getManager().getPermManager());
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
 		for(Player player : UtilServer.getPlayers())player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
 	}
