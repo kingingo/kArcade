@@ -1,7 +1,13 @@
 package me.kingingo.karcade.Game.Single.Games.SkyWars;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
@@ -21,6 +27,8 @@ import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
+import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
+import me.kingingo.kcore.Kit.Perks.PerkEquipment;
 import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.kPermission;
@@ -29,10 +37,12 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilList;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
@@ -65,6 +75,7 @@ public class SkyWars extends TeamGame{
 	private ArrayList<ItemStack> chest_material = new ArrayList<>();
 	private SkyWarsType type;
 	private KitShop kitshop;
+	private HashMap<String,Integer> kills =  new HashMap<>();
 	
 	public SkyWars(kArcadeManager manager,SkyWarsType type){
 		super(manager);
@@ -88,13 +99,38 @@ public class SkyWars extends TeamGame{
 		setItemDrop(true);
 		setRespawn(true);
 		setWorldData(new WorldData(manager,getType()));
+		getWorldData().setCleanroomChunkGenerator(true);
 		getWorldData().Initialize();
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
-		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
-			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
-				new PerkNoHunger()
-			})
+		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
+			new Kit( "§eJäger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),kPermission.SKYWARS_KIT_JÄGER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,10)})
+			}),
+			new Kit( "§eEnchanter",new String[]{"§8x1§7 Enchantment Table","§8x64 §7Enchantment Bottles"}, new ItemStack(Material.ENCHANTMENT_TABLE),kPermission.SKYWARS_KIT_ENCHANTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.ENCHANTMENT_TABLE),new ItemStack(Material.EXP_BOTTLE,64)})
+			}),
+			new Kit( "§eHeiler",new String[]{"§8x3§7 Tränke der Heilung","§8x3§7 Regenerations Tränke"}, new ItemStack(Material.POTION,1,(short)16389),kPermission.SKYWARS_KIT_HEILER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,3,(short)16389),new ItemStack(Material.POTION,3,(short)16385)})
+			}),
+			new Kit( "§eSpäher",new String[]{"§8x1§7 Steinschwert","§8x3 §7Schnelligkeits Tränke"}, new ItemStack(Material.STONE_SWORD),kPermission.SKYWARS_KIT_SPÄHER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.STONE_SWORD),new ItemStack(Material.POTION,3,(short)16386)})
+			}),
+			new Kit( "§eKampfmeister",new String[]{"§8x1§7 Anvil","§864x§7 Enchantment Bottles","§8x1§7 Diamant Helm","§8x1§7 Enchantment Buch (Protection III)"}, new ItemStack(Material.ANVIL),kPermission.SKYWARS_KIT_KAMPFMEISTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.getEnchantmentBook(Enchantment.PROTECTION_ENVIRONMENTAL, 3),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.EXP_BOTTLE,64),new ItemStack(Material.ANVIL)})
+			}),
+			new Kit( "§eRitter",new String[]{"§8x1§7 Eisenschwert (Schärfe II)"}, new ItemStack(Material.IRON_SWORD),kPermission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD), Enchantment.DAMAGE_ALL, 2)})
+			}),
+			new Kit( "§eFeuermeister",new String[]{"§8x1§7Feuerzeug","§82x§7 Lava-Eimer","§82x§7 Feuer Tränke"}, new ItemStack(Material.LAVA_BUCKET),kPermission.SKYWARS_KIT_FEUERMEISTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,2,(short)16387),new ItemStack(Material.FLINT_AND_STEEL,1),new ItemStack(Material.LAVA_BUCKET,2)})
+			}),
+			new Kit( "§eDroide",new String[]{"§8x1§7 Regenerations Trank","§82x§7 Tränke der Heilung","§82x§7 Vergiftungs Tränke","§82x§7 Schadens Tränke"}, new ItemStack(Material.POTION),kPermission.SKYWARS_KIT_DROIDE,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,1,(short)16385),new ItemStack(Material.POTION,2,(short)16388),new ItemStack(Material.POTION,2,(short)16389),new ItemStack(Material.POTION,2,(short)16396)})
+			}),
+			new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 2"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.KNOCKBACK,1)})
+			}),
 		});
 		
 		getManager().DebugLog(l, this.getClass().getName());
@@ -122,11 +158,154 @@ public class SkyWars extends TeamGame{
 			loc.getBlock().setType(Material.CHEST);
 			if(loc.getBlock().getState() instanceof Chest){
 				chest=(Chest)loc.getBlock().getState();
-				
-				
-				
+				for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
+					chest.getInventory().setItem(emptySlot(chest.getInventory()), rdmItem()); 
+				}
 			}
 		}
+	}
+	
+	public ItemStack Sonstiges(){
+		try{
+			switch(UtilMath.r(39)){
+			case 0: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 1: return new ItemStack(Material.GOLDEN_APPLE,1);
+			case 2: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
+			case 3: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
+			case 4: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
+			case 5: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
+			case 6: return new ItemStack(Material.FISHING_ROD);
+			case 7: return new ItemStack(Material.FISHING_ROD);
+			case 8: return new ItemStack(Material.FISHING_ROD);
+			case 9: return new ItemStack(Material.TNT);
+			case 10: return new ItemStack(Material.TNT);
+			case 11: return new ItemStack(Material.TNT);
+			case 12:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
+			case 13:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
+			case 14:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
+			case 15:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
+			case 16:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
+			case 17:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
+			case 18:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
+			case 19:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
+			case 20:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
+			case 21:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
+			case 22:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
+			case 23:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
+			case 24:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
+			case 25:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
+			case 26:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
+			case 27:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
+			case 28:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
+			case 29:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
+			case 30:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
+			case 31:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			case 32:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
+			case 33:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
+			case 34:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
+			case 35:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
+			case 36:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			case 37: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 38: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			default: return new ItemStack(Material.STICK);
+			}
+		}catch(NullPointerException e){
+			System.err.println("Error: ");
+			e.printStackTrace();
+			return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+		}
+	}
+	
+	public ItemStack Tools(){
+		switch(UtilMath.r(5)){
+		case 0: return new ItemStack(Material.DIAMOND_SWORD);
+		case 1: return new ItemStack(Material.IRON_SWORD);
+		case 2: return new ItemStack(Material.DIAMOND_AXE);
+		case 3: return new ItemStack(Material.DIAMOND_PICKAXE);
+		case 4: return new ItemStack(Material.BOW);
+		default: return new ItemStack(Material.WOOD_SWORD);
+		}
+	}
+	
+	public ItemStack DiaRüstung(){
+		switch(UtilMath.r(4)){
+		case 0: return new ItemStack(Material.DIAMOND_HELMET);
+		case 1: return new ItemStack(Material.DIAMOND_CHESTPLATE);
+		case 2: return new ItemStack(Material.DIAMOND_LEGGINGS);
+		case 3: return new ItemStack(Material.DIAMOND_BOOTS);
+		default:
+			return new ItemStack(Material.LEATHER_HELMET);
+		}
+	}
+	
+	public ItemStack IronRüstung(){
+		switch(UtilMath.r(4)){
+		case 0: return new ItemStack(Material.IRON_HELMET);
+		case 1: return new ItemStack(Material.IRON_CHESTPLATE);
+		case 2: return new ItemStack(Material.IRON_LEGGINGS);
+		case 3: return new ItemStack(Material.IRON_BOOTS);
+		default:
+			return new ItemStack(Material.LEATHER_HELMET);
+		}
+	}
+	
+	public ItemStack rdmItem(){
+		ItemStack item;
+		int r = UtilMath.r(1000);
+		if(r>=150&&r<=155){
+			item=UtilItem.RenameItem(new ItemStack(Material.SLIME_BALL), "§bX");
+			item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
+			return item;
+		}
+		
+		switch(UtilMath.r(6)){
+		case 0: item = Sonstiges();break;
+		case 1: item = IronRüstung();break;
+		case 2: item = DiaRüstung();break;
+		case 3: item = Tools();break;
+		case 4: item = Sonstiges();break;
+		case 5: item = Sonstiges();break;
+		default: item = new ItemStack(Material.APPLE);break;
+		}
+		
+		if(item.getType()==Material.BOW){
+			r=UtilMath.r(100);
+			if(r>=0&&r<=40){
+				item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
+			}else if(r>=40&&r<=60){
+				item.addEnchantment(Enchantment.ARROW_FIRE, 1);
+			}
+		}else if(item.getType()==Material.IRON_CHESTPLATE){
+			r=UtilMath.r(100);
+			if(r>=0&&r<=30){
+				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
+			}else if(r>=30&&r<=50){
+				item.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
+			}
+		}else if(item.getType()==Material.DIAMOND_CHESTPLATE){
+			r=UtilMath.r(100);
+			if(r>=0&&r<=40){
+				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
+			}else if(r>=30&&r<=50){
+				item.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
+			}
+		}else if(item.getType()==Material.IRON_SWORD){
+			item.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+		}else if(item.getType()==Material.DIAMOND_SWORD){
+			r=UtilMath.r(100);
+			if(r>=0&&r<=40){
+				item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+			}else if(r>=40&&r<=60){
+				item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+				item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+				item.addEnchantment(Enchantment.KNOCKBACK, 1);
+			}
+		}else if(item.getType()==Material.DIAMOND_AXE){
+			item.addEnchantment(Enchantment.DIG_SPEED, 3);
+		}else if(item.getType()==Material.DIAMOND_PICKAXE){
+			item.addEnchantment(Enchantment.DIG_SPEED, 3);
+		}
+		return item;
 	}
 	
 	public Team getChestSpawn(Team team){
@@ -226,13 +405,14 @@ public class SkyWars extends TeamGame{
 		}
 	}
 	
+	int e=0;
 	private HashMap<Chest,ArrayList<String>> template = new HashMap<>();
 	private HashMap<String,Integer> template_type = new HashMap<>();
 	public void fillIslandChests(Team t,Chest[] chests){
 		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
 		template.clear();
 		template_type.clear();
-		
+		e++;
 		template_type.put("SWORD",3);
 		template_type.put("BLOCK",3);
 		template_type.put("HELM",2);
@@ -258,6 +438,9 @@ public class SkyWars extends TeamGame{
 		if(UtilMath.r(100)>70){
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
+		}else{
+			template_type.remove("BOW");
+			template_type.remove("ARROW");
 		}
 
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
@@ -265,6 +448,7 @@ public class SkyWars extends TeamGame{
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
 		
 		int r;
 		ArrayList<String> list;
@@ -296,11 +480,9 @@ public class SkyWars extends TeamGame{
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBoots()));
 					break;
 				case "BOW":
-					chest.getBlock().getRelative(BlockFace.UP).setType(Material.ANVIL);
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.BOW));
 					break;
 				case "ARROW":
-					chest.getBlock().getRelative(BlockFace.UP).setType(Material.BRICK);
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ARROW,UtilMath.RandomInt(16, 8)));
 					break;
 				case "BLOCK":
@@ -332,6 +514,9 @@ public class SkyWars extends TeamGame{
 					break;
 				case "FIRE":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.FLINT_AND_STEEL));
+					break;
+				case "TOOL":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmTool()));
 					break;
 				default:
 					System.out.println("Island Chest FAIL: "+i);
@@ -414,7 +599,7 @@ public class SkyWars extends TeamGame{
 				return slot;
 			}
 		}
-		System.out.println("1");
+		System.out.println("NOT FIND A EMPTY SLOT");
 		return 0;
 	}
 	
@@ -496,7 +681,32 @@ public class SkyWars extends TeamGame{
 		setStart(getStart()-1);
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
-		case 300: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+"§eChest refill" );break;
+		case 300: 
+
+			Chest chest;
+			for(Team t : type.getTeam()){
+				for(Location loc : getWorldData().getLocs(getChestSpawn(t).Name())){
+					if(loc.getBlock().getState() instanceof Chest){
+						chest=(Chest)loc.getBlock().getState();
+						for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
+							chest.getInventory().setItem(emptySlot(chest.getInventory()), rdmItem()); 
+						}
+					}
+				}
+			}
+			
+			for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED.Name())){
+				loc.getBlock().setType(Material.CHEST);
+				if(loc.getBlock().getState() instanceof Chest){
+					chest=(Chest)loc.getBlock().getState();
+					for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
+						chest.getInventory().setItem(emptySlot(chest.getInventory()), rdmItem()); 
+					}
+				}
+			}
+			
+			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+"§eDie Kisten wurden wieder gefüllt" );
+			break;
 		case 30: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
 		case 15: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
 		case 10: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
@@ -532,32 +742,82 @@ public class SkyWars extends TeamGame{
 			
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
+				int k = kills.get(a.getName());
+				k++;
+				kills.remove(a.getName());
+				kills.put(a.getName(), k);
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
-				UtilScoreboard.resetScore(a.getScoreboard(), "§e"+ (getStats().getInt(Stats.KILLS, a)-1) , DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(a.getScoreboard(), "§e"+getStats().getInt(Stats.KILLS, a), DisplaySlot.SIDEBAR, 7);
+				UtilScoreboard.resetScore(a.getScoreboard(), "§e"+ (kills.get(a.getName())-1) , DisplaySlot.SIDEBAR);
+				UtilScoreboard.setScore(a.getScoreboard(), "§e"+kills.get(a.getName()), DisplaySlot.SIDEBAR, 5);
 				getCoins().addCoins(a, false, 5);
 				broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
 				return;
 			}
 			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(v.getName()) );
-			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
 			getStats().setInt(v, getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
+			
+			if(type.getTeam_size()>1){
+				Player p = TeamPartner(v);
+				if(p==null)return;
+				if(v.getName().length()>13){
+					UtilScoreboard.resetScore(p.getScoreboard(), "§e"+v.getName().substring(13), DisplaySlot.SIDEBAR);
+					UtilScoreboard.setScore(p.getScoreboard(), "§c"+v.getName().substring(13), DisplaySlot.SIDEBAR, 8);
+				}else{
+					UtilScoreboard.resetScore(p.getScoreboard(), "§e"+v.getName(), DisplaySlot.SIDEBAR);
+					UtilScoreboard.setScore(p.getScoreboard(), "§c"+v.getName(), DisplaySlot.SIDEBAR, 8);
+				}
+			}
 			
 		}
 	}
 	
-	@EventHandler
-	public void GameStateChangeSkyWars(GameStateChangeEvent ev){
-		if(ev.getFrom()==GameState.InGame&&ev.getTo()==GameState.Restart){
-			if(getGameList().getPlayers(PlayerState.IN).size()==1){
-				Player win = getGameList().getPlayers(PlayerState.IN).get(0);
-				getCoins().addCoins(win, false, 25);
-				getStats().setInt(win, getStats().getInt(Stats.WIN, win)+1, Stats.WIN);
-				broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(win.getName()));
-			}
+	public Player TeamPartner(Player p){
+		for(Player p1 : getPlayerFrom(getTeam(p))){
+			if(p1==p)continue;
+			return p1;
 		}
+		return null;
 	}
 	
+	@EventHandler
+	public void GameStateChangeSkyWars(GameStateChangeEvent ev){
+		if(ev.getTo()==GameState.Restart){
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			if(list.size()==1){
+				Player p = list.get(0);
+				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getCoins().addCoins(p, false, 25);
+				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(p.getName()));
+				new Title("§6§lGEWONNEN").send(p);
+			}else if(list.size()==2){
+				Player p = list.get(0);
+				Player p1 = list.get(1);
+				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getStats().setInt(p1, getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
+				getCoins().addCoins(p, false, 25);
+				getCoins().addCoins(p1, false, 25);
+				new Title("§6§lGEWONNEN").send(p);
+				new Title("§6§lGEWONNEN").send(p1);
+			}
+			
+//			if(kills.size()>=3){
+//				String p;
+//				kills=UtilList.getRanked(kills, 3);
+//				for(int i = 0; i<kills.size(); i++){
+//					p=(String)kills.keySet().toArray()[i];
+//					if(i==0){
+//						broadcast("§6§l1. Platz§8 "+p+" §7Kills: "+kills.get(p));
+//					}else if(i==1){
+//						broadcast("§e§l2. Platz§8 "+p+" §7Kills: "+kills.get(p));
+//					}else if(i==2){
+//						broadcast("§c§l3. Platz§8 "+p+" §7Kills: "+kills.get(p));
+//						break;
+//					}
+//				}
+//			}
+		}
+		
+	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
@@ -600,7 +860,12 @@ public class SkyWars extends TeamGame{
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
+			kills.put(p.getName(), 0);
 			plist.add(p);
+			for(Player player : UtilServer.getPlayers()){
+				p.showPlayer(player);
+				player.showPlayer(p);
+			}
 		}
 		PlayerVerteilung(verteilung(type.getTeam(),type.getTeam_size()), plist);
 		
@@ -615,9 +880,24 @@ public class SkyWars extends TeamGame{
 			ps=Bukkit.getScoreboardManager().getNewScoreboard();
 			
 			UtilScoreboard.addBoard(ps, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu");
+			if(type.getTeam_size()>1){
+				Player p1 = TeamPartner(p);
+				
+				if(p1!=null){
+					if(p1.getName().length()>13){
+						UtilScoreboard.setScore(ps, "§e"+p1.getName().substring(13), DisplaySlot.SIDEBAR, 8);
+					}else{
+						UtilScoreboard.setScore(ps, "§e"+p1.getName(), DisplaySlot.SIDEBAR, 8);
+					}
+					
+
+					UtilScoreboard.setScore(ps, "§7Team-Partner: ", DisplaySlot.SIDEBAR, 9);
+					UtilScoreboard.setScore(ps, "   ", DisplaySlot.SIDEBAR, 7);
+				}
+			}
 			UtilScoreboard.setScore(ps, "§7Kills: ", DisplaySlot.SIDEBAR, 6);
-			UtilScoreboard.setScore(ps, "§e"+getStats().getInt(Stats.KILLS, p), DisplaySlot.SIDEBAR, 5);
-			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 4);
+			UtilScoreboard.setScore(ps, "§e"+kills.get(p.getName()),DisplaySlot.SIDEBAR,5);
+			UtilScoreboard.setScore(ps, "  ", DisplaySlot.SIDEBAR, 4);
 			UtilScoreboard.setScore(ps, "§7Kit: ", DisplaySlot.SIDEBAR, 3);
 			UtilScoreboard.setScore(ps, "§e"+ (kits.containsKey(p) ? kits.get(p) : "Kein Kit") , DisplaySlot.SIDEBAR,2);
 			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 1);
@@ -636,7 +916,13 @@ public class SkyWars extends TeamGame{
 			p.setScoreboard(ps);
 		}
 		
-		setStart((60*10)+1);
+		for(Player player : UtilServer.getPlayers()){
+			if(player.getWorld().getName().equalsIgnoreCase("world")){
+				System.out.println("WORLD: "+player.getName());
+			}
+		}
+		
+		setStart((60*15)+1);
 		setState(GameState.InGame);
 	}
 	

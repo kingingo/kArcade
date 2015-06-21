@@ -123,7 +123,7 @@ public class QuickSurvivalGames extends SoloGame{
 	@EventHandler
 	public void tnt(BlockPlaceEvent ev){
 		if(ev.getBlock().getType()==Material.TNT){
-			ev.getItemInHand().setType(null);
+			UtilInv.remove(ev.getPlayer(), new ItemStack(Material.TNT), 1);
 			ev.getBlock().setType(Material.AIR);
 			ev.getBlock().getLocation().getWorld().spawnEntity(ev.getBlock().getLocation(),EntityType.PRIMED_TNT);
 		}

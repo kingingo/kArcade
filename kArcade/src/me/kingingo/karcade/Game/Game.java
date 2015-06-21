@@ -111,6 +111,7 @@ public class Game implements Listener{
 	}
 	
 	public void setState(GameState gs,GameStateChangeReason reason){
+		if(gs==getState())return;
 		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs,reason);
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
@@ -155,6 +156,11 @@ public class Game implements Listener{
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
 		for(Player player : UtilServer.getPlayers())player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
+	}
+	
+	@EventHandler
+	public void Start(GameStateChangeEvent ev){
+		updateInfo();
 	}
 	
 	@EventHandler
