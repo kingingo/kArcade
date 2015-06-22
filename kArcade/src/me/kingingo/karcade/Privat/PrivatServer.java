@@ -1,60 +1,83 @@
 package me.kingingo.karcade.Privat;
 
 import java.io.File;
+import java.util.HashMap;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Button;
 
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.GameStateChangeReason;
-import me.kingingo.karcade.Privat.Events.PrivatServerSettingEvent;
+import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Inventory.InventoryBase;
+import me.kingingo.kcore.Inventory.InventoryPageBase;
+import me.kingingo.kcore.Inventory.Item.ButtonBase;
+import me.kingingo.kcore.Inventory.Item.Click;
 import me.kingingo.kcore.Listener.kListener;
-import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
-import me.kingingo.kcore.Packet.Packets.SERVER_READY;
-import me.kingingo.kcore.Packet.Packets.SERVER_SETTINGS;
-import me.kingingo.kcore.Util.UtilFile;
-import me.kingingo.kcore.kConfig.kConfig;
-
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
+import me.kingingo.kcore.Util.Color;
+import me.kingingo.kcore.Util.InventorySize;
+import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilItem;
 
 public class PrivatServer extends kListener{
 
 	private kArcadeManager manager;
-	private File pfad;
-
-	public PrivatServer(kArcadeManager manager){
+	private HashMap<GameType,InventoryPageBase> maps;
+	private InventoryBase base;
+	private SingleGame game;
+	private InventoryPageBase choose_game;
+	
+	public PrivatServer(final kArcadeManager manager){
 		super(manager.getInstance(),"PrivateServer");
 		this.manager=manager;
-		String folder="plugins"+File.separator+manager.getInstance().getPlugin(manager.getInstance().getClass()).getName();
-		new File(folder).mkdir();
-		this.pfad=new File(folder,"privat.yml");
-	
-		if(UtilFile.existPath(pfad)){
-			kConfig config = new kConfig(pfad);
-			if(config.isString("PACKET")){
-				SERVER_SETTINGS setting = new SERVER_SETTINGS(config.getString("PACKET"));
-				manager.getGame().setApublic(setting.isApublic());
-				Bukkit.getPluginManager().callEvent(new PrivatServerSettingEvent(setting));
-				manager.getPacketManager().SendPacket(setting.getHub(), new SERVER_READY(setting.getPlayer(),"a"+kArcade.id));
-			}
-			config.set("PACKET", null);
-			config.save();
-			manager.getGame().updateInfo();
-		}
-	}
-	
-	@EventHandler
-	public void Receive(PacketReceiveEvent ev){
-		if(ev.getPacket() instanceof SERVER_SETTINGS){
-			SERVER_SETTINGS setting = (SERVER_SETTINGS)ev.getPacket();
-			manager.getInstance().getConfig().set("Config.Server.Game", setting.getGame());
-			manager.getInstance().saveConfig();
-			kConfig config = new kConfig(pfad);
-			config.set("PACKET", setting.toString());
-			config.save();
+		this.game=(SingleGame)manager.getGame();
+		this.maps=new HashMap<GameType,InventoryPageBase>();
+		this.base=new InventoryBase(manager.getInstance(), InventorySize._27.getSize(), "Privat Server:");
 
-			manager.getGame().setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
+		this.base.getMain().addButton(0, new ButtonBase(new Click(){
+
+			@Override
+			public void onClick(Player player, ActionType action, Object obj) {
+				player.closeInventory();
+				
+				if(game.getMin_Players() <= UtilServer.getPlayers().size()){
+					game.setState(GameState.LobbyPhase);
+					game.setStart(15);
+				}else{
+					player.sendMessage(Text.PREFIX.getText()+Color.RED+"Es sind zu wenig Spieler(min. "+game.getMin_Players()+") online! Wartemodus wird neugestartet!");
+				}
+			}
+			
+		}, UtilItem.Item(new ItemStack(Material.EMERALD_BLOCK), new String[]{}, "§aSpiel starten")));
+		
+		this.base.getMain().addButton(9, new ButtonBase(new Click(){
+
+			@Override
+			public void onClick(Player player, ActionType action, Object obj) {
+				player.closeInventory();
+				game.setState(GameState.Laden);
+			}
+			
+		}, UtilItem.Item(new ItemStack(Material.REDSTONE_BLOCK), new String[]{}, "§cSpiel stoppen")));
+		
+		for(GameType type : maps.keySet()){
+			
+			
+			
 		}
+
 	}
 	
+	public InventoryPageBase loadMaps(GameType type){
+		String folder = kArcade.FilePath+File.separator+type.getTyp();
+		
+		return null;
+	}
 }

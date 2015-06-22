@@ -32,4 +32,13 @@ private SheepWarsType(int team_size,int min,int max,Team[] team, int drop_rate){
 	this.team_size=team_size;
 }
 	
+public static SheepWarsType getSheepWarsTypeWithSize(int size){
+	for(SheepWarsType type : SheepWarsType.values()){
+		if(type.getTeam().length==size){
+			return type;
+		}
+	}
+	return SheepWarsType._2x4;
+}
+
 }

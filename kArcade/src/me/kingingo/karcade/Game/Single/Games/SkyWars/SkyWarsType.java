@@ -29,6 +29,14 @@ private SkyWarsType(int h,int team_size,int min,int max,Team[] team){
 	this.h=h;
 }
 
+public static SkyWarsType getSkyWarsTypeWithSize(int size){
+	for(SkyWarsType type : SkyWarsType.values()){
+		if(type.getTeam().length==size){
+			return type;
+		}
+	}
+	return SkyWarsType._12x1;
+}
 
 public static SkyWarsType random(){
 	int a = 0;

@@ -17,7 +17,6 @@ import me.kingingo.karcade.Game.Single.Games.DeathGames.Perk.PerkTeleporter;
 import me.kingingo.karcade.Game.Single.addons.AddonQuadratGrenze;
 import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.World.WorldData;
-import me.kingingo.karcade.Privat.Events.PrivatServerSettingEvent;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
@@ -56,7 +55,6 @@ import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Permission.kPermission;
-import me.kingingo.kcore.PrivatServer.Interface.Button.UtilInterface;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -275,11 +273,11 @@ public class DeathGames extends SoloGame{
 		manager.DebugLog(t, this.getClass().getName());
 	}
 
-	@EventHandler
-	public void Setting(PrivatServerSettingEvent ev){
-		this.chest_anzahl=UtilInterface.DG_Chest(ev.getSetting().getInfos());
-		this.kits=UtilInterface.DG_Kits(ev.getSetting().getInfos());
-	}
+//	@EventHandler
+//	public void Setting(PrivatServerSettingEvent ev){
+//		this.chest_anzahl=UtilInterface.DG_Chest(ev.getSetting().getInfos());
+//		this.kits=UtilInterface.DG_Kits(ev.getSetting().getInfos());
+//	}
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){

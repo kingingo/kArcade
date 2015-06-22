@@ -53,4 +53,13 @@ public static BedWarsType random(){
 	return list.get(UtilMath.RandomInt(list.size(), 0));
 }
 	
+public static BedWarsType getBedWarsTypeWithSize(int size){
+	for(BedWarsType type : BedWarsType.values()){
+		if(type.getTeam().length==size){
+			return type;
+		}
+	}
+	return BedWarsType._2x4;
+}
+
 }
