@@ -41,6 +41,7 @@ import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilList;
 import me.kingingo.kcore.Util.UtilMath;
@@ -919,6 +920,8 @@ public class SkyWars extends TeamGame{
 		for(Player player : UtilServer.getPlayers()){
 			if(player.getWorld().getName().equalsIgnoreCase("world")){
 				System.out.println("WORLD: "+player.getName());
+				getManager().getMysql().Update("INSERT INTO list_exception (server,ip,time,exceptiontype,message) VALUES ('a"+kArcade.id+"','null','"+UtilTime.now()+"','SkyWars Spieler Verteilung','Spieler: "+player.getName()+" ANZAHL:"+UtilServer.getPlayers().size()+" VER:"+getERR(type.getTeam(),type.getTeam_size())+"');");
+				UtilBG.sendToServer(player, getManager().getInstance());
 			}
 		}
 		

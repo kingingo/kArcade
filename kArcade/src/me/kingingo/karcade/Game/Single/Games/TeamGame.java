@@ -54,10 +54,28 @@ public class TeamGame extends SingleGame{
 		Bukkit.getPluginManager().callEvent(new TeamAddEvent(p,t));
 	}
 	
+	public String getERR(Team[] t,int size){
+		String s = "";
+		HashMap<Team,Integer> l = verteilung(t, size);
+		for(Team te : l.keySet()){
+			s=s+"TEAM:"+te.Name()+"/"+l.get(te);
+		}
+		s=s+"  -  ";
+		for(Player p : TeamList.keySet()){
+			s=s+"PLAYER:"+p.getName()+"-"+TeamList.get(p).Name();
+		}
+		
+		return s;
+	}
+	
 	public HashMap<Team,Integer> verteilung(Team[] t,int size){
 		if(size==1){
 			HashMap<Team,Integer> list = new HashMap<>();
 			for(Team team : t)list.put(team, 1);
+			return list;
+		}else if(size==2){
+			HashMap<Team,Integer> list = new HashMap<>();
+			for(Team team : t)list.put(team, 2);
 			return list;
 		}else{
 			HashMap<Team,Integer> list = new HashMap<>();
