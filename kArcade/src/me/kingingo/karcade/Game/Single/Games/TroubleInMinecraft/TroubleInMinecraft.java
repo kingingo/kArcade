@@ -699,14 +699,16 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void StatsChange(PlayerStatsChangeEvent ev){
-		if(ev.getStats()==Stats.TTT_KARMA){
-			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
-		}else if(ev.getStats()==Stats.TTT_DETECTIVE_PUNKTE){
-			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.AQUA+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
-		}else if(ev.getStats()==Stats.TTT_TRAITOR_PUNKTE){
-			UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
-		}else if(ev.getStats()==Stats.WIN){
-			getCoins().addCoins(ev.getPlayer(), false, 25);
+		if(getState()!=GameState.LobbyPhase&&getState()!=GameState.Laden){
+			if(ev.getStats()==Stats.TTT_KARMA){
+				UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_KARMA, ev.getPlayer()));
+			}else if(ev.getStats()==Stats.TTT_DETECTIVE_PUNKTE){
+				UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.AQUA+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer()));
+			}else if(ev.getStats()==Stats.TTT_TRAITOR_PUNKTE){
+				UtilScoreboard.setScore(ev.getPlayer().getScoreboard(), Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer()));
+			}else if(ev.getStats()==Stats.WIN){
+				getCoins().addCoins(ev.getPlayer(), false, 25);
+			}
 		}
 	}
 	

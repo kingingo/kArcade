@@ -17,15 +17,19 @@ import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import me.kingingo.kcore.StatsManager.StatsManager;
 import me.kingingo.kcore.Util.Coins;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -136,7 +140,12 @@ public class Game implements Listener{
 	}
 	
 	public void updateInfo(){
-		SERVER_STATUS ss = new SERVER_STATUS(state,UtilServer.getPlayers().size(), getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id,apublic);
+		SERVER_STATUS ss = new SERVER_STATUS(state
+				,UtilServer.getPlayers().size()
+				, getMax_Players()
+				, (getWorldData()==null ? "Loading ..." : getWorldData().getMapName())
+				, getType()
+				,"a"+kArcade.id,apublic);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
@@ -146,6 +155,15 @@ public class Game implements Listener{
 	public void broadcast(String message){
 		if(UtilServer.getPlayers().size()==0)return;
 	    UtilServer.broadcast(message);
+	}
+	
+	@EventHandler
+	public void OpenChest(PlayerInteractEvent ev){
+		if(getState() == GameState.LobbyPhase){
+			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+				if(ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
+			}
+		}
 	}
 	
 	@EventHandler

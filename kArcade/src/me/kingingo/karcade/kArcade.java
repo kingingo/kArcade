@@ -6,12 +6,14 @@ import me.kingingo.karcade.Command.CommandForceStart;
 import me.kingingo.karcade.Command.CommandScan;
 import me.kingingo.karcade.Command.CommandSend;
 import me.kingingo.karcade.Command.CommandStart;
+import me.kingingo.kcore.AACHack.AACHack;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Command.Admin.CommandCMDMute;
 import me.kingingo.kcore.Command.Admin.CommandChatMute;
 import me.kingingo.kcore.Command.Admin.CommandToggle;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Listener.Command.ListenerCMD;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Permission.GroupTyp;
@@ -69,6 +71,8 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			new MemoryFix(this);
+			new AACHack("A"+id,mysql, pManager);
+			new ListenerCMD(this);
 			if( !getConfig().getBoolean("Config.Server.World-Save") )UtilWorld.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){
