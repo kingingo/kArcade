@@ -64,6 +64,7 @@ import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
@@ -390,11 +391,11 @@ public class DeathGames extends SoloGame{
 		normal.add(new ItemStack(Material.CARROT_ITEM, 3));
 		normal.add(new ItemStack(Material.WORKBENCH, 1));
 		normal.add(new ItemStack(Material.ROTTEN_FLESH, 4));
-		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
-		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
-		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
-		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
-		medium.add(new ItemStack(Material.LAPIS_ORE, 4));
+		medium.add(new ItemStack(351,4,(byte) 4));
+		medium.add(new ItemStack(351,4,(byte) 4));
+		medium.add(new ItemStack(351,4,(byte) 4));
+		medium.add(new ItemStack(351,4,(byte) 4));
+		medium.add(new ItemStack(351,4,(byte) 4));
 	}
 	
 	public Inventory setupInv() {
@@ -678,7 +679,6 @@ public class DeathGames extends SoloGame{
 		case 0:
 			broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END.getText() );
 			setDamage(true);
-			NoCheatToggle();
 			setStart(60*15);
 			setState(GameState.InGame);
 			break;
@@ -729,21 +729,10 @@ public class DeathGames extends SoloGame{
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
-	public void NoCheatToggle(){
-		Plugin pl = Bukkit.getPluginManager().getPlugin("NoCheatPlus");
-		if(Bukkit.getPluginManager().isPluginEnabled(pl)){
-			Bukkit.getPluginManager().disablePlugin(pl);
-		}else{
-			Bukkit.getPluginManager().enablePlugin(pl);
-		}
-		
-	}
-	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
 		getWorldData().getWorld().setStorm(false);
-		NoCheatToggle();
 		chest_anzahl=UtilServer.getPlayers().size()*10;
 		
 		grenze.setList(chest_anzahl, g.get( chest_anzahl ));
@@ -756,11 +745,13 @@ public class DeathGames extends SoloGame{
 		System.err.println("X: MAX:"+maxX+" MIN:"+minX);
 		System.err.println("Z: MAX:"+maxZ+" MIN:"+minZ);
 		new AddonPlayerTeleport(this);
+		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomInt(maxX, minX), 200, UtilMath.RandomInt(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
+			title.send(p);
 		}
 		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,this);
 		a.setAktiv(true);

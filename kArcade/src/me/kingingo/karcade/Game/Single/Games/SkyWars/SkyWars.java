@@ -137,6 +137,10 @@ public class SkyWars extends TeamGame{
 		getManager().DebugLog(l, this.getClass().getName());
 	}
 	
+	//VILLAGER_RED RED_WOOL/EMERALD NORMAL_CHEST
+	//SHEEP WOOL/BEDROCK ISLAND CHEST
+	//SPAWN WOOL/REDSTONE
+	
 	@EventHandler
 	public void load(WorldLoadEvent ev){
 		int i=0;
@@ -877,6 +881,7 @@ public class SkyWars extends TeamGame{
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 
 		Scoreboard ps;
+		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Player p : UtilServer.getPlayers()){
 			ps=Bukkit.getScoreboardManager().getNewScoreboard();
 			
@@ -915,6 +920,7 @@ public class SkyWars extends TeamGame{
 			}
 			
 			p.setScoreboard(ps);
+			title.send(p);
 		}
 		
 		for(Player player : UtilServer.getPlayers()){

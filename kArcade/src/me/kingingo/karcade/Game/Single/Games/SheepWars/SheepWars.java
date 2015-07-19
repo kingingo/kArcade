@@ -739,6 +739,7 @@ public class SheepWars extends TeamGame{
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§eSheepWars Teams");
 		
 		int i = 0;
+		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Team t : teams){
 			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+Text.HÄKCHEN_FETT.getText(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
@@ -746,6 +747,7 @@ public class SheepWars extends TeamGame{
 			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
 				p.setScoreboard(getBoard());
+				title.send(p);
 				p.teleport(list.get(i));
 				i++;
 				if(i==list.size())i=0;

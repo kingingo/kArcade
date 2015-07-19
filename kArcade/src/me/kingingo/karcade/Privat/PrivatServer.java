@@ -10,6 +10,7 @@ import org.bukkit.material.Button;
 
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -31,13 +32,13 @@ public class PrivatServer extends kListener{
 	private kArcadeManager manager;
 	private HashMap<GameType,InventoryPageBase> maps;
 	private InventoryBase base;
-	private SingleGame game;
+	private Game game;
 	private InventoryPageBase choose_game;
 	
 	public PrivatServer(final kArcadeManager manager){
 		super(manager.getInstance(),"PrivateServer");
 		this.manager=manager;
-		this.game=(SingleGame)manager.getGame();
+		this.game=(Game)manager.getGame();
 		this.maps=new HashMap<GameType,InventoryPageBase>();
 		this.base=new InventoryBase(manager.getInstance(), InventorySize._27.getSize(), "Privat Server:");
 
@@ -49,7 +50,9 @@ public class PrivatServer extends kListener{
 				
 				if(game.getMin_Players() <= UtilServer.getPlayers().size()){
 					game.setState(GameState.LobbyPhase);
-					game.setStart(15);
+					if(game instanceof SingleGame){
+						((SingleGame)game).setStart(15);
+					}
 				}else{
 					player.sendMessage(Text.PREFIX.getText()+Color.RED+"Es sind zu wenig Spieler(min. "+game.getMin_Players()+") online! Wartemodus wird neugestartet!");
 				}

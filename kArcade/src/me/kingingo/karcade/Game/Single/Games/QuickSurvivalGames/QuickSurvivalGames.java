@@ -406,6 +406,7 @@ public class QuickSurvivalGames extends SoloGame{
 
 		setBoard(getManager().getPermManager().getScoreboard());
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§6§l"+getType().getKürzel()+" Spieler:");
+		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Player p : UtilServer.getPlayers()){
 			if(list.isEmpty()){
 				r=0;
@@ -420,6 +421,7 @@ public class QuickSurvivalGames extends SoloGame{
 			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+Text.BIG_HERZ.getText(), DisplaySlot.SIDEBAR, 0);
 			p.setScoreboard(getBoard());
 			kills.put(p, 0);
+			title.send(p);
 		}
 		
 		getManager().DebugLog(time, this.getClass().getName());

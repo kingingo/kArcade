@@ -98,7 +98,7 @@ public class WorldData {
 	public ArrayList<Location> getLocs(String s){
 		ArrayList<Location> list = new ArrayList<>();
 		if(!locs.containsKey(s)){
-			System.out.println("[WorldData] Team NOT Found!");
+			System.out.println("[WorldData] Team NOT Found! "+s);
 		}else{
 			for(Location l : locs.get(s)){
 				list.add(l);

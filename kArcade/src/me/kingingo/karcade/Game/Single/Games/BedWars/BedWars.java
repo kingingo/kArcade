@@ -555,12 +555,14 @@ public class BedWars extends TeamGame{
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§eBedWars Teams");
 		
 		int i = 0;
+		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Team t : teams){
 			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+Text.HÄKCHEN_FETT.getText(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
 			setVillager(t,et);
 			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
+				title.send(p);
 				p.setScoreboard(getBoard());
 				p.teleport(list.get(i));
 				i++;
