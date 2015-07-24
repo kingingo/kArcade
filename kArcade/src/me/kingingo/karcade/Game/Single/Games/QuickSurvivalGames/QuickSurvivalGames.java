@@ -43,7 +43,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -74,7 +77,7 @@ public class QuickSurvivalGames extends SoloGame{
 	setMin_Players(6);
 	setMax_Players(16);
 	setCompassAddon(true);
-	setExplosion(false);
+	setExplosion(true);
 	setDeathDropItems(true);
 	setFoodChange(false);
 	setDamageSelf(false);
@@ -118,6 +121,11 @@ public class QuickSurvivalGames extends SoloGame{
 	@EventHandler
 	public void Ranking(RankingEvent ev){
 		getManager().setRanking(Stats.WIN);
+	}
+	
+	@EventHandler
+	public void explosion(EntityExplodeEvent ev){
+		ev.blockList().clear();
 	}
 	
 	@EventHandler
