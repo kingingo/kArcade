@@ -13,6 +13,7 @@ import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import me.kingingo.kcore.StatsManager.StatsManager;
@@ -152,9 +153,36 @@ public class Game implements Listener{
 		getManager().getPacketManager().SendPacket("hub", ss);
 	}
 	
-	public void broadcast(String message){
-		if(UtilServer.getPlayers().size()==0)return;
-	    UtilServer.broadcast(message);
+	public void broadcastWithPrefix(String name,Object input){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player,name,input));
+	}
+	
+	public void broadcastWithPrefix(String name,Object[] input){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player,name,input));
+	}
+	
+	public void broadcastWithPrefixName(String name){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player, name));
+	}
+	
+	public void broadcastWithPrefix(String msg){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+msg);
+	}
+	
+	public void broadcastName(String name){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player, name));
+	}
+	
+	public void broadcast(String msg){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(msg);
+	}
+	
+	public void broadcast(String name,Object[] input){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,name,input));
+	}
+	
+	public void broadcast(String name,Object input){
+		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,name,input));
 	}
 	
 	@EventHandler
@@ -173,7 +201,13 @@ public class Game implements Listener{
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
-		for(Player player : UtilServer.getPlayers())player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
+		for(Player player : UtilServer.getPlayers()){
+			if(player.getScoreboard()!=null){
+				if(player.getScoreboard().getObjective(DisplaySlot.SIDEBAR)!=null){
+					player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
+				}
+			}
+		}
 	}
 	
 	@EventHandler

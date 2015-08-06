@@ -7,9 +7,9 @@ import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TTT_Item;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.ItemFake.ItemFake;
 import me.kingingo.kcore.ItemFake.Events.ItemFakePickupEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItem;
 import me.kingingo.kcore.LaunchItem.LaunchItemEvent;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -119,7 +119,7 @@ public class Fake_Chest implements Listener,IShop {
 		if(!list.containsKey(ev.getItemfake()))return;
 		if(TTT.getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getType().getTyp())+"Dieses Item ist ein Fake-Item.");
+			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);
 			return;
 		}

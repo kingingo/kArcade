@@ -17,8 +17,8 @@ import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -272,7 +272,7 @@ public class SurvivalGames extends TeamGame{
 		if(getState()!=GameState.StartGame)return;
 		if(getStart()<0)setStart(21);
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_START_IN.getText(getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "GAME_START_IN", getStart()));
 		switch(getStart()){
 			case 20:
 				setDamage(false);
@@ -283,17 +283,17 @@ public class SurvivalGames extends TeamGame{
 //					}
 //				}
 			break;
-			case 15:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));break;
-			case 5:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));break;
-			case 4:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START_IN.getText(getStart()));jump=false;break;
+			case 15:broadcastWithPrefix("GAME_START_IN", getStart());break;
+			case 10:broadcastWithPrefix("GAME_START_IN", getStart());break;
+			case 5:broadcastWithPrefix("GAME_START_IN", getStart());break;
+			case 4:broadcastWithPrefix("GAME_START_IN", getStart());break;
+			case 3:broadcastWithPrefix("GAME_START_IN", getStart());break;
+			case 2:broadcastWithPrefix("GAME_START_IN", getStart());break;
+			case 1:broadcastWithPrefix("GAME_START_IN", getStart());jump=false;break;
 			case 0:
 				setStart(1831);
 				setState(GameState.InGame);
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_START.getText());
+				broadcastWithPrefix("GAME_START");
 				setDamage(true);
 				//tnp.setAktiv(true);
 				move.setnotMove(false);
@@ -325,17 +325,17 @@ public class SurvivalGames extends TeamGame{
 			}
 		}
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
-			case 15:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 5:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 4:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
+			case 15:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 10:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 5:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 4:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 3:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 2:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 1:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 			case 0:
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
+				broadcastWithPrefixName("GAME_END");
 				setStart((3*60)+1);
 				
 				ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
@@ -372,36 +372,36 @@ public class SurvivalGames extends TeamGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.DeathMatch)return;
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.DEATHMATCH_END_IN.getText(getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "DEATHMATCH_END_IN", getStart()));
 		switch(getStart()){
 			case 180:
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));
+				broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);
 				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),getWorldData().getWorld());
 				sg.loadGrenzen(wd.getLocs().get(Team.YELLOW.Name()).get(0), ( (int)wd.getLocs().get(Team.YELLOW.Name()).get(0).distance(wd.getLocs().get(Team.RED.Name()).get(0))+5 ) );
 				sg.start();
 				break;
-			case 179:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()));break;
-			case 178:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 177:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 176:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 175:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 174:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 173:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 172:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
-			case 171:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START_IN.getText(getStart()-170));break;
+			case 179:broadcastWithPrefix("DEATHMATCH_START_IN", getStart());break;
+			case 178:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 177:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 176:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 175:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 174:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 173:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 172:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
+			case 171:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
 			case 170:
 				setDamage(true);
 				setProjectileDamage(true);
 				move.setnotMove(false);
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_START.getText(getStart()));
+				broadcastWithPrefix("DEATHMATCH_START", getStart());
 				break;
-			case 5:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_END_IN.getText(getStart()));break;
-			case 4:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_END_IN.getText(getStart()));break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_END_IN.getText(getStart()));break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_END_IN.getText(getStart()));break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_END_IN.getText(getStart()));break;
+			case 5:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
+			case 4:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
+			case 3:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
+			case 2:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
+			case 1:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
 			case 0:
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATHMATCH_END.getText());
+				broadcastWithPrefixName("DEATHMATCH_END");
 				setState(GameState.Restart);
 			break;
 		}
@@ -415,7 +415,7 @@ public class SurvivalGames extends TeamGame{
 			getStats().setInt(killer, getStats().getInt(Stats.KILLS, killer)+1, Stats.KILLS);
 			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
 			getStats().setInt(victim, getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
+			broadcastWithPrefix("KILL_BY",new String[]{victim.getName(),killer.getName()});
 			getGameList().addPlayer(victim, PlayerState.OUT);
 			
 			Player t = TeamPartner(victim);
@@ -431,7 +431,7 @@ public class SurvivalGames extends TeamGame{
 			Player victim = ev.getEntity();
 			getStats().setInt(victim, getStats().getInt(Stats.DEATHS, victim)+1, Stats.DEATHS);
 			getStats().setInt(victim, getStats().getInt(Stats.LOSE, victim)+1, Stats.LOSE);
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(new String[]{victim.getName()}));
+			broadcastWithPrefix("DEATH",new String[]{victim.getName()});
 			getGameList().addPlayer(victim, PlayerState.OUT);
 			
 			Player t = TeamPartner(victim);
@@ -457,7 +457,7 @@ public class SurvivalGames extends TeamGame{
 		
 		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
@@ -578,14 +578,14 @@ public class SurvivalGames extends TeamGame{
 			if(list.size()==1){
 				Player p = list.get(0);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(p.getName()));
+				broadcastWithPrefix("GAME_WIN", p.getName());
 			}else if(list.size()==2){
 				Team t = lastTeam();
 				Player p = list.get(0);
 				Player p1 = list.get(1);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getStats().setInt(p1, getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SURVIVAL_GAMES_DISTRICT_WIN.getText(new String[]{t.Name(),p.getName(),p1.getName()}));
+				broadcastWithPrefix("SURVIVAL_GAMES_DISTRICT_WIN", new String[]{t.Name(),p.getName(),p1.getName()});
 			}
 		}
 	}

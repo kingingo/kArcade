@@ -14,7 +14,7 @@ import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -94,9 +94,9 @@ public class Versus extends MultiGame{
 			if(ev.getEntity().getKiller()!=null){
 				getGames().getCoins().addCoins(ev.getEntity().getKiller(), false, 4);
 				getGames().getStats().setInt(ev.getEntity().getKiller(), getGames().getStats().getInt(Stats.KILLS, ev.getEntity().getKiller())+1, Stats.KILLS);
-				broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.KILL_BY.getText(new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() }));
+				broadcast("KILL_BY", new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() });
 			}else{
-				broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.DEATH.getText(new String[]{ ev.getEntity().getName() }));
+				broadcastWithPrefix("DEATH", new String[]{ ev.getEntity().getName() });
 			}
 		}
 	}
@@ -112,24 +112,24 @@ public class Versus extends MultiGame{
 				}
 				setTimer(getTimer()-1);
 				for(Player p : getGameList().getPlayers().keySet()){
-					UtilDisplay.displayTextBar(p,Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())) );
+					UtilDisplay.displayTextBar(p,Language.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getTimer())));
 				}
 				
 				if(getTimer()!=0){
 					switch(getTimer()){
-					case 300:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 120:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 90:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 60:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 30:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 15:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 10:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 3:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 2:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
-					case 1:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getTimer())));break;
+					case 300:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 120:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 90:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 60:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 30:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 15:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 10:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 3:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 2:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+					case 1:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 					}
 				}else{
-					broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Text.GAME_END.getText());
+					broadcastWithPrefix(Language.getText("GAME_END"));
 					setState(GameState.Restart,GameStateChangeReason.GAME_END);
 				}
 			}

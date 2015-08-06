@@ -7,7 +7,7 @@ import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.PlayerStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.DeathGames.DeathGames;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -65,8 +65,8 @@ public class AddonPlayerTeleport extends kListener{
 				for (int i = 0; i < max; i++) {
 					p1 = tplist.get(0);
 					p2 = tplist.get(1);
-					p1.sendMessage(Text.PREFIX_GAME.getText(instance.getType())+Text.ENDERGAMES_TELEPORT.getText(p2.getName()));
-					p2.sendMessage(Text.PREFIX_GAME.getText(instance.getType())+Text.ENDERGAMES_TELEPORT.getText(p1.getName()));
+					p1.sendMessage(Language.getText(p1, "PREFIX_GAME",instance.getType())+Language.getText(p1, "ENDERGAMES_TELEPORT",p2.getName()));
+					p2.sendMessage(Language.getText(p2, "PREFIX_GAME",instance.getType())+Language.getText(p2, "ENDERGAMES_TELEPORT",p1.getName()));
 					loc1 = p1.getLocation();
 					loc2 = p2.getLocation();
 

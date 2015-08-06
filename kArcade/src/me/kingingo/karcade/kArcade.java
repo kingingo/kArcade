@@ -13,6 +13,7 @@ import me.kingingo.kcore.Command.Admin.CommandCMDMute;
 import me.kingingo.kcore.Command.Admin.CommandChatMute;
 import me.kingingo.kcore.Command.Admin.CommandToggle;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.Command.ListenerCMD;
 import me.kingingo.kcore.MySQL.MySQL;
 import me.kingingo.kcore.Nick.NickManager;
@@ -49,6 +50,7 @@ public class kArcade extends JavaPlugin{
 			start_time = System.currentTimeMillis();
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
+			Language.load(mysql);
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel()));
 		
 			id=getConfig().getInt("Config.Server.ID");
@@ -71,7 +73,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandChatMute.class, new CommandChatMute(this));
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
-			new NickManager(this);
+			new NickManager(permManager);
 			new MemoryFix(this);
 			new AACHack("A"+id,mysql, pManager);
 			new ListenerCMD(this);

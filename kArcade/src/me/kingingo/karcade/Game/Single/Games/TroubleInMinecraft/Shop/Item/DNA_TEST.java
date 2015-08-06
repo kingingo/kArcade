@@ -5,7 +5,7 @@ import java.util.HashMap;
 import lombok.Getter;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.Util.UtilInv;
@@ -62,7 +62,7 @@ public class DNA_TEST extends kListener implements IShop{
 			UtilInv.remove(ev.getPlayer(), ev.getPlayer().getItemInHand().getType(), ev.getPlayer().getItemInHand().getData().getData(), 1);
 			System.out.println("LOOK "+ev.getNpc().getName().toLowerCase()+" ");
 			if(!list.containsKey(ev.getNpc().getName().toLowerCase()))return;
-			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DNA_TEST.getText(new String[]{"§a"+ev.getNpc().getName(),"§c"+list.get(ev.getNpc().getName().toLowerCase())}));
+			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_DNA_TEST", new String[]{"§a"+ev.getNpc().getName(),"§c"+list.get(ev.getNpc().getName().toLowerCase())}));
 		}
 	}
 	

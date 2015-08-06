@@ -4,7 +4,7 @@ import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecra
 import me.kingingo.kcore.Command.CommandHandler.Sender;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +27,7 @@ public class CommandTraitorChat implements CommandExecutor, Listener{
 		Team t = TTT.getTeam(p);
 		if(t!=Team.TRAITOR)return false;
 		if(args.length==0){
-			p.sendMessage(Text.PREFIX_GAME.getText(TTT.getType().getTyp())+"§c/tc [Nachricht]");
+			p.sendMessage(Language.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+"§c/tc [Nachricht]");
 			return false;
 		}else{
 			String msg = "";

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Kit.Perk;
 import me.kingingo.kcore.Kit.Perks.Event.PerkStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilInv;
@@ -48,8 +48,8 @@ public class PerkTeleporter extends Perk{
 				Location tele_loc = tele.getLocation();
 				Location p_loc= ev.getPlayer().getLocation();
 				
-				ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(game.getType().getTyp())+Text.ENDERGAMES_TELEPORT.getText(tele.getName()));
-				tele.sendMessage(Text.PREFIX_GAME.getText(game.getType().getTyp())+Text.ENDERGAMES_TELEPORT.getText(ev.getPlayer().getName()));
+				ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX_GAME", game.getType().getTyp())+Language.getText(ev.getPlayer(), "ENDERGAMES_TELEPORT", tele.getName()));
+				tele.sendMessage(Language.getText(tele, "PREFIX_GAME", game.getType().getTyp())+Language.getText(tele, "ENDERGAMES_TELEPORT", ev.getPlayer().getName()));
 				
 				tele.teleport(p_loc);
 				ev.getPlayer().teleport(tele_loc);

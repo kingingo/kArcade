@@ -5,7 +5,7 @@ import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Util.Color;
@@ -43,7 +43,7 @@ public class AddonChat extends kListener{
 		
 		 if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 				ev.setMessage("Ich heul rum!");
-				ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+				ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(game.getState()==GameState.LobbyPhase){
@@ -64,7 +64,7 @@ public class AddonChat extends kListener{
 							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
-						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(team_game.getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+						UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME",team_game.getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 					}
 				}
 			}else{
@@ -82,7 +82,7 @@ public class AddonChat extends kListener{
 							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7:§f "+ev.getMessage());
 						}
 					}else{
-						UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(game.getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+						UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME",team_game.getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 					}
 				}
 			}

@@ -23,7 +23,6 @@ import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
@@ -51,6 +50,7 @@ import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.kPermission;
@@ -339,11 +339,11 @@ public class CaveWars extends TeamGame{
 		
 		if(game_end()){
 			setState(GameState.Restart);
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
+			broadcastWithPrefixName("GAME_END");
 			return;
 		}
-		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));
+
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
 			case 3597: 
 				for(Player p : UtilServer.getPlayers()){
@@ -367,15 +367,15 @@ public class CaveWars extends TeamGame{
 				
 				TeamTab(typ.getTeam());
 				break; 
-			case 15:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 5:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 4:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())));break;
+			case 15:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 10:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 5:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 4:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 3:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 2:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 1:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 			case 0:
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
+				broadcastWithPrefixName("GAME_END");
 				setState(GameState.Restart);
 			break;
 		}
@@ -766,8 +766,8 @@ public class CaveWars extends TeamGame{
 			if(kits.containsKey(killer)){
 				k=k+"§a["+kits.get(killer)+"§a]";
 			}
-			
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v,k}));
+
+			broadcastWithPrefix("KILL_BY", new String[]{v,k});
 			
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
@@ -782,7 +782,7 @@ public class CaveWars extends TeamGame{
 			if(kits.containsKey(victim)){
 				v=v+"§a["+kits.get(victim)+"§a]";
 			}
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(new String[]{v}));
+			broadcastWithPrefix("DEATH",v);
 
 			if(getTeams().get(t)==false){
 				getGameList().addPlayer(victim, PlayerState.OUT);
@@ -802,7 +802,7 @@ public class CaveWars extends TeamGame{
 						getCoins().addCoins(p, false, 10,getType());
 					}
 				}
-				if(t!=null)broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.TEAM_WIN.getText(t.getColor()+t.Name()));
+				if(t!=null)broadcastWithPrefix("TEAM_WIN", t.getColor()+t.Name());
 		
 			}
 		}
@@ -815,9 +815,9 @@ public class CaveWars extends TeamGame{
 		getTeams().put(ev.getTeam(), false);
 		if(ev.getKiller()!=null){
 			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.CAVEWARS_SPIDER_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()}));
+			broadcastWithPrefix("CAVEWARS_SPIDER_DEATH", new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),ev.getKiller().getName()});
 		}else{
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.CAVEWARS_SPIDER_DEATH.getText(new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),"FAIL"}));
+			broadcastWithPrefix("CAVEWARS_SPIDER_DEATH", new String[]{ev.getTeam().getColor()+ev.getTeam().Name(),"FAIL"});
 		}
 	}
 	
@@ -828,7 +828,7 @@ public class CaveWars extends TeamGame{
 		
 		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
@@ -843,7 +843,7 @@ public class CaveWars extends TeamGame{
 			}
 		}else if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME",getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}

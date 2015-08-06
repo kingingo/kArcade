@@ -3,7 +3,7 @@ package me.kingingo.karcade.Command;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Command.CommandHandler.Sender;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Util.AnvilGUI;
 import me.kingingo.kcore.Util.AnvilGUI.AnvilClickEvent;
@@ -40,9 +40,9 @@ public class CommandForceStart implements CommandExecutor{
 				        try{
 				        	Integer i = Integer.valueOf(ev.getName());
 				        	((SingleGame)Manager.getGame()).setStart(i);
-				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+"Die Zeit wurde zu "+i+" geändert!");
+				        	UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+Language.getText(p, "GAME_TIME_CHANGE",i));
 				        }catch(NumberFormatException e){
-				        	UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(Manager.getGame().getType().getTyp())+"Das ist keine Zahl "+ev.getName());
+				        	UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+Language.getText(p, "NO_INTEGER"));
 				        }
 					}
 				}

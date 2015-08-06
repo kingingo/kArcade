@@ -7,7 +7,7 @@ import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilLocation;
@@ -96,7 +96,7 @@ public class AddonQuadratGrenze implements Listener{
 					if(!isInGrenze(p.getLocation())){
 						p.damage(-1);
 						UtilPlayer.health(p, -1);
-						p.sendMessage(Text.PREFIX_GAME.getText(game.getType().name())+"§c"+Text.AUßERHALB_DER_MAP.getText());
+						p.sendMessage(Language.getText(p, "PREFIX_GAME",game.getType().name())+"§c"+Language.getText(p, "AUßERHALB_DER_MAP"));
 					}
 				}	
 			}

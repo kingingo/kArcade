@@ -20,8 +20,8 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGameUpdateInfo;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
 import me.kingingo.kcore.StatsManager.Stats;
@@ -122,8 +122,28 @@ public class MultiGame extends kListener{
 		Bukkit.getPluginManager().callEvent(new TeamAddEvent(p,t));
 	}
 	
-	public void broadcast(String t){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(t);
+	public void broadcastWithPrefix(String name,Object input){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(player,name,input));
+	}
+	
+	public void broadcastWithPrefix(String name,Object[] input){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(player,name,input));
+	}
+	
+	public void broadcastWithPrefix(String msg){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+msg);
+	}
+	
+	public void broadcast(String msg){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(msg);
+	}
+	
+	public void broadcast(String name,Object[] input){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,name,input));
+	}
+	
+	public void broadcast(String name,Object input){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,name,input));
 	}
 	
 	public Team littleTeam(){
@@ -242,8 +262,8 @@ public class MultiGame extends kListener{
 				}
 				
 				last = getlastTeam();
-				broadcast(Text.TEAM_WIN.getText(last.getColor()+last.Name()));
-				sendTitle("",Text.TEAM_WIN.getText(last.getColor()+last.Name()));
+				broadcast("TEAM_WIN",last.getColor()+last.Name());
+				sendTitle("",Language.getText("TEAM_WIN", last.getColor()+last.Name()));
 				for(Player player : getGameList().getPlayers().keySet())UtilBG.sendToServer(player, getGames().getManager().getInstance());
 				
 				getTeamList().clear();
@@ -339,12 +359,12 @@ public class MultiGame extends kListener{
 				
 				if(getTimer()!=0){
 					switch(getTimer()){
-					case 30:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
-					case 15:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
-					case 10:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
-					case 3:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
-					case 2:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
-					case 1:broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
+					case 30:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
+					case 15:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
+					case 10:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
+					case 3:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
+					case 2:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
+					case 1:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
 					}
 				}else{
 					if(startBereit()){
@@ -353,7 +373,7 @@ public class MultiGame extends kListener{
 					}else{
 						setTimer(31);
 						updateInfo();
-						broadcast(Text.PREFIX_GAME.getText(getGames().getType().getTyp())+Color.RED+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
+						broadcast(Color.RED+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
 					}
 				}
 			}

@@ -13,8 +13,8 @@ import me.kingingo.karcade.Game.GameList;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -395,7 +395,7 @@ public class SingleGame extends Game{
 	  @EventHandler(priority=EventPriority.LOWEST)
 	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
-		  ev.getPlayer().sendMessage(Text.PREFIX.getText()+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
+		  ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
 		  if(isState(GameState.LobbyPhase)){
 			  getManager().getLobby().getWorld().setStorm(false);
@@ -408,7 +408,7 @@ public class SingleGame extends Game{
 			  }
 		  }
 		  if(getType()!=null){
-			  ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+Text.WHEREIS_TEXT.getText(getType().getTyp()+" "+kArcade.id));
+			  ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+Language.getText(ev.getPlayer(),"WHEREIS_TEXT",getType().getTyp()+" "+kArcade.id));
 		  }
 	  }
 	  
@@ -419,24 +419,24 @@ public class SingleGame extends Game{
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
 					  if(!getManager().getPermManager().hasPermission(p, kPermission.JOIN_FULL_SERVER)){
-						  UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(getType().getTyp())+Text.KICKED_BY_PREMIUM.getText());
+						  UtilPlayer.sendMessage(p,Language.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+Language.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
 						  UtilBG.sendToServer(p, getManager().getInstance());
 						  b=true;
 						  break;
 					  }
 				  }
 				  if(!b){
-					  ev.disallow(Result.KICK_FULL, Text.SERVER_FULL_WITH_PREMIUM.getText());
+					  ev.disallow(Result.KICK_FULL, Language.getText(ev.getPlayer(),"SERVER_FULL_WITH_PREMIUM"));
 				  }
 			  }else{
-				  ev.disallow(Result.KICK_FULL, Text.SERVER_FULL.getText());
+				  ev.disallow(Result.KICK_FULL, Language.getText(ev.getPlayer(),"SERVER_FULL"));
 			  }
 		  }else  if(!isState(GameState.LobbyPhase)){
 			  if(!getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.SERVER_JOIN_SPECTATE)){
 				  if(!getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.SERVER_JOIN_SPECTATE)){
 					  if(!getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)){
 						  if(!getManager().getPermManager().hasGroupPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)){
-							  ev.disallow(Result.KICK_OTHER, Text.SERVER_NOT_LOBBYPHASE.getText());
+							  ev.disallow(Result.KICK_OTHER, Language.getText(ev.getPlayer(),"SERVER_NOT_LOBBYPHASE"));
 						  }
 					  }
 				  }
@@ -497,24 +497,24 @@ public class SingleGame extends Game{
 				start=35;
 			}
 			start--;
-			for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.RESTART_IN.getText(start));
+			for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText("RESTART_IN", start));
 			
 			switch(start){
-			case 30:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));break;
+			case 30:broadcastWithPrefix("RESTART_IN", start);break;
 			case 25:
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));
+				broadcastWithPrefix("RESTART_IN", start);
 				for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getManager().getInstance());
 				break;
 			case 23:getStats().SaveAllData();break;
-			case 20:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));
+			case 20:broadcastWithPrefix("RESTART_IN", start);
 			for(Player p : UtilServer.getPlayers())UtilBG.sendToServer(p, getManager().getInstance());
 				break;
-			case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));break;
-			case 5:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));
-			case 4:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));break;
-			case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));break;
-			case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));break;
-			case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.RESTART_IN.getText(start));break;
+			case 10:broadcastWithPrefix("RESTART_IN", start);break;
+			case 5:broadcastWithPrefix("RESTART_IN", start);
+			case 4:broadcastWithPrefix("RESTART_IN", start);break;
+			case 3:broadcastWithPrefix("RESTART_IN", start);break;
+			case 2:broadcastWithPrefix("RESTART_IN", start);break;
+			case 1:broadcastWithPrefix("RESTART_IN", start);break;
 			case 0: 
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 				;break;
@@ -553,18 +553,18 @@ public class SingleGame extends Game{
 			if(start!=0){
 				switch(start){
 				case 120:
-					broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");
+					broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");
 					Bukkit.getWorld("world").setWeatherDuration(0);
 					Bukkit.getWorld("world").setStorm(false);
 					break;
-				case 90:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 60:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 30:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 15:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 10:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 3:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 2:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 1:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 90:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 60:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 30:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 15:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 10:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 3:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 2:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 1:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
 				}
 			}else{
 				if(UtilServer.getPlayers().size()>=getMin_Players()){
@@ -572,7 +572,7 @@ public class SingleGame extends Game{
 					updateInfo(GameState.InGame);
 				}else{
 					start=-1;
-					broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Color.RED+"Es sind zu wenig Spieler(min. "+getMin_Players()+") online! Wartemodus wird neugestartet!");
+					broadcastWithPrefix(Color.RED+"Es sind zu wenig Spieler(min. "+getMin_Players()+") online! Wartemodus wird neugestartet!");
 				}
 			}
 		}

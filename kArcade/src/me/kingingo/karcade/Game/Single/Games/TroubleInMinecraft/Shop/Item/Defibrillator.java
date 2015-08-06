@@ -9,7 +9,7 @@ import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.NPC.NPC;
 import me.kingingo.kcore.NPC.Event.PlayerInteractNPCEvent;
 import me.kingingo.kcore.Update.UpdateType;
@@ -119,13 +119,13 @@ public class Defibrillator implements Listener,IShop{
 				UtilInv.remove(p, p.getItemInHand().getType(), p.getItemInHand().getData().getData(), 1);
 				l.add(r);
 				npc.despawn();
-				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT.getText(r.getName()));
-				UtilPlayer.sendMessage(r,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBTER.getText(p.getName()));
+				UtilPlayer.sendMessage(p,Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT", r.getName()));
+				UtilPlayer.sendMessage(r,Language.getText(r, "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(r, "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT", p.getName()));
 			}else{
-				UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
+				UtilPlayer.sendMessage(p,Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH"));
 			}
 		}else{
-			UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH.getText());
+			UtilPlayer.sendMessage(p,Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH"));
 		}
 		
 	}

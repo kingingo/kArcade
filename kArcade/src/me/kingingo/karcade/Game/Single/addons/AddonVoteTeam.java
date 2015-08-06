@@ -8,7 +8,7 @@ import lombok.Getter;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -81,12 +81,12 @@ public class AddonVoteTeam implements Listener{
 					p.closeInventory();
 					
 					if(UtilServer.getPlayers().size()<=game.getMin_Players()){
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+Text.VOTE_TEAM_MIN_PLAYER.getText(game.getMin_Players()+1));
+						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+Language.getText(p, "VOTE_TEAM_MIN_PLAYER",game.getMin_Players()+1));
 						return;
 					}
 					
 					if(vote.containsKey(p)){
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+Text.VOTE_TEAM_REMOVE.getText(vote.get(p).Name()));
+						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+Language.getText(p, "VOTE_TEAM_REMOVE",vote.get(p).Name()));
 						Team t = vote.get(p);
 						vote.remove(p);
 						fixItem(t);
@@ -98,10 +98,10 @@ public class AddonVoteTeam implements Listener{
 								if(isVotet(t)+1 != UtilServer.getPlayers().size()){
 									vote.put(p, t);
 									fixItem(t);
-									UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+t.getColor()+Text.VOTE_TEAM_ADD.getText(t.getColor()+t.Name()));
+									UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+Language.getText(p, "VOTE_TEAM_ADD",t.getColor()+t.Name()));
 								}
 							}else{
-								UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(game.getType().getTyp())+t.getColor()+Text.VOTE_TEAM_FULL.getText(t.getColor()+t.Name()));
+								UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+Language.getText(p, "VOTE_TEAM_FULL",t.getColor()+t.Name()));
 							}
 							break;
 						}

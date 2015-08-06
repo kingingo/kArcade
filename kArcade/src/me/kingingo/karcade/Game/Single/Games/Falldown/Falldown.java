@@ -24,8 +24,8 @@ import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -118,8 +118,7 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void World(WorldLoadEvent ev){
-		//UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 40);
-		UtilMap.loadParticle(list, getWorldData().getLocs(Team.RED.Name()).get(0), 40);
+		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 40);
 	}
 	
 	Player player;
@@ -185,17 +184,17 @@ public class Falldown extends SoloGame{
 		if(getState()!=GameState.SchutzModus)return;
 		setStart( getStart()-1 );
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.SCHUTZZEIT_END_IN.getText(getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "SCHUTZZEIT_END_IN", getStart()));
 		switch(getStart()){
-		case 30: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 20: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 15: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 10: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 5: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 4: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 3: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 2: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
-		case 1: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END_IN.getText(getStart()));break;
+		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 20: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 15: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 10: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 5: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 4: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 3: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 2: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 1: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 0: 
 			setDamage(true);
 			setDamagePvP(true);
@@ -205,7 +204,7 @@ public class Falldown extends SoloGame{
 			setDamagePvE(true);
 			setDamageSelf(true);
 			setState(GameState.InGame);
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.SCHUTZZEIT_END.getText());
+			broadcastWithPrefixName("SCHUTZZEIT_END");
 		break;
 		}
 	}
@@ -237,7 +236,7 @@ public class Falldown extends SoloGame{
 		int lvl = p.getLevel();
 
 		if(lvl < 40){
-			p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp()) + Text.FALLDOWN_NICHT_GENUG_POWER.getText());
+			broadcastWithPrefixName("FALLDOWN_NICHT_GENUG_POWER");
 			return;
 		}else{
 			Bukkit.getWorld(p.getWorld().getName()).playEffect(p.getLocation(),
@@ -264,7 +263,7 @@ public class Falldown extends SoloGame{
 	public void EnchantBow(ItemStack i, Player p) {
 		int lvl = p.getLevel();
 		if(lvl < 40){
-			p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp()) + Text.FALLDOWN_NICHT_GENUG_POWER.getText());
+			broadcastWithPrefixName("FALLDOWN_NICHT_GENUG_POWER");
 			return;
 		}else{
 			Bukkit.getWorld(p.getWorld().getName()).playEffect(p.getLocation(),
@@ -306,7 +305,7 @@ public class Falldown extends SoloGame{
 		int lvl = p.getLevel();
 
 		if(lvl < 40){
-			p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp()) + Text.FALLDOWN_NICHT_GENUG_POWER.getText());
+			broadcastWithPrefixName("FALLDOWN_NICHT_GENUG_POWER");
 			return;
 		}else{
 			Bukkit.getWorld(p.getWorld().getName()).playEffect(p.getLocation(),
@@ -449,7 +448,7 @@ public class Falldown extends SoloGame{
 						},2);
 
 						RemoveItem(p);
-						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");
+						p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");
 					} else if (id[2] == null) {
 						id[2] = p.getItemInHand().getTypeId();
 						final Location loc = ev.getClickedBlock().getLocation();
@@ -464,10 +463,10 @@ public class Falldown extends SoloGame{
 						},2);
 
 						RemoveItem(p);
-						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt Du kannst Jetzt mit den Magic Stick dir was Brauen.");
+						p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt Du kannst Jetzt mit den Magic Stick dir was Brauen.");
 					} else {
 						final Location loc = ev.getClickedBlock().getLocation();
-						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())
+						p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())
 								+ "§bBraustand voll!");
 						Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
 
@@ -497,25 +496,25 @@ public class Falldown extends SoloGame{
 						
 					},10);
 					RemoveItem(p);
-					p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");		
+					p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugefügt.");		
 				}
 				return;
 			} else if (p.getItemInHand().getType() == Material.STICK) {
 				if (playerbrauen.containsKey(p)) {
 					Integer[] id = playerbrauen.get(p);
 					if (id[0] == null) {
-						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())
+						p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())
 								+ "§cDer Braustand ist leer!");
 					} else if (id[1] == null) {
 						p.getInventory().addItem(
 								new ItemStack(id[0], 1));
-						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§cEs Fehlen 2 Items min 3");
+						p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())+ "§cEs Fehlen 2 Items min 3");
 					} else if (id[2] == null) {
 						p.getInventory().addItem(
 								new ItemStack(id[0], 1));
 						p.getInventory().addItem(
 								new ItemStack(id[1], 1));
-						p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+ "§cEs Fehlt 1 Item min 3");
+						p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())+ "§cEs Fehlt 1 Item min 3");
 					} else {
 
 						boolean have = Brauen(id, p);
@@ -527,13 +526,13 @@ public class Falldown extends SoloGame{
 									new ItemStack(id[1], 1));
 							p.getInventory().addItem(
 									new ItemStack(id[2], 1));
-							p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())+"§cDie Kombination stimmt nicht!");
+							p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())+"§cDie Kombination stimmt nicht!");
 						}
 					}
 					p.updateInventory();
 					playerbrauen.remove(p);
 				} else {
-					p.sendMessage(Text.PREFIX_GAME.getText(getType().getTyp())
+					p.sendMessage(Language.getText(p, "PREFIX_GAME", getType().getTyp())
 							+ "§cDer Braustand ist leer!");
 				}
 			}
@@ -633,22 +632,22 @@ public class Falldown extends SoloGame{
 		if(getState()!=GameState.InGame)return;
 		setStart( getStart()-1 );
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "GAME_END_IN", getStart()));
 		switch(getStart()){
-		case 30: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 20: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 15: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 10: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 5: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 4: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 3: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 2: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
-		case 1: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(getStart()));break;
+		case 30: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 20: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 15: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 10: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 5: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 4: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 3: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 2: broadcastWithPrefix("GAME_END_IN", getStart());break;
+		case 1: broadcastWithPrefix("GAME_END_IN", getStart());break;
 		case 0: 
 			setDamage(false);
 			setDamagePvP(false);
 			setState(GameState.Restart);
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
+			broadcastWithPrefixName("GAME_END");
 		break;
 		}
 	}

@@ -21,7 +21,6 @@ import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
@@ -54,6 +53,7 @@ import me.kingingo.kcore.Kit.Perks.PerkSnowballSwitcher;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.StatsManager.Stats;
@@ -61,10 +61,10 @@ import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
@@ -90,7 +90,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
 
 public class DeathGames extends SoloGame{
@@ -296,7 +295,7 @@ public class DeathGames extends SoloGame{
 			
 			if((!event.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
 				event.setMessage("Ich heul rum!");
-				event.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+				event.getPlayer().sendMessage(Language.getText(event.getPlayer(), "PREFIX")+Language.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 			}
 			
 			Player p = event.getPlayer();
@@ -432,10 +431,10 @@ public class DeathGames extends SoloGame{
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
 				getCoins().addCoins(a, false, 5,getType());
-				broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
+				broadcastWithPrefix("KILL_BY",new String[]{v.getName(),a.getName()});
 				return;
 			}else{
-				broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.DEATH.getText(v.getName()) );
+				broadcastWithPrefix("DEATH",v.getName());
 			}
 		}
 	}
@@ -656,7 +655,7 @@ public class DeathGames extends SoloGame{
 				Player p = getGameList().getPlayers(PlayerState.IN).get(0);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getCoins().addCoins(p, false, 10,getType());
-				broadcast(Text.PREFIX_GAME.getText(getType())+Text.GAME_WIN.getText(p.getName()));
+				broadcastWithPrefix("GAME_WIN",p.getName());
 			}
 		}
 	}
@@ -667,17 +666,17 @@ public class DeathGames extends SoloGame{
 		if(getState()!=GameState.SchutzModus)return;
 		setStart(getStart()-1);
 
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "SCHUTZZEIT_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
-		case 15: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 10: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 5: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 4: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 3: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 2: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 1: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
+		case 15: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 10:broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 5: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 4: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 3: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 2: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 1: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
 		case 0:
-			broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.SCHUTZZEIT_END.getText() );
+			broadcastWithPrefixName("SCHUTZZEIT_END");
 			setDamage(true);
 			setStart(60*15);
 			setState(GameState.InGame);
@@ -691,18 +690,19 @@ public class DeathGames extends SoloGame{
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
-		case 30: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 15: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 10: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 5: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 4: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 3: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 2: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 1: broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
+		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 10: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 5: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 4: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 3: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 0:
-			broadcast( Text.PREFIX_GAME.getText(getType().name())+Text.GAME_END.getText() );
+			
+			broadcastWithPrefixName("GAME_END");
 			setState(GameState.Restart);
 			break;
 		}

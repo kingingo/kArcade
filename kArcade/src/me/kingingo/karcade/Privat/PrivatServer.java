@@ -3,29 +3,27 @@ package me.kingingo.karcade.Privat;
 import java.io.File;
 import java.util.HashMap;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Button;
-
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
-import me.kingingo.kcore.Enum.Text;
-import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Inventory.InventoryBase;
 import me.kingingo.kcore.Inventory.InventoryPageBase;
 import me.kingingo.kcore.Inventory.Item.ButtonBase;
 import me.kingingo.kcore.Inventory.Item.Click;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
-import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilServer;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class PrivatServer extends kListener{
 
@@ -54,7 +52,7 @@ public class PrivatServer extends kListener{
 						((SingleGame)game).setStart(15);
 					}
 				}else{
-					player.sendMessage(Text.PREFIX.getText()+Color.RED+"Es sind zu wenig Spieler(min. "+game.getMin_Players()+") online! Wartemodus wird neugestartet!");
+					player.sendMessage(Language.getText(player, "PREFIX")+Color.RED+"Es sind zu wenig Spieler(min. "+game.getMin_Players()+") online! Wartemodus wird neugestartet!");
 				}
 			}
 			

@@ -18,8 +18,8 @@ import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -198,12 +198,12 @@ public class SkyPvP extends SoloGame{
 		
 		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -224,18 +224,18 @@ public class SkyPvP extends SoloGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
-		case 30: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 15: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 10: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 5: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 4: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 3: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 2: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 1: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
+		case 30: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 15: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 10: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 5: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 4: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 3: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 2: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
+		case 1: broadcastWithPrefix("GAME_END_IN",UtilTime.formatSeconds(getStart()));break;
 		case 0:
-			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText() );
+			broadcastWithPrefixName("GAME_END");
 			setState(GameState.Restart);
 			break;
 		}
@@ -264,11 +264,12 @@ public class SkyPvP extends SoloGame{
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
 				getCoins().addCoins(a, false, 5);
-				broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
+				broadcastWithPrefix("KILL_BY", new String[]{v.getName(),a.getName()});
 				return;
 			}
-			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(v.getName()) );
-			if(b)broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_AUSGESCHIEDEN.getText(v.getName()) );
+			broadcastWithPrefix("DEATH", v.getName());
+			
+			if(b)broadcastWithPrefix("GAME_AUSGESCHIEDEN", v.getName());
 			getStats().setInt(v, getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 		}
 	}
@@ -280,7 +281,7 @@ public class SkyPvP extends SoloGame{
 				Player win = getGameList().getPlayers(PlayerState.IN).get(0);
 				getCoins().addCoins(win, false, 25);
 				getStats().setInt(win, getStats().getInt(Stats.WIN, win)+1, Stats.WIN);
-				broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(win.getName()));
+				broadcastWithPrefix("GAME_WIN", win.getName());
 			}
 		}
 	}

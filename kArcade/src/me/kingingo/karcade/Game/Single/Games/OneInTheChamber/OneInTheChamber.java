@@ -10,8 +10,8 @@ import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -111,11 +111,11 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			kills.put(killer, i);
 		//	board.getObjective(DisplaySlot.SIDEBAR).getScore(Bukkit.getOfflinePlayer(killer.getName())).setScore(i);
 			Life.put(victim,(Life.get(victim)-1));
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{victim.getName(),killer.getName()}));
+			broadcastWithPrefix("KILL_BY", new String[]{victim.getName(),killer.getName()});
 			killer.getInventory().addItem(new ItemStack(Material.ARROW));
 			if(Life.get(victim)<=0){
 				getGameList().addPlayer(victim, PlayerState.OUT);
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_EXCLUSION.getText(victim.getName()));
+				broadcastWithPrefix("GAME_EXCLUSION", victim.getName());
 			}
 		}
 	}
@@ -167,27 +167,27 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	if(getState()!=GameState.InGame)return;
 	setStart(getStart()-1);
 	if(getStart() > 179 && getStart() < 186){
-		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.FIGHT_START_IN.getText(String.valueOf((getStart() - 180))));
+		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Language.getText(p, "FIGHT_START_IN", getStart()-180) );
 		
 		switch(this.getStart()){
-		case 185:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getStart() - 180))));break;
-		case 184:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getStart() - 180))));break;
-		case 183:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getStart() - 180))));break;
-		case 182:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getStart() - 180))));break;
-		case 181:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START_IN.getText(String.valueOf((getStart() - 180))));break;
-		case 180:broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.FIGHT_START.getText()); setProjectileDamage(true);break;
+		case 185:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
+		case 184:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
+		case 183:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
+		case 182:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
+		case 181:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
+		case 180:broadcastWithPrefixName("FIGHT_START"); setProjectileDamage(true);break;
 		}
 	}else{
-		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Text.GAME_END_IN.getText(String.valueOf(getStart())));
+		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", getStart()) );
 		
 		switch(getStart()){
-		case 5: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getStart())));break;
-		case 4: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getStart())));break;
-		case 3: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getStart())));break;
-		case 2: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getStart())));break;
-		case 1: broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(String.valueOf(getStart())));break;
+		case 5: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
+		case 4: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
+		case 3: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
+		case 2: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
+		case 1: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
 		case 0: 
-			broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText());
+			broadcastWithPrefixName("GAME_END");
 			onDisable();
 		break;
 		}

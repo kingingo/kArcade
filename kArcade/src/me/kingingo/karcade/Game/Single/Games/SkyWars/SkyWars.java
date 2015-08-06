@@ -1,13 +1,7 @@
 package me.kingingo.karcade.Game.Single.Games.SkyWars;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
@@ -22,15 +16,13 @@ import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
-import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
 import me.kingingo.kcore.Kit.Perks.PerkEquipment;
-import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
 import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -38,12 +30,11 @@ import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
+import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilList;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
@@ -54,7 +45,6 @@ import me.kingingo.kcore.Util.UtilTime;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -668,12 +658,12 @@ public class SkyWars extends TeamGame{
 		
 		if((!ev.getPlayer().hasPermission(kPermission.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Text.PREFIX.getText()+Text.CHAT_MESSAGE_BLOCK.getText());
+			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -684,7 +674,7 @@ public class SkyWars extends TeamGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
 		case 300: 
 
@@ -710,18 +700,18 @@ public class SkyWars extends TeamGame{
 				}
 			}
 			
-			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+"§eDie Kisten wurden wieder gefüllt" );
+			broadcastWithPrefix("§eDie Kisten wurden wieder gefüllt");
 			break;
-		case 30: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 15: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 10: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 5: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 4: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 3: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 2: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
-		case 1: broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END_IN.getText(UtilTime.formatSeconds(getStart())) );break;
+		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 10: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 5: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 4: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 3: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 0:
-			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_END.getText() );
+			broadcastWithPrefixName("GAME_END");
 			setState(GameState.Restart);
 			break;
 		}
@@ -755,10 +745,10 @@ public class SkyWars extends TeamGame{
 				UtilScoreboard.resetScore(a.getScoreboard(), "§e"+ (kills.get(a.getName())-1) , DisplaySlot.SIDEBAR);
 				UtilScoreboard.setScore(a.getScoreboard(), "§e"+kills.get(a.getName()), DisplaySlot.SIDEBAR, 5);
 				getCoins().addCoins(a, false, 5);
-				broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.KILL_BY.getText(new String[]{v.getName(),a.getName()}) );
+				broadcastWithPrefix("KILL_BY", new String[]{v.getName(),a.getName()});
 				return;
 			}
-			broadcast( Text.PREFIX_GAME.getText(getType().getTyp())+Text.DEATH.getText(v.getName()) );
+			broadcastWithPrefix("DEATH", v.getName());
 			getStats().setInt(v, getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
 			
 			if(type.getTeam_size()>1){
@@ -792,7 +782,7 @@ public class SkyWars extends TeamGame{
 				Player p = list.get(0);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getCoins().addCoins(p, false, 25);
-				broadcast(Text.PREFIX_GAME.getText(getType().getTyp())+Text.GAME_WIN.getText(p.getName()));
+				broadcastWithPrefix("GAME_WIN", p.getName());
 				new Title("§6§lGEWONNEN").send(p);
 			}else if(list.size()==2){
 				Player p = list.get(0);

@@ -8,7 +8,7 @@ import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilDirection;
@@ -76,7 +76,7 @@ public class AddonTargetNextPlayer implements Listener {
 				}
 			}
 			if(target!=null){
-				if(msg&&p.getItemInHand().getType()==Material.COMPASS)p.sendMessage(Text.PREFIX_GAME.getText(game.getType().name())+Text.SPIELER_ENTFERNT_COMPASS.getText(new String[]{target.getName(),String.valueOf( Math.round(target.getLocation().distance(p.getLocation())) )}));
+				if(msg&&p.getItemInHand().getType()==Material.COMPASS)p.sendMessage(Language.getText(p, "PREFIX_GAME",game.getType().name())+Language.getText(p, "SPIELER_ENTFERNT_COMPASS",new String[]{target.getName(),String.valueOf( Math.round(target.getLocation().distance(p.getLocation())) )}));
 				p.setCompassTarget(target.getLocation());
 			}else{
 				if(!pl.containsKey(p)){

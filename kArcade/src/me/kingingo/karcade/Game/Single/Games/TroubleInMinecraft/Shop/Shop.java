@@ -3,7 +3,7 @@ package me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop;
 import lombok.Getter;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilPlayer;
@@ -79,9 +79,9 @@ public class Shop implements Listener{
 					if(player_punkte>=pk){
 						TTT.getStats().setInt(p, (player_punkte-pk), getPunkte());
 						s.add(p);
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_SHOP_BUYED.getText());
+						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(p, "TTT_SHOP_BUYED"));
 					}else{
-						UtilPlayer.sendMessage(p,Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_SHOP.getText());
+						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(p, "TTT_SHOP"));
 					}
 					break;
 				}

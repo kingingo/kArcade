@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilDirection;
@@ -99,7 +99,7 @@ public class Radar implements Listener,IShop{
 		if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)&&ev.getRightClicked() instanceof Player){
 			Player r = (Player)ev.getRightClicked();
 			list.put(ev.getPlayer(), r);
-			UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(TTT.getType().getTyp())+Text.TTT_TRAITOR_SHOP_RADAR_CHANGE.getText(r.getName()));
+			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_TRAITOR_SHOP_RADAR_CHANGE", r.getName()));
 		}
 	}
 	

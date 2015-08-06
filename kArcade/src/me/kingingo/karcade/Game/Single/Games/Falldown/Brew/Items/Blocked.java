@@ -3,7 +3,7 @@ package me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Falldown;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Events.PlayerUseBrewItemEvent;
-import me.kingingo.kcore.Enum.Text;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
@@ -27,7 +27,7 @@ public class Blocked extends BrewItem{
 	@EventHandler
 	public void Block(PlayerUseBrewItemEvent ev){
 		if(time!=-1 && time > System.currentTimeMillis()){
-			ev.getPlayer().sendMessage(Text.PREFIX_GAME.getText(getFalldown().getType().getTyp())+Text.FALLDOWN_BREWITEM_BLOCKED.getText(UtilTime.formatMili(time)));
+			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX_GAME", getFalldown().getType().getTyp())+Language.getText(ev.getPlayer(), "FALLDOWN_BREWITEM_BLOCKED", UtilTime.formatMili(time)));
 			ev.setCancelled(true);
 		}
 	}
