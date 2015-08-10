@@ -39,6 +39,7 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.LogHandler.Event.LogEvent;
 import me.kingingo.kcore.MySQL.MySQL;
+import me.kingingo.kcore.Nick.NickManager;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.SERVER_TYPE_CHANGE;
@@ -87,15 +88,15 @@ public class kArcadeManager implements Listener{
 	private JavaPlugin Instance;
 	@Getter
 	@Setter
-	private Location lobby=new Location(Bukkit.getWorld("world"),-148.28747,19,384.90493);
+	private Location lobby=new Location(Bukkit.getWorld("world"),-465.352,67,249.518);
 	@Getter
 	private HashMap<Integer,Sign> ranking = new HashMap<>();
 	@Getter
 	@Setter
-	private Location loc_stats = new Location(Bukkit.getWorld("world"), -128.57864,22.5,386.48775);
+	private Location loc_stats = new Location(Bukkit.getWorld("world"), -473.441,66,258.683);
 	@Getter
 	@Setter
-	private Location loc_raking = new Location(Bukkit.getWorld("world"),-128.35064,22.5,380.57131);
+	private Location loc_raking = new Location(Bukkit.getWorld("world"),-476.537,66,253.671);
 	@Getter
 	@Setter
 	private String[] string_ranking;
@@ -114,11 +115,13 @@ public class kArcadeManager implements Listener{
 	@Getter
 	private CalendarType holiday;
 	private Hologram hologram;
+	@Getter
+	private NickManager nickManager;
 	
 	public kArcadeManager(JavaPlugin plugin, String modulName,String g,PermissionManager permManager,MySQL mysql,Client c,PacketManager packetManager,CommandHandler cmd) {
 		this.Instance=plugin;
-		this.lobby.setPitch(3);
-		this.lobby.setYaw( (float)-89.81317 );
+		this.lobby.setPitch((float) 27.6);
+		this.lobby.setYaw( (float)52.4 );
 		this.permManager=permManager;
 		this.mysql=mysql;
 		this.cmd=cmd;
@@ -129,6 +132,7 @@ public class kArcadeManager implements Listener{
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
 		this.hologram=new Hologram(getInstance());
+		this.nickManager=new NickManager(permManager);
 
 		getLoc_stats().getWorld().loadChunk(getLoc_stats().getWorld().getChunkAt(getLoc_stats()));
 		getLoc_raking().getWorld().loadChunk(getLoc_raking().getWorld().getChunkAt(getLoc_raking()));

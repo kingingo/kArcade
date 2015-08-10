@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="C:/Dev/WorldEdit.jar"/>
 	<classpathentry kind="lib" path="C:/Dev/spigot.jar"/>
 	<classpathentry kind="lib" path="C:/Dev/kCore.jar"/>
+	<classpathentry kind="lib" path="C:/Dev/AAC.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -73,7 +73,6 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandChatMute.class, new CommandChatMute(this));
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
-			new NickManager(permManager);
 			new MemoryFix(this);
 			new AACHack("A"+id,mysql, pManager);
 			new ListenerCMD(this);

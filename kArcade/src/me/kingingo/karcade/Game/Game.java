@@ -189,7 +189,7 @@ public class Game implements Listener{
 	public void OpenChest(PlayerInteractEvent ev){
 		if(getState() == GameState.LobbyPhase){
 			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
-				if(ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
+				if(ev.getClickedBlock().getType()==Material.TRAP_DOOR||ev.getClickedBlock().getType()==Material.WORKBENCH||ev.getClickedBlock().getType()==Material.FURNACE||ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
 			}
 		}
 	}

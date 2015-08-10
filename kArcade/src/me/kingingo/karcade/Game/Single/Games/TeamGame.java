@@ -19,8 +19,11 @@ import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
+import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutScoreboardTeam;
+import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 
@@ -201,7 +204,17 @@ public class TeamGame extends SingleGame{
 	    if(getBoard()==null)setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
 	    for (Team team : teams) {
 	    	ArrayList<Player> list = getPlayerFrom(team);
-	    	UtilScoreboard.addTeam(getBoard(), team.Name(), team.getColor(), list);
+	    	
+	    	UtilScoreboard.addTeam(getBoard(), team.Name(), team.getColor());
+	    	
+	    	for(Player player : list){
+	    		if(getManager().getNickManager()!=null&&getManager().getNickManager().getNicks().containsKey(player.getEntityId())){
+	    			getBoard().getTeam(team.Name()).addEntry( getManager().getNickManager().getNicks().get(player.getEntityId()).getName() );
+	    			continue;
+	    		}
+	    		getBoard().getTeam(team.Name()).addPlayer(player);
+	    	}
+	    	
 	    	for(Player p : list){
 	    		if(!getBoard().getPlayers().contains(p)){
 	    			p.setScoreboard(getBoard());
@@ -209,6 +222,20 @@ public class TeamGame extends SingleGame{
 	    	}
 	    }
 	}
+	
+//	if(getManager().getNickManager()!=null){
+//		for(int i = 0; i < list.size() ; i++){
+//			if(getManager().getNickManager().getNicks().containsKey(list.get(i).getEntityId())){
+//				for(Player player : UtilServer.getPlayers()){
+//					if(player.hasPermission(kPermission.NICK_SEE.getPermissionToString())){
+//						UtilPlayer.sendPacket(player, new kPacketPlayOutScoreboardTeam(list.get(i).getName(), team.getColor(), " §7"+getManager().getNickManager().getNicks().get(list.get(i).getEntityId()).getName(), kPacketPlayOutScoreboardTeam.Modes.TEAM_CREATED, list.get(i)));
+//					}else{
+////						UtilPlayer.sendPacket(player, new kPacketPlayOutScoreboardTeam(list.get(i).getName(), team.getColor(), kPacketPlayOutScoreboardTeam.Modes.TEAM_CREATED, getManager().getNickManager().getNicks().get(list.get(i).getEntityId()).getName()));
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	public void PlayerVerteilung(HashMap<Team,Integer> t,ArrayList<Player> list){
 		int r;

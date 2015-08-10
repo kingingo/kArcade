@@ -73,6 +73,8 @@ import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
+import me.konsolas.aac.api.HackType;
+import me.konsolas.aac.api.PlayerViolationKickEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -530,6 +532,15 @@ public class DeathGames extends SoloGame{
 //			}
 //		}
 //	}
+	
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void kick(PlayerViolationKickEvent ev){
+		if(getState()==GameState.SchutzModus){
+			if(ev.getHackType()==HackType.NOFALL||ev.getHackType()==HackType.FLY){
+				ev.setCancelled(true);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void SpawnChest(UpdateEvent ev){
