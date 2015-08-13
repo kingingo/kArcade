@@ -7,14 +7,15 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
-import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
+import me.kingingo.kcore.Enum.Zeichen;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
@@ -33,7 +34,6 @@ import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.Util.UtilZeichen;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -284,22 +284,21 @@ public class QuickSurvivalGames extends SoloGame{
 			}
 		}
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getStart())));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "DEATHMATCH_START_IN",UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
-			case 15:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-			case 10:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-			case 5:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-			case 4:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-			case 3:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-			case 2:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-			case 1:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
+			case 15:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 10:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 5:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 4:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 3:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 2:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 1:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
 			case 0:
-				new Title("",Language.getText("GAME_END", getStart())).broadcast();
-				broadcastWithPrefixName("GAME_END");
+				new Title("",Language.getText("DEATHMATCH_START", getStart())).broadcast();
+				broadcastWithPrefixName("DEATHMATCH_START");
 				setStart(176);
 				for(Player p : UtilServer.getPlayers())p.teleport( getWorldData().getLocs().get(Team.YELLOW.Name()).get(0) );
-				setDamage(false);
-				setProjectileDamage(false);
+				
 				for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
 				setState(GameState.DeathMatch);
 			break;
@@ -326,20 +325,6 @@ public class QuickSurvivalGames extends SoloGame{
 		setStart(getStart()-1);
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText("DEATHMATCH_END_IN", getStart()));
 		switch(getStart()){
-			case 175:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
-			case 174:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);break;
-			case 173:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);
-			new Title("",Language.getText("DEATHMATCH_START_IN", getStart()-170)).broadcast();break;
-			case 172:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);
-			new Title("",Language.getText("DEATHMATCH_START_IN", getStart()-170)).broadcast();break;
-			case 171:broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);
-			new Title("",Language.getText("DEATHMATCH_START_IN", getStart()-170)).broadcast();break;
-			case 170:
-				setDamage(true);
-				setProjectileDamage(true);
-				new Title("",Language.getText("DEATHMATCH_START",getStart())).broadcast();
-				broadcastWithPrefix("DEATHMATCH_START", getStart());
-				break;
 			case 5:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
 			case 4:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
 			case 3:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
@@ -369,10 +354,10 @@ public class QuickSurvivalGames extends SoloGame{
 			kills.remove(killer);
 			kills.put(killer, k);
 
-			UtilScoreboard.resetScore(getBoard(), killer.getName()+" §a"+UtilZeichen.BIG_HERZ, DisplaySlot.SIDEBAR);
-			UtilScoreboard.resetScore(getBoard(), victim.getName()+" §a"+UtilZeichen.BIG_HERZ, DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(getBoard(), killer.getName()+" §a"+UtilZeichen.BIG_HERZ, DisplaySlot.SIDEBAR, k);
-			UtilScoreboard.setScore(getBoard(), victim.getName()+" §4"+UtilZeichen.MAHLZEICHEN_FETT, DisplaySlot.SIDEBAR, -1);
+			UtilScoreboard.resetScore(getBoard(), killer.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+			UtilScoreboard.resetScore(getBoard(), victim.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+			UtilScoreboard.setScore(getBoard(), killer.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, k);
+			UtilScoreboard.setScore(getBoard(), victim.getName()+" §4"+Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
 
 			UtilParticle.FLAME.display(1, 60, victim.getLocation(), 15);
 		}else if(ev.getEntity() instanceof Player){
@@ -382,8 +367,8 @@ public class QuickSurvivalGames extends SoloGame{
 			broadcastWithPrefix("DEATH", new String[]{victim.getName()});
 			getGameList().addPlayer(victim, PlayerState.OUT);
 
-			UtilScoreboard.resetScore(getBoard(), victim.getName()+" §a"+UtilZeichen.BIG_HERZ, DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(getBoard(), victim.getName()+" §4"+UtilZeichen.MAHLZEICHEN_FETT, DisplaySlot.SIDEBAR, -1);
+			UtilScoreboard.resetScore(getBoard(), victim.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+			UtilScoreboard.setScore(getBoard(), victim.getName()+" §4"+Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
 			UtilParticle.FLAME.display(1, 60,  victim.getLocation(), 15);
 		}
 	}
@@ -425,7 +410,7 @@ public class QuickSurvivalGames extends SoloGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			p.teleport(list.get(r));
 			list.remove(r);
-			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+UtilZeichen.BIG_HERZ, DisplaySlot.SIDEBAR, 0);
+			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, 0);
 			p.setScoreboard(getBoard());
 			kills.put(p, 0);
 			title.send(p);
@@ -444,8 +429,8 @@ public class QuickSurvivalGames extends SoloGame{
 	@EventHandler
 	public void QuitSc(PlayerQuitEvent ev){
 		if(getBoard()==null)return;
-		UtilScoreboard.resetScore(getBoard(), ev.getPlayer().getName()+" §a"+UtilZeichen.BIG_HERZ, DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getBoard(), ev.getPlayer().getName()+" §4"+UtilZeichen.MAHLZEICHEN_FETT, DisplaySlot.SIDEBAR, -1);
+		UtilScoreboard.resetScore(getBoard(), ev.getPlayer().getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getBoard(), ev.getPlayer().getName()+" §4"+Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
 	}
 	
 	@EventHandler
@@ -453,19 +438,21 @@ public class QuickSurvivalGames extends SoloGame{
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
+
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-		"Server: QuickSurvivalGames §a"+kArcade.id,
-		"Map: "+wd.getMapName(),
-		" ",
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
-		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		" ",
-		"Gespielte Spiele: "+(win+lose),
-		"Gewonnene Spiele: "+win,
-		"Verlorene Spiele: "+lose
-		});
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_POWER", getStats().getInt(Stats.POWER, ev.getPlayer())),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+			});
 	}
 	
 	@EventHandler

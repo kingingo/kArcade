@@ -1,9 +1,9 @@
 package me.kingingo.karcade.Game.Multi.Events;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameStateChangeReason;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

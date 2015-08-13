@@ -8,7 +8,6 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
-import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.addons.AddonEntityKing;
@@ -19,6 +18,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
@@ -307,6 +307,20 @@ public class SkyPvP extends SoloGame{
 		"Gewonnene Spiele: "+win,
 		"Verlorene Spiele: "+lose
 		});
+		
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+			Language.getText(ev.getPlayer(), "",getType().getTyp()+" §a"+kArcade.id),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+			});
 	}
 	
 	@EventHandler

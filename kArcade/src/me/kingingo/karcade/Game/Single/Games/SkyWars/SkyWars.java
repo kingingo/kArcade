@@ -8,7 +8,6 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
-import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
@@ -17,6 +16,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -819,21 +819,20 @@ public class SkyWars extends TeamGame{
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0,0.3,0),new String[]{
+		
+		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-		"Server: SkyWars §a"+kArcade.id,
-		"Map: "+getWorldData().getMapName(),
-		" ",
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
-		"Coins: "+getCoins().getCoins(ev.getPlayer()),
-		"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
-		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		" ",
-		"Gespielte Spiele: "+(win+lose),
-		"Gewonnene Spiele: "+win,
-		"Verlorene Spiele: "+lose
-		});
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+			});
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	

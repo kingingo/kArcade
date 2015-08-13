@@ -10,10 +10,10 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.GameList;
-import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Update.UpdateType;
@@ -547,24 +547,24 @@ public class SingleGame extends Game{
 			}
 			start--;
 			for(Player p : UtilServer.getPlayers()){
-				UtilDisplay.displayTextBar(p, Color.GRAY+"Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");
+				UtilDisplay.displayTextBar(p, Color.GRAY+Language.getText("GAME_START_IN", start));
 				if(p.getLocation().getY()<5)p.teleport(getManager().getLobby());
 			}
 			if(start!=0){
 				switch(start){
 				case 120:
-					broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");
+					broadcastWithPrefix(Language.getText("GAME_START_IN", start));
 					Bukkit.getWorld("world").setWeatherDuration(0);
 					Bukkit.getWorld("world").setStorm(false);
 					break;
-				case 90:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 60:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 30:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 15:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 10:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 3:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 2:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
-				case 1:broadcastWithPrefix("Das Spiel startet in "+Color.AQUA+start+Color.GRAY+" sekunden.");break;
+				case 90:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 60:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 30:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 15:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 10:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 3:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 2:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 1:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
 				}
 			}else{
 				if(UtilServer.getPlayers().size()>=getMin_Players()){
@@ -572,7 +572,7 @@ public class SingleGame extends Game{
 					updateInfo(GameState.InGame);
 				}else{
 					start=-1;
-					broadcastWithPrefix(Color.RED+"Es sind zu wenig Spieler(min. "+getMin_Players()+") online! Wartemodus wird neugestartet!");
+					broadcastWithPrefix(Language.getText("GAME_START_MIN_PLAYER", getMin_Players()));
 				}
 			}
 		}

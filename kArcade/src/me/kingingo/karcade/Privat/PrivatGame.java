@@ -3,10 +3,6 @@ package me.kingingo.karcade.Privat;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcade;
@@ -18,8 +14,12 @@ import me.kingingo.kcore.Inventory.InventoryPageBase;
 import me.kingingo.kcore.Inventory.Item.ButtonBase;
 import me.kingingo.kcore.Inventory.Item.Click;
 import me.kingingo.kcore.Util.InventorySize;
-import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilItem;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class PrivatGame{
 

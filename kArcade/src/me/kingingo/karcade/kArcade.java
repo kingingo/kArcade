@@ -16,7 +16,6 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.Command.ListenerCMD;
 import me.kingingo.kcore.MySQL.MySQL;
-import me.kingingo.kcore.Nick.NickManager;
 import me.kingingo.kcore.Packet.PacketManager;
 import me.kingingo.kcore.Permission.GroupTyp;
 import me.kingingo.kcore.Permission.PermissionManager;

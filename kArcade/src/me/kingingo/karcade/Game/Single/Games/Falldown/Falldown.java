@@ -162,20 +162,21 @@ public class Falldown extends SoloGame{
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
+
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-		"Server: Falldown §a"+kArcade.id,
-		"Map: "+getWorldData().getMapName(),
-		" ",
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
-		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		"Power: "+getStats().getInt(Stats.POWER, ev.getPlayer()),
-		" ",
-		"Gespielte Spiele: "+(win+lose),
-		"Gewonnene Spiele: "+win,
-		"Verlorene Spiele: "+lose
-		});
+			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+			Language.getText(ev.getPlayer(), "",getType().getTyp()+" §a"+kArcade.id),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_POWER", getStats().getInt(Stats.POWER, ev.getPlayer())),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+			});
 	}
 	
 	@EventHandler

@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Events.TeamDelEvent;
@@ -17,13 +16,11 @@ import me.kingingo.karcade.Game.Single.addons.AddonSpecCompass;
 import me.kingingo.karcade.Game.Single.addons.AddonSpectator;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
-import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutScoreboardTeam;
-import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
-import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 
@@ -221,21 +218,8 @@ public class TeamGame extends SingleGame{
 	    		}
 	    	}
 	    }
+	    
 	}
-	
-//	if(getManager().getNickManager()!=null){
-//		for(int i = 0; i < list.size() ; i++){
-//			if(getManager().getNickManager().getNicks().containsKey(list.get(i).getEntityId())){
-//				for(Player player : UtilServer.getPlayers()){
-//					if(player.hasPermission(kPermission.NICK_SEE.getPermissionToString())){
-//						UtilPlayer.sendPacket(player, new kPacketPlayOutScoreboardTeam(list.get(i).getName(), team.getColor(), " §7"+getManager().getNickManager().getNicks().get(list.get(i).getEntityId()).getName(), kPacketPlayOutScoreboardTeam.Modes.TEAM_CREATED, list.get(i)));
-//					}else{
-////						UtilPlayer.sendPacket(player, new kPacketPlayOutScoreboardTeam(list.get(i).getName(), team.getColor(), kPacketPlayOutScoreboardTeam.Modes.TEAM_CREATED, getManager().getNickManager().getNicks().get(list.get(i).getEntityId()).getName()));
-//					}
-//				}
-//			}
-//		}
-//	}
 	
 	public void PlayerVerteilung(HashMap<Team,Integer> t,ArrayList<Player> list){
 		int r;

@@ -4,15 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.GameStateChangeReason;
-import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
@@ -189,7 +189,7 @@ public class Game implements Listener{
 	public void OpenChest(PlayerInteractEvent ev){
 		if(getState() == GameState.LobbyPhase){
 			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
-				if(ev.getClickedBlock().getType()==Material.TRAP_DOOR||ev.getClickedBlock().getType()==Material.WORKBENCH||ev.getClickedBlock().getType()==Material.FURNACE||ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
+				if(ev.getClickedBlock().getType()==Material.ANVIL||ev.getClickedBlock().getType()==Material.ENCHANTMENT_TABLE||ev.getClickedBlock().getType()==Material.TRAP_DOOR||ev.getClickedBlock().getType()==Material.WORKBENCH||ev.getClickedBlock().getType()==Material.FURNACE||ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
 			}
 		}
 	}
@@ -225,11 +225,13 @@ public class Game implements Listener{
 	@EventHandler
 	public void Q(PlayerQuitEvent ev){
 		updateInfo(UtilServer.getPlayers().size()-1);
+		if(getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_LEAVE", ev.getPlayer().getName());
 	}
 	
 	@EventHandler
 	public void J(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
+		if(getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_ENTER", new String[]{ev.getPlayer().getName(),String.valueOf(UtilServer.getPlayers().size()),String.valueOf(getMax_Players())});
 		if(this instanceof SingleGame&&state==GameState.LobbyPhase)updateInfo();
 	}
 

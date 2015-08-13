@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Enum.GameStateChangeReason;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
@@ -13,6 +12,7 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.StatsManager.Stats;

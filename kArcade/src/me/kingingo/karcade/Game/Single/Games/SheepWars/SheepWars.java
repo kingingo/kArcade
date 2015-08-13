@@ -10,7 +10,6 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
-import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.SheepWars.Items.Bomb;
@@ -29,7 +28,9 @@ import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
+import me.kingingo.kcore.Enum.Zeichen;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
+import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -79,7 +80,6 @@ import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.Util.UtilZeichen;
 import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
@@ -742,7 +742,7 @@ public class SheepWars extends TeamGame{
 		int i = 0;
 		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Team t : teams){
-			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+UtilZeichen.HÄKCHEN_FETT, DisplaySlot.SIDEBAR, 1);
+			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
 			setVillager(t,et);
 			list = getWorldData().getLocs(t.Name());
@@ -880,8 +880,8 @@ public class SheepWars extends TeamGame{
 			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
 		}
 		
-		UtilScoreboard.resetScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §a"+UtilZeichen.HÄKCHEN_FETT, DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §4"+UtilZeichen.MAHLZEICHEN_FETT, DisplaySlot.SIDEBAR, 1);
+		UtilScoreboard.resetScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §4"+Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 
 		for(Player player : UtilServer.getPlayers())t.send(player);
 	}
@@ -919,21 +919,21 @@ public class SheepWars extends TeamGame{
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
+		
 		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
 			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-		"Server: SheepWars §a"+kArcade.id,
-		"Map: "+getWorldData().getMapName(),
-		" ",
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
-		//"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
-		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		"Schaf-Kills: "+getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer()),
-		" ",
-		"Gespielte Spiele: "+(win+lose),
-		"Gewonnene Spiele: "+win,
-		"Verlorene Spiele: "+lose
-		});
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SHEEP", getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getPlayer())),
+			" ",
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+			});
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
