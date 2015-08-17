@@ -317,7 +317,7 @@ public class MultiGame extends kListener{
 					broadcastWithPrefix("TEAM_WIN",last.getColor()+last.Name());
 					t= new Title("","");
 					for(Player player : getGameList().getPlayers().keySet()){
-						t.setSubtitle(Language.getText("TEAM_WIN", last.getColor()+last.Name()));
+						t.setSubtitle(Language.getText(player,"TEAM_WIN", last.getColor()+last.Name()));
 						t.send(player);
 					}
 				}
