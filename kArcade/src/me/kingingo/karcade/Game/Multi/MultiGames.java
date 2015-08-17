@@ -39,6 +39,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MultiGames extends Game{
 	
@@ -125,6 +126,16 @@ public class MultiGames extends Game{
 	}
 	
 	@EventHandler
+	public void Join(PlayerJoinEvent ev){
+		ev.setJoinMessage(null);
+	}
+	
+	@EventHandler
+	public void Quit(PlayerQuitEvent ev){
+		ev.setQuitMessage(null);
+	}
+	
+	@EventHandler
 	public void EntityDamage(EntityDamageEvent ev){
 		//LOBBY DAMAGE CANCEL
 		if(ev.getEntity().getWorld() == getManager().getLobby().getWorld()){
@@ -147,6 +158,11 @@ public class MultiGames extends Game{
 								if(warte_liste.containsKey(settings.getPlayer())){
 									warte_liste.remove(settings.getPlayer());
 								}
+								
+								if(settings.getTeam()==Team.SOLO){
+									settings.setTeam(g.littleTeam());
+								}
+								
 								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								
@@ -180,10 +196,9 @@ public class MultiGames extends Game{
 	MultiGame game;
 	@EventHandler
 	public void PacketReceive(PacketReceiveEvent ev){
-		System.out.println("PACKET RECEIVE");
 		if(getType()==GameType.Versus&&ev.getPacket() instanceof VERSUS_SETTINGS){
-			System.out.println("PACKET VERSUS_SETTINGS");
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)ev.getPacket();
+			
 			for(MultiGame g : games){
 				if(g instanceof Versus){
 					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&&g.getState() == GameState.LobbyPhase){
@@ -191,6 +206,11 @@ public class MultiGames extends Game{
 								if(warte_liste.containsKey(settings.getPlayer())){
 									warte_liste.remove(settings.getPlayer());
 								}
+								
+								if(settings.getTeam()==Team.SOLO){
+									settings.setTeam(g.littleTeam());
+								}
+								
 								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()));

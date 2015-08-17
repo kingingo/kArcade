@@ -556,14 +556,12 @@ public class BedWars extends TeamGame{
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§eBedWars Teams");
 		
 		int i = 0;
-		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Team t : teams){
 			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
 			setVillager(t,et);
 			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
-				title.send(p);
 				p.setScoreboard(getBoard());
 				p.teleport(list.get(i));
 				i++;
@@ -667,14 +665,17 @@ public class BedWars extends TeamGame{
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
-		Title t = new Title("",Language.getText("BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+		Title t = new Title("","");
 		if(ev.getKiller()!=null){
 			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getKiller())+1, Stats.BEDWARS_ZERSTOERTE_BEDs);
 		}
 		UtilScoreboard.resetScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR);
 		UtilScoreboard.setScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §4"+Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 		
-		for(Player player : UtilServer.getPlayers())t.send(player);
+		for(Player player : UtilServer.getPlayers()){
+			t.setSubtitle(Language.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+			t.send(player);
+		}
 	}
 	
 	@EventHandler

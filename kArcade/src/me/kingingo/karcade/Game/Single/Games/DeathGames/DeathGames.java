@@ -757,12 +757,13 @@ public class DeathGames extends SoloGame{
 		System.err.println("X: MAX:"+maxX+" MIN:"+minX);
 		System.err.println("Z: MAX:"+maxZ+" MIN:"+minZ);
 		new AddonPlayerTeleport(this);
-		Title title = new Title("", "§c§lKeine Teams erlaubt");
+		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomInt(maxX, minX), 200, UtilMath.RandomInt(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
+			title.setSubtitle(Language.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
 		}
 		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,this);

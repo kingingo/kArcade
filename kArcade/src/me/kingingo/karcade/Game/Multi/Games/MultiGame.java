@@ -47,7 +47,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -82,6 +86,18 @@ public class MultiGame extends kListener{
 	@Setter
 	private boolean DamageTeamOther = true;
 	@Getter
+	@Setter
+	private boolean foodlevelchange = true;
+	@Getter
+	@Setter
+	private boolean pickItem = true;
+	@Getter
+	@Setter
+	private boolean dropItem = true;
+	@Getter
+	@Setter
+	private boolean dropItembydeath = true;
+	@Getter
 	private ArrayList<DamageCause> EntityDamage = new ArrayList<>();
 	@Getter
 	private GameList gameList;
@@ -97,6 +113,9 @@ public class MultiGame extends kListener{
 	@Getter
 	@Setter
 	private String Map="loading...";
+	@Getter
+	@Setter
+	private String updateTo = "hub";
 	
 	public MultiGame(MultiGames games) {
 		super(games.getManager().getInstance(), "MultiGame");
@@ -111,15 +130,19 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , (teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap() ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap() ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
-		getGames().getManager().getPacketManager().SendPacket("hub", ev.getPacket());
+		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());
 	}
 
 	public void addTeam(Player p, Team t){
 		TeamList.put(p, t);
 		Bukkit.getPluginManager().callEvent(new TeamAddEvent(p,t));
+	}
+	
+	public void broadcastWithPrefix1(String name){
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(player,name));
 	}
 	
 	public void broadcastWithPrefix(String name,Object input){
@@ -140,6 +163,34 @@ public class MultiGame extends kListener{
 	
 	public void broadcast(String name,Object[] input){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,name,input));
+	}
+	
+	@EventHandler
+	public void death(PlayerDeathEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getEntity().getKiller())){
+			if(!dropItembydeath)ev.getDrops().clear();
+		}
+	}
+	
+	@EventHandler
+	public void drop(PlayerDropItemEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			ev.setCancelled((dropItem?false:true));
+		}
+	}
+	
+	@EventHandler
+	public void pickup(PlayerPickupItemEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			ev.setCancelled((pickItem?false:true));
+		}
+	}
+	
+	@EventHandler
+	public void hunger(FoodLevelChangeEvent ev){
+		if(ev.getEntity() instanceof Player&&getGameList().getPlayers().containsKey(ev.getEntity())){
+			ev.setCancelled((foodlevelchange?false:true));
+		}
 	}
 	
 	public void broadcast(String name,Object input){
@@ -242,7 +293,7 @@ public class MultiGame extends kListener{
 		if(stateEvent.isCancelled())return;
 		this.state=gs;
 		updateInfo();
-		Log("GameState wurde zu "+state.string()+" geändert.");
+		Log("GameState wurde zu "+state.string()+"("+reason.name()+") geändert.");
 	}
 	
 	public boolean isPlayerState(Player player,PlayerState state){
@@ -262,14 +313,21 @@ public class MultiGame extends kListener{
 				}
 				
 				last = getlastTeam();
-				broadcast("TEAM_WIN",last.getColor()+last.Name());
-				sendTitle("",Language.getText("TEAM_WIN", last.getColor()+last.Name()));
+				if(last!=null){
+					broadcastWithPrefix("TEAM_WIN",last.getColor()+last.Name());
+					t= new Title("","");
+					for(Player player : getGameList().getPlayers().keySet()){
+						t.setSubtitle(Language.getText("TEAM_WIN", last.getColor()+last.Name()));
+						t.send(player);
+					}
+				}
+				setState(GameState.LobbyPhase);
+				ev.setCancelled(true);
 				for(Player player : getGameList().getPlayers().keySet())UtilBG.sendToServer(player, getGames().getManager().getInstance());
 				
 				getTeamList().clear();
 				getGameList().getPlayers().clear();
 				timer=-1;
-				setState(GameState.LobbyPhase);
 			}
 		}
 	}
@@ -354,17 +412,19 @@ public class MultiGame extends kListener{
 				setTimer(getTimer()-1);
 				
 				for(Player p : getGameList().getPlayers().keySet()){
-					UtilDisplay.displayTextBar(p, Color.GRAY+"Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");
+					UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_START_IN",getTimer()));
 				}
 				
 				if(getTimer()!=0){
 					switch(getTimer()){
-					case 30:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
-					case 15:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
-					case 10:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden.");break;
-					case 3:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
-					case 2:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
-					case 1:broadcast("Das Spiel startet in "+Color.AQUA+getTimer()+Color.GRAY+" sekunden."); sendTitle(Color.RED+getTimer(),"");break;
+					case 30:broadcastWithPrefix("GAME_START_IN", getTimer());break;
+					case 15:broadcastWithPrefix("GAME_START_IN", getTimer());break;
+					case 10:broadcastWithPrefix("GAME_START_IN", getTimer());break;
+					case 5:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
+					case 4:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
+					case 3:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
+					case 2:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
+					case 1:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
 					}
 				}else{
 					if(startBereit()){
@@ -373,7 +433,7 @@ public class MultiGame extends kListener{
 					}else{
 						setTimer(31);
 						updateInfo();
-						broadcast(Color.RED+"Es sind zu wenig Spieler online! Wartemodus wird neugestartet!");
+						broadcastWithPrefix1("GAME_START_MIN_PLAYER2");
 					}
 				}
 			}
@@ -430,7 +490,9 @@ public class MultiGame extends kListener{
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
 			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0) );
+			setTimer(-1);
 			ev.setCancelled(true);
+			updateInfo();
 		}
 	}
 	

@@ -294,10 +294,14 @@ public class QuickSurvivalGames extends SoloGame{
 			case 2:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
 			case 1:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
 			case 0:
-				new Title("",Language.getText("DEATHMATCH_START", getStart())).broadcast();
+				Title title = new Title("","");
 				broadcastWithPrefixName("DEATHMATCH_START");
 				setStart(176);
-				for(Player p : UtilServer.getPlayers())p.teleport( getWorldData().getLocs().get(Team.YELLOW.Name()).get(0) );
+				for(Player p : UtilServer.getPlayers()){
+					title.setSubtitle(Language.getText(p,"DEATHMATCH_START", getStart()));
+					title.send(p);
+					p.teleport( getWorldData().getLocs().get(Team.YELLOW.Name()).get(0) );
+				}
 				
 				for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
 				setState(GameState.DeathMatch);
@@ -332,7 +336,11 @@ public class QuickSurvivalGames extends SoloGame{
 			case 1:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
 			case 0:
 				broadcastWithPrefixName("DEATHMATCH_END");
-				new Title("",Language.getText("DEATHMATCH_END")).broadcast();
+				Title title = new Title("","");
+				for(Player p : UtilServer.getPlayers()){
+					title.setSubtitle(Language.getText("DEATHMATCH_END"));
+					title.send(p);
+				}
 				setState(GameState.Restart);
 			break;
 		}
@@ -398,7 +406,7 @@ public class QuickSurvivalGames extends SoloGame{
 
 		setBoard(getManager().getPermManager().getScoreboard());
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§6§l"+getType().getKürzel()+" Spieler:");
-		Title title = new Title("", "§c§lKeine Teams erlaubt");
+		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
 			if(list.isEmpty()){
 				r=0;
@@ -413,6 +421,7 @@ public class QuickSurvivalGames extends SoloGame{
 			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, 0);
 			p.setScoreboard(getBoard());
 			kills.put(p, 0);
+			title.setSubtitle(Language.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
 		}
 		
@@ -447,7 +456,6 @@ public class QuickSurvivalGames extends SoloGame{
 			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
 			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
 			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_POWER", getStats().getInt(Stats.POWER, ev.getPlayer())),
 			" ",
 			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
 			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),

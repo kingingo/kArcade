@@ -740,7 +740,6 @@ public class SheepWars extends TeamGame{
 		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§eSheepWars Teams");
 		
 		int i = 0;
-		Title title = new Title("", "§c§lKeine Teams erlaubt");
 		for(Team t : teams){
 			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
@@ -748,7 +747,6 @@ public class SheepWars extends TeamGame{
 			list = getWorldData().getLocs(t.Name());
 			for(Player p : getPlayerFrom(t)){
 				p.setScoreboard(getBoard());
-				title.send(p);
 				p.teleport(list.get(i));
 				i++;
 				if(i==list.size())i=0;
@@ -875,7 +873,7 @@ public class SheepWars extends TeamGame{
 		if(getManager().isDisguiseManagerEnable())getManager().getDisguiseManager().undisguiseAll();
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
-		Title t = new Title("",Language.getText("SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+		Title t = new Title("","");
 		if(ev.getKiller()!=null){
 			getStats().setInt(ev.getKiller(), getStats().getInt(Stats.SHEEPWARS_KILLED_SHEEPS, ev.getKiller())+1, Stats.SHEEPWARS_KILLED_SHEEPS);
 		}
@@ -883,7 +881,10 @@ public class SheepWars extends TeamGame{
 		UtilScoreboard.resetScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR);
 		UtilScoreboard.setScore(getBoard(), ev.getTeam().getColor()+ev.getTeam().Name()+" §4"+Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 
-		for(Player player : UtilServer.getPlayers())t.send(player);
+		for(Player player : UtilServer.getPlayers()){
+			t.setSubtitle(Language.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+			t.send(player);
+		}
 	}
 	
 	@EventHandler

@@ -155,6 +155,7 @@ public class Game implements Listener{
 	
 	public void broadcastWithPrefix(String name,Object input){
 		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player,name,input));
+		
 	}
 	
 	public void broadcastWithPrefix(String name,Object[] input){

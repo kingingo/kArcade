@@ -1,5 +1,7 @@
 package me.kingingo.karcade.Game.Multi.Games.Versus;
 
+import io.netty.util.internal.chmv8.ForkJoinPool.ManagedBlocker;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,6 +11,7 @@ import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
+import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
@@ -18,6 +21,7 @@ import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilPlayer;
@@ -48,7 +52,8 @@ public class Versus extends MultiGame{
 	public Versus(MultiGames games,String Map,Location location) {
 		super(games);
 		setMap(Map);
-		
+		UtilBG.setHub("versus");
+		setUpdateTo("versus");
 		getGames().getLocs().put(this, new HashMap<Team,ArrayList<Location>>());
 		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 40, location)){
 			if(block.getRelative(BlockFace.UP).getType()==Material.WOOL){
@@ -77,7 +82,6 @@ public class Versus extends MultiGame{
 		}
 		
 		addonMove=new AddonMove(games.getManager());
-		addonMove.setnotMove(true);
 		setType( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
 		setState(GameState.LobbyPhase);
 	}
@@ -137,18 +141,41 @@ public class Versus extends MultiGame{
 	}
 	
 	@EventHandler
+	public void lobby(MultiGameStateChangeEvent ev){
+		if(ev.getTo()==GameState.LobbyPhase){
+			addonMove.setnotMove(true);
+			setDamagePvP(false);
+			setDamage(false);
+			setDropItem(false);
+			setPickItem(false);
+			setDropItembydeath(false);
+		}
+	}
+	
+	@EventHandler
 	public void Start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
 			addonMove.setnotMove(false);
 			
 			for(Player player : getTeamList().keySet()){
-				player.getInventory().setHelmet(kit.helm);
-				player.getInventory().setChestplate(kit.chestplate);
-				player.getInventory().setLeggings(kit.leggings);
-				player.getInventory().setBoots(kit.boots);
-				for(ItemStack item : kit.inv)player.getInventory().addItem(item);
+				if(kit.helm!=null)player.getInventory().setHelmet(kit.helm);
+				if(kit.chestplate!=null)player.getInventory().setChestplate(kit.chestplate);
+				if(kit.leggings!=null)player.getInventory().setLeggings(kit.leggings);
+				if(kit.boots!=null)player.getInventory().setBoots(kit.boots);
+				if(kit==null)Log("kit == NULL");
+				if(kit.inv==null){
+					Log("kit.inv == NULL");
+				}else{
+					for(ItemStack item : kit.inv)
+						if(item!=null){
+							player.getInventory().addItem(item);
+						}else{
+							Log("item == NULL");
+						}
+				}
 			}
-			
+			setDamagePvP(true);
+			setDamage(true);
 			setState(GameState.InGame);
 		}
 	}

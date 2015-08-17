@@ -426,8 +426,4 @@ public class kArcadeManager implements Listener{
 			if(getGame().isCoinsAktiv())getGame().getCoins().SaveAll();
 		}
 	}
-	
-	
-	
-
 }

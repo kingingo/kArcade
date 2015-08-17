@@ -870,7 +870,7 @@ public class SkyWars extends TeamGame{
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 
 		Scoreboard ps;
-		Title title = new Title("", "§c§lKeine Teams erlaubt");
+		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
 			ps=Bukkit.getScoreboardManager().getNewScoreboard();
 			
@@ -894,7 +894,7 @@ public class SkyWars extends TeamGame{
 			UtilScoreboard.setScore(ps, "§e"+kills.get(p.getName()),DisplaySlot.SIDEBAR,5);
 			UtilScoreboard.setScore(ps, "  ", DisplaySlot.SIDEBAR, 4);
 			UtilScoreboard.setScore(ps, "§7Kit: ", DisplaySlot.SIDEBAR, 3);
-			UtilScoreboard.setScore(ps, "§e"+ (kits.containsKey(p) ? kits.get(p) : "Kein Kit") , DisplaySlot.SIDEBAR,2);
+			UtilScoreboard.setScore(ps, "§e"+ (kits.containsKey(p) ? kits.get(p) : Language.getText(p, "NO_KIT")) , DisplaySlot.SIDEBAR,2);
 			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 1);
 			UtilScoreboard.setScore(ps, "§ewww.EpicPvP.me", DisplaySlot.SIDEBAR, 0);
 			UtilScoreboard.addTeam(ps, "friend", Color.GREEN);
@@ -909,6 +909,7 @@ public class SkyWars extends TeamGame{
 			}
 			
 			p.setScoreboard(ps);
+			title.setSubtitle(Language.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
 		}
 		

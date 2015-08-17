@@ -547,24 +547,24 @@ public class SingleGame extends Game{
 			}
 			start--;
 			for(Player p : UtilServer.getPlayers()){
-				UtilDisplay.displayTextBar(p, Color.GRAY+Language.getText("GAME_START_IN", start));
+				UtilDisplay.displayTextBar(p, Color.GRAY+Language.getText(p,"GAME_START_IN", start));
 				if(p.getLocation().getY()<5)p.teleport(getManager().getLobby());
 			}
 			if(start!=0){
 				switch(start){
 				case 120:
-					broadcastWithPrefix(Language.getText("GAME_START_IN", start));
+					broadcastWithPrefix("GAME_START_IN", start);
 					Bukkit.getWorld("world").setWeatherDuration(0);
 					Bukkit.getWorld("world").setStorm(false);
 					break;
-				case 90:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 60:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 30:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 15:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 10:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 3:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 2:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
-				case 1:broadcastWithPrefix(Language.getText("GAME_START_IN", start));break;
+				case 90:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 60:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 30:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 15:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 10:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 3:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 2:broadcastWithPrefix("GAME_START_IN", start);break;
+				case 1:broadcastWithPrefix("GAME_START_IN", start);break;
 				}
 			}else{
 				if(UtilServer.getPlayers().size()>=getMin_Players()){
@@ -572,7 +572,7 @@ public class SingleGame extends Game{
 					updateInfo(GameState.InGame);
 				}else{
 					start=-1;
-					broadcastWithPrefix(Language.getText("GAME_START_MIN_PLAYER", getMin_Players()));
+					broadcastWithPrefix("GAME_START_MIN_PLAYER", getMin_Players());
 				}
 			}
 		}

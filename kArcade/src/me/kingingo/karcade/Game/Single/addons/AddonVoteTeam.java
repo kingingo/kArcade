@@ -57,7 +57,7 @@ public class AddonVoteTeam implements Listener{
 	@EventHandler
 	public void Join(PlayerJoinEvent ev){
 		if(game.getState()!=GameState.LobbyPhase)return;
-		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.PAPER,1), Color.AQUA+"Wähle dein Team"));
+		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.PAPER,1), Language.getText(ev.getPlayer(), "GAME_TEAM_ITEM")));
 	}
 	
 	@EventHandler
