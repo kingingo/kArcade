@@ -316,10 +316,10 @@ public class TeamGame extends SingleGame{
 			Player d = (Player)a.getShooter();
 			Player v = (Player)ev.getEntity();
 			if(!DamageTeamSelf&&getTeam(d)==getTeam(v)){
-				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf Projectile");
+				if(getManager().getService().isDebug())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf Projectile");
 				ev.setCancelled(true);
 			}else if(!DamageTeamOther&&getTeam(d)!=getTeam(v)){
-				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther Projectile");
+				if(getManager().getService().isDebug())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther Projectile");
 				ev.setCancelled(true);
 			}
 		}
@@ -329,10 +329,10 @@ public class TeamGame extends SingleGame{
 	public void TeamDamage(EntityDamageByEntityEvent ev){
 		if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)){
 			if(!DamageTeamSelf&&getTeam((Player)ev.getDamager())==getTeam((Player)ev.getEntity())){
-				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf");
+				if(getManager().getService().isDebug())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf");
 				ev.setCancelled(true);
 			}else if(!DamageTeamOther&&getTeam((Player)ev.getDamager())!=getTeam((Player)ev.getEntity())){
-				if(getManager().getService().isDamage())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther");
+				if(getManager().getService().isDebug())System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther");
 				ev.setCancelled(true);
 			}
 		}

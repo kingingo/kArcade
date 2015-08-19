@@ -34,6 +34,8 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -51,6 +53,9 @@ public class MultiGames extends Game{
 	@Setter
 	private WorldData worldData;
 	private HashMap<String,VERSUS_SETTINGS> warte_liste = new HashMap<>(); //Warte Liste falls Spieler zu früh auf dem Server kommen...
+	@Getter
+	@Setter
+	private boolean CreatureSpawn = true; //Creature Spawn GLOBAL
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
@@ -63,7 +68,9 @@ public class MultiGames extends Game{
 	
 	public void createGames(GameType type){
 		if(GameType.Versus==type){
+			setCreatureSpawn(false);
 			getWorldData().createCleanWorld();
+			for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();
 			File[] schematics = getWorldData().loadSchematicFiles();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);
 			
@@ -74,6 +81,15 @@ public class MultiGames extends Game{
 			}
 		}
 	}
+	
+	@EventHandler
+	  public void MobSpawn(CreatureSpawnEvent ev){
+		if(ev.getSpawnReason()==SpawnReason.CUSTOM)return;
+	    if (!isCreatureSpawn()){
+			if(getManager().getService().isDebug())System.err.println("[MultiGame] CreatureSpawnEvent GLOBAL Cancelled TRUE!");
+	    	ev.setCancelled(true);
+	    }
+	  }
 	
 	@EventHandler
 	public void GameUpdateInfo(GameUpdateInfoEvent ev){
@@ -148,7 +164,6 @@ public class MultiGames extends Game{
 	public void JoinMutliGame(PlayerJoinEvent ev){
 		getManager().Clear(ev.getPlayer());
 		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
-		
 		if(warte_liste.containsKey(ev.getPlayer().getName())){
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)warte_liste.get(ev.getPlayer().getName());
 			for(MultiGame g : games){
@@ -173,27 +188,25 @@ public class MultiGames extends Game{
 										e.printStackTrace();
 									}
 								}
+								event=new MultiGamePlayerJoinEvent(ev.getPlayer(),g);
+								Bukkit.getPluginManager().callEvent(event);
 							}
-							this.game=g;
 						break;
 					}
 				}
 			}
 		}
 		
-		event=new MultiGamePlayerJoinEvent(ev.getPlayer());
-		Bukkit.getPluginManager().callEvent(event);
-		
 		//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
-		if(!event.isCancelled()){
+		if(event==null||!event.isCancelled()){
 			//Spieler wird in die Lobby zum warten Teleportiert!
 			getManager().getLobby().getWorld().setStorm(false);
 			getManager().getLobby().getWorld().setTime(4000);
 			ev.getPlayer().teleport(getManager().getLobby());
 		}
+		event=null;
 	}
 	
-	MultiGame game;
 	@EventHandler
 	public void PacketReceive(PacketReceiveEvent ev){
 		if(getType()==GameType.Versus&&ev.getPacket() instanceof VERSUS_SETTINGS){
@@ -213,8 +226,6 @@ public class MultiGames extends Game{
 								
 								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()));
-								Bukkit.getPluginManager().callEvent(event);
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
 									try {
@@ -223,6 +234,8 @@ public class MultiGames extends Game{
 										e.printStackTrace();
 									}
 								}
+								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+								Bukkit.getPluginManager().callEvent(event);
 							}else{
 								warte_liste.put(settings.getPlayer(),settings);
 							}

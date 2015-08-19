@@ -92,6 +92,7 @@ public class QuickSurvivalGames extends SoloGame{
 	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
 	getBlockPlaceAllow().add(Material.FIRE);
 	getBlockPlaceAllow().add(Material.WEB);
+	getBlockPlaceAllow().add(Material.TNT);
 	getItemPickupDeny().add(95);
 	manager.DebugLog(t, this.getClass().getName());
 	}
@@ -223,7 +224,10 @@ public class QuickSurvivalGames extends SoloGame{
 			if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
 			if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getType()==Material.CHEST){
 				ev.setCancelled(true);
-				if(ev.getPlayer().getItemInHand()!=null&&UtilItem.isWeapon(ev.getPlayer().getItemInHand()))return;
+				if(ev.getPlayer().getItemInHand()!=null&&UtilItem.isWeapon(ev.getPlayer().getItemInHand())){
+					ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "OPEN_CHEST_WITH_WEAPON"));
+					return;
+				}
 				if(!chest.containsKey(ev.getClickedBlock().getLocation()))CreateChest(ev.getClickedBlock().getLocation());
 				ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
 			}

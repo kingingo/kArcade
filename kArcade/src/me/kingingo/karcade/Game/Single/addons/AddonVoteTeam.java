@@ -9,7 +9,6 @@ import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Language.Language;
-import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;

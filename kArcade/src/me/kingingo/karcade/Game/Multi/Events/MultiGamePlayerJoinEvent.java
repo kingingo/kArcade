@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.Multi.Events;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -15,9 +16,13 @@ public class MultiGamePlayerJoinEvent extends Event implements Cancellable{
 	@Getter
 	@Setter
 	private boolean cancelled=false;
+	@Getter
+	@Setter
+	private MultiGame game;
 	
-	public MultiGamePlayerJoinEvent(Player player){
+	public MultiGamePlayerJoinEvent(Player player,MultiGame game){
 		this.player=player;
+		this.game=game;
 	}
 	
 	@Override

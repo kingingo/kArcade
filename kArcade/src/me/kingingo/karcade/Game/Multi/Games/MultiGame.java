@@ -45,12 +45,15 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -64,6 +67,12 @@ public class MultiGame extends kListener{
 	@Getter
 	@Setter
 	private boolean Damage = true;
+	@Setter
+	@Getter
+	private boolean blockPlace=true;
+	@Setter
+	@Getter
+	private boolean blockBreak=true;
 	@Setter
 	@Getter
 	private boolean ProjectileDamage=true;
@@ -167,7 +176,9 @@ public class MultiGame extends kListener{
 	
 	@EventHandler
 	public void death(PlayerDeathEvent ev){
+		ev.setDeathMessage(null);
 		if(getGameList().getPlayers().containsKey(ev.getEntity().getKiller())){
+			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Player Death Drops Clear");
 			if(!dropItembydeath)ev.getDrops().clear();
 		}
 	}
@@ -175,21 +186,50 @@ public class MultiGame extends kListener{
 	@EventHandler
 	public void drop(PlayerDropItemEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			ev.setCancelled((dropItem?false:true));
+			if(!dropItem){
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] PlayerDropItem Cancelled TRUE!");
+				ev.setCancelled(true);
+			}
 		}
 	}
 	
 	@EventHandler
 	public void pickup(PlayerPickupItemEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			ev.setCancelled((pickItem?false:true));
+			if(!pickItem){
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] PlayerPickUP Cancelled TRUE!");
+				ev.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void bplace(BlockPlaceEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			if(!blockPlace){
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] BlockPlace Cancelled TRUE!");
+				ev.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void bbreak(BlockBreakEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			if(!blockBreak){
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] BlockBreak Cancelled TRUE!");
+				ev.setCancelled(true);
+			}
 		}
 	}
 	
 	@EventHandler
 	public void hunger(FoodLevelChangeEvent ev){
 		if(ev.getEntity() instanceof Player&&getGameList().getPlayers().containsKey(ev.getEntity())){
-			ev.setCancelled((foodlevelchange?false:true));
+			if(!foodlevelchange){
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] FoodLevelChange Cancelled TRUE!");
+				ev.setCancelled(true);
+			}
 		}
 	}
 	
@@ -305,7 +345,8 @@ public class MultiGame extends kListener{
 	Team last;
 	@EventHandler
 	public void StateChange(MultiGameStateChangeEvent ev){
-		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
+		if(ev.getGame()!=this)return;
+		if(ev.getTo()==GameState.Restart){
 			//Wenn nur noch ein Team da ist
 			if(islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM||ev.getReason()==GameStateChangeReason.LAST_PLAYER||ev.getReason()==GameStateChangeReason.GAME_END){
 				for(Player player : getGameList().getPlayers(PlayerState.IN)){
@@ -403,6 +444,13 @@ public class MultiGame extends kListener{
 	}
 	
 	@EventHandler
+	public void interact(PlayerInteractEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			if(isPlayerState(ev.getPlayer(), PlayerState.OUT))ev.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
 	public void Start(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SEC){
 			if(getState() == GameState.LobbyPhase){
@@ -475,10 +523,10 @@ public class MultiGame extends kListener{
 			if(!getGameList().getPlayers().containsKey( v ))return;
 			
 			if(!DamageTeamSelf&&getTeam(d)==getTeam(v)){
-				if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamSelf Projectile");
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamSelf Projectile");
 				ev.setCancelled(true);
 			}else if(!DamageTeamOther&&getTeam(d)!=getTeam(v)){
-				if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamOther Projectile");
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamOther Projectile");
 				ev.setCancelled(true);
 			}
 		}
@@ -486,6 +534,7 @@ public class MultiGame extends kListener{
 	
 	@EventHandler
 	public void Join(MultiGamePlayerJoinEvent ev){
+		if(ev.getGame()!=this)return;
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
@@ -499,17 +548,34 @@ public class MultiGame extends kListener{
 	@EventHandler(priority=EventPriority.NORMAL,ignoreCancelled=true)
 	public void TeamDamage(EntityDamageByEntityEvent ev){
 		if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)){
-			
-
 			if(ev.getDamager() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getDamager()) ))return;
 			if(ev.getEntity() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) ))return;
 			
 			if(!DamageTeamSelf&&getTeam((Player)ev.getDamager())==getTeam((Player)ev.getEntity())){
-				if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamSelf");
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamSelf");
 				ev.setCancelled(true);
 			}else if(!DamageTeamOther&&getTeam((Player)ev.getDamager())!=getTeam((Player)ev.getEntity())){
-				if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamOther");
+				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamageTeamOther");
 				ev.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void start(MultiGameStartEvent ev){
+		if(ev.getGame()!=this)return;
+		for(Player p : getGameList().getPlayers().keySet()){
+			for(Player p1 : getGameList().getPlayers().keySet()){
+				p.hidePlayer(p1);
+				p1.hidePlayer(p);
+			}
+		}
+		
+		for(Player p : getGameList().getPlayers().keySet()){
+			for(Player p1 : getGameList().getPlayers().keySet()){
+				p.hidePlayer(p1);
+				p.showPlayer(p1);
+				p1.showPlayer(p);
 			}
 		}
 	}
@@ -520,27 +586,27 @@ public class MultiGame extends kListener{
 		if(ev.getEntity() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) ))return;
 		
 		if((ev.getDamager() instanceof Player && isPlayerState((Player)ev.getDamager(), PlayerState.OUT)) || !Damage || isState(GameState.LobbyPhase)){
-			if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei Damage  "+getState());
+			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei Damage  "+getState());
 			ev.setCancelled(true);
 		}else if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)&&!DamagePvP){
 			if(!isPlayerState((Player)ev.getDamager(), PlayerState.IN))return;
 			if(!isPlayerState((Player)ev.getEntity(), PlayerState.IN))return;
 			//P vs P
-			if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamagePvP");
+			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamagePvP");
 			ev.setCancelled(true);
 		}else if(((ev.getEntity() instanceof Player && ev.getDamager() instanceof Creature))&&!DamageEvP){
 			if(!isPlayerState((Player)ev.getEntity(), PlayerState.IN))return;
 			//E vs P
-			if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamageEvP");
+			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamageEvP");
 			ev.setCancelled(true);
 		}else if ( ((ev.getDamager() instanceof Player && ev.getEntity() instanceof Creature))&&!DamagePvE){
 			if(!isPlayerState((Player)ev.getDamager(), PlayerState.IN))return;
-			if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei DamagePvE");
+			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei DamagePvE");
 			//P vs E
 			ev.setCancelled(true);
 		}else if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&!ProjectileDamage){
 			if(ev.getDamager() instanceof Projectile && ((Projectile)ev.getDamager()).getShooter() instanceof Player && !isPlayerState((Player)((Projectile)ev.getDamager()).getShooter(), PlayerState.IN))return;
-			if(getGames().getManager().getService().isDamage())System.err.println("[MultiGame] Cancelled TRUE bei ProjectileDamage");
+			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei ProjectileDamage");
 			ev.setCancelled(true);
 		}
 	}

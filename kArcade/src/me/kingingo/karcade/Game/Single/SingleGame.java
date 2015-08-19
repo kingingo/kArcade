@@ -295,35 +295,39 @@ public class SingleGame extends Game{
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
 		if((ev.getDamager() instanceof Player &&getGameList().getPlayers(PlayerState.OUT).contains((Player)ev.getDamager()))||!Damage||isState(GameState.LobbyPhase)){
-			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei Damage");
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei Damage");
 			ev.setCancelled(true);
 		}else if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)&&!DamagePvP){
 			//P vs P
-			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamagePvP");
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei DamagePvP");
 			ev.setCancelled(true);
 		}else if(((ev.getEntity() instanceof Player && ev.getDamager() instanceof Creature))&&!DamageEvP){
 			//E vs P
-			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamageEvP");
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei DamageEvP");
 			ev.setCancelled(true);
 		}else if ( ((ev.getDamager() instanceof Player && ev.getEntity() instanceof Creature))&&!DamagePvE){
-			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei DamagePvE");
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei DamagePvE");
 			//P vs E
 			ev.setCancelled(true);
 		}else if((ev.getDamager() instanceof Arrow||ev.getDamager() instanceof Snowball||ev.getDamager() instanceof Egg)&&!ProjectileDamage){
-			if(getManager().getService().isDamage())System.err.println("[Game] Cancelled TRUE bei ProjectileDamage");
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei ProjectileDamage");
 			ev.setCancelled(true);
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void PlaceBlockInMap(BlockPlaceEvent ev){
 		if(getManager().getPermManager().hasPermission(ev.getPlayer(), kPermission.ALL_PERMISSION)||ev.getPlayer().isOp())return;
-		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))ev.setCancelled(true);
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+			ev.setCancelled(true);
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei BLOCKPLACE");
+		}
 		if(isState(GameState.DeathMatch)){
 			ev.setCancelled(false);
 			return;
 		}
 		if((!isState(GameState.InGame))||BlockPlaceDeny.contains(ev.getBlock().getType()) || (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))){
+			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei BLOCKPLACE1 "+ev.getBlock().getType().name());
 			ev.setCancelled(true);
 		}
 	}

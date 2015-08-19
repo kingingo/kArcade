@@ -19,10 +19,7 @@ public class CommandService implements CommandExecutor{
 	
 	@Getter
 	@Setter
-	private boolean Damage=false;
-	@Getter
-	@Setter
-	private boolean lagg=false;
+	private boolean debug=false;
 	private PermissionManager manager;
 	
 	public CommandService(PermissionManager manager){
@@ -36,24 +33,17 @@ public class CommandService implements CommandExecutor{
 		if(args.length==0){
 			p.sendMessage("§e=---§7 Service§e---=");
 			p.sendMessage("§e/Service Damage §7|§e Damage Nachrichten wo Cancelled wird");
+			p.sendMessage("§e/Service BlockPlace §7|§e BlockPlace Nachrichten wo Cancelled wird");
 			return true;
 		}
 		
-		if(args[0].equalsIgnoreCase("damage")){
-			if(Damage){
-				setDamage(false);
-				Bukkit.broadcastMessage("§e[Service]:§7 Die Damage Nachrichten wurden §cDeaktiviert!");
+		if(args[0].equalsIgnoreCase("debug")){
+			if(debug){
+				setDebug(false);
+				Bukkit.broadcastMessage("§e[Service]:§7 Der Debug-Mode wurde §cDeaktiviert!");
 			}else{
-				setDamage(true);
-				Bukkit.broadcastMessage("§e[Service]:§7 Die Damage Nachrichten wurden §aAktiviert!");
-			}
-		}else if(args[0].equalsIgnoreCase("lagg")){
-			if(lagg){
-				setLagg(false);
-				Bukkit.broadcastMessage("§e[Service]:§7 Die Lagg Nachrichten wurden §cDeaktiviert!");
-			}else{
-				setLagg(true);
-				Bukkit.broadcastMessage("§e[Service]:§7 Die Lagg Nachrichten wurden §aAktiviert!");
+				setDebug(true);
+				Bukkit.broadcastMessage("§e[Service]:§7 Der Debug Mode wurde §aAktiviert!");
 			}
 		}else if(args[0].equalsIgnoreCase("SW")){
 			ServiceSheepWars.Service(p, args);

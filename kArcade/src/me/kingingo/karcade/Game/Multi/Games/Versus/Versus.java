@@ -1,7 +1,5 @@
 package me.kingingo.karcade.Game.Multi.Games.Versus;
 
-import io.netty.util.internal.chmv8.ForkJoinPool.ManagedBlocker;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -80,7 +78,12 @@ public class Versus extends MultiGame{
 				block.setType(Material.AIR);
 			}
 		}
-		
+		setBlockBreak(false);
+		setBlockPlace(false);
+		setDropItem(false);
+		setPickItem(false);
+		setDropItembydeath(false);
+		setFoodlevelchange(false);
 		addonMove=new AddonMove(games.getManager());
 		setType( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
 		setState(GameState.LobbyPhase);
@@ -98,7 +101,7 @@ public class Versus extends MultiGame{
 			if(ev.getEntity().getKiller()!=null){
 				getGames().getCoins().addCoins(ev.getEntity().getKiller(), false, 4);
 				getGames().getStats().setInt(ev.getEntity().getKiller(), getGames().getStats().getInt(Stats.KILLS, ev.getEntity().getKiller())+1, Stats.KILLS);
-				broadcast("KILL_BY", new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() });
+				broadcastWithPrefix("KILL_BY", new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() });
 			}else{
 				broadcastWithPrefix("DEATH", new String[]{ ev.getEntity().getName() });
 			}
@@ -142,19 +145,17 @@ public class Versus extends MultiGame{
 	
 	@EventHandler
 	public void lobby(MultiGameStateChangeEvent ev){
+		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.LobbyPhase){
 			addonMove.setnotMove(true);
 			setDamagePvP(false);
 			setDamage(false);
-			setDropItem(false);
-			setPickItem(false);
-			setDropItembydeath(false);
 		}
 	}
 	
 	@EventHandler
 	public void Start(MultiGameStartEvent ev){
-		if(ev.getGame() == this){
+		if(ev.getGame()!=this)return;
 			addonMove.setnotMove(false);
 			
 			for(Player player : getTeamList().keySet()){
@@ -177,11 +178,11 @@ public class Versus extends MultiGame{
 			setDamagePvP(true);
 			setDamage(true);
 			setState(GameState.InGame);
-		}
 	}
 	
 	@EventHandler
 	public void Move(MultiGamePlayerJoinEvent ev){
+		if(ev.getGame()!=this)return;
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Fügt Spieler zu AddonMove hinzu

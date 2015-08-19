@@ -20,7 +20,23 @@ import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
+import me.kingingo.kcore.Kit.Perks.PerkArrowFire;
+import me.kingingo.kcore.Kit.Perks.PerkArrowInfinity;
+import me.kingingo.kcore.Kit.Perks.PerkDoubleJump;
 import me.kingingo.kcore.Kit.Perks.PerkEquipment;
+import me.kingingo.kcore.Kit.Perks.PerkHeal;
+import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
+import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
+import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
+import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
+import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
+import me.kingingo.kcore.Kit.Perks.PerkNoFiredamage;
+import me.kingingo.kcore.Kit.Perks.PerkNoHunger;
+import me.kingingo.kcore.Kit.Perks.PerkNoKnockback;
+import me.kingingo.kcore.Kit.Perks.PerkPoisen;
+import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
+import me.kingingo.kcore.Kit.Perks.PerkTNT;
+import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
@@ -44,6 +60,7 @@ import me.kingingo.kcore.Util.UtilTime;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -137,6 +154,25 @@ public class SkyWars extends TeamGame{
 			}),
 			new Kit( "§eFischer",new String[]{"§8x1§7 Angel mit unbreaking 2","§8x1§7 Kettenrüstung mit Schutz 2"}, new ItemStack(Material.CHAINMAIL_CHESTPLATE),kPermission.SKYWARS_KIT_FISCHER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.FISHING_ROD), Enchantment.DURABILITY,2),UtilItem.EnchantItem(new ItemStack(Material.CHAINMAIL_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL,2)})
+			}),
+			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SkyWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SKYWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
+				new PerkNoHunger(),
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD,1), Enchantment.DAMAGE_ALL,4),new ItemStack(Material.BOW), new ItemStack(Material.LEATHER_HELMET,1), UtilItem.EnchantItem(new ItemStack(Material.IRON_CHESTPLATE,1), Enchantment.PROTECTION_ENVIRONMENTAL,3), UtilItem.EnchantItem(new ItemStack(Material.LEATHER_LEGGINGS,1), Enchantment.PROTECTION_ENVIRONMENTAL,4), new ItemStack(Material.LEATHER_BOOTS)}),
+				new PerkSneakDamage(1),
+				new PerkPoisen(10,50),
+				new PerkHolzfäller(),
+				new PerkNoFiredamage(),
+				new PerkNoFalldamage(),
+				new PerkArrowFire(80),
+				new PerkDoubleJump(),
+				new PerkNoKnockback(manager.getInstance()),
+				new PerkNoExplosionDamage(),
+				new PerkTNT(),
+				new PerkHealByHit(60, 6),
+				new PerkHeal(6),
+				new PerkMoreHearth(6, 60),
+				new PerkArrowInfinity(),
+				new PerkWalkEffect(Effect.CRIT,10)
 			})
 		});
 		
