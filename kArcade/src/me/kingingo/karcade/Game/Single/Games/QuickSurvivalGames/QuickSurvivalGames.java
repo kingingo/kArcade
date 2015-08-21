@@ -10,6 +10,7 @@ import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
@@ -22,6 +23,7 @@ import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -44,7 +46,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -68,33 +72,33 @@ public class QuickSurvivalGames extends SoloGame{
 	public QuickSurvivalGames(kArcadeManager manager) {
 		super(manager);
 		registerListener();
-	long t = System.currentTimeMillis();
-	setTyp(GameType.QuickSurvivalGames); 
-	wd=new WorldData(manager,getType());
-	wd.Initialize();
-	setWorldData(wd);
-	setMin_Players(6);
-	setMax_Players(16);
-	setCompassAddon(true);
-	setExplosion(true);
-	setDeathDropItems(true);
-	setFoodChange(false);
-	setDamageSelf(false);
-	setDamage(true);
-	setDamagePvE(true);
-	setItemDrop(true);
-	setItemPickup(true);
-	setCreatureSpawn(false);
-	setBlockBreak(false);
-	setBlockPlace(false);
-	getBlockBreakAllow().add(Material.LEAVES);
-	getBlockPlaceAllow().add(Material.CAKE);
-	getBlockPlaceAllow().add(Material.CAKE_BLOCK);
-	getBlockPlaceAllow().add(Material.FIRE);
-	getBlockPlaceAllow().add(Material.WEB);
-	getBlockPlaceAllow().add(Material.TNT);
-	getItemPickupDeny().add(95);
-	manager.DebugLog(t, this.getClass().getName());
+		long t = System.currentTimeMillis();
+		setTyp(GameType.QuickSurvivalGames); 
+		wd=new WorldData(manager,getType());
+		wd.Initialize();
+		setWorldData(wd);
+		setMin_Players(6);
+		setMax_Players(16);
+		setCompassAddon(true);
+		setExplosion(true);
+		setDeathDropItems(true);
+		setFoodChange(false);
+		setDamageSelf(false);
+		setDamage(true);
+		setDamagePvE(true);
+		setItemDrop(true);
+		setItemPickup(true);
+		setCreatureSpawn(false);
+		setBlockBreak(false);
+		setBlockPlace(false);
+		getBlockBreakAllow().add(Material.LEAVES);
+		getBlockPlaceAllow().add(Material.CAKE);
+		getBlockPlaceAllow().add(Material.CAKE_BLOCK);
+		getBlockPlaceAllow().add(Material.FIRE);
+		getBlockPlaceAllow().add(Material.WEB);
+		getBlockPlaceAllow().add(Material.TNT);
+		getItemPickupDeny().add(95);
+		manager.DebugLog(t, this.getClass().getName());
 	}
 	//RED WOOL = SPAWN PLAYER!
 	
@@ -251,6 +255,8 @@ public class QuickSurvivalGames extends SoloGame{
 			broadcastWithPrefix("GAME_START_IN", getStart());
 			new Title("",Language.getText("GAME_START_IN", getStart())).broadcast();
 			break;
+			case 9 : for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove(); 
+			break;
 			case 5:broadcastWithPrefix("GAME_START_IN", getStart());break;
 			case 4:broadcastWithPrefix("GAME_START_IN", getStart());break;
 			case 3:
@@ -277,6 +283,17 @@ public class QuickSurvivalGames extends SoloGame{
 	}
 	
 	@EventHandler
+	public void BlockIgnite(BlockIgniteEvent ev){
+		if(ev.getCause() == IgniteCause.FLINT_AND_STEEL&&ev.getPlayer().getItemInHand().getType()==Material.FLINT_AND_STEEL){
+			if(0 == item.getDurability()){
+				ev.getPlayer().getItemInHand().setDurability( (short) (ev.getPlayer().getItemInHand().getType().getMaxDurability()/2) );
+			}else{
+				UtilInv.remove(ev.getPlayer(), ev.getPlayer().getItemInHand(), 1);
+			}
+		}
+	}
+	
+	@EventHandler
 	public void DeathMatch(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
@@ -288,28 +305,67 @@ public class QuickSurvivalGames extends SoloGame{
 			}
 		}
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "DEATHMATCH_START_IN",UtilTime.formatSeconds(getStart())));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "TELEPORT_TO_DEATHMATCH_ARENA",UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
-			case 15:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
-			case 10:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
-			case 5:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
-			case 4:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
-			case 3:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
-			case 2:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
-			case 1:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+			case 15:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
+			case 10:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
+			case 5:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
+			case 4:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
+			case 3:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
+			case 2:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
+			case 1:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
 			case 0:
+				setDamage(false);
+				move.setnotMove(true);
 				Title title = new Title("","");
-				broadcastWithPrefixName("DEATHMATCH_START");
-				setStart(176);
+				broadcastWithPrefixName("TELEPORT_TO_DEATHMATCH_ARENA");
+				setStart(6);
 				for(Player p : UtilServer.getPlayers()){
-					title.setSubtitle(Language.getText(p,"DEATHMATCH_START", getStart()));
+					title.setSubtitle(Language.getText(p,"TELEPORT_TO_DEATHMATCH_ARENA", getStart()));
 					title.send(p);
 					p.teleport( getWorldData().getLocs().get(Team.YELLOW.Name()).get(0) );
 				}
 				
 				for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
-				setState(GameState.DeathMatch);
+				setState(GameState.StartDeathMatch);
 			break;
+		}
+	}
+	
+	@EventHandler
+	public void StartDeathMatch(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.SEC)return;
+		if(getState()!=GameState.StartDeathMatch)return;
+		setStart(getStart()-1);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText("DEATHMATCH_START_IN", getStart()));
+		
+		if(getStart()>1||getStart()<=5){
+			Title title = new Title("","§c§l"+getStart());
+			title.setStayTime(2);
+			for(Player p : UtilServer.getPlayers()){
+				title.send(p);
+			}
+		}
+		
+		switch(getStart()){
+		case 5:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+		case 4:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+		case 3:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+		case 2:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+		case 1:broadcastWithPrefix("DEATHMATCH_START_IN", UtilTime.formatSeconds(getStart()));break;
+		case 0:
+			Title title = new Title("","");
+			title.setStayTime(2);
+			for(Player p : UtilServer.getPlayers()){
+				title.setSubtitle(Language.getText(p,"GO", getStart()));
+				title.send(p);
+			}
+			broadcastWithPrefixName("DEATHMATCH_START");
+			setStart(176);
+			setDamage(true);
+			move.setnotMove(false);
+			setState(GameState.DeathMatch);
+		break;
 		}
 	}
 	
@@ -431,6 +487,7 @@ public class QuickSurvivalGames extends SoloGame{
 		
 		getManager().DebugLog(time, this.getClass().getName());
 		move=new AddonMove(getManager());
+		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
 		getManager().getHologram().RemoveAllText();
 		setState(GameState.StartGame);

@@ -34,6 +34,7 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Versus.VersusKit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -125,6 +126,15 @@ public class MultiGame extends kListener{
 	@Getter
 	@Setter
 	private String updateTo = "hub";
+	@Getter
+	@Setter 
+	private int min_team=0;
+	@Getter
+	@Setter 
+	private int max_team=0;
+	@Getter
+	@Setter
+	private VersusKit kit;
 	
 	public MultiGame(MultiGames games) {
 		super(games.getManager().getInstance(), "MultiGame");
@@ -139,7 +149,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap() ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,kit.name ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());
@@ -397,7 +407,7 @@ public class MultiGame extends kListener{
 				TeamList.remove(ev.getPlayer());
 			}
 			
-			if(isState(GameState.Restart)||isState(GameState.LobbyPhase))return;
+			if(isState(GameState.Restart)||isState(GameState.LobbyPhase)||isState(GameState.Laden))return;
 			getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
 			if(islastTeam()&&(getState()==GameState.InGame||getState()==GameState.DeathMatch)){
 				setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
@@ -453,7 +463,7 @@ public class MultiGame extends kListener{
 	@EventHandler
 	public void Start(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SEC){
-			if(getState() == GameState.LobbyPhase){
+			if(getState() == GameState.LobbyPhase||getState() == GameState.Laden){
 				if(getTimer()<0){
 					setTimer(31);
 				}
@@ -506,7 +516,7 @@ public class MultiGame extends kListener{
 			//IS PLAYER IN ARENA?
 			if(ev.getEntity() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) ))return;
 			if(!Damage)ev.setCancelled(true);
-			if(isState(GameState.LobbyPhase))ev.setCancelled(true);
+			if(isState(GameState.LobbyPhase)||isState(GameState.Laden))ev.setCancelled(true);
 			if(EntityDamage.contains(ev.getCause()))ev.setCancelled(true);
 		}
 	}
@@ -585,7 +595,7 @@ public class MultiGame extends kListener{
 		if(ev.getDamager() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getDamager()) ))return;
 		if(ev.getEntity() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) ))return;
 		
-		if((ev.getDamager() instanceof Player && isPlayerState((Player)ev.getDamager(), PlayerState.OUT)) || !Damage || isState(GameState.LobbyPhase)){
+		if((ev.getDamager() instanceof Player && isPlayerState((Player)ev.getDamager(), PlayerState.OUT)) || !Damage || isState(GameState.LobbyPhase)|| isState(GameState.Laden)){
 			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei Damage  "+getState());
 			ev.setCancelled(true);
 		}else if((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)&&!DamagePvP){

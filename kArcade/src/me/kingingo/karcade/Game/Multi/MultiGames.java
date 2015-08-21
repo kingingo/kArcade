@@ -229,11 +229,17 @@ public class MultiGames extends Game{
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
 									try {
-										((Versus)g).setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
+										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
+									g.getKit().name=settings.getKit();
 								}
+								
+								g.setMin_team(settings.getMin_team());
+								g.setMax_team(settings.getMax_team());
+								if(settings.getMin_team()==1&&settings.getMax_team()==1)g.setState(GameState.Laden);
+								
 								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 								Bukkit.getPluginManager().callEvent(event);
 							}else{

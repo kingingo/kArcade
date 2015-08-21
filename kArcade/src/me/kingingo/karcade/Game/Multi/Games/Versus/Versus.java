@@ -43,9 +43,6 @@ public class Versus extends MultiGame{
 	private VersusType type;
 	@Getter
 	private AddonMove addonMove;
-	@Getter
-	@Setter
-	private VersusKit kit;
 	
 	public Versus(MultiGames games,String Map,Location location) {
 		super(games);
@@ -158,21 +155,20 @@ public class Versus extends MultiGame{
 		if(ev.getGame()!=this)return;
 			addonMove.setnotMove(false);
 			
-			for(Player player : getTeamList().keySet()){
-				if(kit.helm!=null)player.getInventory().setHelmet(kit.helm);
-				if(kit.chestplate!=null)player.getInventory().setChestplate(kit.chestplate);
-				if(kit.leggings!=null)player.getInventory().setLeggings(kit.leggings);
-				if(kit.boots!=null)player.getInventory().setBoots(kit.boots);
-				if(kit==null)Log("kit == NULL");
-				if(kit.inv==null){
-					Log("kit.inv == NULL");
-				}else{
-					for(ItemStack item : kit.inv)
-						if(item!=null){
-							player.getInventory().addItem(item);
-						}else{
-							Log("item == NULL");
-						}
+			if(getKit()==null){
+				Log("kit == NULL");
+			}else{
+				for(Player player : getTeamList().keySet()){
+					if(getKit().helm!=null)player.getInventory().setHelmet(getKit().helm);
+					if(getKit().chestplate!=null)player.getInventory().setChestplate(getKit().chestplate);
+					if(getKit().leggings!=null)player.getInventory().setLeggings(getKit().leggings);
+					if(getKit().boots!=null)player.getInventory().setBoots(getKit().boots);
+					if(getKit().inv!=null){
+						for(ItemStack item : getKit().inv)
+							if(item!=null){
+								player.getInventory().addItem(item);
+							}
+					}
 				}
 			}
 			setDamagePvP(true);
