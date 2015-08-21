@@ -6,12 +6,15 @@ import me.kingingo.karcade.Command.CommandForceStart;
 import me.kingingo.karcade.Command.CommandScan;
 import me.kingingo.karcade.Command.CommandSend;
 import me.kingingo.karcade.Command.CommandStart;
+import me.kingingo.karcade.Game.Multi.MultiGames;
+import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.AACHack.AACHack;
 import me.kingingo.kcore.Client.Client;
 import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Command.Admin.CommandCMDMute;
 import me.kingingo.kcore.Command.Admin.CommandChatMute;
 import me.kingingo.kcore.Command.Admin.CommandToggle;
+import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.Command.ListenerCMD;
@@ -89,7 +92,14 @@ public class kArcade extends JavaPlugin{
 		for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel().toLowerCase()));
 		mysql.close();
 		updater.stop();
-		manager.getGame().updateInfo();
+		if(manager.getGame() instanceof MultiGames){
+			for(MultiGame game : ((MultiGames)manager.getGame()).getGames()){
+				game.setState(GameState.Restart);
+				game.updateInfo();
+			}
+		}else{
+			manager.getGame().updateInfo();
+		}
 		c.disconnect(true);
 	}
 	

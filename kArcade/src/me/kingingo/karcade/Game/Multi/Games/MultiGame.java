@@ -149,7 +149,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,kit.name ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.name) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());
@@ -407,8 +407,18 @@ public class MultiGame extends kListener{
 				TeamList.remove(ev.getPlayer());
 			}
 			
-			if(isState(GameState.Restart)||isState(GameState.LobbyPhase)||isState(GameState.Laden))return;
+			if(getGameList().getPlayers().isEmpty()||isState(GameState.Laden)){
+				setState(GameState.LobbyPhase);
+			}
+			
+			if(isState(GameState.Laden)||isState(GameState.LobbyPhase)){
+				if(islastTeam()){
+					setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
+				}
+				return;
+			}
 			getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
+			
 			if(islastTeam()&&(getState()==GameState.InGame||getState()==GameState.DeathMatch)){
 				setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
 			}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
