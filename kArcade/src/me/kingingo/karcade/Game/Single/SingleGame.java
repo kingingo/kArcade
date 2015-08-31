@@ -392,7 +392,7 @@ public class SingleGame extends Game{
 	
 	 @EventHandler(priority=EventPriority.NORMAL)
 	 public void JoinRanking(PlayerJoinEvent ev){
-		 TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
+			TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEpicPvP§8.§eeu §8| §a"+getType().getTyp(), "§aTeamSpeak: §7ts.EpicPvP.eu §8| §eWebsite: §7EpicPvP.eu");
 		 if(getState()!=GameState.LobbyPhase)return;
 		 getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(), getManager().getString_ranking());
 	 }
