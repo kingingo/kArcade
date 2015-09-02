@@ -465,7 +465,7 @@ public class QuickSurvivalGames extends SoloGame{
 		int r;
 
 		setBoard(getManager().getPermManager().getScoreboard());
-		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§6§l"+getType().getKürzel()+" Spieler:");
+		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§6§l"+getType().getKürzel()+" Players:");
 		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
 			if(list.isEmpty()){
