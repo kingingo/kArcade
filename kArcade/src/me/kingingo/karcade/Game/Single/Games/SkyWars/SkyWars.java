@@ -3,12 +3,14 @@ package me.kingingo.karcade.Game.Single.Games.SkyWars;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lombok.Getter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
+import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
@@ -39,6 +41,7 @@ import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Language.Language;
+import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -85,12 +88,17 @@ public class SkyWars extends TeamGame{
 	private SkyWarsType type;
 	private KitShop kitshop;
 	private HashMap<String,Integer> kills =  new HashMap<>();
+	@Getter
+	private LaunchItemManager ilManager;
+	private CreeperSpawner creeper;
 	
 	public SkyWars(kArcadeManager manager,SkyWarsType type){
 		super(manager);
 		registerListener();
 		long l = System.currentTimeMillis();
 		this.type=type;
+		this.ilManager=new LaunchItemManager(getManager().getInstance());
+		this.creeper=new CreeperSpawner(this);
 		setTyp(GameType.SkyWars);
 		setState(GameState.Laden);
 		setMax_Players(type.getMax());
@@ -113,6 +121,12 @@ public class SkyWars extends TeamGame{
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
 		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
+			new Kit( "§eKoch",new String[]{"§8x"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10)})
+			}),
+			new Kit( "§eSprengmeister",new String[]{"§8x4 Creeper Spawner","§8x10 TnT","§8x1 Feuerzeug"}, new ItemStack(Material.TNT),kPermission.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL),this.creeper.getItem(4)})
+			}),
 			new Kit( "§eJäger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),kPermission.SKYWARS_KIT_JÄGER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,10)})
 			}),
