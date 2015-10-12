@@ -18,6 +18,7 @@ import me.kingingo.kcore.Packet.Packets.SERVER_STATUS;
 import me.kingingo.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import me.kingingo.kcore.StatsManager.StatsManager;
 import me.kingingo.kcore.Util.Coins;
+import me.kingingo.kcore.Util.Gems;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilPlayer;
@@ -44,6 +45,7 @@ public class Game implements Listener{
 	@Getter
 	private WorldData worldData;
 	private Coins coins;
+	private Gems gems;
 	@Getter
 	@Setter
 	private Scoreboard board;
@@ -72,6 +74,15 @@ public class Game implements Listener{
 	
 	public void registerListener(){
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
+	}
+	
+	public boolean isGemsAktiv(){
+		return gems!=null;
+	}
+	
+	public Gems getGems(){
+		if(gems==null)gems=new Gems(getManager().getMysql());
+		return gems;
 	}
 	
 	public boolean isCoinsAktiv(){
@@ -197,7 +208,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void Board(PlayerSetScoreboardEvent ev){
-		UtilPlayer.setScoreboard(ev.getPlayer(), getCoins(), getManager().getPermManager());
+		UtilPlayer.setScoreboard(ev.getPlayer(),getGems(), getCoins());
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)

@@ -424,6 +424,7 @@ public class kArcadeManager implements Listener{
 	public void GameStateForCoins(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
 			if(getGame().isCoinsAktiv())getGame().getCoins().SaveAll();
+			if(getGame().isGemsAktiv())getGame().getGems().SaveAll();
 		}
 	}
 }

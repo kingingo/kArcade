@@ -714,7 +714,7 @@ public class CaveWars extends TeamGame{
 				setVillager(loc, et);
 			}
 		}
-		getManager().getHologram().RemoveAllText();
+		
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	

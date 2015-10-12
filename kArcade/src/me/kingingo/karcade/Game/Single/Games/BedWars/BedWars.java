@@ -580,7 +580,7 @@ public class BedWars extends TeamGame{
 				setSpezialVillager(loc,et);
 			}
 		}
-		getManager().getHologram().RemoveAllText();
+		
 		setStart(60*60);
 		setState(GameState.InGame);
 		getManager().DebugLog(time, this.getClass().getName());

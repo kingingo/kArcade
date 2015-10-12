@@ -771,7 +771,7 @@ public class SheepWars extends TeamGame{
 				setSpezialVillager(loc,et);
 			}
 		}
-		getManager().getHologram().RemoveAllText();
+		
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	

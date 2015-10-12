@@ -537,7 +537,7 @@ public class SurvivalGames extends TeamGame{
 		getManager().DebugLog(time, this.getClass().getName());
 		move=new AddonMove(getManager());
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
-		getManager().getHologram().RemoveAllText();
+		
 		setState(GameState.StartGame);
 		getManager().DebugLog(time, this.getClass().getName());
 	}

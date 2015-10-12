@@ -489,7 +489,6 @@ public class QuickSurvivalGames extends SoloGame{
 		move=new AddonMove(getManager());
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
-		getManager().getHologram().RemoveAllText();
 		setState(GameState.StartGame);
 		
 		for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
