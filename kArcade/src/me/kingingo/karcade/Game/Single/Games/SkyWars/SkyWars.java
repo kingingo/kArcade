@@ -120,53 +120,53 @@ public class SkyWars extends TeamGame{
 		getWorldData().Initialize();
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
-		kitshop=new KitShop(getManager().getInstance(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
-			new Kit( "§eKoch",new String[]{"§8x"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,new Perk[]{
+		kitshop=new KitShop(getManager().getInstance(), getGems(),getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
+			new Kit( "§eKoch",new String[]{"§8x"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10)})
 			}),
-			new Kit( "§eSprengmeister",new String[]{"§8x4 Creeper Spawner","§8x10 TnT","§8x1 Feuerzeug"}, new ItemStack(Material.TNT),kPermission.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eSprengmeister",new String[]{"§8x4 Creeper Spawner","§8x10 TnT","§8x1 Feuerzeug"}, new ItemStack(Material.TNT),kPermission.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL),this.creeper.getItem(4)})
 			}),
-			new Kit( "§eJäger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),kPermission.SKYWARS_KIT_JÄGER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eJäger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),kPermission.SKYWARS_KIT_JÄGER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,10)})
 			}),
-			new Kit( "§eEnchanter",new String[]{"§8x1§7 Enchantment Table","§8x64 §7Enchantment Bottles"}, new ItemStack(Material.ENCHANTMENT_TABLE),kPermission.SKYWARS_KIT_ENCHANTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eEnchanter",new String[]{"§8x1§7 Enchantment Table","§8x64 §7Enchantment Bottles"}, new ItemStack(Material.ENCHANTMENT_TABLE),kPermission.SKYWARS_KIT_ENCHANTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.ENCHANTMENT_TABLE),new ItemStack(Material.EXP_BOTTLE,64)})
 			}),
-			new Kit( "§eHeiler",new String[]{"§8x3§7 Tränke der Heilung","§8x3§7 Regenerations Tränke"}, new ItemStack(Material.POTION,1,(short)16389),kPermission.SKYWARS_KIT_HEILER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eHeiler",new String[]{"§8x3§7 Tränke der Heilung","§8x3§7 Regenerations Tränke"}, new ItemStack(Material.POTION,1,(short)16389),kPermission.SKYWARS_KIT_HEILER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,3,(short)16389),new ItemStack(Material.POTION,3,(short)16385)})
 			}),
-			new Kit( "§eSpäher",new String[]{"§8x1§7 Steinschwert","§8x3 §7Schnelligkeits Tränke"}, new ItemStack(Material.STONE_SWORD),kPermission.SKYWARS_KIT_SPÄHER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eSpäher",new String[]{"§8x1§7 Steinschwert","§8x3 §7Schnelligkeits Tränke"}, new ItemStack(Material.STONE_SWORD),kPermission.SKYWARS_KIT_SPÄHER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.STONE_SWORD),new ItemStack(Material.POTION,3,(short)16386)})
 			}),
-			new Kit( "§eKampfmeister",new String[]{"§8x1§7 Anvil","§864x§7 Enchantment Bottles","§8x1§7 Diamant Helm","§8x1§7 Enchantment Buch (Protection III)"}, new ItemStack(Material.ANVIL),kPermission.SKYWARS_KIT_KAMPFMEISTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eKampfmeister",new String[]{"§8x1§7 Anvil","§864x§7 Enchantment Bottles","§8x1§7 Diamant Helm","§8x1§7 Enchantment Buch (Protection III)"}, new ItemStack(Material.ANVIL),kPermission.SKYWARS_KIT_KAMPFMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.getEnchantmentBook(Enchantment.PROTECTION_ENVIRONMENTAL, 3),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.EXP_BOTTLE,64),new ItemStack(Material.ANVIL)})
 			}),
-			new Kit( "§eRitter",new String[]{"§8x1§7 Eisenschwert (Schärfe II)"}, new ItemStack(Material.IRON_SWORD),kPermission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eRitter",new String[]{"§8x1§7 Eisenschwert (Schärfe II)"}, new ItemStack(Material.IRON_SWORD),kPermission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_SWORD), Enchantment.DAMAGE_ALL, 2)})
 			}),
-			new Kit( "§eFeuermeister",new String[]{"§8x1§7Feuerzeug","§82x§7 Lava-Eimer","§82x§7 Feuer Tränke"}, new ItemStack(Material.LAVA_BUCKET),kPermission.SKYWARS_KIT_FEUERMEISTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eFeuermeister",new String[]{"§8x1§7Feuerzeug","§82x§7 Lava-Eimer","§82x§7 Feuer Tränke"}, new ItemStack(Material.LAVA_BUCKET),kPermission.SKYWARS_KIT_FEUERMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,2,(short)16387),new ItemStack(Material.FLINT_AND_STEEL,1),new ItemStack(Material.LAVA_BUCKET,2)})
 			}),
-			new Kit( "§eDroide",new String[]{"§8x1§7 Regenerations Trank","§82x§7 Tränke der Heilung","§82x§7 Vergiftungs Tränke","§82x§7 Schadens Tränke"}, new ItemStack(Material.POTION),kPermission.SKYWARS_KIT_DROIDE,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eDroide",new String[]{"§8x1§7 Regenerations Trank","§82x§7 Tränke der Heilung","§82x§7 Vergiftungs Tränke","§82x§7 Schadens Tränke"}, new ItemStack(Material.POTION),kPermission.SKYWARS_KIT_DROIDE,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,1,(short)16385),new ItemStack(Material.POTION,2,(short)16388),new ItemStack(Material.POTION,2,(short)16389),new ItemStack(Material.POTION,2,(short)16396)})
 			}),
-			new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 2"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 2"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.KNOCKBACK,1)})
 			}),
-			new Kit( "§eHase",new String[]{"§8x2§7 Schnelligkeits Treanke","§8x2§7 Sprungkraft Treanke","§8x8§7 Kartotten"}, new ItemStack(Material.CARROT),kPermission.SKYWARS_KIT_HASE,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eHase",new String[]{"§8x2§7 Schnelligkeits Treanke","§8x2§7 Sprungkraft Treanke","§8x8§7 Kartotten"}, new ItemStack(Material.CARROT),kPermission.SKYWARS_KIT_HASE,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,2,(byte)0),new ItemStack(Material.POTION,2,(byte)0),new ItemStack(Material.CARROT,8)})
 			}),
-			new Kit( "§eRusher",new String[]{"§8x25§7 Granit Bloecke","§8x1§7 Steinschwert Schaerfe 1","§8x1§7 Goldbrustpanzer"}, new ItemStack(Material.GOLD_CHESTPLATE),kPermission.SKYWARS_KIT_RUSHER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eRusher",new String[]{"§8x25§7 Granit Bloecke","§8x1§7 Steinschwert Schaerfe 1","§8x1§7 Goldbrustpanzer"}, new ItemStack(Material.GOLD_CHESTPLATE),kPermission.SKYWARS_KIT_RUSHER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.COBBLESTONE,25),new ItemStack(Material.GOLD_CHESTPLATE),UtilItem.EnchantItem(new ItemStack(Material.STONE_SWORD), Enchantment.DAMAGE_ALL, 1)})
 			}),
-			new Kit( "§ePolizist",new String[]{"§8x1§7 Lederbrustpanzer","§8x1§7 Lederhose","§8x1§7 Stock mit Schaerfe 2"}, UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.BLUE),kPermission.SKYWARS_KIT_POLIZIST,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§ePolizist",new String[]{"§8x1§7 Lederbrustpanzer","§8x1§7 Lederhose","§8x1§7 Stock mit Schaerfe 2"}, UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.BLUE),kPermission.SKYWARS_KIT_POLIZIST,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.BLUE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.BLUE),UtilItem.RenameItem(UtilItem.EnchantItem(new ItemStack(Material.STICK), Enchantment.DAMAGE_ALL,2), "§7Knueppel")})
 			}),
-			new Kit( "§eFarmer",new String[]{"§8x1§7 Eisenspitzhacke mit Schaerfe 2 u. Efficiens 2","§8x16§7 Eier"}, new ItemStack(Material.IRON_PICKAXE),kPermission.SKYWARS_KIT_FARMER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eFarmer",new String[]{"§8x1§7 Eisenspitzhacke mit Schaerfe 2 u. Efficiens 2","§8x16§7 Eier"}, new ItemStack(Material.IRON_PICKAXE),kPermission.SKYWARS_KIT_FARMER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.EGG,16),UtilItem.EnchantItem(UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.DIG_SPEED, 2), Enchantment.DAMAGE_ALL,2)})
 			}),
-			new Kit( "§eFischer",new String[]{"§8x1§7 Angel mit unbreaking 2","§8x1§7 Kettenrüstung mit Schutz 2"}, new ItemStack(Material.CHAINMAIL_CHESTPLATE),kPermission.SKYWARS_KIT_FISCHER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eFischer",new String[]{"§8x1§7 Angel mit unbreaking 2","§8x1§7 Kettenrüstung mit Schutz 2"}, new ItemStack(Material.CHAINMAIL_CHESTPLATE),kPermission.SKYWARS_KIT_FISCHER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.FISHING_ROD), Enchantment.DURABILITY,2),UtilItem.EnchantItem(new ItemStack(Material.CHAINMAIL_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL,2)})
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SkyWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SKYWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{

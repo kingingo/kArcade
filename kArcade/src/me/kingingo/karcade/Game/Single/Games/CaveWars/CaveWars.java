@@ -158,41 +158,41 @@ public class CaveWars extends TeamGame{
 		setMax_Players(getTyp().getMax());
 		setVoteTeam(new AddonVoteTeam(this,getTyp().getTeam(),InventorySize._9,getTyp().getTeam_size()));
 		
-		kitshop=new KitShop(getManager().getInstance(), getCoins(),getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
-			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
+		kitshop=new KitShop(getManager().getInstance(),getGems(), getCoins(),getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,500,new Perk[]{
 				new PerkNoHunger()
 			}),
-			new Kit( "§eArrowMan",new String[]{"Der ArrowMan besitzt die 30% Chance","das seine Pfeile brennen."}, new ItemStack(Material.ARROW),kPermission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eArrowMan",new String[]{"Der ArrowMan besitzt die 30% Chance","das seine Pfeile brennen."}, new ItemStack(Material.ARROW),kPermission.SHEEPWARS_KIT_ARROWMAN,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkArrowFire(30)
 			}),
 			new Kit( "§eItemStealer",new String[]{"Der ItemStealer hat nach seinem"," Tod 10 sekunden um seine","Sachen aufzuheben solange","kann er sie nur aufheben."}, new ItemStack(Material.SHEARS),kPermission.SHEEPWARS_KIT_ITEMSTEALER,KitType.KAUFEN,2000,new Perk[]{
 				new PerkDeathDropOnly(10)
 			}),
-			new Kit( "§eHealer",new String[]{"Der Healer heilt schneller."}, new ItemStack(Material.APPLE),kPermission.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eHealer",new String[]{"Der Healer heilt schneller."}, new ItemStack(Material.APPLE),kPermission.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkHeal(10)
 			}),
-			new Kit( "§eDropper",new String[]{"Der Dropper lässt seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),kPermission.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eDropper",new String[]{"Der Dropper lässt seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),kPermission.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkNoDropsByDeath()
 			}),
-			new Kit( "§eAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),kPermission.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),kPermission.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkNoKnockback(getManager().getInstance())
 			}),
-			new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),kPermission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),kPermission.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkStopPerk(25)
 			}),
-			new Kit( "§eTNTer",new String[]{"Der TNT hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.TNT),kPermission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eTNTer",new String[]{"Der TNT hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.TNT),kPermission.SHEEPWARS_KIT_TNTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
-			new Kit( "§eBuffer",new String[]{"Der Buffer bekommt wenn er Respawn","Feuerresistance und Schadenresistance."}, new ItemStack(Material.POTION),kPermission.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eBuffer",new String[]{"Der Buffer bekommt wenn er Respawn","Feuerresistance und Schadenresistance."}, new ItemStack(Material.POTION),kPermission.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)})
 			}),
-			new Kit( "§eKnight",new String[]{"Der Knight bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),kPermission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eKnight",new String[]{"Der Knight bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),kPermission.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkSneakDamage(3.0)
 			}),
-			new Kit( "§eTheDeath",new String[]{"Der TheDeath drop beim Tod","ein Blindheits Trank."}, new ItemStack(Material.IRON_SWORD),kPermission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eTheDeath",new String[]{"Der TheDeath drop beim Tod","ein Blindheits Trank."}, new ItemStack(Material.IRON_SWORD),kPermission.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkPotionByDeath(new PotionEffect(PotionEffectType.BLINDNESS,20*5,1))
 			}),
-			new Kit( "§eSpringer",new String[]{"Der Springer bekommt kein Fallschaden."}, new ItemStack(Material.FEATHER),kPermission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,new Perk[]{
+			new Kit( "§eSpringer",new String[]{"Der Springer bekommt kein Fallschaden."}, new ItemStack(Material.FEATHER),kPermission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkNoFalldamage()
 			}),
 			new Kit("§6PigZombie",new String[]{"Der PigZombie bekommt beim Respawnen","Speed und Regeneration"}, new ItemStack(Material.RAW_BEEF), kPermission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
@@ -209,7 +209,7 @@ public class CaveWars extends TeamGame{
 				new PerkArrowFire(15),
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,10)
 			}),
-			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SheepWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SHEEPWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
+			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SheepWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SHEEPWARS_KIT_SUPERMAN,KitType.ADMIN,0,new Perk[]{
 				new PerkNoHunger(),
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_CHESTPLATE,1)}),
 				new PerkSneakDamage(1),

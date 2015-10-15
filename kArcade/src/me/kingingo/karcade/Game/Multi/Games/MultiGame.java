@@ -34,7 +34,7 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Versus.VersusKit;
+import me.kingingo.kcore.Versus.PlayerKit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -134,7 +134,7 @@ public class MultiGame extends kListener{
 	private int max_team=0;
 	@Getter
 	@Setter
-	private VersusKit kit;
+	private PlayerKit kit;
 	
 	public MultiGame(MultiGames games) {
 		super(games.getManager().getInstance(), "MultiGame");

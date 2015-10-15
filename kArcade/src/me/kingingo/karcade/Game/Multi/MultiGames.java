@@ -27,6 +27,7 @@ import me.kingingo.kcore.Util.TabTitle;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilWorldEdit;
+import me.kingingo.kcore.Versus.PlayerKitManager;
 import me.kingingo.kcore.Versus.VersusKit;
 
 import org.bukkit.Bukkit;
@@ -56,6 +57,8 @@ public class MultiGames extends Game{
 	@Getter
 	@Setter
 	private boolean CreatureSpawn = true; //Creature Spawn GLOBAL
+	@Getter
+	private PlayerKitManager kitManager;
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
@@ -68,6 +71,7 @@ public class MultiGames extends Game{
 	
 	public void createGames(GameType type){
 		if(GameType.Versus==type){
+			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
 			setCreatureSpawn(false);
 			getWorldData().createCleanWorld();
 			for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();
@@ -168,7 +172,7 @@ public class MultiGames extends Game{
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)warte_liste.get(ev.getPlayer().getName());
 			for(MultiGame g : games){
 				if(g instanceof Versus){
-					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&&g.getState() == GameState.LobbyPhase){
+					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
 							if(UtilPlayer.isOnline(settings.getPlayer())){
 								if(warte_liste.containsKey(settings.getPlayer())){
 									warte_liste.remove(settings.getPlayer());
@@ -182,16 +186,18 @@ public class MultiGames extends Game{
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-									try {
-										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
+//									getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), settings.getKit());
+//									try {
+//										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
+//									} catch (IOException e) {
+//										e.printStackTrace();
+//									}
 									g.getKit().name=settings.getKit();
 								}
 								
 								g.setMin_team(settings.getMin_team());
 								g.setMax_team(settings.getMax_team());
+								g.setState(GameState.Laden);
 								
 								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 								Bukkit.getPluginManager().callEvent(event);
@@ -219,7 +225,7 @@ public class MultiGames extends Game{
 
 			for(MultiGame g : games){
 				if(g instanceof Versus){
-					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&&g.getState() == GameState.LobbyPhase){
+					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
 							if(UtilPlayer.isOnline(settings.getPlayer())){
 								if(warte_liste.containsKey(settings.getPlayer())){
 									warte_liste.remove(settings.getPlayer());
@@ -233,17 +239,17 @@ public class MultiGames extends Game{
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-									try {
-										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
+//									try {
+//										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
+//									} catch (IOException e) {
+//										e.printStackTrace();
+//									}
 									g.getKit().name=settings.getKit();
 								}
 								
 								g.setMin_team(settings.getMin_team());
 								g.setMax_team(settings.getMax_team());
-//								g.setState(GameState.Laden);
+								g.setState(GameState.Laden);
 								
 								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 								Bukkit.getPluginManager().callEvent(event);

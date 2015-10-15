@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.Team;
+import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -159,15 +160,11 @@ public class Versus extends MultiGame{
 				Log("kit == NULL");
 			}else{
 				for(Player player : getTeamList().keySet()){
-					if(getKit().helm!=null)player.getInventory().setHelmet(getKit().helm);
-					if(getKit().chestplate!=null)player.getInventory().setChestplate(getKit().chestplate);
-					if(getKit().leggings!=null)player.getInventory().setLeggings(getKit().leggings);
-					if(getKit().boots!=null)player.getInventory().setBoots(getKit().boots);
-					if(getKit().inv!=null){
-						for(ItemStack item : getKit().inv)
-							if(item!=null){
-								player.getInventory().addItem(item);
-							}
+					if(getKit()!=null){
+						if(getKit().inventory!=null){
+							player.getInventory().setArmorContents(getKit().inventory.getArmorContents());
+							player.getInventory().setContents(getKit().inventory.getContents());
+						}
 					}
 				}
 			}
