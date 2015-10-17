@@ -15,7 +15,6 @@ import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
@@ -25,7 +24,6 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.Versus.VersusKit;
 import me.kingingo.kcore.Versus.VersusType;
 
 import org.bukkit.Location;
@@ -35,7 +33,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class Versus extends MultiGame{
 	

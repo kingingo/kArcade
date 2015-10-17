@@ -27,6 +27,7 @@ import me.kingingo.kcore.Util.TabTitle;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilWorldEdit;
+import me.kingingo.kcore.Versus.PlayerKit;
 import me.kingingo.kcore.Versus.PlayerKitManager;
 import me.kingingo.kcore.Versus.VersusKit;
 
@@ -186,12 +187,7 @@ public class MultiGames extends Game{
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-//									getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), settings.getKit());
-//									try {
-//										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
-//									} catch (IOException e) {
-//										e.printStackTrace();
-//									}
+									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
 									g.getKit().name=settings.getKit();
 								}
 								
@@ -239,11 +235,7 @@ public class MultiGames extends Game{
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-//									try {
-//										g.setKit( new VersusKit().fromItemArray( UtilInv.itemStackArrayFromBase64( getStats().getString(Stats.KIT, Bukkit.getPlayer(settings.getPlayer())) ) ) );
-//									} catch (IOException e) {
-//										e.printStackTrace();
-//									}
+									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
 									g.getKit().name=settings.getKit();
 								}
 								

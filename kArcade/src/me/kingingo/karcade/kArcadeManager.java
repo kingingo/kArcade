@@ -132,6 +132,7 @@ public class kArcadeManager implements Listener{
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
 		this.hologram=new Hologram(getInstance());
+		this.hologram.RemoveText();
 		this.nickManager=new NickManager(permManager);
 
 		getLoc_stats().getWorld().loadChunk(getLoc_stats().getWorld().getChunkAt(getLoc_stats()));
