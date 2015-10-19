@@ -1,7 +1,6 @@
 package me.kingingo.karcade.Game.Multi;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,12 +23,9 @@ import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.VERSUS_SETTINGS;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Util.TabTitle;
-import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilWorldEdit;
-import me.kingingo.kcore.Versus.PlayerKit;
 import me.kingingo.kcore.Versus.PlayerKitManager;
-import me.kingingo.kcore.Versus.VersusKit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -77,12 +73,19 @@ public class MultiGames extends Game{
 			getWorldData().createCleanWorld();
 			for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();
 			File[] schematics = getWorldData().loadSchematicFiles();
-			Location loc = new Location(getWorldData().getWorld(),0,90,0);
+			Location loc = new Location(getWorldData().getWorld(),0,120,0);
 			
+			long time;
 			for(File file : schematics){
-				UtilWorldEdit.pastePlate(loc, file);
+				time=System.currentTimeMillis();
+				getWorldData().pastePlate(loc, file);
 				games.add(new Versus(this, file.getName().replaceAll(".schematic", "") ,loc));
-				loc=loc.add(0, 0, 100);
+				loc=loc.add(0, 0, 600);
+				getManager().DebugLog(time,"PASTE" ,MultiGames.class.getName());
+			}
+			
+			for(MultiGame game : games){
+				game.setState(GameState.LobbyPhase);
 			}
 		}
 	}
@@ -153,6 +156,10 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
+		if(getKitManager().getKits().containsKey(UtilPlayer.getRealUUID(ev.getPlayer()))){
+			getKitManager().getKits().remove(UtilPlayer.getRealUUID(ev.getPlayer()));
+		}
+		
 		ev.setQuitMessage(null);
 	}
 	
@@ -173,7 +180,7 @@ public class MultiGames extends Game{
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)warte_liste.get(ev.getPlayer().getName());
 			for(MultiGame g : games){
 				if(g instanceof Versus){
-					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
+					if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
 							if(UtilPlayer.isOnline(settings.getPlayer())){
 								if(warte_liste.containsKey(settings.getPlayer())){
 									warte_liste.remove(settings.getPlayer());
@@ -188,9 +195,18 @@ public class MultiGames extends Game{
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
 									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
-									g.getKit().name=settings.getKit();
+									
+									System.out.println("G: "+g.getKit()==null);
+									System.out.println("G: "+settings.getKit());
+									
+									if(g.getKit()!=null){
+										System.out.println("G: "+g.getKit().id);
+										System.out.println("G: "+g.getKit().kit==null);
+									}
+									
+									g.getKit().kit=settings.getKit();
 								}
-								
+								((Versus)g).setType(settings.getType());
 								g.setMin_team(settings.getMin_team());
 								g.setMax_team(settings.getMax_team());
 								g.setState(GameState.Laden);
@@ -221,7 +237,11 @@ public class MultiGames extends Game{
 
 			for(MultiGame g : games){
 				if(g instanceof Versus){
-					if(((Versus)g).getType()==settings.getType()&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
+					
+					if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&
+							settings.getArena().equalsIgnoreCase(g.getArena())&&
+							(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
+						
 							if(UtilPlayer.isOnline(settings.getPlayer())){
 								if(warte_liste.containsKey(settings.getPlayer())){
 									warte_liste.remove(settings.getPlayer());
@@ -236,9 +256,10 @@ public class MultiGames extends Game{
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
 									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
-									g.getKit().name=settings.getKit();
+									g.getKit().kit=settings.getKit();
 								}
-								
+
+								((Versus)g).setType(settings.getType());
 								g.setMin_team(settings.getMin_team());
 								g.setMax_team(settings.getMax_team());
 								g.setState(GameState.Laden);

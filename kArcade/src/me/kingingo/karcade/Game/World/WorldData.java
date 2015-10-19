@@ -38,25 +38,33 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.data.DataException;
+
 public class WorldData {
 	@Getter
-	kArcadeManager manager;
+	private kArcadeManager manager;
 	@Getter
-	String gameName;
+	private String gameName;
 	@Getter
-	World world;
-	String folder=null;
-	@Getter
-	@Setter
-	String MapName="Loading ...";
-	@Setter
-	HashMap<String,ArrayList<Location>> locs = new HashMap<>();
+	private World world;
+	private String folder=null;
 	@Getter
 	@Setter
-	HashMap<String,Location> biomes = null;
+	private String MapName="Loading ...";
+	@Setter
+	private HashMap<String,ArrayList<Location>> locs = new HashMap<>();
 	@Getter
 	@Setter
-	boolean cleanroomChunkGenerator = false;
+	private HashMap<String,Location> biomes = null;
+	@Getter
+	@Setter
+	private boolean cleanroomChunkGenerator = false;
+	private EditSession editSession=null;
 	
 	public WorldData(kArcadeManager manager,String gameName,String kürzel){
 		this.manager=manager;
@@ -84,6 +92,25 @@ public class WorldData {
 			}
 		}
 		return list;
+	}
+	
+	public void pastePlate(Location l,File file){
+		if(editSession==null)editSession=new EditSession(new BukkitWorld(getWorld()), 999999999);
+		l.getChunk().load();
+		try {
+		    CuboidClipboard cc = CuboidClipboard.loadSchematic(file);
+		    cc.paste(editSession, new Vector(l.getX(), l.getY(), l.getZ()), true);
+//		    cc.copy(editSession);
+		    cc=null;
+		} catch (MaxChangedBlocksException e) {
+			e.printStackTrace();
+		} catch (DataException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (com.sk89q.worldedit.world.DataException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void clearWorld(){
@@ -243,6 +270,13 @@ public class WorldData {
 		UtilMap.UnloadWorld(manager.getInstance(), world);
 		UtilFile.DeleteFolder(new File(world.getName()));
 		world=null;
+	 }
+	 
+	 public void createFlatWorld(){
+		 removeWorld();
+		 WorldCreator wc = new WorldCreator(getFolder());
+		 wc.generator(new CleanroomChunkGenerator("64,grass"));
+		 world= UtilWorld.LoadWorld(wc);
 	 }
 	 
 	 public void createCleanWorld(){

@@ -37,7 +37,9 @@ import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Versus.PlayerKit;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Egg;
@@ -133,12 +135,17 @@ public class MultiGame extends kListener{
 	@Setter 
 	private int max_team=0;
 	@Getter
+	@Setter 
+	private int team=0;
+	@Getter
 	@Setter
 	private PlayerKit kit;
+	private Location location;
 	
-	public MultiGame(MultiGames games) {
+	public MultiGame(MultiGames games,Location location) {
 		super(games.getManager().getInstance(), "MultiGame");
 		this.games=games;
+		this.location=location;
 		this.gameList=new GameList(games.getManager());
 		this.arena="arena"+games.getGames().size();
 	}
@@ -149,7 +156,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()) , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.name) ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());
@@ -475,7 +482,7 @@ public class MultiGame extends kListener{
 		if(ev.getType()==UpdateType.SEC){
 			if(getState() == GameState.LobbyPhase||getState() == GameState.Laden){
 				if(getTimer()<0){
-					setTimer(31);
+					setTimer(11);
 				}
 				setTimer(getTimer()-1);
 				
@@ -499,7 +506,7 @@ public class MultiGame extends kListener{
 						 sendTitle(Color.GREEN+"LOS!","");
 						Bukkit.getPluginManager().callEvent(new MultiGameStartEvent(this));
 					}else{
-						setTimer(31);
+						setTimer(11);
 						updateInfo();
 						broadcastWithPrefix1("GAME_START_MIN_PLAYER2");
 					}
@@ -558,7 +565,22 @@ public class MultiGame extends kListener{
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
-			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0) );
+			
+			System.out.println("JOIN: "+ev.getPlayer().getName()+" "+getTeamList().containsKey(ev.getPlayer()));
+			
+			if(getTeamList().containsKey(ev.getPlayer())){
+				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getLocs().get(this).containsKey(getTeamList().get(ev.getPlayer())));
+				
+				for(Team t : getGames().getLocs().get(this).keySet()){
+					System.out.println("T: "+t.Name());
+				}
+				
+				if(getGames().getLocs().get(this).containsKey(getTeamList().get(ev.getPlayer()))){
+					System.out.println("JOIN2: "+getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).contains(0));
+				}
+			}
+			
+			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0).add(0, 0.5, 0) );
 			setTimer(-1);
 			ev.setCancelled(true);
 			updateInfo();

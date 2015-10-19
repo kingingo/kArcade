@@ -14,6 +14,7 @@ import me.kingingo.kcore.Command.CommandHandler;
 import me.kingingo.kcore.Command.Admin.CommandCMDMute;
 import me.kingingo.kcore.Command.Admin.CommandChatMute;
 import me.kingingo.kcore.Command.Admin.CommandToggle;
+import me.kingingo.kcore.Command.Admin.CommandTppos;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Language.Language;
@@ -75,6 +76,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandChatMute.class, new CommandChatMute(this));
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
+			cmd.register(CommandTppos.class, new CommandTppos());
 			new MemoryFix(this);
 			new AACHack("A"+id,mysql, pManager);
 			new ListenerCMD(this);

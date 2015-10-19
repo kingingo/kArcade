@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
+import me.kingingo.karcade.Game.Multi.Addons.AddonArenaRestore;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
@@ -38,17 +39,22 @@ public class Versus extends MultiGame{
 	
 	@Getter
 	@Setter
+	private VersusType max_type;
+	@Getter
 	private VersusType type;
 	@Getter
 	private AddonMove addonMove;
+	private AddonArenaRestore area;
 	
 	public Versus(MultiGames games,String Map,Location location) {
-		super(games);
+		super(games,location);
 		setMap(Map);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
+		Location ecke1 = null;
+		Location ecke2 = null;
 		getGames().getLocs().put(this, new HashMap<Team,ArrayList<Location>>());
-		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 40, location)){
+		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 120, location)){
 			if(block.getRelative(BlockFace.UP).getType()==Material.WOOL){
 				if(block.getRelative(BlockFace.UP).getData()==14){
 					if(!getGames().getLocs().get(this).containsKey(Team.RED))getGames().getLocs().get(((MultiGame)this)).put(Team.RED, new ArrayList<Location>());
@@ -71,17 +77,35 @@ public class Versus extends MultiGame{
 				}
 				block.getRelative(BlockFace.UP).setType(Material.AIR);
 				block.setType(Material.AIR);
+			}else if(ecke1==null&&block.getRelative(BlockFace.UP).getType()==Material.DIAMOND_BLOCK){
+				ecke1=block.getRelative(BlockFace.UP).getLocation();
+				block.getRelative(BlockFace.UP).setType(Material.AIR);
+				block.setType(Material.AIR);
+			}else if(ecke2==null&&block.getRelative(BlockFace.UP).getType()==Material.GOLD_BLOCK){
+				ecke2=block.getRelative(BlockFace.UP).getLocation();
+				block.getRelative(BlockFace.UP).setType(Material.AIR);
+				block.setType(Material.AIR);
 			}
 		}
-		setBlockBreak(false);
-		setBlockPlace(false);
+		setMax_type( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
+		
+		if(ecke1==null||ecke2==null){
+			Log("ECKE1: "+(ecke1==null)+" ECKE2:"+(ecke2==null));
+			Log("LOC: "+location.toString());
+		}else{
+			area=new AddonArenaRestore(this, ecke1, ecke2);
+		}
+		
 		setDropItem(false);
 		setPickItem(false);
 		setDropItembydeath(false);
 		setFoodlevelchange(false);
 		addonMove=new AddonMove(games.getManager());
-		setType( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
-		setState(GameState.LobbyPhase);
+	}
+	
+	public void setType(VersusType type){
+		this.type=type;
+		setTeam(type.getTeam().length);
 	}
 	
 	@EventHandler
@@ -145,6 +169,8 @@ public class Versus extends MultiGame{
 			addonMove.setnotMove(true);
 			setDamagePvP(false);
 			setDamage(false);
+		}else if(ev.getTo()==GameState.Restart){
+			if(area!=null)area.restore();
 		}
 	}
 	
@@ -158,9 +184,9 @@ public class Versus extends MultiGame{
 			}else{
 				for(Player player : getTeamList().keySet()){
 					if(getKit()!=null){
-						if(getKit().inventory!=null){
-							player.getInventory().setArmorContents(getKit().inventory.getArmorContents());
-							player.getInventory().setContents(getKit().inventory.getContents());
+						if(getKit().content!=null&&getKit().armor_content!=null){
+							player.getInventory().setArmorContents(getKit().armor_content);
+							player.getInventory().setContents(getKit().content);
 						}
 					}
 				}
