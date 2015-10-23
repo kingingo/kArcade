@@ -14,6 +14,8 @@ import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
+import me.kingingo.kcore.Addons.AddonHalloween;
+import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
@@ -43,6 +45,7 @@ import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Permission.kPermission;
+import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -55,6 +58,7 @@ import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
@@ -68,6 +72,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -932,8 +937,6 @@ public class SkyWars extends TeamGame{
 		for(Player player : getTeamList().keySet()){
 			player.teleport(getWorldData().getLocs(getTeamList().get(player).Name()).get(0));
 		}
-		
-		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 
 		Scoreboard ps;
 		Title title = new Title("", "");
@@ -987,6 +990,23 @@ public class SkyWars extends TeamGame{
 			}
 		}
 		
+		if(getManager().getHoliday()!=null){
+			switch(getManager().getHoliday()){
+			case HALLOWEEN:
+				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+				
+				break;
+			case WEIHNACHTEN:
+				
+				break;
+			default:
+				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
+				break;
+			}
+		}
+
+
+		getWorldData().getWorld().setStorm(false);
 		setStart((60*15)+1);
 		setState(GameState.InGame);
 	}

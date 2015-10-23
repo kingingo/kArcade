@@ -403,8 +403,6 @@ public class SingleGame extends Game{
 		  ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+"§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
 		  if(isState(GameState.LobbyPhase)){
-			  getManager().getLobby().getWorld().setStorm(false);
-			  getManager().getLobby().getWorld().setTime(4000);
 			  ev.getPlayer().teleport(getManager().getLobby());
 			  if(getMax_Players() <= UtilServer.getPlayers().size() ){
 				  if(getStart() > 16){

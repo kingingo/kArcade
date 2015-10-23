@@ -27,6 +27,8 @@ import me.kingingo.karcade.Game.Single.Games.SurvivalGames.SurvivalGames;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import me.kingingo.karcade.Privat.PrivatServer;
 import me.kingingo.karcade.Service.CommandService;
+import me.kingingo.kcore.Addons.AddonDay;
+import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Client.Client;
@@ -146,6 +148,23 @@ public class kArcadeManager implements Listener{
 		}
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
 		new PrivatServer(this);
+		
+		if(getHoliday()!=null){
+			switch(getHoliday()){
+			case HALLOWEEN:
+				new AddonNight(getInstance(),getLobby().getWorld());
+				getLobby().getWorld().setStorm(false);
+				break;
+			case WEIHNACHTEN:
+				new AddonDay(getInstance(),getLobby().getWorld());
+				getLobby().getWorld().setStorm(true);
+				break;
+			default:
+				new AddonDay(getInstance(),getLobby().getWorld());
+				getLobby().getWorld().setStorm(false);
+				break;
+			}
+		}
 		
 		if(getGame() instanceof SingleGame)getGame().setState(GameState.LobbyPhase);
 	}

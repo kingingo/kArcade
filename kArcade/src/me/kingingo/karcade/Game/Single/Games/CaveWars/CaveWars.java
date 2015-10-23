@@ -644,7 +644,7 @@ public class CaveWars extends TeamGame{
 		
 		if(getManager().getHoliday()!=null){
 			switch(getManager().getHoliday()){
-			case HELLOWEEN:
+			case HALLOWEEN:
 				et=EntityType.WITCH;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
 				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));

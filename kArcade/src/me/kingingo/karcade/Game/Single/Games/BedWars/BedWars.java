@@ -19,6 +19,7 @@ import me.kingingo.karcade.Game.Single.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
+import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -527,9 +528,9 @@ public class BedWars extends TeamGame{
 		
 		if(getManager().getHoliday()!=null){
 			switch(getManager().getHoliday()){
-			case HELLOWEEN:
+			case HALLOWEEN:
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
+				new AddonHalloween(getManager().getInstance());
 				getWorldData().getWorld().setStorm(false);
 				break;
 			case WEIHNACHTEN:

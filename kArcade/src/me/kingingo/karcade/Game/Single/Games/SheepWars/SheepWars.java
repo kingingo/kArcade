@@ -24,6 +24,7 @@ import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Service.Games.ServiceSheepWars;
 import me.kingingo.kcore.Addons.AddonDay;
+import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -96,6 +97,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Witch;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -708,16 +710,15 @@ public class SheepWars extends TeamGame{
 		
 		if(getManager().getHoliday()!=null){
 			switch(getManager().getHoliday()){
-			case HELLOWEEN:
+			case HALLOWEEN:
 				et=EntityType.WITCH;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				for(Player p : UtilServer.getPlayers())p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
+				new AddonHalloween(getManager().getInstance());
 				getWorldData().getWorld().setStorm(false);
 				break;
 			case WEIHNACHTEN:
 				et=EntityType.SNOWMAN;
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				//getWorldData().setBiome(l, add, biome);
 				getWorldData().getWorld().setStorm(true);
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
 

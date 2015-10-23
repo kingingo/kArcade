@@ -272,18 +272,19 @@ public class WorldData {
 		world=null;
 	 }
 	 
-	 public void createFlatWorld(){
+	 public void createCustomWorld(String s){
 		 removeWorld();
 		 WorldCreator wc = new WorldCreator(getFolder());
-		 wc.generator(new CleanroomChunkGenerator("64,grass"));
+		 wc.generator(new CleanroomChunkGenerator(s));
 		 world= UtilWorld.LoadWorld(wc);
 	 }
 	 
+	 public void createFlatWorld(){
+		 createCustomWorld("64,grass");
+	 }
+	 
 	 public void createCleanWorld(){
-		 removeWorld();
-		 WorldCreator wc = new WorldCreator(getFolder());
-		 wc.generator(new CleanroomChunkGenerator(".0,AIR"));
-		 world= UtilWorld.LoadWorld(wc);
+		 createCustomWorld(".0,AIR");
 	 }
 	 
 	 public void createWorld(){

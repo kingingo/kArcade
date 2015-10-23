@@ -10,6 +10,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
+import me.kingingo.karcade.Game.Multi.Addons.AddonArenaRestore;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
@@ -69,8 +70,9 @@ public class MultiGames extends Game{
 	public void createGames(GameType type){
 		if(GameType.Versus==type){
 			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
+			new AddonArenaRestore(getManager().getInstance());
 			setCreatureSpawn(false);
-			getWorldData().createCleanWorld();
+			getWorldData().createCustomWorld("90,quartz_block");
 			for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();
 			File[] schematics = getWorldData().loadSchematicFiles();
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);

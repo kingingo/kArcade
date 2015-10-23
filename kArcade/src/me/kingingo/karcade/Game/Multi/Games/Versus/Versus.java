@@ -8,6 +8,7 @@ import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.AddonArenaRestore;
+import me.kingingo.karcade.Game.Multi.Addons.GameArenaRestore;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
@@ -44,7 +45,7 @@ public class Versus extends MultiGame{
 	private VersusType type;
 	@Getter
 	private AddonMove addonMove;
-	private AddonArenaRestore area;
+	private GameArenaRestore area;
 	
 	public Versus(MultiGames games,String Map,Location location) {
 		super(games,location);
@@ -93,7 +94,7 @@ public class Versus extends MultiGame{
 			Log("ECKE1: "+(ecke1==null)+" ECKE2:"+(ecke2==null));
 			Log("LOC: "+location.toString());
 		}else{
-			area=new AddonArenaRestore(this, ecke1, ecke2);
+			area=new GameArenaRestore(this, ecke1, ecke2);
 		}
 		
 		setDropItem(false);
