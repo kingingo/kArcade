@@ -31,15 +31,20 @@ import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Versus.PlayerKit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Egg;
@@ -61,6 +66,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class MultiGame extends kListener{
 	@Getter
@@ -143,7 +149,7 @@ public class MultiGame extends kListener{
 	private Location location;
 	
 	public MultiGame(MultiGames games,Location location) {
-		super(games.getManager().getInstance(), "MultiGame");
+		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
 		this.games=games;
 		this.location=location;
 		this.gameList=new GameList(games.getManager());
@@ -191,6 +197,26 @@ public class MultiGame extends kListener{
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,name,input));
 	}
 	
+	public ArrayList<Player> getPlayerFrom(Team t){
+		ArrayList<Player> list = new ArrayList<>();
+		for(Player p : TeamList.keySet()){
+			if(TeamList.get(p)==t){
+				list.add(p);
+			}
+		}
+		return list;
+	}
+	
+	public void TeamTab(Scoreboard board){
+	    if(board==null)board=Bukkit.getScoreboardManager().getNewScoreboard();
+	    for (Player p : getTeamList().keySet()) {
+	    	if(!UtilScoreboard.existTeam(board, getTeamList().get(p).Name()))UtilScoreboard.addTeam(board, getTeamList().get(p).Name(), getTeamList().get(p).getColor());
+	    	UtilScoreboard.addPlayerToTeam(board, getTeamList().get(p).Name(), p);
+	    	p.setScoreboard(board);
+	    }
+	    
+	}
+	
 	@EventHandler
 	public void death(PlayerDeathEvent ev){
 		ev.setDeathMessage(null);
@@ -203,7 +229,7 @@ public class MultiGame extends kListener{
 	@EventHandler
 	public void drop(PlayerDropItemEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			if(!dropItem){
+			if(!dropItem||getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] PlayerDropItem Cancelled TRUE!");
 				ev.setCancelled(true);
 			}
@@ -213,27 +239,27 @@ public class MultiGame extends kListener{
 	@EventHandler
 	public void pickup(PlayerPickupItemEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			if(!pickItem){
+			if(!pickItem||getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] PlayerPickUP Cancelled TRUE!");
 				ev.setCancelled(true);
 			}
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void bplace(BlockPlaceEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			if(!blockPlace){
+			if(!blockPlace||getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] BlockPlace Cancelled TRUE!");
 				ev.setCancelled(true);
 			}
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void bbreak(BlockBreakEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			if(!blockBreak){
+			if(!blockBreak||getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 				if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] BlockBreak Cancelled TRUE!");
 				ev.setCancelled(true);
 			}
@@ -341,15 +367,34 @@ public class MultiGame extends kListener{
 	}
 	
 	public void setState(GameState gs){
-		setState(gs, GameStateChangeReason.CUSTOM);
+		setState(gs, GameStateChangeReason.CUSTOM,true);
 	}
 	
+	public void setState(GameState gs,boolean update){
+		setState(gs, GameStateChangeReason.CUSTOM,update);
+	}
+
 	public void setState(GameState gs,GameStateChangeReason reason){
+		setState(gs, reason, true);
+	}
+	
+	@EventHandler(ignoreCancelled=false)
+	public void Interact(PlayerInteractEvent ev){
+		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+			if(ev.getPlayer().getItemInHand()==null)return;
+			if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand().getType()==Material.FIREBALL){
+				ev.setCancelled(true);
+				UtilBG.sendToServer(ev.getPlayer(), getGames().getManager().getInstance());
+			}
+		}
+	}
+	
+	public void setState(GameState gs,GameStateChangeReason reason,boolean update){
 		MultiGameStateChangeEvent stateEvent = new MultiGameStateChangeEvent(this,state,gs,reason);
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return;
 		this.state=gs;
-		updateInfo();
+		if(update)updateInfo();
 		Log("GameState wurde zu "+state.string()+"("+reason.name()+") geändert.");
 	}
 	
@@ -363,7 +408,7 @@ public class MultiGame extends kListener{
 	@EventHandler
 	public void StateChange(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
-		if(ev.getTo()==GameState.Restart){
+		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=ev.getTo()){
 			//Wenn nur noch ein Team da ist
 			if(islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM||ev.getReason()==GameStateChangeReason.LAST_PLAYER||ev.getReason()==GameStateChangeReason.GAME_END){
 				for(Player player : getGameList().getPlayers(PlayerState.IN)){
@@ -373,21 +418,39 @@ public class MultiGame extends kListener{
 				last = getlastTeam();
 				if(last!=null){
 					broadcastWithPrefix("TEAM_WIN",last.getColor()+last.Name());
-					t= new Title("","");
+					t= new Title(last.getColor()+last.Name(),getTeamMember(last));
 					for(Player player : getGameList().getPlayers().keySet()){
-						t.setSubtitle(Language.getText(player,"TEAM_WIN", last.getColor()+last.Name()));
 						t.send(player);
 					}
 				}
-				setState(GameState.LobbyPhase);
-				ev.setCancelled(true);
 				for(Player player : getGameList().getPlayers().keySet())UtilBG.sendToServer(player, getGames().getManager().getInstance());
 				
 				getTeamList().clear();
 				getGameList().getPlayers().clear();
-				timer=-1;
+				setTimer(-1);
+				getGames().updatePlayedGames();
 			}
 		}
+	}
+	
+	public int getTeamAnzahl(Team t){
+		int i = 0;
+		for(Player p : getTeamList().keySet()){
+			if(getTeamList().get(p)==t)i++;
+		}
+		return i;
+	}
+	
+	public String getTeamMember(Team t){
+		String s = "";
+		
+		for(Player p : getTeamList().keySet()){
+			if(getTeamList().get(p)==t){
+				s=s+t.getColor()+p.getName()+"§7,";
+			}
+		}
+		
+		return s.substring(0, s.length()-3);
 	}
 	
 	public void sendTitle(String first,String second){
@@ -426,10 +489,12 @@ public class MultiGame extends kListener{
 			}
 			getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
 			
-			if(islastTeam()&&(getState()==GameState.InGame||getState()==GameState.DeathMatch)){
-				setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
-			}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
-				setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
+			if((getState()==GameState.InGame||getState()==GameState.DeathMatch)){
+				if(islastTeam()&&(getState()==GameState.InGame||getState()==GameState.DeathMatch)){
+					setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
+				}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){
+					setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
+				}
 			}
 		}
 	}
@@ -477,6 +542,23 @@ public class MultiGame extends kListener{
 		}
 	}
 	
+
+	@EventHandler
+	public void Restart(UpdateEvent ev){
+		if(ev.getType()==UpdateType.SEC){
+			if(getState() == GameState.Restart){
+				if(getTimer()<0){
+					setTimer(7);
+				}
+				setTimer(getTimer()-1);
+				
+				if(getTimer()==0){
+					setState(GameState.LobbyPhase);
+				}
+			}
+		}
+	}
+	
 	@EventHandler
 	public void Start(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SEC){
@@ -503,8 +585,9 @@ public class MultiGame extends kListener{
 					}
 				}else{
 					if(startBereit()){
-						 sendTitle(Color.GREEN+"LOS!","");
+						sendTitle(Color.GREEN+"LOS!","");
 						Bukkit.getPluginManager().callEvent(new MultiGameStartEvent(this));
+						setTimer(-1);
 					}else{
 						setTimer(11);
 						updateInfo();
@@ -570,6 +653,7 @@ public class MultiGame extends kListener{
 			
 			if(getTeamList().containsKey(ev.getPlayer())){
 				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getLocs().get(this).containsKey(getTeamList().get(ev.getPlayer())));
+				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0)));
 				
 				for(Team t : getGames().getLocs().get(this).keySet()){
 					System.out.println("T: "+t.Name());
@@ -580,7 +664,7 @@ public class MultiGame extends kListener{
 				}
 			}
 			
-			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0).add(0, 0.5, 0) );
+			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0) );
 			setTimer(-1);
 			ev.setCancelled(true);
 			updateInfo();

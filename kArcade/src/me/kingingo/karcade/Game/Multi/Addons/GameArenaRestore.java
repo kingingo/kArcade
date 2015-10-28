@@ -10,6 +10,7 @@ import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -62,9 +63,11 @@ public class GameArenaRestore extends kListener{
 			
 			ecke1=new Location(ecke1.getWorld(),MinMax[X][Max],MinMax[Y][Max],MinMax[Z][Max]);
 			Log(UtilLocation.getLocString(ecke1));
-
+			ecke1.getBlock().setType(Material.ENCHANTMENT_TABLE);
+			
 			ecke2=new Location(ecke2.getWorld(),MinMax[X][Min],MinMax[Y][Min],MinMax[Z][Min]);
 			Log(UtilLocation.getLocString(ecke2));
+			ecke2.getBlock().setType(Material.ENCHANTMENT_TABLE);
 		}
 		
 		public boolean isInArea(Player player){

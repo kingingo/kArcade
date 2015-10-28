@@ -25,16 +25,22 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilPlayer;
+import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Versus.VersusType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class Versus extends MultiGame{
 	
@@ -46,6 +52,7 @@ public class Versus extends MultiGame{
 	@Getter
 	private AddonMove addonMove;
 	private GameArenaRestore area;
+	private Scoreboard scoreboard;
 	
 	public Versus(MultiGames games,String Map,Location location) {
 		super(games,location);
@@ -59,36 +66,30 @@ public class Versus extends MultiGame{
 			if(block.getRelative(BlockFace.UP).getType()==Material.WOOL){
 				if(block.getRelative(BlockFace.UP).getData()==14){
 					if(!getGames().getLocs().get(this).containsKey(Team.RED))getGames().getLocs().get(((MultiGame)this)).put(Team.RED, new ArrayList<Location>());
-					getGames().getLocs().get( ((MultiGame)this) ).get(Team.RED).add(block.getLocation());
+					getGames().getLocs().get( ((MultiGame)this) ).get(Team.RED).add(block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==11){
 					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.BLUE))getGames().getLocs().get(((MultiGame)this)).put(Team.BLUE, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.BLUE).add(block.getLocation());
+					getGames().getLocs().get(((MultiGame)this)).get(Team.BLUE).add(block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==5){
 					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.GREEN))getGames().getLocs().get(((MultiGame)this)).put(Team.GREEN, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.GREEN).add(block.getLocation());
+					getGames().getLocs().get(((MultiGame)this)).get(Team.GREEN).add(block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==4){
 					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.YELLOW))getGames().getLocs().get(((MultiGame)this)).put(Team.YELLOW, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.YELLOW).add(block.getLocation());
+					getGames().getLocs().get(((MultiGame)this)).get(Team.YELLOW).add(block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==1){
 					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.ORANGE))getGames().getLocs().get(((MultiGame)this)).put(Team.ORANGE, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.ORANGE).add(block.getLocation());
+					getGames().getLocs().get(((MultiGame)this)).get(Team.ORANGE).add(block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==7){
 					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.GRAY))getGames().getLocs().get(((MultiGame)this)).put(Team.GRAY, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.GRAY).add(block.getLocation());
+					getGames().getLocs().get(((MultiGame)this)).get(Team.GRAY).add(block.getRelative(BlockFace.UP).getLocation());
 				}
-				block.getRelative(BlockFace.UP).setType(Material.AIR);
-				block.setType(Material.AIR);
-			}else if(ecke1==null&&block.getRelative(BlockFace.UP).getType()==Material.DIAMOND_BLOCK){
-				ecke1=block.getRelative(BlockFace.UP).getLocation();
-				block.getRelative(BlockFace.UP).setType(Material.AIR);
-				block.setType(Material.AIR);
-			}else if(ecke2==null&&block.getRelative(BlockFace.UP).getType()==Material.GOLD_BLOCK){
-				ecke2=block.getRelative(BlockFace.UP).getLocation();
 				block.getRelative(BlockFace.UP).setType(Material.AIR);
 				block.setType(Material.AIR);
 			}
 		}
 		setMax_type( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
+		ecke1 = UtilLocation.getLowestLocInCase(location, Material.BARRIER);
+		ecke2 = UtilLocation.getHighestLocInCase(location, Material.BARRIER);
 		
 		if(ecke1==null||ecke2==null){
 			Log("ECKE1: "+(ecke1==null)+" ECKE2:"+(ecke2==null));
@@ -98,10 +99,20 @@ public class Versus extends MultiGame{
 		}
 		
 		setDropItem(false);
-		setPickItem(false);
+		setPickItem(true);
 		setDropItembydeath(false);
 		setFoodlevelchange(false);
 		addonMove=new AddonMove(games.getManager());
+		
+		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
+		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lVERSUS Board:");
+		UtilScoreboard.setScore(scoreboard, "   ", DisplaySlot.SIDEBAR, 7);
+		UtilScoreboard.setScore(scoreboard, "§cMap: ", DisplaySlot.SIDEBAR, 6);
+		UtilScoreboard.setScore(scoreboard, "§7"+getMap(), DisplaySlot.SIDEBAR, 5);
+		UtilScoreboard.setScore(scoreboard, " ", DisplaySlot.SIDEBAR, 4);
+		UtilScoreboard.setScore(scoreboard, "§eKit: ", DisplaySlot.SIDEBAR, 3);
+		UtilScoreboard.setScore(scoreboard, "  ", DisplaySlot.SIDEBAR, 1);
+		UtilScoreboard.setScore(scoreboard, "§7----------------", DisplaySlot.SIDEBAR, 0);
 	}
 	
 	public void setType(VersusType type){
@@ -122,6 +133,7 @@ public class Versus extends MultiGame{
 				getGames().getCoins().addCoins(ev.getEntity().getKiller(), false, 4);
 				getGames().getStats().setInt(ev.getEntity().getKiller(), getGames().getStats().getInt(Stats.KILLS, ev.getEntity().getKiller())+1, Stats.KILLS);
 				broadcastWithPrefix("KILL_BY", new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() });
+				ev.getEntity().sendMessage(Language.getText(ev.getEntity(),"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(ev.getEntity(), "HEART",new String[]{ev.getEntity().getKiller().getName(),((int)UtilPlayer.getHealth(ev.getEntity().getKiller()))+""}));
 			}else{
 				broadcastWithPrefix("DEATH", new String[]{ ev.getEntity().getName() });
 			}
@@ -167,31 +179,53 @@ public class Versus extends MultiGame{
 	public void lobby(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.LobbyPhase){
-			addonMove.setnotMove(true);
+			if(area!=null)area.restore();
+			this.addonMove.setnotMove(true);
+
+			if(getKit()!=null){
+				UtilScoreboard.resetScore(scoreboard, "§7"+getKit().kit, DisplaySlot.SIDEBAR);
+			}else{
+				UtilScoreboard.resetScore(scoreboard, "§7Default", DisplaySlot.SIDEBAR);
+			}
+			
+			org.bukkit.scoreboard.Team t;
+			for(int i = 0; i<this.scoreboard.getTeams().size(); i++){
+				t=(org.bukkit.scoreboard.Team)this.scoreboard.getTeams().toArray()[i];
+				for(int a = 0; a<t.getPlayers().size(); a++)t.removePlayer((OfflinePlayer)t.getPlayers().toArray()[a]);
+			}
+			
 			setDamagePvP(false);
 			setDamage(false);
-		}else if(ev.getTo()==GameState.Restart){
-			if(area!=null)area.restore();
 		}
 	}
 	
 	@EventHandler
 	public void Start(MultiGameStartEvent ev){
 		if(ev.getGame()!=this)return;
-			addonMove.setnotMove(false);
+			this.addonMove.setnotMove(false);
 			
-			if(getKit()==null){
-				Log("kit == NULL");
-			}else{
-				for(Player player : getTeamList().keySet()){
-					if(getKit()!=null){
-						if(getKit().content!=null&&getKit().armor_content!=null){
-							player.getInventory().setArmorContents(getKit().armor_content);
-							player.getInventory().setContents(getKit().content);
-						}
+			for(Player player : getTeamList().keySet()){
+				if(getKit()!=null){
+					if(getKit().content!=null&&getKit().armor_content!=null){
+						player.getInventory().setArmorContents(getKit().armor_content);
+						player.getInventory().setContents(getKit().content);
 					}
+				}else{
+					player.getInventory().addItem(new ItemStack(Material.DIAMOND_SWORD));
+					player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+					player.getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+					player.getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+					player.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
 				}
 			}
+			
+			if(getKit()!=null){
+				UtilScoreboard.setScore(scoreboard, "§7"+getKit().kit, DisplaySlot.SIDEBAR, 2);
+			}else{
+				UtilScoreboard.setScore(scoreboard, "§7Default", DisplaySlot.SIDEBAR, 2);
+			}
+			
+			TeamTab(scoreboard);
 			setDamagePvP(true);
 			setDamage(true);
 			setState(GameState.InGame);

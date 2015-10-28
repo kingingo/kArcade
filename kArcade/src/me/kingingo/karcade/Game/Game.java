@@ -63,6 +63,9 @@ public class Game implements Listener{
 	@Setter
 	@Getter
 	private boolean apublic=true;
+	@Getter
+	@Setter
+	private boolean set_default_scoreboard=true;
 	
 	public Game(kArcadeManager manager) {
 		this.manager=manager;
@@ -206,9 +209,9 @@ public class Game implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled=false,priority=EventPriority.LOWEST)
 	public void Board(PlayerSetScoreboardEvent ev){
-		UtilPlayer.setScoreboard(ev.getPlayer(),getGems(), getCoins());
+		if(isSet_default_scoreboard())UtilPlayer.setScoreboard(ev.getPlayer(),getGems(), getCoins());
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)

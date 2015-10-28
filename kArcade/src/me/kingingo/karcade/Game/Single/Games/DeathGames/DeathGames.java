@@ -15,6 +15,7 @@ import me.kingingo.karcade.Game.Single.Games.DeathGames.Addon.AddonPlayerTelepor
 import me.kingingo.karcade.Game.Single.Games.DeathGames.Perk.PerkTeleporter;
 import me.kingingo.karcade.Game.Single.addons.AddonQuadratGrenze;
 import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
+import me.kingingo.karcade.Game.Single.addons.AddonWorldBorder;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
@@ -99,7 +100,7 @@ public class DeathGames extends SoloGame{
 	@Getter
 	private Location center;
 	@Getter
-	private AddonQuadratGrenze grenze;
+	private AddonWorldBorder grenze;
 	@Getter
 	private HashMap<Location,Inventory> chest = new HashMap<>();
 	private HashMap<Inventory,Location> chest1 = new HashMap<>();
@@ -110,8 +111,6 @@ public class DeathGames extends SoloGame{
 	private ArrayList<ItemStack> medium = new ArrayList<>();
 	private ArrayList<ItemStack> normal = new ArrayList<>();
 	private KitShop kitShop;
-	private boolean kits=true;
-	private HashMap<Integer,ArrayList<Location>> g = new HashMap<>();
 	
 	public DeathGames(kArcadeManager manager) {
 		super(manager);
@@ -171,7 +170,7 @@ public class DeathGames extends SoloGame{
 		getWorldData().loadBiomes(nobiome);
 		getWorldData().setMapName( ((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.r(getWorldData().getBiomes().size())]) );
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
-		grenze=new AddonQuadratGrenze(this,getCenter(),0);
+		grenze=new AddonWorldBorder(this, getCenter(), (getMax_Players()*10));
 		
 		this.kitShop=new KitShop(getManager().getInstance(),getGems(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			
@@ -265,11 +264,6 @@ public class DeathGames extends SoloGame{
 				new PerkWalkEffect(Effect.HEART,10)
 			}),
 		});
-		
-		for(int i=10; i < (getMax_Players()*10)+1; i++){
-			g.put(i, getGrenze().scanWithLowestBlock(i, 35, 10));
-			System.out.println("[Grenze] Radius: "+i+" GELADEN("+g.get(i).size()+")!");
-		}
 		
 		setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
@@ -449,11 +443,8 @@ public class DeathGames extends SoloGame{
 		if(ev.getType()!=UpdateType.SLOW)return;
 		if(getState()!=GameState.InGame)return;
 		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.IN).size()*10)){
-			//getGrenze().setRadius( getGrenze().getRadius()-1 );
-			//getGrenze().scan();
-			getGrenze().setList(getGrenze().getRadius()-1, g.get(getGrenze().getRadius()-1));
+			getGrenze().setRadius(getGrenze().getRadius()-1);
 			
-			g.remove(getGrenze().getRadius());
 			chest_anzahl=getGameList().getPlayers(PlayerState.IN).size()*10;
 			if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
 				for(int i = 0; i < chest.size(); i++){
@@ -481,64 +472,10 @@ public class DeathGames extends SoloGame{
 		}
 	}
 	
-//	ArrayList<Entity> fall = new ArrayList<>();
-//	@EventHandler
-//	public void FallDamage(EntityDamageEvent ev){
-//		if(manager.getState()!=GameState.SchutzModus)return;
-//		if(ev.getEntity() instanceof Player){
-//			if(ev.getCause()==DamageCause.FALL){
-//				if(fall.contains((ev.getEntity()) ))ev.setDamage(0);
-//			}
-//		}
-//	}
-	
-//	@EventHandler
-//	public void onEntityChangeBlock(EntityChangeBlockEvent ev){
-//		if(ev.getEntity() instanceof FallingBlock){
-//			if(fall.contains(ev.getEntity())){
-//				if(ev.getEntity().getPassenger()!=null){
-//		    		gp = ev.getEntity().getPassenger();
-//		    		gp.leaveVehicle();
-//		    		gp.remove();
-//		    	}
-//				fall.remove(ev.getEntity());
-//			}
-//		}
-//	}
-	
-//	private Entity gp;
-//	@EventHandler
-//	public void Fall(UpdateEvent ev){
-//		if(ev.getType()!=UpdateType.FAST)return;
-//		if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
-//			for(int i = 0; i < fall.size(); i++){
-//				if(fall.get(i).getPassenger()!=null&&fall.get(i).getPassenger().getType()==EntityType.CHICKEN){
-//					if(fall.get(i).isOnGround()){
-//						fall.get(i).getPassenger().leaveVehicle();
-//						fall.remove(fall.get(i));
-//					}else if(fall.get(i).isOnGround()&&fall.get(i).getLocation().getBlock().getType().toString().contains("WATER")){
-//						if(fall.get(i).getPassenger()!=null){
-//				    		gp = fall.get(i).getPassenger();
-//				    		gp.leaveVehicle();
-//				    		gp.remove();
-//				    	}
-//						fall.remove(i);
-//					}else{
-//						fall.get(i).setVelocity(new Vector(fall.get(i).getVelocity().getX(), fall.get(i).getVelocity().getY()/4, fall.get(i).getVelocity().getZ()));
-//					}
-//				}else{
-//					fall.get(i).setPassenger(fall.get(i).getWorld().spawnEntity(fall.get(i).getLocation(), EntityType.CHICKEN));
-//				}
-//			}
-//		}
-//	}
-	
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void kick(PlayerViolationKickEvent ev){
 		if(getState()==GameState.SchutzModus){
-			if(ev.getHackType()==HackType.NOFALL||ev.getHackType()==HackType.FLY){
-				ev.setCancelled(true);
-			}
+			ev.setCancelled(true);
 		}
 	}
 	
@@ -557,9 +494,8 @@ public class DeathGames extends SoloGame{
 	}
 	
 	public void spawnExtraChest(){
-		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt(getGrenze().getMaxX(), getGrenze().getMinX()), 200, UtilMath.RandomInt(getGrenze().getMaxZ(), getGrenze().getMinZ()));
+		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt((int)getGrenze().getMaxX(), (int)getGrenze().getMinX()), 200, UtilMath.RandomInt((int)getGrenze().getMaxZ(),(int) getGrenze().getMinZ()));
 		loc.getWorld().spawnFallingBlock(loc, Material.ENDER_CHEST, (byte)1);
-		//fb.setPassenger(loc.getWorld().spawnEntity(loc, EntityType.CHICKEN));
 		Location l = UtilLocation.getLowestBlock(loc);
 
 		Inventory inv = Bukkit.createInventory(null, 9 * 3, "DeathGames");
@@ -578,48 +514,16 @@ public class DeathGames extends SoloGame{
 		
 		chest.put(l,inv);
 		chest1.put(inv,l);
-		//fall.add(fb);
 	}
 	
 	public void spawnChest(){
-		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt(getGrenze().getMaxX(), getGrenze().getMinX()), 200, UtilMath.RandomInt(getGrenze().getMaxZ(), getGrenze().getMinZ()));
+		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt((int)getGrenze().getMaxX(), (int)getGrenze().getMinX()), 200, UtilMath.RandomInt((int)getGrenze().getMaxZ(),(int) getGrenze().getMinZ()));
 		loc.getWorld().spawnFallingBlock(loc, Material.CHEST,(byte)1);
-		//fb.setPassenger(loc.getWorld().spawnEntity(loc, EntityType.CHICKEN));
 		Location l = UtilLocation.getLowestBlock(loc);
 		Inventory inv = setupInv();
 		chest.put(l,inv);
 		chest1.put(inv,l);
-		//fall.add(fb);
 	}
-	
-//	long time;
-//	Location loc;
-//	@EventHandler
-//	public void ChangeChest(UpdateEvent ev){
-//		if(ev.getType()!=UpdateType.FAST)return;
-//		if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
-//			for(int i = 0; i < chest.size(); i++){
-//				loc=(Location)chest.keySet().toArray()[i];
-//				if(!getGrenze().isInGrenze(loc)){
-//					if(chest.get(loc)!=null){
-//						try{
-//							for (HumanEntity en : chest.get(loc).getViewers()){
-//								en.closeInventory();
-//							}
-//						}catch(ConcurrentModificationException e){
-//							System.out.println("[DeathGames] ConcurrentModificationException <-");
-//						}
-//					}
-//					if(loc.getBlock().getType()==Material.CHEST)UtilParticle.LAVA.display(0.0F, 1.0F, 0.0F, 1, 40, loc, 7);
-//					if(loc.getBlock().getType()==Material.ENDER_CHEST)loc.getWorld().playEffect(loc,Effect.ENDER_SIGNAL, 3);
-//					loc.getBlock().setType(Material.AIR);
-//					chest1.remove(chest.get(loc));
-//					chest.remove(loc);
-//					spawnChest();
-//				}
-//			}
-//		}
-//	}
 	
 	@EventHandler
 	public void InventoryCloseCCC(InventoryCloseEvent ev){
@@ -645,6 +549,7 @@ public class DeathGames extends SoloGame{
 			if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
 			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
 				if(ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST){
+					
 					if(chest.containsKey(ev.getClickedBlock().getLocation())){
 						ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
 						ev.setCancelled(true);
@@ -747,21 +652,18 @@ public class DeathGames extends SoloGame{
 		getWorldData().getWorld().setStorm(false);
 		chest_anzahl=UtilServer.getPlayers().size()*10;
 		
-		grenze.setList(chest_anzahl, g.get( chest_anzahl ));
-		g.remove(chest_anzahl);
-		
-		int minZ=grenze.MinZ()+20;
-		int maxZ=grenze.MaxZ()-20;
-		int minX=grenze.MinX()+20;
-		int maxX=grenze.MaxX()-20;
-		System.err.println("X: MAX:"+maxX+" MIN:"+minX);
-		System.err.println("Z: MAX:"+maxZ+" MIN:"+minZ);
+		double minZ=grenze.getMinZ()+20;
+		double maxZ=grenze.getMaxZ()-20;
+		double minX=grenze.getMinX()+20;
+		double maxX=grenze.getMaxX()-20;
+		System.err.println("X: MAX:"+maxX+" MIN:"+minX+" BETWEEN:"+ (maxX-minX));
+		System.err.println("Z: MAX:"+maxZ+" MIN:"+minZ+" BETWEEN:"+ (maxZ-minZ));
 		new AddonPlayerTeleport(this);
 		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			getGameList().addPlayer(p,PlayerState.IN);
-			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomInt(maxX, minX), 200, UtilMath.RandomInt(maxZ, minZ)) );
+			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomDouble(maxX, minX), 200, UtilMath.RandomDouble(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			title.setSubtitle(Language.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
@@ -770,16 +672,23 @@ public class DeathGames extends SoloGame{
 		a.setAktiv(true);
 		setDamage(false);
 		
-		if(getManager().getHoliday()==CalendarType.WEIHNACHTEN){
-			new AddonNight(getManager().getInstance(), getWorldData().getWorld());
-			new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler() {
-				
-				@Override
-				public void onRun() {
-					for(Player p : getGameList().getPlayers(PlayerState.IN))UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, p.getLocation(), 15);
-				}
-				
-			},UpdateType.FAST);
+		if(getManager().getHoliday()!=null){
+			switch(getManager().getHoliday()){
+			case WEIHNACHTEN:
+				new AddonNight(getManager().getInstance(), getWorldData().getWorld());
+				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler() {
+					
+					@Override
+					public void onRun() {
+						for(Player p : getGameList().getPlayers(PlayerState.IN))UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, p.getLocation(), 15);
+					}
+					
+				},UpdateType.FAST);
+				break;
+			case HALLOWEEN:
+				new AddonNight(getManager().getInstance(), getWorldData().getWorld());
+				break;
+			}
 		}
 		
 		setStart(46);

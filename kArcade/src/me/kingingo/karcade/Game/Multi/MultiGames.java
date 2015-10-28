@@ -23,14 +23,21 @@ import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.VERSUS_SETTINGS;
 import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.Update.UpdateType;
+import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.TabTitle;
+import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilPlayer;
+import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilWorldEdit;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Versus.PlayerKitManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -45,7 +52,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class MultiGames extends Game{
 	
 	@Getter
-	private ArrayList<MultiGame> games = new ArrayList<>(); // Auflistung aller MutltiGame Arenas
+	private HashMap<String,MultiGame> games = new HashMap<>(); // Auflistung aller MutltiGame Arenas
 	@Getter
 	private HashMap<MultiGame,HashMap<Team,ArrayList<Location>>> locs = new HashMap<>(); //Alle Team Locations der einzelnen MultiGame Arenas
 	@Getter
@@ -57,14 +64,26 @@ public class MultiGames extends Game{
 	private boolean CreatureSpawn = true; //Creature Spawn GLOBAL
 	@Getter
 	private PlayerKitManager kitManager;
+	@Getter
+	@Setter
+	private int played_games=0;
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
+		setSet_default_scoreboard(false);
 		registerListener();
 		ServiceMultiGames.setGames(this);
 		setTyp(GameType.valueOf(type));
 		setWorldData(new WorldData(getManager(), getType()));
 		createGames(getType());
+	}
+	
+	public boolean isPlayedGames(){
+		return (getPlayed_games()>80);
+	}
+	
+	public void updatePlayedGames(){
+		setPlayed_games(getPlayed_games()+1);
 	}
 	
 	public void createGames(GameType type){
@@ -78,16 +97,18 @@ public class MultiGames extends Game{
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);
 			
 			long time;
+			Versus v;
 			for(File file : schematics){
 				time=System.currentTimeMillis();
 				getWorldData().pastePlate(loc, file);
-				games.add(new Versus(this, file.getName().replaceAll(".schematic", "") ,loc));
+				v=new Versus(this, file.getName().replaceAll(".schematic", "") ,loc);
+				games.put(v.getArena(), v);
 				loc=loc.add(0, 0, 600);
 				getManager().DebugLog(time,"PASTE" ,MultiGames.class.getName());
 			}
 			
-			for(MultiGame game : games){
-				game.setState(GameState.LobbyPhase);
+			for(MultiGame game : games.values()){
+				game.setState(GameState.LobbyPhase,false);
 			}
 		}
 	}
@@ -180,44 +201,45 @@ public class MultiGames extends Game{
 		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
 		if(warte_liste.containsKey(ev.getPlayer().getName())){
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)warte_liste.get(ev.getPlayer().getName());
-			for(MultiGame g : games){
-				if(g instanceof Versus){
-					if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
-							if(UtilPlayer.isOnline(settings.getPlayer())){
-								if(warte_liste.containsKey(settings.getPlayer())){
-									warte_liste.remove(settings.getPlayer());
+			MultiGame g = games.get(settings.getArena());
+			
+			if(g instanceof Versus){
+				if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
+						if(UtilPlayer.isOnline(settings.getPlayer())){
+							if(warte_liste.containsKey(settings.getPlayer())){
+								warte_liste.remove(settings.getPlayer());
+							}
+								
+							if(settings.getTeam()==Team.SOLO){
+								settings.setTeam(g.littleTeam());
+							}
+								
+							g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+								
+							if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+								g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
+									
+								System.out.println("G: "+g.getKit()==null);
+								System.out.println("G: "+settings.getKit());
+									
+								if(g.getKit()!=null){
+									System.out.println("G: "+g.getKit().id);
+									System.out.println("G: "+g.getKit().kit==null);
 								}
-								
-								if(settings.getTeam()==Team.SOLO){
-									settings.setTeam(g.littleTeam());
-								}
-								
-								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-								
-								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
 									
-									System.out.println("G: "+g.getKit()==null);
-									System.out.println("G: "+settings.getKit());
-									
-									if(g.getKit()!=null){
-										System.out.println("G: "+g.getKit().id);
-										System.out.println("G: "+g.getKit().kit==null);
-									}
-									
+								if(g.getKit()!=null){
 									g.getKit().kit=settings.getKit();
 								}
-								((Versus)g).setType(settings.getType());
-								g.setMin_team(settings.getMin_team());
-								g.setMax_team(settings.getMax_team());
-								g.setState(GameState.Laden);
-								
-								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
-								Bukkit.getPluginManager().callEvent(event);
 							}
-						break;
-					}
+							((Versus)g).setType(settings.getType());
+							g.setMin_team(settings.getMin_team());
+							g.setMax_team(settings.getMax_team());
+							g.setState(GameState.Laden);
+								
+							event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+							Bukkit.getPluginManager().callEvent(event);
+						}
 				}
 			}
 		}
@@ -225,6 +247,7 @@ public class MultiGames extends Game{
 		//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
 		if(event==null||!event.isCancelled()){
 			//Spieler wird in die Lobby zum warten Teleportiert!
+			System.out.println("WARTELISTE: "+ev.getPlayer().getName());
 			getManager().getLobby().getWorld().setStorm(false);
 			getManager().getLobby().getWorld().setTime(4000);
 			ev.getPlayer().teleport(getManager().getLobby());
@@ -236,43 +259,40 @@ public class MultiGames extends Game{
 	public void PacketReceive(PacketReceiveEvent ev){
 		if(getType()==GameType.Versus&&ev.getPacket() instanceof VERSUS_SETTINGS){
 			VERSUS_SETTINGS settings = (VERSUS_SETTINGS)ev.getPacket();
-
-			for(MultiGame g : games){
-				if(g instanceof Versus){
-					
-					if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&
-							settings.getArena().equalsIgnoreCase(g.getArena())&&
-							(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
+			MultiGame g = games.get(settings.getArena());
+			if(g instanceof Versus){
+				if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&
+						settings.getArena().equalsIgnoreCase(g.getArena())&&
+						(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
 						
-							if(UtilPlayer.isOnline(settings.getPlayer())){
-								if(warte_liste.containsKey(settings.getPlayer())){
-									warte_liste.remove(settings.getPlayer());
-								}
-								
-								if(settings.getTeam()==Team.SOLO){
-									settings.setTeam(g.littleTeam());
-								}
-								
-								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-								
-								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
-									g.getKit().kit=settings.getKit();
-								}
-
-								((Versus)g).setType(settings.getType());
-								g.setMin_team(settings.getMin_team());
-								g.setMax_team(settings.getMax_team());
-								g.setState(GameState.Laden);
-								
-								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
-								Bukkit.getPluginManager().callEvent(event);
-							}else{
-								warte_liste.put(settings.getPlayer(),settings);
+						if(UtilPlayer.isOnline(settings.getPlayer())){
+							if(warte_liste.containsKey(settings.getPlayer())){
+								System.out.println("FIND: "+settings.getPlayer());
+								warte_liste.remove(settings.getPlayer());
 							}
-						break;
-					}
+								
+							if(settings.getTeam()==Team.SOLO){
+								settings.setTeam(g.littleTeam());
+							}
+								
+							g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+							
+							if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+								g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
+								g.getKit().kit=settings.getKit();
+							}
+
+							((Versus)g).setType(settings.getType());
+							g.setMin_team(settings.getMin_team());
+							g.setMax_team(settings.getMax_team());
+							g.setState(GameState.Laden);
+								
+							event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+							Bukkit.getPluginManager().callEvent(event);
+						}else{
+							warte_liste.put(settings.getPlayer(),settings);
+						}
 				}
 			}
 		}

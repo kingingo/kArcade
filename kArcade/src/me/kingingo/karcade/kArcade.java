@@ -77,6 +77,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			cmd.register(CommandTppos.class, new CommandTppos());
+			UtilServer.createLagListener(cmd);
 			new MemoryFix(this);
 			new AACHack("A"+id,mysql, pManager);
 			new ListenerCMD(this);
@@ -95,7 +96,7 @@ public class kArcade extends JavaPlugin{
 		mysql.close();
 		updater.stop();
 		if(manager.getGame() instanceof MultiGames){
-			for(MultiGame game : ((MultiGames)manager.getGame()).getGames()){
+			for(MultiGame game : ((MultiGames)manager.getGame()).getGames().values()){
 				game.setState(GameState.Restart);
 				game.updateInfo();
 			}
