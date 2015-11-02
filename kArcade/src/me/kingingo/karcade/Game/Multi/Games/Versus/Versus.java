@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
-import me.kingingo.karcade.Game.Multi.Addons.AddonArenaRestore;
 import me.kingingo.karcade.Game.Multi.Addons.GameArenaRestore;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
@@ -22,10 +22,13 @@ import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.UtilBG;
+import me.kingingo.kcore.Util.UtilDebug;
 import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
+import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Versus.VersusType;
 
@@ -37,6 +40,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -56,13 +60,15 @@ public class Versus extends MultiGame{
 	
 	public Versus(MultiGames games,String Map,Location location) {
 		super(games,location);
+		games.getManager().DebugLog(new String[]{"Versus "+getArena(),"Map "+Map});
+		games.getManager().DebugLog(UtilServer.getLagMeter().getUpdate());
 		setMap(Map);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
 		Location ecke1 = null;
 		Location ecke2 = null;
 		getGames().getLocs().put(this, new HashMap<Team,ArrayList<Location>>());
-		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 120, location)){
+		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 100, location)){
 			if(block.getRelative(BlockFace.UP).getType()==Material.WOOL){
 				if(block.getRelative(BlockFace.UP).getData()==14){
 					if(!getGames().getLocs().get(this).containsKey(Team.RED))getGames().getLocs().get(((MultiGame)this)).put(Team.RED, new ArrayList<Location>());
@@ -88,6 +94,20 @@ public class Versus extends MultiGame{
 			}
 		}
 		setMax_type( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
+		if(getMax_type()==null){
+			String s="";
+			for(Team t : getGames().getLocs().get(this).keySet())s+=","+t.Name();
+			UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getGames().getLocs().get(this).size()+" "+s);
+			UtilDebug.debug("MaxType", new String[]{"SIZE:"+getGames().getLocs().get(this).size(),s});
+		}else{
+			String s="";
+			for(Team t : getGames().getLocs().get(this).keySet())s+=","+t.Name();
+			for(Team t : getMax_type().getTeam()){
+				if(!getGames().getLocs().get(this).containsKey(t)){
+					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.Name()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getGames().getLocs().get(this).size()+" "+s);
+				}
+			}
+		}
 		ecke1 = UtilLocation.getLowestLocInCase(location, Material.BARRIER);
 		ecke2 = UtilLocation.getHighestLocInCase(location, Material.BARRIER);
 		
@@ -199,7 +219,7 @@ public class Versus extends MultiGame{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Start(MultiGameStartEvent ev){
 		if(ev.getGame()!=this)return;
 			this.addonMove.setnotMove(false);

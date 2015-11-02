@@ -293,19 +293,26 @@ public class kArcadeManager implements Listener{
 		}
 	}
 	
-	public void DebugLog(long time,String Reason,String c){
-		System.err.println("[DebugMode]: Class: "+c);
-		System.err.println("[DebugMode]: Reason: "+Reason);
-		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
+	public void DebugLog(String m){
+		DebugLog(null,0,m);
 	}
 	
 	public void DebugLog(long time,String c){
-		System.err.println("[DebugMode]: Class: "+c);
-		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
+		DebugLog(c,time,null);
 	}
 	
-	public void DebugLog(String m){
-		System.err.println("[DebugMode]: "+m);
+	public void DebugLog(long time,String reason,String c){
+		DebugLog(c, 0, reason);
+	}
+	
+	public void DebugLog(String... reason){
+		DebugLog(null,0,reason);
+	}
+	
+	public void DebugLog(String clas,long time,String... reason){
+		if(clas!=null)System.err.println("[Debug]: Class: "+clas);
+		if(reason!=null)for(String m : reason)System.err.println("[Debuge]: Reason: "+m);
+		if(time!=0)System.err.println("[Debug]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
 	}
 	
 	public void Clear(Player player){

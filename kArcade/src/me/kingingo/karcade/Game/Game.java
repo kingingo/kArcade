@@ -41,6 +41,9 @@ public class Game implements Listener{
 
 	@Getter
 	private kArcadeManager manager;
+	@Getter
+	@Setter
+	private String packetServer="hub";
 	@Setter
 	@Getter
 	private WorldData worldData;
@@ -125,17 +128,18 @@ public class Game implements Listener{
 		return gs==getState();
 	}
 	
-	public void setState(GameState gs){
-		setState(gs, GameStateChangeReason.CUSTOM);
+	public boolean setState(GameState gs){
+		return setState(gs, GameStateChangeReason.CUSTOM);
 	}
 	
-	public void setState(GameState gs,GameStateChangeReason reason){
-		if(gs==getState())return;
+	public boolean setState(GameState gs,GameStateChangeReason reason){
+		if(gs==getState())return false;
 		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs,reason);
 		Bukkit.getPluginManager().callEvent(stateEvent);
-		if(stateEvent.isCancelled())return;
+		if(stateEvent.isCancelled())return false;
 		state=gs;
 		System.out.println("["+getType().getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
+		return true;
 	}
 	
 	public void updateInfo(int o){
@@ -143,7 +147,7 @@ public class Game implements Listener{
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
-		getManager().getPacketManager().SendPacket("hub", ss);
+		getManager().getPacketManager().SendPacket(getPacketServer(), ss);
 	}
 	
 	public void updateInfo(GameState s){
@@ -151,7 +155,7 @@ public class Game implements Listener{
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
-		getManager().getPacketManager().SendPacket("hub", ss);
+		getManager().getPacketManager().SendPacket(getPacketServer(), ss);
 	}
 	
 	public void updateInfo(){
@@ -164,7 +168,7 @@ public class Game implements Listener{
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
-		getManager().getPacketManager().SendPacket("hub", ss);
+		getManager().getPacketManager().SendPacket(getPacketServer(), ss);
 	}
 	
 	public void broadcastWithPrefix(String name,Object input){
@@ -239,15 +243,16 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void Q(PlayerQuitEvent ev){
+		ev.setQuitMessage(null);
 		updateInfo(UtilServer.getPlayers().size()-1);
-		if(getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_LEAVE", ev.getPlayer().getName());
+		if(this instanceof SingleGame&&isState(GameState.LobbyPhase))broadcastWithPrefix("GAME_LEAVE", ev.getPlayer().getName());
 	}
 	
 	@EventHandler
 	public void J(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
-		if(getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_ENTER", new String[]{ev.getPlayer().getName(),String.valueOf(UtilServer.getPlayers().size()),String.valueOf(getMax_Players())});
-		if(this instanceof SingleGame&&state==GameState.LobbyPhase)updateInfo();
+		if(isState(GameState.LobbyPhase))updateInfo();
+		if(this instanceof SingleGame&&getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_ENTER", new String[]{ev.getPlayer().getName(),String.valueOf(UtilServer.getPlayers().size()),String.valueOf(getMax_Players())});
 	}
 
 }

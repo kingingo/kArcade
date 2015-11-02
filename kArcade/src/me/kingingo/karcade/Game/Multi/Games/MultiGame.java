@@ -24,6 +24,9 @@ import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
+import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutPlayerInfo;
+import me.kingingo.kcore.PacketAPI.Packets.kPlayerInfoData;
+import me.kingingo.kcore.PacketAPI.packetlistener.event.PacketListenerSendEvent;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -32,19 +35,21 @@ import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
-import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Versus.PlayerKit;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.PlayerInfoData;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Egg;
@@ -147,6 +152,7 @@ public class MultiGame extends kListener{
 	@Setter
 	private PlayerKit kit;
 	private Location location;
+//	private kPacketPlayOutPlayerInfo info;
 	
 	public MultiGame(MultiGames games,Location location) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
@@ -216,6 +222,17 @@ public class MultiGame extends kListener{
 	    }
 	    
 	}
+	
+//	@EventHandler(priority=EventPriority.HIGHEST)
+//	public void sendTAB(PacketListenerSendEvent ev){
+//		if(ev.getPacket()!=null && ev.getPlayer()!=null){
+//			if(getGameList().HasPlayer(ev.getPlayer())){
+//				if(ev.getPacket() instanceof PacketPlayOutPlayerInfo){
+//					ev.setPacket(info);
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler
 	public void death(PlayerDeathEvent ev){
@@ -553,6 +570,7 @@ public class MultiGame extends kListener{
 				setTimer(getTimer()-1);
 				
 				if(getTimer()==0){
+//					info.getList().clear();
 					setState(GameState.LobbyPhase);
 				}
 			}
@@ -668,6 +686,7 @@ public class MultiGame extends kListener{
 			setTimer(-1);
 			ev.setCancelled(true);
 			updateInfo();
+//			info.getList().add(new kPlayerInfoData(info, ((CraftPlayer)ev.getPlayer()).getProfile(), ev.getPlayer().getName()));
 		}
 	}
 	
