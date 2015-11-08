@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.GameArenaRestore;

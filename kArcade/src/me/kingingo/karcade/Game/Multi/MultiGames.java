@@ -44,6 +44,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -141,6 +143,13 @@ public class MultiGames extends Game{
 		if(!ev.getPlayer().isOp())ev.setCancelled(true);
 	}
 	
+	@EventHandler
+	public void antiLagg(UpdateEvent ev){
+		if(ev.getType()==UpdateType.MIN_08&&!UtilServer.getPlayers().isEmpty()){
+			UtilServer.getLagMeter().unloadChunks(null, null);
+		}
+	}
+	
 	/**
 	 * Sendet vom Arcade Server Infos!
 	 * @param ev
@@ -203,7 +212,7 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	  public void MobSpawn(CreatureSpawnEvent ev){
-		if(ev.getSpawnReason()==SpawnReason.CUSTOM)return;
+//		if(ev.getSpawnReason()==SpawnReason.CUSTOM)return;
 	    if (!isCreatureSpawn()){
 			if(getManager().getService().isDebug())System.err.println("[MultiGame] CreatureSpawnEvent GLOBAL Cancelled TRUE!");
 	    	ev.setCancelled(true);

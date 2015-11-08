@@ -37,6 +37,7 @@ import me.kingingo.kcore.Disguise.DisguiseManager;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Hologram.Hologram;
 import me.kingingo.kcore.LogHandler.Event.LogEvent;
@@ -114,8 +115,6 @@ public class kArcadeManager implements Listener{
 	private DisguiseManager disguiseManager;
 	@Getter
 	private CommandService service;
-	@Getter
-	private CalendarType holiday;
 	private Hologram hologram;
 	@Getter
 	private NickManager nickManager;
@@ -130,7 +129,7 @@ public class kArcadeManager implements Listener{
 		this.packetManager=packetManager;
 		this.c=c;
 		Bukkit.getPluginManager().registerEvents(this, getInstance());
-		this.holiday=Calendar.getHoliday();
+		Calendar.getHoliday();
 		this.game=Game(g);
 		this.service=new CommandService(permManager);
 		this.hologram=new Hologram(getInstance());
@@ -149,8 +148,8 @@ public class kArcadeManager implements Listener{
 		Bukkit.getPluginManager().callEvent(new RankingEvent());
 		new PrivatServer(this);
 		
-		if(getHoliday()!=null){
-			switch(getHoliday()){
+		if(Calendar.holiday!=null){
+			switch(Calendar.holiday){
 			case HALLOWEEN:
 				new AddonNight(getInstance(),getLobby().getWorld());
 				getLobby().getWorld().setStorm(false);
@@ -167,6 +166,15 @@ public class kArcadeManager implements Listener{
 		}
 		
 		if(getGame() instanceof SingleGame)getGame().setState(GameState.LobbyPhase);
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void Start(GameStartEvent ev){
+		Calendar.getHoliday();
+	}
+	
+	public CalendarType getHoliday(){
+		return Calendar.holiday;
 	}
 
 	public void setNewGame(GameType typ){

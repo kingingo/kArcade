@@ -682,7 +682,7 @@ public class MultiGame extends kListener{
 				}
 			}
 			
-			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0) );
+			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 1, 0) );
 			setTimer(-1);
 			ev.setCancelled(true);
 			updateInfo();

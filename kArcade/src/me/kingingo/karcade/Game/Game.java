@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
+import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
@@ -251,7 +252,7 @@ public class Game implements Listener{
 	@EventHandler
 	public void J(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
-		if(isState(GameState.LobbyPhase))updateInfo();
+		if(isState(GameState.LobbyPhase)||this instanceof MultiGames)updateInfo();
 		if(this instanceof SingleGame&&getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_ENTER", new String[]{ev.getPlayer().getName(),String.valueOf(UtilServer.getPlayers().size()),String.valueOf(getMax_Players())});
 	}
 
