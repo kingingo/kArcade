@@ -1,5 +1,7 @@
 package me.kingingo.karcade.Game;
 
+import java.net.UnknownHostException;
+
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcade;
