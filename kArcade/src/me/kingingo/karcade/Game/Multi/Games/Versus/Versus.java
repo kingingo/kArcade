@@ -146,7 +146,7 @@ public class Versus extends MultiGame{
 			ev.setCancelled(true);
 			
 			for(Player player : getGameList().getPlayers().keySet())
-				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+""+ev.getMessage());
+				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+"§8 » §7"+ev.getMessage());
 		}
 	}
 	

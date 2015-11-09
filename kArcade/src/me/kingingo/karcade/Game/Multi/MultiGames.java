@@ -142,11 +142,6 @@ public class MultiGames extends Game{
 	}
 	
 	@EventHandler
-	public void chat(AsyncPlayerChatEvent ev){
-		if(!ev.getPlayer().isOp())ev.setCancelled(true);
-	}
-	
-	@EventHandler
 	public void antiLagg(UpdateEvent ev){
 		if(ev.getType()==UpdateType.MIN_08&&!UtilServer.getPlayers().isEmpty()){
 			UtilServer.getLagMeter().unloadChunks(null, null);
