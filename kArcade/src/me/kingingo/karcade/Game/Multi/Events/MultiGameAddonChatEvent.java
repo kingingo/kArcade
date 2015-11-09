@@ -8,7 +8,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class MutliGameAddonChatEvent extends Event implements Cancellable{
+public class MultiGameAddonChatEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();
 	@Getter
 	private String message;
@@ -18,7 +18,7 @@ public class MutliGameAddonChatEvent extends Event implements Cancellable{
 	@Setter
 	private boolean cancelled=false;
 	
-	public MutliGameAddonChatEvent(Player player,String message){
+	public MultiGameAddonChatEvent(Player player,String message){
 		this.player=player;
 		this.message=message;
 	}

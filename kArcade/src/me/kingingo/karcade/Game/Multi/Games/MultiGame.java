@@ -16,6 +16,7 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameUpdateInfo;
+import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameType;

@@ -7,11 +7,11 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Multi.MultiGames;
-import me.kingingo.karcade.Game.Multi.Addons.GameArenaRestore;
+import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
+import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
-import me.kingingo.karcade.Game.Multi.Events.MutliGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
@@ -55,7 +55,7 @@ public class Versus extends MultiGame{
 	private VersusType type;
 	@Getter
 	private AddonMove addonMove;
-	private GameArenaRestore area;
+	private MultiGameArenaRestore area;
 	private Scoreboard scoreboard;
 	
 	public Versus(MultiGames games,String Map,Location location) {
@@ -115,7 +115,7 @@ public class Versus extends MultiGame{
 			Log("ECKE1: "+(ecke1==null)+" ECKE2:"+(ecke2==null));
 			Log("LOC: "+location.toString());
 		}else{
-			area=new GameArenaRestore(this, ecke1, ecke2);
+			area=new MultiGameArenaRestore(this, ecke1, ecke2);
 		}
 		
 		setDropItem(false);
@@ -141,8 +141,13 @@ public class Versus extends MultiGame{
 	}
 	
 	@EventHandler
-	public void chat(MutliGameAddonChatEvent ev){
-		
+	public void chat(MultiGameAddonChatEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			ev.setCancelled(true);
+			
+			for(Player player : getGameList().getPlayers().keySet())
+				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+""+ev.getMessage());
+		}
 	}
 	
 	@EventHandler

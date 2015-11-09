@@ -20,7 +20,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
-public class GameArenaRestore extends kListener{
+public class MultiGameArenaRestore extends kListener{
 	
 		private MultiGame game;
 		private HashMap<Location,BlockState> blocks;
@@ -32,7 +32,7 @@ public class GameArenaRestore extends kListener{
 		public int MinMax[][];
 		private World world;
 		
-		public GameArenaRestore(MultiGame game,Location ecke1,Location ecke2){
+		public MultiGameArenaRestore(MultiGame game,Location ecke1,Location ecke2){
 			super(game.getGames().getManager().getInstance(),"GameArenaRestore: "+game.getArena());
 			this.blocks=new HashMap<>();
 			this.game=game;

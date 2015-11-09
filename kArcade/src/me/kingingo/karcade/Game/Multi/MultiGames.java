@@ -9,7 +9,9 @@ import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
-import me.kingingo.karcade.Game.Multi.Addons.AddonArenaRestore;
+import me.kingingo.karcade.Game.Multi.Addons.MultiAddonArenaRestore;
+import me.kingingo.karcade.Game.Multi.Addons.MultiAddonChat;
+import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
@@ -82,6 +84,7 @@ public class MultiGames extends Game{
 		setWorldData(new WorldData(getManager(), getType()));
 		createGames(getType());
 		setApublic(false);
+		new MultiAddonChat(manager.getInstance());
 	}
 	
 	public boolean haveToRestart(){
@@ -96,7 +99,7 @@ public class MultiGames extends Game{
 		if(GameType.Versus==type){
 			setPacketServer("versushub");
 			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
-			new AddonArenaRestore(getManager().getInstance());
+			new MultiAddonArenaRestore(getManager().getInstance());
 			setCreatureSpawn(false);
 			getWorldData().createCustomWorld("90,quartz_block");
 			for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();

@@ -23,9 +23,9 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class AddonArenaRestore extends kListener{
+public class MultiAddonArenaRestore extends kListener{
 
-	public AddonArenaRestore(JavaPlugin instance){
+	public MultiAddonArenaRestore(JavaPlugin instance){
 		super(instance,"AddonArenaRestore");
 	}
 	
