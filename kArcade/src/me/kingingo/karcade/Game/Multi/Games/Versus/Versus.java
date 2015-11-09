@@ -11,6 +11,7 @@ import me.kingingo.karcade.Game.Multi.Addons.GameArenaRestore;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
+import me.kingingo.karcade.Game.Multi.Events.MutliGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Enum.GameState;
@@ -137,6 +138,11 @@ public class Versus extends MultiGame{
 	public void setType(VersusType type){
 		this.type=type;
 		setTeam(type.getTeam().length);
+	}
+	
+	@EventHandler
+	public void chat(MutliGameAddonChatEvent ev){
+		
 	}
 	
 	@EventHandler
