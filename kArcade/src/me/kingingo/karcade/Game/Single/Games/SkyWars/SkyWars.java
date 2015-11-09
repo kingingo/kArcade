@@ -126,8 +126,8 @@ public class SkyWars extends TeamGame{
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
 		kitshop=new KitShop(getManager().getInstance(), getGems(),getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
-			new Kit( "§eKoch",new String[]{"§8x"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,500,new Perk[]{
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10)})
+			new Kit( "§eKoch",new String[]{"§8x8§7 TNT","§8x1§7 Feuerzeug","§8x16§7 Brot"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,8),new ItemStack(Material.FLINT_AND_STEEL),new ItemStack(Material.BREAD,16)})
 			}),
 			new Kit( "§eSprengmeister",new String[]{"§8x4 Creeper Spawner","§8x10 TnT","§8x1 Feuerzeug"}, new ItemStack(Material.TNT),kPermission.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL),this.creeper.getItem(4)})
