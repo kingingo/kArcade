@@ -14,7 +14,6 @@ import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
-import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -45,7 +44,6 @@ import me.kingingo.kcore.Kit.Shop.KitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Permission.kPermission;
-import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -58,7 +56,6 @@ import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
-import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
@@ -72,7 +69,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -126,8 +122,38 @@ public class SkyWars extends TeamGame{
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
 		kitshop=new KitShop(getManager().getInstance(), getGems(),getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
-			new Kit( "§eKoch",new String[]{"§8x8§7 TNT","§8x1§7 Feuerzeug","§8x16§7 Brot"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,500,new Perk[]{
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,8),new ItemStack(Material.FLINT_AND_STEEL),new ItemStack(Material.BREAD,16)})
+			new Kit("§aStarter-Kit",new String[]{"§8x1§7 Leder Rüstung","§8x1§7 Holzschwert mit Schärfe 1"},new ItemStack(Material.LEATHER_HELMET),kPermission.SKYWARS_KIT_STARTERKIT,KitType.STARTER,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.LEATHER_BOOTS),new ItemStack(Material.LEATHER_LEGGINGS),new ItemStack(Material.LEATHER_CHESTPLATE),new ItemStack(Material.LEATHER_HELMET)})
+			}),
+			new Kit("§ePanzer",new String[]{"§8x1§7 Diamanthelm mit Drone 1,Unbreaking 1","§8x1§7 Eisenbrustpanzer mit Unbreaking 1","§8x1§7 Eisenhose mit Unbreaking 1","§8x1§7 Eisenschuhe mit Unbreaking 1"},new ItemStack(Material.SLIME_BALL),kPermission.SKYWARS_KIT_PANZER,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(UtilItem.EnchantItem(new ItemStack(Material.DIAMOND_CHESTPLATE), Enchantment.DURABILITY, 1), Enchantment.THORNS, 1),
+						UtilItem.EnchantItem(new ItemStack(Material.IRON_HELMET), Enchantment.DURABILITY, 1),
+						UtilItem.EnchantItem(new ItemStack(Material.IRON_LEGGINGS), Enchantment.DURABILITY, 1),
+						UtilItem.EnchantItem(new ItemStack(Material.IRON_BOOTS), Enchantment.DURABILITY, 1)})
+			}),
+			new Kit("§eGlueckshase",new String[]{"§8x1§7 Eisenspitzhacke mit Glueck 2"},new ItemStack(Material.RABBIT_FOOT),kPermission.SKYWARS_KIT_HASE,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.LUCK, 2)})
+			}),
+			new Kit("§eHulk",new String[]{"§8x1§7 Leder Rüstung mit Schutz 1","§8x1§7 Stärke 1 Trank"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN),kPermission.SKYWARS_KIT_HULK,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), DyeColor.GREEN),
+						UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.GREEN),
+						UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.GREEN),
+						UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN),
+						new ItemStack(Material.POTION,1,(byte)8233)})
+			}),
+			new Kit("§eSuperMario",new String[]{"§8x1§7 Roter Lederbrustpanzer","§8x1§7 Blaue Lederhose","§8x1§7 Sprungkraft 1 Trank"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.RED),kPermission.SKYWARS_KIT_MARIO,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.RED),
+						UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.BLUE),
+						new ItemStack(Material.POTION,1,(byte)16459)})
+			}),
+			new Kit("§eStuntman",new String[]{"§8x1§7 Diamantschuhe mit Federfall IV"},new ItemStack(Material.FEATHER),kPermission.SKYWARS_KIT_STUNTMAN,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.DIAMOND_BOOTS), Enchantment.PROTECTION_FALL, 5)})
+			}),
+			new Kit("§eSlime",new String[]{"§8x16§7 Slime Bleocke","§8x5§7 Jump Wurftrank"},new ItemStack(Material.SLIME_BALL),kPermission.SKYWARS_KIT_SLIME,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.SLIME_BLOCK,16),new ItemStack(Material.POTION,5,(byte)16427)})
+			}),
+			new Kit( "§eKoch",new String[]{"§8x1§7 Holzschwert Schärfe 2","§8x8§7 Steaks","§8x1§7 Kuchen","§8x3§7 Goldenäpfel"}, new ItemStack(Material.CAKE),kPermission.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.RenameItem(UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD),Enchantment.DAMAGE_ALL,2), "§7Gabel"),new ItemStack(Material.COOKED_BEEF,8),new ItemStack(Material.CAKE,1),new ItemStack(Material.GOLDEN_APPLE,3)})
 			}),
 			new Kit( "§eSprengmeister",new String[]{"§8x4 Creeper Spawner","§8x10 TnT","§8x1 Feuerzeug"}, new ItemStack(Material.TNT),kPermission.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL),this.creeper.getItem(4)})
