@@ -282,23 +282,21 @@ public class SkyWars extends TeamGame{
 			case 19:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
 			case 20:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
 			case 21:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
-			case 22:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
-			case 23:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
-			case 24:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
-			case 25:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
-			case 26:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(64, 32));
-			case 27:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
-			case 28:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
-			case 29:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
-			case 30:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
-			case 31:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
-			case 32:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
-			case 33:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
-			case 34:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
-			case 35:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
-			case 36:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
-			case 37: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
-			case 38: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 22:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
+			case 23:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
+			case 24:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
+			case 25:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
+			case 26:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
+			case 27:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
+			case 28:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
+			case 29:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			case 30:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
+			case 31:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
+			case 32:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
+			case 33:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
+			case 34:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			case 35: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 36: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
 			default: return new ItemStack(Material.STICK);
 			}
 		}catch(NullPointerException e){
