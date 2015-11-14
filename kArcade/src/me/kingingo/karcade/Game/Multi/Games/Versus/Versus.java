@@ -14,6 +14,7 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
+import me.kingingo.kcore.Arena.ArenaType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.Team;
@@ -30,7 +31,6 @@ import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
-import me.kingingo.kcore.Versus.VersusType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -50,9 +50,9 @@ public class Versus extends MultiGame{
 	
 	@Getter
 	@Setter
-	private VersusType max_type;
+	private ArenaType max_type;
 	@Getter
-	private VersusType type;
+	private ArenaType type;
 	@Getter
 	private AddonMove addonMove;
 	private MultiGameArenaRestore area;
@@ -93,7 +93,7 @@ public class Versus extends MultiGame{
 				block.setType(Material.AIR);
 			}
 		}
-		setMax_type( VersusType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
+		setMax_type( ArenaType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
 		if(getMax_type()==null){
 			String s="";
 			for(Team t : getGames().getLocs().get(this).keySet())s+=","+t.Name();
@@ -135,7 +135,7 @@ public class Versus extends MultiGame{
 		UtilScoreboard.setScore(scoreboard, "§7----------------", DisplaySlot.SIDEBAR, 0);
 	}
 	
-	public void setType(VersusType type){
+	public void setType(ArenaType type){
 		this.type=type;
 		setTeam(type.getTeam().length);
 	}

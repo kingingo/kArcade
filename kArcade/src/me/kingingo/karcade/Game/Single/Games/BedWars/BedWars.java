@@ -75,15 +75,15 @@ import org.bukkit.scoreboard.DisplaySlot;
 
 public class BedWars extends TeamGame{
 
-	AddonEnterhacken aeh;
-	AddonBedTeamKing abtk;
-	AddonDropItems adi;
-	AddonPlaceBlockCanBreak apbcb;
+	private AddonEnterhacken aeh;
+	private AddonBedTeamKing abtk;
+	private AddonDropItems adi;
+	private AddonPlaceBlockCanBreak apbcb;
 	@Getter
-	HashMap<Team,Boolean> teams = new HashMap<>();
+	private HashMap<Team,Boolean> teams = new HashMap<>();
 	@Getter
-	BedWarsType typ;
-	LaunchItemManager liManager;
+	private BedWarsType typ;
+	private LaunchItemManager liManager;
 	
 	public BedWars(kArcadeManager manager,BedWarsType typ){
 		super(manager);

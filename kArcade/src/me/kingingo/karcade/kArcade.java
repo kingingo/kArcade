@@ -53,6 +53,7 @@ public class kArcade extends JavaPlugin{
 		try{
 			start_time = System.currentTimeMillis();
 			loadConfig();
+			
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			Language.load(mysql);
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel()));
