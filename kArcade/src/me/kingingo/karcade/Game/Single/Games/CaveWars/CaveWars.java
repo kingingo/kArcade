@@ -9,6 +9,7 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.CaveWars.Addon.AddonDropItems;
@@ -16,7 +17,6 @@ import me.kingingo.karcade.Game.Single.addons.AddonEntityTeamKing;
 import me.kingingo.karcade.Game.Single.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
@@ -102,18 +102,17 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CaveWars extends TeamGame{
 
-	WorldData wd;
-	AddonTargetNextPlayer targetnextplayer;
-	AddonEntityTeamKing aek;
-	AddonDropItems adi;
-	AddonPlaceBlockCanBreak apbcb;
+	private AddonTargetNextPlayer targetnextplayer;
+	private AddonEntityTeamKing aek;
+	private AddonDropItems adi;
+	private AddonPlaceBlockCanBreak apbcb;
 	@Getter
-	HashMap<Team,Boolean> teams = new HashMap<>();
-	KitShop kitshop;
+	private HashMap<Team,Boolean> teams = new HashMap<>();
+	private KitShop kitshop;
 	@Getter
-	CaveWarsType typ;
-	HashMap<Player,String> kits = new HashMap<>();
-	ArrayList<Location> buildings=new ArrayList<>();
+	private CaveWarsType typ;
+	private HashMap<Player,String> kits = new HashMap<>();
+	private ArrayList<Location> buildings=new ArrayList<>();
 	
 	public CaveWars(kArcadeManager manager,CaveWarsType typ){
 		super(manager);
@@ -230,9 +229,8 @@ public class CaveWars extends TeamGame{
 			})
 		});
 
-		this.wd=new WorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel());
-		wd.Initialize();
-		setWorldData(wd);
+		setWorldData(new SingleWorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel()));
+		getWorldData().Initialize();
 		
 		
 		manager.DebugLog(t, this.getClass().getName());
@@ -263,12 +261,10 @@ public class CaveWars extends TeamGame{
 		getManager().setRanking(Stats.WIN);
 	}
 	
-	ArrayList<Location> l;
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
-			l= getWorldData().getLocs(getTeam(ev.getPlayer()).Name());
-			 ev.setRespawnLocation( l.get(UtilMath.r(l.size())) );
+			 ev.setRespawnLocation( getWorldData().getLocs(getTeam(ev.getPlayer())).get(UtilMath.r(getWorldData().getLocs(getTeam(ev.getPlayer())).size())) );
 			 ev.getPlayer().getInventory().addItem(new ItemStack(Material.COMPASS));
 		 }
 	}
@@ -350,7 +346,7 @@ public class CaveWars extends TeamGame{
 					if(getTeamList().containsKey(p))continue;
 					Team t = littleTeam();
 					addTeam(p, t);
-					p.teleport(getWorldData().getLocs(t.Name()).get(0));
+					p.teleport(getWorldData().getLocs(t).get(0));
 				}
 				
 				HashMap<Player,String> l= new HashMap<>();
@@ -659,7 +655,7 @@ public class CaveWars extends TeamGame{
 
 					@Override
 					public void onRun() {
-						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
+						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team).get(0), 10);
 					}
 					
 				},UpdateType.MIN_005);
@@ -676,18 +672,11 @@ public class CaveWars extends TeamGame{
 		targetnextplayer.setAktiv(true);
 		targetnextplayer.setRadius(120);
 		
-		for(String t : getWorldData().getLocs().keySet()){
-			System.out.println("[EPICPVP] T; "+t);
-			for(Location loc : getWorldData().getLocs(t)){
-				System.out.println("[EPICPVP] "+loc);
-			}
-		}
-		
 		int i = 0;
 		for(Team t : teams){
 			getTeams().put(t, true);
 			
-			list = getWorldData().getLocs(t.Name());
+			list = getWorldData().getLocs(t);
 			for(Player p : getPlayerFrom(t)){
 				p.teleport(list.get(i));
 				p.getInventory().addItem(new ItemStack(Material.COMPASS));
@@ -709,8 +698,8 @@ public class CaveWars extends TeamGame{
 			}
 		}
 		
-		if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
-			for(Location loc : getWorldData().getLocs(Team.BLACK.Name())){
+		if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
+			for(Location loc : getWorldData().getLocs(Team.BLACK)){
 				setVillager(loc, et);
 			}
 		}

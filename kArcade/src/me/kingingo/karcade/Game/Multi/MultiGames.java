@@ -11,12 +11,11 @@ import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonArenaRestore;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonChat;
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
+import me.kingingo.karcade.Game.Multi.Games.SkyWars1vs1.SkyWars1vs1;
 import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Service.Games.ServiceMultiGames;
 import me.kingingo.kcore.Client.Events.ClientReceiveMessageEvent;
 import me.kingingo.kcore.Enum.GameState;
@@ -43,13 +42,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -59,10 +54,8 @@ public class MultiGames extends Game{
 	@Getter
 	private HashMap<String,MultiGame> games = new HashMap<>(); // Auflistung aller MutltiGame Arenas
 	@Getter
-	private HashMap<MultiGame,HashMap<Team,ArrayList<Location>>> locs = new HashMap<>(); //Alle Team Locations der einzelnen MultiGame Arenas
-	@Getter
 	@Setter
-	private WorldData worldData;
+	private MultiWorldData worldData;
 	private HashMap<String,ARENA_SETTINGS> warte_liste = new HashMap<>(); //Warte Liste falls Spieler zu früh auf dem Server kommen...
 	@Getter
 	@Setter
@@ -75,13 +68,13 @@ public class MultiGames extends Game{
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
+		setTyp(GameType.get(type));
 		UtilServer.createLagListener(manager.getCmd());
 		setState(GameState.Laden);
 		setSet_default_scoreboard(false);
 		registerListener();
 		ServiceMultiGames.setGames(this);
-		setTyp(GameType.get(type));
-		setWorldData(new WorldData(getManager(), getType()));
+		setWorldData(new MultiWorldData(getManager(), getType()));
 		createGames(getType());
 		setApublic(false);
 		new MultiAddonChat(manager.getInstance());
@@ -96,13 +89,13 @@ public class MultiGames extends Game{
 	}
 	
 	public void createGames(GameType type){
+		setPacketServer("versushub");
+		new MultiAddonArenaRestore(getManager().getInstance());
+		setCreatureSpawn(false);
+		
 		if(GameType.Versus==type){
-			setPacketServer("versushub");
 			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
-			new MultiAddonArenaRestore(getManager().getInstance());
-			setCreatureSpawn(false);
 			getWorldData().createCustomWorld("90,quartz_block");
-			for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();
 			ArrayList<File> schematics = getWorldData().loadSchematics();
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);
 			
@@ -111,18 +104,18 @@ public class MultiGames extends Game{
 			File file;
 			for(int i = 0; i<=(schematics.size()<=6?schematics.size():6); i++){
 				if(!schematics.isEmpty()){
+					time=System.currentTimeMillis();
 					if(schematics.size()==1){
 						file = schematics.get(0);
 					}else{
 						file = schematics.get(UtilMath.r(schematics.size()));
 					}
-					time=System.currentTimeMillis();
-					getWorldData().pastePlate(loc, file);
+					getWorldData().pasteSchematic(loc, file);
 					v=new Versus(this, file.getName().replaceAll(".schematic", "") ,loc);
 					games.put(v.getArena(), v);
 					loc=loc.add(0, 0, 600);
-					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
 					schematics.remove(file);
+					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
 				}else{
 					break;
 				}
@@ -133,12 +126,47 @@ public class MultiGames extends Game{
 			v=null;
 			schematics.clear();
 			schematics=null;
+		}else if(GameType.SkyWars1vs1==type){
 			
-			for(MultiGame game : games.values()){
-				game.setState(GameState.LobbyPhase,false);
+			getWorldData().createCleanWorld();
+			ArrayList<File> zips = getWorldData().loadZips();
+			Location loc = new Location(getWorldData().getWorld(),0,120,0);
+			
+			long time;
+			SkyWars1vs1 v;
+			File file;
+			
+			for(int i = 0; i<=(zips.size()<=6?zips.size():6); i++){
+				if(!zips.isEmpty()){
+					time=System.currentTimeMillis();
+					if(zips.size()==1){
+						file = zips.get(0);
+					}else{
+						file = zips.get(UtilMath.r(zips.size()));
+					}
+					loc=loc.add(0, 0, 1500);
+					v=new SkyWars1vs1(this, "Loading ...",loc,file);
+					games.put(v.getArena(), v);
+					zips.remove(file);
+					
+					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+				}else{
+					break;
+				}
 			}
-			setState(GameState.LobbyPhase);
+			
+			loc=null;
+			time=0;
+			v=null;
+			zips.clear();
+			zips=null;
 		}
+
+		for(org.bukkit.entity.Entity e : getWorldData().getWorld().getEntities())e.remove();
+		for(MultiGame game : games.values()){
+			game.setState(GameState.LobbyPhase,false);
+		}
+		setState(GameState.LobbyPhase);
 	}
 	
 	@EventHandler

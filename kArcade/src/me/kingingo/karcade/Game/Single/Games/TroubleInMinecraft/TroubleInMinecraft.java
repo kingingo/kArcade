@@ -9,6 +9,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Command.CommandDetective;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Command.CommandTraitor;
@@ -28,7 +29,6 @@ import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item.Tester
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Weapon.Minigun;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Weapon.Shotgun;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.Weapon.Sniper;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.karcade.Service.Games.ServiceTroubleInMinecraft;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
@@ -86,14 +86,14 @@ import org.bukkit.scoreboard.Scoreboard;
 public class TroubleInMinecraft extends TeamGame{
 	
 	@Getter
-	HashMap<Integer,String> npclist = new HashMap<>();
-	ArrayList<Player> arrow =new ArrayList<>();
-	Tester tester;
-	Shop dshop;
+	private HashMap<Integer,String> npclist = new HashMap<>();
+	private ArrayList<Player> arrow =new ArrayList<>();
+	private Tester tester;
+	private Shop dshop;
 	@Getter
-	NPCManager npcManager;
+	private NPCManager npcManager;
 	@Getter
-	ItemFakeManager ifm;
+	private ItemFakeManager ifm;
 	@Getter
 	public static Shotgun shotgun;
 	@Getter
@@ -102,10 +102,10 @@ public class TroubleInMinecraft extends TeamGame{
 	public static Minigun minigun;
 	ArrayList<Player> traitor = new ArrayList<>();
 	@Getter
-	MagnetStab magnet;
-	Defibrillator defi;
-	Shop traitor_shop;
-	Shop detective_shop;
+	private MagnetStab magnet;
+	private Defibrillator defi;
+	private Shop traitor_shop;
+	private Shop detective_shop;
 	@Getter
 	private LaunchItemManager ilManager;
 	
@@ -165,7 +165,7 @@ public class TroubleInMinecraft extends TeamGame{
 				new Medipack(this),
 				new DNA_TEST(this),
 		});
-		setWorldData(new WorldData(manager,getType()));
+		setWorldData(new SingleWorldData(manager,getType()));
 		getWorldData().Initialize();
 		ServiceTroubleInMinecraft.setTtt(this);
 		setState(GameState.LobbyPhase);
@@ -904,8 +904,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void World(WorldLoadEvent ev){
-		HashMap<String,ArrayList<Location>> list = getWorldData().getLocs();
-		tester = new Tester(this, list.get(Team.BLUE.Name()).get(0),list.get(Team.GREEN.Name()).get(0), list.get(Team.SOLO.Name()), list.get(Team.GRAY.Name()));
+		this.tester = new Tester(this, getWorldData().getLocs(Team.BLUE).get(0),getWorldData().getLocs(Team.GREEN).get(0), getWorldData().getLocs(Team.SOLO), getWorldData().getLocs(Team.GRAY));
 	}
 	
 	@EventHandler
@@ -921,7 +920,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
-		ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> list = getWorldData().getLocs(Team.RED);
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
@@ -933,7 +932,7 @@ public class TroubleInMinecraft extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 		}
 		ifm=new ItemFakeManager(getManager().getInstance(),getManager().getHologram());
-		setItemFake(getWorldData().getLocs(Team.YELLOW.Name()));
+		setItemFake(getWorldData().getLocs(Team.YELLOW));
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		setDamage(false);
 		setStart(31);

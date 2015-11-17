@@ -60,7 +60,7 @@ public class AddonEntityTeamKing implements Listener {
 		Entity e;
 		Location loc = null;
 		for(Team t : teams){
-			loc=team.getWorldData().getLocs(getSheep(t).Name()).get(0);
+			loc=team.getWorldData().getLocs(getSheep(t)).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 			e=team.getManager().getPetManager().AddPetWithOutOwner(t.getColor()+"Schaf",true, type, loc);
 			this.teams.put(t, e);

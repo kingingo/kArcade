@@ -1,7 +1,5 @@
 package me.kingingo.karcade.Game;
 
-import java.net.UnknownHostException;
-
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcade;
@@ -9,7 +7,6 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Events.GameUpdateInfoEvent;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Single.SingleGame;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Client.Events.ClientConnectEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
@@ -47,9 +44,6 @@ public class Game implements Listener{
 	@Getter
 	@Setter
 	private String packetServer="hub";
-	@Setter
-	@Getter
-	private WorldData worldData;
 	private Coins coins;
 	private Gems gems;
 	@Getter
@@ -145,28 +139,12 @@ public class Game implements Listener{
 		return true;
 	}
 	
-	public void updateInfo(int o){
-		SERVER_STATUS ss = new SERVER_STATUS(state,o, getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id,apublic);
-		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
-		Bukkit.getPluginManager().callEvent(ev);
-		if(ev.isCancelled())return;
-		getManager().getPacketManager().SendPacket(getPacketServer(), ss);
-	}
-	
-	public void updateInfo(GameState s){
-		SERVER_STATUS ss = new SERVER_STATUS(s,UtilServer.getPlayers().size(), getMax_Players(),getWorldData().getMapName(), getType(),"a"+kArcade.id,apublic);
-		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
-		Bukkit.getPluginManager().callEvent(ev);
-		if(ev.isCancelled())return;
-		getManager().getPacketManager().SendPacket(getPacketServer(), ss);
-	}
-	
-	public void updateInfo(){
+	public void updateInfo(GameState state,int player_size,int max,String Map,GameType type ){
 		SERVER_STATUS ss = new SERVER_STATUS(state
-				,UtilServer.getPlayers().size()
-				, getMax_Players()
-				, (getWorldData()==null ? "Loading ..." : getWorldData().getMapName())
-				, getType()
+				,player_size
+				,max
+				, Map
+				, type
 				,"a"+kArcade.id,apublic);
 		GameUpdateInfoEvent ev = new GameUpdateInfoEvent(ss);
 		Bukkit.getPluginManager().callEvent(ev);
@@ -174,9 +152,24 @@ public class Game implements Listener{
 		getManager().getPacketManager().SendPacket(getPacketServer(), ss);
 	}
 	
+	public void updateInfo(GameState state,int player_size){
+		updateInfo(state, player_size, getMax_Players(), (this instanceof SingleGame?(((SingleGame)this).getWorldData()==null?"Loading ...":((SingleGame)this).getWorldData().getMapName()):"Loading ..."), getType());
+	}
+	
+	public void updateInfo(int player_size){
+		updateInfo(getState(),player_size);
+	}
+	
+	public void updateInfo(GameState state){
+		updateInfo(state,UtilServer.getPlayers().size());
+	}
+	
+	public void updateInfo(){
+		updateInfo(getState(), UtilServer.getPlayers().size());
+	}
+	
 	public void broadcastWithPrefix(String name,Object input){
 		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player,name,input));
-		
 	}
 	
 	public void broadcastWithPrefix(String name,Object[] input){

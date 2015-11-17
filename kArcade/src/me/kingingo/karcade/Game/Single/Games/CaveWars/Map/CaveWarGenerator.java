@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.Team;
 
@@ -18,9 +19,9 @@ import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 public class CaveWarGenerator extends ChunkGenerator {
 	private NoiseGenerator generator;
-	private WorldData worldData;
+	private SingleWorldData worldData;
 	
-	public CaveWarGenerator(WorldData worldData){
+	public CaveWarGenerator(SingleWorldData worldData){
 		this.worldData=worldData;
 	}
 
@@ -64,21 +65,21 @@ public class CaveWarGenerator extends ChunkGenerator {
 			}
 
 			@Override
-			public boolean distance(WorldData wd,Location loc) {
-				if(wd.ExistLoc(Team.RED.Name())){
-					if(wd.getLocs(Team.RED.Name()).get(0).distance(loc) > 30){
+			public boolean distance(SingleWorldData wd,Location loc) {
+				if(wd.existLoc(Team.RED)){
+					if(wd.getLocs(Team.RED).get(0).distance(loc) > 30){
 						return true;
 					}
-				}else if(wd.ExistLoc(Team.BLUE.Name())){
-					if(wd.getLocs(Team.BLUE.Name()).get(0).distance(loc) > 30){
+				}else if(wd.existLoc(Team.BLUE)){
+					if(wd.getLocs(Team.BLUE).get(0).distance(loc) > 30){
 						return true;
 					}
-				}else if(wd.ExistLoc(Team.GREEN.Name())){
-					if(wd.getLocs(Team.GREEN.Name()).get(0).distance(loc) > 30){
+				}else if(wd.existLoc(Team.GREEN)){
+					if(wd.getLocs(Team.GREEN).get(0).distance(loc) > 30){
 						return true;
 					}
-				}else if(wd.ExistLoc(Team.YELLOW.Name())){
-					if(wd.getLocs(Team.YELLOW.Name()).get(0).distance(loc) > 30){
+				}else if(wd.existLoc(Team.YELLOW)){
+					if(wd.getLocs(Team.YELLOW).get(0).distance(loc) > 30){
 						return true;
 					}
 				}

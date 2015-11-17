@@ -1,8 +1,5 @@
 package me.kingingo.karcade.Game.Multi.Games.Versus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Enum.PlayerState;
@@ -59,52 +56,44 @@ public class Versus extends MultiGame{
 	private Scoreboard scoreboard;
 	
 	public Versus(MultiGames games,String Map,Location location) {
-		super(games,location);
+		super(games,Map,location);
 		games.getManager().DebugLog(new String[]{"Versus "+getArena(),"Map "+Map});
-		games.getManager().DebugLog(UtilServer.getLagMeter().getUpdate());
-		setMap(Map);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
 		Location ecke1 = null;
 		Location ecke2 = null;
-		getGames().getLocs().put(this, new HashMap<Team,ArrayList<Location>>());
+		
 		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 100, location)){
 			if(block.getRelative(BlockFace.UP).getType()==Material.WOOL){
 				if(block.getRelative(BlockFace.UP).getData()==14){
-					if(!getGames().getLocs().get(this).containsKey(Team.RED))getGames().getLocs().get(((MultiGame)this)).put(Team.RED, new ArrayList<Location>());
-					getGames().getLocs().get( ((MultiGame)this) ).get(Team.RED).add(block.getRelative(BlockFace.UP).getLocation());
+					getWorldData().addLoc(this, Team.RED, block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==11){
-					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.BLUE))getGames().getLocs().get(((MultiGame)this)).put(Team.BLUE, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.BLUE).add(block.getRelative(BlockFace.UP).getLocation());
+					getWorldData().addLoc(this, Team.BLUE, block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==5){
-					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.GREEN))getGames().getLocs().get(((MultiGame)this)).put(Team.GREEN, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.GREEN).add(block.getRelative(BlockFace.UP).getLocation());
+					getWorldData().addLoc(this, Team.GREEN, block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==4){
-					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.YELLOW))getGames().getLocs().get(((MultiGame)this)).put(Team.YELLOW, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.YELLOW).add(block.getRelative(BlockFace.UP).getLocation());
+					getWorldData().addLoc(this, Team.YELLOW, block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==1){
-					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.ORANGE))getGames().getLocs().get(((MultiGame)this)).put(Team.ORANGE, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.ORANGE).add(block.getRelative(BlockFace.UP).getLocation());
+					getWorldData().addLoc(this, Team.ORANGE, block.getRelative(BlockFace.UP).getLocation());
 				}else if(block.getRelative(BlockFace.UP).getData()==7){
-					if(!getGames().getLocs().get(((MultiGame)this)).containsKey(Team.GRAY))getGames().getLocs().get(((MultiGame)this)).put(Team.GRAY, new ArrayList<Location>());
-					getGames().getLocs().get(((MultiGame)this)).get(Team.GRAY).add(block.getRelative(BlockFace.UP).getLocation());
+					getWorldData().addLoc(this, Team.GRAY, block.getRelative(BlockFace.UP).getLocation());
 				}
 				block.getRelative(BlockFace.UP).setType(Material.AIR);
 				block.setType(Material.AIR);
 			}
 		}
-		setMax_type( ArenaType.withTeamAnzahl( getGames().getLocs().get(this).size() ) );
+		setMax_type( ArenaType.withTeamAnzahl( getWorldData().getTeams(this).size() ) );
 		if(getMax_type()==null){
 			String s="";
-			for(Team t : getGames().getLocs().get(this).keySet())s+=","+t.Name();
-			UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getGames().getLocs().get(this).size()+" "+s);
-			UtilDebug.debug("MaxType", new String[]{"SIZE:"+getGames().getLocs().get(this).size(),s});
+			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
+			UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
+			UtilDebug.debug("MaxType", new String[]{"SIZE:"+getWorldData().getTeams(this).size(),s});
 		}else{
 			String s="";
-			for(Team t : getGames().getLocs().get(this).keySet())s+=","+t.Name();
+			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
 			for(Team t : getMax_type().getTeam()){
-				if(!getGames().getLocs().get(this).containsKey(t)){
-					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.Name()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getGames().getLocs().get(this).size()+" "+s);
+				if(!getWorldData().getTeams(this).containsKey(t)){
+					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.Name()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
 				}
 			}
 		}

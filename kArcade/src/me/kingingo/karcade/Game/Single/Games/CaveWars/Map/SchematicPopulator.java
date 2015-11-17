@@ -3,7 +3,7 @@ package me.kingingo.karcade.Game.Single.Games.CaveWars.Map;
 import java.io.File;
 import java.util.Random;
 
-import me.kingingo.karcade.Game.World.WorldData;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.kcore.Util.UtilWorldEdit;
 
 import org.bukkit.Chunk;
@@ -19,9 +19,9 @@ public class SchematicPopulator extends BlockPopulator {
 	private int CHANCE=0;
 	private File file;
 	private SchematicPopulatorRunnable runnable;
-	private WorldData worldData;
+	private SingleWorldData worldData;
 	
-	public SchematicPopulator(File file,WorldData worldData,SchematicPopulatorRunnable runnable,int CHANCE,int limit){
+	public SchematicPopulator(File file,SingleWorldData worldData,SchematicPopulatorRunnable runnable,int CHANCE,int limit){
 		this.CHANCE=CHANCE;
 		this.file=file;
 		this.runnable=runnable;

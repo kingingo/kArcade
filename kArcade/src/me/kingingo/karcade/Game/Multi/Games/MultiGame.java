@@ -12,11 +12,11 @@ import me.kingingo.karcade.Game.GameList;
 import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Events.TeamDelEvent;
 import me.kingingo.karcade.Game.Multi.MultiGames;
+import me.kingingo.karcade.Game.Multi.MultiWorldData;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameUpdateInfo;
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameType;
@@ -25,9 +25,6 @@ import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
-import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutPlayerInfo;
-import me.kingingo.kcore.PacketAPI.Packets.kPlayerInfoData;
-import me.kingingo.kcore.PacketAPI.packetlistener.event.PacketListenerSendEvent;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -43,14 +40,11 @@ import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Versus.PlayerKit;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.PlayerInfoData;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Egg;
@@ -153,14 +147,18 @@ public class MultiGame extends kListener{
 	@Setter
 	private PlayerKit kit;
 	private Location location;
-//	private kPacketPlayOutPlayerInfo info;
 	
-	public MultiGame(MultiGames games,Location location) {
+	public MultiGame(MultiGames games,String Map,Location location) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
 		this.games=games;
+		this.Map=Map;
 		this.location=location;
 		this.gameList=new GameList(games.getManager());
 		this.arena="arena"+games.getGames().size();
+	}
+	
+	public MultiWorldData getWorldData(){
+		return getGames().getWorldData();
 	}
 	
 	public void updateInfo(){
@@ -169,7 +167,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getLocs().get(this).size()),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getWorldData().getTeams(this).size()),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());
@@ -223,17 +221,6 @@ public class MultiGame extends kListener{
 	    }
 	    
 	}
-	
-//	@EventHandler(priority=EventPriority.HIGHEST)
-//	public void sendTAB(PacketListenerSendEvent ev){
-//		if(ev.getPacket()!=null && ev.getPlayer()!=null){
-//			if(getGameList().HasPlayer(ev.getPlayer())){
-//				if(ev.getPacket() instanceof PacketPlayOutPlayerInfo){
-//					ev.setPacket(info);
-//				}
-//			}
-//		}
-//	}
 	
 	@EventHandler
 	public void death(PlayerDeathEvent ev){
@@ -671,19 +658,19 @@ public class MultiGame extends kListener{
 			System.out.println("JOIN: "+ev.getPlayer().getName()+" "+getTeamList().containsKey(ev.getPlayer()));
 			
 			if(getTeamList().containsKey(ev.getPlayer())){
-				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getLocs().get(this).containsKey(getTeamList().get(ev.getPlayer())));
-				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0)));
+				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getWorldData().getTeams(this).containsKey(getTeamList().get(ev.getPlayer())));
+				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0)));
 				
-				for(Team t : getGames().getLocs().get(this).keySet()){
+				for(Team t : getGames().getWorldData().getTeams(this).keySet()){
 					System.out.println("T: "+t.Name());
 				}
 				
-				if(getGames().getLocs().get(this).containsKey(getTeamList().get(ev.getPlayer()))){
-					System.out.println("JOIN2: "+getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).contains(0));
+				if(getGames().getWorldData().existLoc(this, getTeamList().get(ev.getPlayer()))){
+					System.out.println("JOIN2: "+getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).contains(0));
 				}
 			}
 			
-			ev.getPlayer().teleport( getGames().getLocs().get(this).get(getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 1, 0) );
+			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 1, 0) );
 			setTimer(-1);
 			ev.setCancelled(true);
 			updateInfo();

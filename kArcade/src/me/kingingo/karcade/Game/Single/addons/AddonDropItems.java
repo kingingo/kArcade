@@ -59,22 +59,22 @@ public class AddonDropItems extends kListener {
 	public void Update(UpdateEvent ev){
 		
 		if(ev.getType()==UpdateType.SEC){
-			for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE.Name())) drop(loc,new ItemStack(Material.CLAY_BRICK),drop_rate);
+			for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE)) drop(loc,new ItemStack(Material.CLAY_BRICK),drop_rate);
 		}
 		
 		if(ev.getType()==UpdateType.SLOW){
-			if(getInstance().getWorldData().ExistLoc(Team.SILBER.Name())){
-				for(Location loc : getInstance().getWorldData().getLocs(Team.SILBER.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
+			if(getInstance().getWorldData().existLoc(Team.SILBER)){
+				for(Location loc : getInstance().getWorldData().getLocs(Team.SILBER)) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
 			}else{
-				for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE.Name())) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE)) drop(loc,new ItemStack(Material.IRON_INGOT),drop_rate);
 			}
 		}
 		
 		if(ev.getType()==UpdateType.SLOWER){
-			if(getInstance().getWorldData().ExistLoc(Team.GOLD.Name())){
-				for(Location loc : getInstance().getWorldData().getLocs(Team.GOLD.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate, "§bGold");
+			if(getInstance().getWorldData().existLoc(Team.GOLD)){
+				for(Location loc : getInstance().getWorldData().getLocs(Team.GOLD)) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate, "§bGold");
 			}else{
-				for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE.Name())) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate);
+				for(Location loc : getInstance().getWorldData().getLocs(Team.BRONZE)) drop(loc,new ItemStack(Material.GOLD_INGOT),drop_rate);
 			}
 		}
 	}

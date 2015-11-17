@@ -7,12 +7,12 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.addons.AddonBagPack;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.karcade.Game.Single.addons.AddonSphereGrenze;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
@@ -51,20 +51,18 @@ import org.bukkit.scoreboard.Scoreboard;
 
 public class SurvivalGames extends TeamGame{
 
-	WorldData wd;
-	AddonMove move;
-	AddonBagPack bp;
-	HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
-	boolean jump=true;
+	private AddonMove move;
+	private AddonBagPack bp;
+	private HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
+	private boolean jump=true;
 	
 	public SurvivalGames(kArcadeManager manager) {
 		super(manager);
 		registerListener();
 	long t = System.currentTimeMillis();
-	setTyp(GameType.SurvivalGames); 
-	wd=new WorldData(manager,getType());
-	wd.Initialize();
-	setWorldData(wd);
+	setTyp(GameType.SurvivalGames);
+	setWorldData(new SingleWorldData(manager,getType()));
+	getWorldData().Initialize();
 	setMin_Players(6);
 	setMax_Players(24);
 	setCompassAddon(true);
@@ -338,7 +336,7 @@ public class SurvivalGames extends TeamGame{
 				broadcastWithPrefixName("GAME_END");
 				setStart((3*60)+1);
 				
-				ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
+				ArrayList<Location> list = getWorldData().getLocs(Team.RED);
 				Location r=null;
 				for(Player p : UtilServer.getPlayers()){
 					r=list.get(0);
@@ -377,7 +375,7 @@ public class SurvivalGames extends TeamGame{
 			case 180:
 				broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);
 				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),getWorldData().getWorld());
-				sg.loadGrenzen(wd.getLocs().get(Team.YELLOW.Name()).get(0), ( (int)wd.getLocs().get(Team.YELLOW.Name()).get(0).distance(wd.getLocs().get(Team.RED.Name()).get(0))+5 ) );
+				sg.loadGrenzen(getWorldData().getLocs(Team.YELLOW).get(0), ( (int)getWorldData().getLocs(Team.YELLOW).get(0).distance(getWorldData().getLocs(Team.RED).get(0))+5 ) );
 				sg.start();
 				break;
 			case 179:broadcastWithPrefix("DEATHMATCH_START_IN", getStart());break;
@@ -491,7 +489,7 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
-		ArrayList<Location> list = getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> list = getWorldData().getLocs(Team.RED);
 		ArrayList<Player> plist = new ArrayList<>();
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){

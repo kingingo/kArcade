@@ -8,6 +8,7 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Blocked;
@@ -20,7 +21,6 @@ import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Sethbling;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Snowball;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Sugar;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Wolf;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.Team;
@@ -71,7 +71,7 @@ public class Falldown extends SoloGame{
 		long t = System.currentTimeMillis();
 		setTyp(GameType.Falldown);
 		setState(GameState.Laden);
-		setWorldData(new WorldData(manager,getType()));
+		setWorldData(new SingleWorldData(manager,getType()));
 		setMin_Players(2);
 		setCreatureSpawn(false);
 		setMax_Players(16);
@@ -118,7 +118,7 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void World(WorldLoadEvent ev){
-		UtilMap.setCrystals(getWorldData().getLocs(Team.RED.Name()).get(0), 40);
+		UtilMap.setCrystals(getWorldData().getLocs(Team.RED).get(0), 40);
 	}
 	
 	Player player;
@@ -655,7 +655,7 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
-		Location spawn = getWorldData().getLocs(Team.RED.Name()).get(0).clone();
+		Location spawn = getWorldData().getLocs(Team.RED).get(0).clone();
 		spawn.setY(6000);
 		for(Player player : UtilServer.getPlayers()){
 			player.teleport(spawn);

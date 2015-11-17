@@ -10,6 +10,7 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Events.AddonBedKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.addons.AddonBedTeamKing;
@@ -17,7 +18,6 @@ import me.kingingo.karcade.Game.Single.addons.AddonDropItems;
 import me.kingingo.karcade.Game.Single.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.Single.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
@@ -129,7 +129,7 @@ public class BedWars extends TeamGame{
 		
 		liManager=new LaunchItemManager( manager.getInstance() );
 		
-		setWorldData(new WorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel()));
+		setWorldData(new SingleWorldData(manager,getType().getTyp()+getTyp().getTeam().length,getType().getKürzel()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		getWorldData().Initialize();
 		manager.DebugLog(t, this.getClass().getName());
@@ -178,12 +178,10 @@ public class BedWars extends TeamGame{
 		getManager().setRanking(Stats.WIN);
 	}
 	
-	ArrayList<Location> l;
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
-			l= getWorldData().getLocs(getTeam(ev.getPlayer()).Name());
-			 ev.setRespawnLocation( l.get(UtilMath.r(l.size())) );
+			 ev.setRespawnLocation( getWorldData().getLocs(getTeam(ev.getPlayer())).get(UtilMath.r(getWorldData().getLocs(getTeam(ev.getPlayer())).size())) );
 		 }
 	}
 	
@@ -239,7 +237,7 @@ public class BedWars extends TeamGame{
 					if(getTeamList().containsKey(p))continue;
 					Team t = littleTeam();
 					addTeam(p, t);
-					p.teleport(getWorldData().getLocs(t.Name()).get(0));
+					p.teleport(getWorldData().getLocs(t).get(0));
 				}
 				
 				HashMap<Player,String> l= new HashMap<>();
@@ -344,7 +342,7 @@ public class BedWars extends TeamGame{
 	}
 	
 	public void setVillager(Team t,EntityType e){
-		Location l=getWorldData().getLocs(getVillagerSpawn(t).Name()).get(0).add(0.5,0.3,0.5);
+		Location l=getWorldData().getLocs(getVillagerSpawn(t)).get(0).add(0.5,0.3,0.5);
 		VillagerShop v = new VillagerShop(getManager().getInstance(),e,t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
@@ -541,7 +539,7 @@ public class BedWars extends TeamGame{
 
 					@Override
 					public void onRun() {
-						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team.Name()).get(0), 10);
+						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team).get(0), 10);
 					}
 					
 				},UpdateType.MIN_005);
@@ -561,7 +559,7 @@ public class BedWars extends TeamGame{
 			UtilScoreboard.setScore(getBoard(), t.getColor()+t.Name()+" §a"+Zeichen.HÄKCHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, 1);
 			getTeams().put(t, true);
 			setVillager(t,et);
-			list = getWorldData().getLocs(t.Name());
+			list = getWorldData().getLocs(t);
 			for(Player p : getPlayerFrom(t)){
 				p.setScoreboard(getBoard());
 				p.teleport(list.get(i));
@@ -576,8 +574,8 @@ public class BedWars extends TeamGame{
 		apbcb= new AddonPlaceBlockCanBreak(getManager().getInstance(),new Material[]{Material.getMaterial(31),Material.getMaterial(38),Material.getMaterial(37),Material.BROWN_MUSHROOM,Material.RED_MUSHROOM});
 		aeh=new AddonEnterhacken(getManager().getInstance());
 		
-		if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
-			for(Location loc : getWorldData().getLocs(Team.BLACK.Name())){
+		if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
+			for(Location loc : getWorldData().getLocs(Team.BLACK)){
 				setSpezialVillager(loc,et);
 			}
 		}

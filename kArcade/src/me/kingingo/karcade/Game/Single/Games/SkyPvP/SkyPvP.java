@@ -8,11 +8,11 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.addons.AddonEntityKing;
 import me.kingingo.karcade.Game.Single.addons.AddonTargetNextPlayer;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -61,12 +61,12 @@ import org.bukkit.scoreboard.Scoreboard;
 
 public class SkyPvP extends SoloGame{
 
-	HashMap<Player,Location> island = new HashMap<>();
-	HashMap<Player,Integer> life = new HashMap<>();
-	HashMap<Location,Inventory> enderchests = new HashMap<>();
-	ArrayList<ItemStack> enderchest_material = new ArrayList<>();
-	AddonEntityKing entity_king;
-	AddonTargetNextPlayer TargetNextPlayer;
+	private HashMap<Player,Location> island = new HashMap<>();
+	private HashMap<Player,Integer> life = new HashMap<>();
+	private HashMap<Location,Inventory> enderchests = new HashMap<>();
+	private ArrayList<ItemStack> enderchest_material = new ArrayList<>();
+	private AddonEntityKing entity_king;
+	private AddonTargetNextPlayer TargetNextPlayer;
 	
 	public SkyPvP(kArcadeManager manager){
 		super(manager);
@@ -88,11 +88,10 @@ public class SkyPvP extends SoloGame{
 		setItemPickup(true);
 		setItemDrop(true);
 		setRespawn(true);
-		WorldData wd=new WorldData(manager,getType());
-		setWorldData(wd);
-		wd.createCleanWorld();
+		setWorldData(new SingleWorldData(manager,getType()));
+		getWorldData().createCleanWorld();
 		HashMap<File[],Integer> list = new HashMap<>();
-		File[] files = wd.loadSchematicFiles();
+		File[] files = getWorldData().loadSchematicFiles();
 		int p=0;
 		int c=0;
 		int o=0;
@@ -129,11 +128,11 @@ public class SkyPvP extends SoloGame{
 		list.put(p_files, getMax_Players());
 		list.put(o_files, UtilMath.RandomInt(4, 2));
 		
-		wd.setIsland(list,20, new Location(wd.getWorld(),0,80,0));
+		getWorldData().setIsland(list,20, new Location(getWorldData().getWorld(),0,80,0));
 	
 		Chest chest;
 		Block b;
-		for(Location loc : wd.getLocs(Team.RED.Name())){
+		for(Location loc : getWorldData().getLocs(Team.RED)){
 			b=UtilLocation.searchBlock(Material.CHEST, 15, loc);
 			if(b!=null&&b.getState() instanceof Chest){
 				chest=(Chest)b.getState();
@@ -150,7 +149,7 @@ public class SkyPvP extends SoloGame{
 			b=null;
 		}
 		
-		UtilMap.loadChunks(new Location(wd.getWorld(),0,80,0), 700);
+		UtilMap.loadChunks(new Location(getWorldData().getWorld(),0,80,0), 700);
 		getManager().DebugLog(l, this.getClass().getName());
 	}
 	
@@ -326,7 +325,7 @@ public class SkyPvP extends SoloGame{
 	@EventHandler
 	public void GameStartSkyPvP(GameStartEvent ev){
 		getWorldData().clearWorld();
-		ArrayList<Location> locs = getWorldData().getLocs(Team.RED.Name());
+		ArrayList<Location> locs = getWorldData().getLocs(Team.RED);
 		TargetNextPlayer = new AddonTargetNextPlayer(250,this);
 		TargetNextPlayer.setAktiv(true);
 		
@@ -360,7 +359,7 @@ public class SkyPvP extends SoloGame{
 		if(!locs.isEmpty()){
 			entity_king=new AddonEntityKing(this);
 			entity_king.spawnMobs(locs, EntityType.WOLF, "§c§lWolf");
-			entity_king.spawnMobs(getWorldData().getLocs(Team.BLUE.Name()), EntityType.IRON_GOLEM, "§6§lIronGolem");
+			entity_king.spawnMobs(getWorldData().getLocs(Team.BLUE), EntityType.IRON_GOLEM, "§6§lIronGolem");
 			entity_king.setDamage(true);
 			entity_king.setMove(true);
 			entity_king.setAttack(true);

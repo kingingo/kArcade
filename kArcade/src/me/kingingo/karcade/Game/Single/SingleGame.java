@@ -198,6 +198,9 @@ public class SingleGame extends Game{
 	private boolean soilChange=false;
 	@Getter
 	private GameList gameList;
+	@Setter
+	@Getter
+	private SingleWorldData worldData;
 	
 	public SingleGame(kArcadeManager manager) {
 		super(manager);

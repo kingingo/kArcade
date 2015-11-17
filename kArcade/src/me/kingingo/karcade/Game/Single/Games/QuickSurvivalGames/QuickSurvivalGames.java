@@ -7,9 +7,9 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.addons.AddonMove;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -23,7 +23,6 @@ import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
-import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
@@ -47,8 +46,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -62,11 +61,10 @@ import org.bukkit.scoreboard.DisplaySlot;
 
 public class QuickSurvivalGames extends SoloGame{
 
-	WorldData wd;
-	AddonMove move;
+	private AddonMove move;
 	private HashMap<Location,Inventory> chest = new HashMap<Location,Inventory>();
 	private HashMap<Inventory,Location> chest1 = new HashMap<>();
-	boolean jump=true;
+	private boolean jump=true;
 	private HashMap<Player,Integer> kills = new HashMap<>();
 	
 	public QuickSurvivalGames(kArcadeManager manager) {
@@ -74,9 +72,8 @@ public class QuickSurvivalGames extends SoloGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.QuickSurvivalGames); 
-		wd=new WorldData(manager,getType());
-		wd.Initialize();
-		setWorldData(wd);
+		setWorldData(new SingleWorldData(manager,getType()));
+		getWorldData().Initialize();
 		setMin_Players(6);
 		setMax_Players(16);
 		setCompassAddon(true);
@@ -323,7 +320,7 @@ public class QuickSurvivalGames extends SoloGame{
 				for(Player p : UtilServer.getPlayers()){
 					title.setSubtitle(Language.getText(p,"TELEPORT_TO_DEATHMATCH_ARENA", getStart()));
 					title.send(p);
-					p.teleport( getWorldData().getLocs().get(Team.YELLOW.Name()).get(0) );
+					p.teleport( getWorldData().getLocs(Team.YELLOW).get(0) );
 				}
 				
 				for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();
@@ -461,7 +458,7 @@ public class QuickSurvivalGames extends SoloGame{
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
-		ArrayList<Location> list = (ArrayList<Location>)getWorldData().getLocs(Team.RED.Name()).clone();
+		ArrayList<Location> list = (ArrayList<Location>)getWorldData().getLocs(Team.RED).clone();
 		int r;
 
 		setBoard(getManager().getPermManager().getScoreboard());
@@ -470,7 +467,7 @@ public class QuickSurvivalGames extends SoloGame{
 		for(Player p : UtilServer.getPlayers()){
 			if(list.isEmpty()){
 				r=0;
-				list.add(getWorldData().getLocs(Team.RED.Name()).get(0));
+				list.add(getWorldData().getLocs(Team.RED).get(0));
 			}else{
 				r=UtilMath.r(list.size());
 			}

@@ -9,10 +9,10 @@ import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
-import me.kingingo.karcade.Game.World.WorldData;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
@@ -116,7 +116,7 @@ public class SkyWars extends TeamGame{
 		setItemPickup(true);
 		setItemDrop(true);
 		setRespawn(true);
-		setWorldData(new WorldData(manager,getType()));
+		setWorldData(new SingleWorldData(manager,getType()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		getWorldData().Initialize();
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
@@ -125,7 +125,7 @@ public class SkyWars extends TeamGame{
 			new Kit("§aStarter-Kit",new String[]{"§8x1§7 Leder Rüstung","§8x1§7 Holzschwert mit Schärfe 1"},new ItemStack(Material.LEATHER_HELMET),kPermission.SKYWARS_KIT_STARTERKIT,KitType.STARTER,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.LEATHER_BOOTS),new ItemStack(Material.LEATHER_LEGGINGS),new ItemStack(Material.LEATHER_CHESTPLATE),new ItemStack(Material.LEATHER_HELMET)})
 			}),
-			new Kit("§ePanzer",new String[]{"§8x1§7 Diamanthelm mit Drone 1,Unbreaking 1","§8x1§7 Eisenbrustpanzer mit Unbreaking 1","§8x1§7 Eisenhose mit Unbreaking 1","§8x1§7 Eisenschuhe mit Unbreaking 1"},new ItemStack(Material.SLIME_BALL),kPermission.SKYWARS_KIT_PANZER,KitType.KAUFEN,2000,500,new Perk[]{
+			new Kit("§ePanzer",new String[]{"§8x1§7 Diamanthelm mit Dornen 1,Unbreaking 1","§8x1§7 Eisenbrustpanzer mit Unbreaking 1","§8x1§7 Eisenhose mit Unbreaking 1","§8x1§7 Eisenschuhe mit Unbreaking 1"},new ItemStack(Material.SLIME_BALL),kPermission.SKYWARS_KIT_PANZER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(UtilItem.EnchantItem(new ItemStack(Material.DIAMOND_CHESTPLATE), Enchantment.DURABILITY, 1), Enchantment.THORNS, 1),
 						UtilItem.EnchantItem(new ItemStack(Material.IRON_HELMET), Enchantment.DURABILITY, 1),
 						UtilItem.EnchantItem(new ItemStack(Material.IRON_LEGGINGS), Enchantment.DURABILITY, 1),
@@ -227,15 +227,15 @@ public class SkyWars extends TeamGame{
 	//VILLAGER_RED RED_WOOL/EMERALD NORMAL_CHEST
 	//SHEEP WOOL/BEDROCK ISLAND CHEST
 	//SPAWN WOOL/REDSTONE
-	
+
 	@EventHandler
 	public void load(WorldLoadEvent ev){
 		int i=0;
 		Chest[] chests;
 		for(Team t : type.getTeam()){
-			chests=new Chest[getWorldData().getLocs(getChestSpawn(t).Name()).size()];
+			chests=new Chest[getWorldData().getLocs(getChestSpawn(t)).size()];
 			
-			for(Location loc : getWorldData().getLocs(getChestSpawn(t).Name())){
+			for(Location loc : getWorldData().getLocs(getChestSpawn(t))){
 				loc.getBlock().setType(Material.CHEST);
 				chests[i]=((Chest)loc.getBlock().getState());
 				i++;
@@ -246,7 +246,7 @@ public class SkyWars extends TeamGame{
 		}
 		
 		Chest chest;
-		for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED.Name())){
+		for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED)){
 			loc.getBlock().setType(Material.CHEST);
 			if(loc.getBlock().getState() instanceof Chest){
 				chest=(Chest)loc.getBlock().getState();
@@ -775,7 +775,7 @@ public class SkyWars extends TeamGame{
 
 			Chest chest;
 			for(Team t : type.getTeam()){
-				for(Location loc : getWorldData().getLocs(getChestSpawn(t).Name())){
+				for(Location loc : getWorldData().getLocs(getChestSpawn(t))){
 					if(loc.getBlock().getState() instanceof Chest){
 						chest=(Chest)loc.getBlock().getState();
 						for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
@@ -785,7 +785,7 @@ public class SkyWars extends TeamGame{
 				}
 			}
 			
-			for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED.Name())){
+			for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED)){
 				loc.getBlock().setType(Material.CHEST);
 				if(loc.getBlock().getState() instanceof Chest){
 					chest=(Chest)loc.getBlock().getState();
@@ -959,7 +959,7 @@ public class SkyWars extends TeamGame{
 		PlayerVerteilung(verteilung(type.getTeam(),type.getTeam_size()), plist);
 		
 		for(Player player : getTeamList().keySet()){
-			player.teleport(getWorldData().getLocs(getTeamList().get(player).Name()).get(0));
+			player.teleport(getWorldData().getLocs(getTeamList().get(player)).get(0));
 		}
 
 		Scoreboard ps;

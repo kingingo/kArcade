@@ -5,6 +5,7 @@ import java.util.HashMap;
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.Single.Events.AddonBedKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.Team;
@@ -35,7 +36,7 @@ public class AddonBedTeamKing implements Listener {
 		BlockFace face = null;
 		Location loc = null;
 		for(Team t : teams){
-			loc=manager.getGame().getWorldData().getLocs(getBlockTeam(t).Name()).get(0);
+			loc=((SingleGame)manager.getGame()).getWorldData().getLocs(getBlockTeam(t)).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 		
 			for(BlockFace f : BlockFace.values()){
