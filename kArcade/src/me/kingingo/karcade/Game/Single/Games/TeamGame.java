@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Events.TeamDelEvent;
 import me.kingingo.karcade.Game.Single.SingleGame;
@@ -17,6 +16,7 @@ import me.kingingo.karcade.Game.Single.addons.AddonSpectator;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Util.UtilItem;
@@ -39,11 +39,11 @@ import org.bukkit.inventory.ItemStack;
 public class TeamGame extends SingleGame{
 	
 	@Getter
-	HashMap<Player,Team> TeamList = new HashMap<>();
+	private HashMap<Player,Team> TeamList = new HashMap<>();
 	@Getter
 	@Setter
 	private AddonVoteTeam VoteTeam;
-	AddonSpectator spec=null;
+	private AddonSpectator spec=null;
 	
 	public TeamGame(kArcadeManager manager) {
 		super(manager);

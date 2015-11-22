@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
 import me.kingingo.kcore.Update.UpdateType;

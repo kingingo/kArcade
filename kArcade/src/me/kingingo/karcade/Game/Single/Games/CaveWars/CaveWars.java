@@ -7,7 +7,6 @@ import java.util.HashMap;
 import lombok.Getter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
@@ -21,6 +20,7 @@ import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Game.Events.GameStartEvent;
 import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
@@ -194,13 +194,13 @@ public class CaveWars extends TeamGame{
 			new Kit( "§eSpringer",new String[]{"Der Springer bekommt kein Fallschaden."}, new ItemStack(Material.FEATHER),kPermission.SHEEPWARS_KIT_SPRINGER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkNoFalldamage()
 			}),
-			new Kit("§6PigZombie",new String[]{"Der PigZombie bekommt beim Respawnen","Speed und Regeneration"}, new ItemStack(Material.RAW_BEEF), kPermission.SHEEPWARS_KIT_PIGZOMBIE,KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6PigZombie",new String[]{"Der PigZombie bekommt beim Respawnen","Speed und Regeneration"}, new ItemStack(Material.RAW_BEEF), kPermission.SHEEPWARS_KIT_VIP,KitType.VIP,0,new Perk[]{
 				new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.SPEED,15*20,1), new PotionEffect(PotionEffectType.REGENERATION,10*20,1)})
 			}),
-			new Kit("§6Creeper",new String[]{"Der Creeper hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.SKULL_ITEM,1,(byte)4), kPermission.SHEEPWARS_KIT_CREEPER,KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6Creeper",new String[]{"Der Creeper hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.SKULL_ITEM,1,(byte)4), kPermission.SHEEPWARS_KIT_ULTRA,KitType.ULTRA,0,new Perk[]{
 				new PerkSpawnByDeath(EntityType.PRIMED_TNT,30)
 			}),
-			new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","für 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), kPermission.SHEEPWARS_KIT_ZOMBIE, KitType.PREMIUM,0,new Perk[]{
+			new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","für 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), kPermission.SHEEPWARS_KIT_LEGEND, KitType.LEGEND,0,new Perk[]{
 				new PerkPoisen(3,30)
 			}),
 			new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","10% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), kPermission.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{

@@ -12,7 +12,6 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilLocation;
-import me.kingingo.kcore.Util.UtilMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

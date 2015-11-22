@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.PlayerStateChangeEvent;
+import me.kingingo.kcore.Enum.PlayerState;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

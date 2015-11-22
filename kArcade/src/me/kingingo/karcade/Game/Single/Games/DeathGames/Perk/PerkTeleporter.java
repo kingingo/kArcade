@@ -2,8 +2,8 @@ package me.kingingo.karcade.Game.Single.Games.DeathGames.Perk;
 
 import java.util.ArrayList;
 
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Kit.Perk;
 import me.kingingo.kcore.Kit.Perks.Event.PerkStartEvent;
 import me.kingingo.kcore.Language.Language;

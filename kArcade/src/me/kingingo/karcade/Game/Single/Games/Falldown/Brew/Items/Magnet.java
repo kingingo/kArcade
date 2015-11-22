@@ -28,7 +28,7 @@ public class Magnet extends BrewItem{
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
 					UtilInv.remove(event.getPlayer(),event.getPlayer().getItemInHand().getType(),event.getPlayer().getItemInHand().getData().getData(), 1);
-					for(Player player : UtilPlayer.getNearby(event.getPlayer().getLocation(), 20)){
+					for(Player player : UtilPlayer.getNearby(event.getPlayer().getLocation(), 20).values()){
 						Vector unitVector = event.getPlayer().getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
 						player.setVelocity(unitVector.multiply(2.0));
 						unitVector.setY(unitVector.getY() + 0.2);

@@ -3,10 +3,10 @@ package me.kingingo.karcade.Game.Single.Games.DeathGames.Addon;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Events.PlayerStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Games.DeathGames.DeathGames;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Update.UpdateType;

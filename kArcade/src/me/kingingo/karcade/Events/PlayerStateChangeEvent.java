@@ -1,6 +1,6 @@
 package me.kingingo.karcade.Events;
 
-import me.kingingo.karcade.Enum.PlayerState;
+import me.kingingo.kcore.Enum.PlayerState;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

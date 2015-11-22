@@ -2,13 +2,13 @@ package me.kingingo.karcade.Game.Single.addons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.TreeMap;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityKingDeathEvent;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Hologram.nametags.NameTagMessage;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -113,7 +113,7 @@ public class AddonEntityKing implements Listener {
 		return false;
 	}
 	
-	LinkedList<Player> l;
+	TreeMap<Double, Player> l;
 	Player random;
 	@EventHandler
 	public void Attack(UpdateEvent ev){

@@ -2,8 +2,8 @@ package me.kingingo.karcade.Service.Games;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.NPC.NPC;
 
 import org.bukkit.entity.Player;

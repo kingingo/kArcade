@@ -1,7 +1,7 @@
 package me.kingingo.karcade.Game.Single.Games.SkyWars.Item;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.TreeMap;
 
 import lombok.Getter;
 import me.kingingo.karcade.Game.Single.Games.SkyWars.SkyWars;
@@ -81,7 +81,7 @@ public class CreeperSpawner extends kListener{
 					public void onLaunchItem(LaunchItemEvent ev) {
 						Creature c = (Creature)ev.getItem().getDroppedItem()[0].getLocation().getWorld().spawnCreature(ev.getItem().getDroppedItem()[0].getLocation(), CreatureType.CREEPER);
 						Player p = null;
-						LinkedList<Player> l = UtilPlayer.getNearby(ev.getItem().getDroppedItem()[0].getLocation(), 9);
+						TreeMap<Double, Player> l = UtilPlayer.getNearby(ev.getItem().getDroppedItem()[0].getLocation(), 9);
 						if(!l.isEmpty())p=l.get(UtilMath.r(l.size()));
 						c.setTarget(p);
 						list.put(c, event.getPlayer());

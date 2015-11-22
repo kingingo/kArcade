@@ -1,7 +1,7 @@
 package me.kingingo.karcade.Game.Single.addons;
 
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Permission.kPermission;
 
 import org.bukkit.Bukkit;

@@ -1,6 +1,6 @@
 package me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items;
 
-import java.util.LinkedList;
+import java.util.TreeMap;
 
 import me.kingingo.karcade.Game.Single.Games.Falldown.Falldown;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
@@ -37,7 +37,7 @@ public class Wolf extends BrewItem{
 						public void onLaunchItem(LaunchItemEvent ev) {
 							Creature c = (Creature)ev.getItem().getDroppedItem()[0].getLocation().getWorld().spawnCreature(ev.getItem().getDroppedItem()[0].getLocation(), CreatureType.WOLF);
 							Player p = null;
-							LinkedList<Player> l = UtilPlayer.getNearby(ev.getItem().getDroppedItem()[0].getLocation(), 9);
+							TreeMap<Double, Player> l = UtilPlayer.getNearby(ev.getItem().getDroppedItem()[0].getLocation(), 9);
 							if(!l.isEmpty())p=l.get(UtilMath.r(l.size()));
 							c.setTarget(p);
 						}

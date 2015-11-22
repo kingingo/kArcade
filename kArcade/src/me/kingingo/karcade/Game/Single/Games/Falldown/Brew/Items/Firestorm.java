@@ -27,7 +27,7 @@ public class Firestorm extends BrewItem{
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
 					UtilInv.remove(event.getPlayer(),event.getPlayer().getItemInHand().getType(),event.getPlayer().getItemInHand().getData().getData(), 1);
-					for(Player player : UtilPlayer.getNearby(event.getPlayer().getLocation(), 12)){
+					for(Player player : UtilPlayer.getNearby(event.getPlayer().getLocation(), 12).values()){
 						if(!player.getName().equalsIgnoreCase(event.getPlayer().getName())){
 							player.setFireTicks(80);
 						}

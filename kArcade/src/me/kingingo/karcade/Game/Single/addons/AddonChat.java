@@ -1,10 +1,10 @@
 package me.kingingo.karcade.Game.Single.addons;
 
 import lombok.Getter;
-import me.kingingo.karcade.Enum.PlayerState;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Permission.kPermission;
