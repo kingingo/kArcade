@@ -7,10 +7,10 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonAreaRestoreExplosionE
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Listener.kListener;
+import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -63,11 +63,9 @@ public class MultiGameArenaRestore extends kListener{
 			
 			ecke1=new Location(ecke1.getWorld(),MinMax[X][Max],MinMax[Y][Max],MinMax[Z][Max]);
 			Log(UtilLocation.getLocString(ecke1));
-			ecke1.getBlock().setType(Material.ENCHANTMENT_TABLE);
 			
 			ecke2=new Location(ecke2.getWorld(),MinMax[X][Min],MinMax[Y][Min],MinMax[Z][Min]);
 			Log(UtilLocation.getLocString(ecke2));
-			ecke2.getBlock().setType(Material.ENCHANTMENT_TABLE);
 		}
 		
 		public boolean isInArea(Player player){
@@ -114,7 +112,6 @@ public class MultiGameArenaRestore extends kListener{
 				if(game.getState() == GameState.InGame){
 					for(Block b : ev.getBlocks()){
 						if(!blocks.containsKey(b.getLocation())){
-//							System.out.println("EXP "+b.getType().name());
 							blocks.put(b.getLocation(),b.getState());
 						}
 					}
@@ -131,7 +128,6 @@ public class MultiGameArenaRestore extends kListener{
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
 					if(!blocks.containsKey(ev.getLocation())){
-//						System.out.println(ev.getEvent()+" "+ev.getReplacedState().getType().name());
 						blocks.put(ev.getLocation(),ev.getReplacedState());
 					}
 					return;

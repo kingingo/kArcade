@@ -146,13 +146,14 @@ public class MultiGame extends kListener{
 	@Getter
 	@Setter
 	private PlayerKit kit;
-	private Location location;
+	@Getter
+	private Location pasteLocation;
 	
-	public MultiGame(MultiGames games,String Map,Location location) {
+	public MultiGame(MultiGames games,String Map,Location pasteLocation) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
 		this.games=games;
 		this.Map=Map;
-		this.location=location;
+		this.pasteLocation=pasteLocation;
 		this.gameList=new GameList(games.getManager());
 		this.arena="arena"+games.getGames().size();
 	}

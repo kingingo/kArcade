@@ -80,6 +80,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.Potion.Tier;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -199,6 +202,21 @@ public class SkyWars extends TeamGame{
 			}),
 			new Kit( "§eFischer",new String[]{"§8x1§7 Angel mit unbreaking 2","§8x1§7 Kettenrüstung mit Schutz 2"}, new ItemStack(Material.CHAINMAIL_CHESTPLATE),kPermission.SKYWARS_KIT_FISCHER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.FISHING_ROD), Enchantment.DURABILITY,2),UtilItem.EnchantItem(new ItemStack(Material.CHAINMAIL_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL,2)})
+			}),
+			new Kit( "§eVip",new String[]{"§8x1§7 Steinschwert","§8x1§7 Bogen","§8x8§7 Pfeile","§8x2§7 Heal Potions"}, new ItemStack(Material.GOLD_NUGGET),kPermission.SKYWARS_KIT_VIP,KitType.VIP,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.STONE_SWORD),new ItemStack(Material.BOW),new ItemStack(Material.ARROW,8),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(2)})
+			}),
+			new Kit( "§eUltra",new String[]{"§8x1§7 Steinschwert mit Schaerfe 1","§8x1§7 Eisenpickaxe","§8x16§7 Steine","§8x4§7 Heal Potions"}, new ItemStack(Material.GOLD_INGOT),kPermission.SKYWARS_KIT_ULTRA,KitType.ULTRA,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.STONE_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.IRON_PICKAXE),new ItemStack(Material.STONE,16),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
+			}),
+			new Kit( "§eLegend",new String[]{"§8x1§7 Eisenpanzer","§8x1§7 Eisenschuhe","§8x1§7 Steinschwert","§8x8§7 Steaks","§8x4§7 Heal Potions"}, new ItemStack(Material.IRON_INGOT),kPermission.SKYWARS_KIT_LEGEND,KitType.LEGEND,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.STONE_SWORD),new ItemStack(Material.IRON_CHESTPLATE),new ItemStack(Material.IRON_BOOTS),new ItemStack(Material.COOKED_BEEF,8),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
+			}),
+			new Kit( "§eMVP",new String[]{"§8x1§7 Steinschwert mit Rueckstoß","§8x1§7 Diamanthelm","§8x1§7 Diamnantschuhe","§8x4§7 Heal Potion"}, new ItemStack(Material.EMERALD),kPermission.SKYWARS_KIT_MVP,KitType.MVP,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.STONE_SWORD), Enchantment.KNOCKBACK, 1),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.DIAMOND_BOOTS),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
+			}),
+			new Kit( "§eMVP+",new String[]{"§8x1§7 Diamanthelm","§8x1§7 Eisenbrustpanzer","§8x16§7 Steine","§8x8§7 Eisenschwert","§8x4§7 Heal Potion"}, new ItemStack(Material.DIAMOND),kPermission.SKYWARS_KIT_MVPPLUS,KitType.MVP_PLUS,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.STONE,16),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SkyWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SKYWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),

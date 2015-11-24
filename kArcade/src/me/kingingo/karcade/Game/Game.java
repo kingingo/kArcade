@@ -247,6 +247,8 @@ public class Game implements Listener{
 	@EventHandler
 	public void J(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
+		Bukkit.getWorld("world").setWeatherDuration(0);
+		Bukkit.getWorld("world").setStorm(false);
 		if(isState(GameState.LobbyPhase)||this instanceof MultiGames)updateInfo();
 		if(this instanceof SingleGame&&getState()==GameState.LobbyPhase)broadcastWithPrefix("GAME_ENTER", new String[]{ev.getPlayer().getName(),String.valueOf(UtilServer.getPlayers().size()),String.valueOf(getMax_Players())});
 	}
