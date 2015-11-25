@@ -7,7 +7,6 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonAreaRestoreExplosionE
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Listener.kListener;
-import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Location;

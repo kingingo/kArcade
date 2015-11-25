@@ -9,6 +9,8 @@ import lombok.Getter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Events.RankingEvent;
+import me.kingingo.karcade.Game.Events.GameStartEvent;
+import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.karcade.Game.Single.Games.DeathGames.Addon.AddonPlayerTeleport;
@@ -19,8 +21,6 @@ import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
-import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -51,7 +51,7 @@ import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Perks.PerkSnowballSwitcher;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
-import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Kit.Shop.SingleKitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Scheduler.kScheduler;
@@ -107,7 +107,7 @@ public class DeathGames extends SoloGame{
 	private ArrayList<ItemStack> selten = new ArrayList<>();
 	private ArrayList<ItemStack> medium = new ArrayList<>();
 	private ArrayList<ItemStack> normal = new ArrayList<>();
-	private KitShop kitShop;
+	private SingleKitShop kitShop;
 	
 	public DeathGames(kArcadeManager manager) {
 		super(manager);
@@ -169,7 +169,7 @@ public class DeathGames extends SoloGame{
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
 		grenze=new AddonWorldBorder(this, getCenter(), (getMax_Players()*10));
 		
-		this.kitShop=new KitShop(getManager().getInstance(),getGems(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+		this.kitShop=new SingleKitShop(getManager().getInstance(),getGems(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			
 			new Kit( "§aBogenschütze",new String[]{"Der Bogenschütze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,4)}),

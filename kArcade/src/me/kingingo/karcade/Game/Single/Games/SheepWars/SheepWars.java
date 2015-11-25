@@ -9,6 +9,8 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.Events.GameStartEvent;
+import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
@@ -30,8 +32,6 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Enum.Zeichen;
-import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -57,7 +57,7 @@ import me.kingingo.kcore.Kit.Perks.PerkSpawnByDeath;
 import me.kingingo.kcore.Kit.Perks.PerkStopPerk;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
-import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Kit.Shop.SingleKitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Merchant.Merchant;
@@ -125,7 +125,7 @@ public class SheepWars extends TeamGame{
 	private AddonPlaceBlockCanBreak apbcb;
 	@Getter
 	private HashMap<Team,Boolean> teams = new HashMap<>();
-	private KitShop kitshop;
+	private SingleKitShop kitshop;
 	@Getter
 	private SheepWarsType typ;
 	private HashMap<Player,String> kits = new HashMap<>();
@@ -187,7 +187,7 @@ public class SheepWars extends TeamGame{
 		wall=new ProtectWall(this);
 		bomb=new Bomb(manager.getInstance(),liManager);
 		villager=new SpezialVillager(this);
-		kitshop=new KitShop(getManager().getInstance(),getGems(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
+		kitshop=new SingleKitShop(getManager().getInstance(),getGems(), getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			new Kit( "§aStarter",new String[]{"Der Starter bekommt kein Hunger."}, new ItemStack(Material.WOOD_SWORD),kPermission.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,new Perk[]{
 				new PerkNoHunger()
 			}),

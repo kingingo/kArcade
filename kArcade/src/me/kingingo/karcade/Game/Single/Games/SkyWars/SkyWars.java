@@ -8,6 +8,8 @@ import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Events.RankingEvent;
 import me.kingingo.karcade.Events.WorldLoadEvent;
+import me.kingingo.karcade.Game.Events.GameStartEvent;
+import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
@@ -18,8 +20,6 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Game.Events.GameStartEvent;
-import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
 import me.kingingo.kcore.Kit.Perk;
@@ -40,7 +40,7 @@ import me.kingingo.kcore.Kit.Perks.PerkPoisen;
 import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
-import me.kingingo.kcore.Kit.Shop.KitShop;
+import me.kingingo.kcore.Kit.Shop.SingleKitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.Permission.kPermission;
@@ -88,9 +88,8 @@ import org.bukkit.scoreboard.Scoreboard;
 
 public class SkyWars extends TeamGame{
 
-	private ArrayList<ItemStack> chest_material = new ArrayList<>();
 	private SkyWarsType type;
-	private KitShop kitshop;
+	private SingleKitShop kitshop;
 	private HashMap<String,Integer> kills =  new HashMap<>();
 	@Getter
 	private LaunchItemManager ilManager;
@@ -124,7 +123,7 @@ public class SkyWars extends TeamGame{
 		getWorldData().Initialize();
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
 		
-		kitshop=new KitShop(getManager().getInstance(), getGems(),getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
+		kitshop=new SingleKitShop(getManager().getInstance(), getGems(),getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
 			new Kit("§aStarter-Kit",new String[]{"§8x1§7 Leder Rüstung","§8x1§7 Holzschwert mit Schärfe 1"},new ItemStack(Material.LEATHER_HELMET),kPermission.SKYWARS_KIT_STARTERKIT,KitType.STARTER,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.LEATHER_BOOTS),new ItemStack(Material.LEATHER_LEGGINGS),new ItemStack(Material.LEATHER_CHESTPLATE),new ItemStack(Material.LEATHER_HELMET)})
 			}),
@@ -513,14 +512,12 @@ public class SkyWars extends TeamGame{
 		}
 	}
 	
-	int e=0;
 	private HashMap<Chest,ArrayList<String>> template = new HashMap<>();
 	private HashMap<String,Integer> template_type = new HashMap<>();
 	public void fillIslandChests(Team t,Chest[] chests){
 		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
 		template.clear();
 		template_type.clear();
-		e++;
 		template_type.put("SWORD",3);
 		template_type.put("BLOCK",3);
 		template_type.put("HELM",2);
@@ -727,41 +724,6 @@ public class SkyWars extends TeamGame{
 			EnchantingInventory inv = (EnchantingInventory)ev.getInventory();
 			inv.setSecondary(new ItemStack(351,16 ,(short)4));
 		}
-	}
-	
-	public void loadMaterialList(){
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8257));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8259));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8226));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8233));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8257));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8259));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8226));
-		chest_material.add(new ItemStack(Material.POTION,2,(byte) 8233));
-		chest_material.add(new ItemStack(Material.EXP_BOTTLE,16));
-		chest_material.add(new ItemStack(Material.ENCHANTMENT_TABLE,1));
-		chest_material.add(new ItemStack(Material.BOOKSHELF,8));
-		chest_material.add(new ItemStack(Material.DIAMOND,3));
-		chest_material.add(new ItemStack(Material.DIAMOND_HELMET,1));
-		chest_material.add(new ItemStack(Material.DIAMOND_CHESTPLATE,1));
-		chest_material.add(new ItemStack(Material.DIAMOND_LEGGINGS,1));
-		chest_material.add(new ItemStack(Material.DIAMOND_BOOTS,1));
-		chest_material.add(new ItemStack(Material.IRON_HELMET,1));
-		chest_material.add(new ItemStack(Material.IRON_CHESTPLATE,1));
-		chest_material.add(new ItemStack(Material.IRON_LEGGINGS,1));
-		chest_material.add(new ItemStack(Material.IRON_BOOTS,1));
-		chest_material.add(new ItemStack(Material.LEATHER_HELMET,1));
-		chest_material.add(new ItemStack(Material.LEATHER_CHESTPLATE,1));
-		chest_material.add(new ItemStack(Material.LEATHER_LEGGINGS,1));
-		chest_material.add(new ItemStack(Material.LEATHER_BOOTS,1));
-		chest_material.add(new ItemStack(Material.DIAMOND_AXE,1));
-		chest_material.add(new ItemStack(Material.DIAMOND_SWORD,1));
-		chest_material.add(new ItemStack(Material.BOW,1));
-		chest_material.add(new ItemStack(Material.ARROW,16));
-		chest_material.add(new ItemStack(Material.ARROW,32));
-		chest_material.add(new ItemStack(Material.ARROW,8));
-		chest_material.add(new ItemStack(Material.ARROW,12));
-		chest_material.add(new ItemStack(Material.GOLDEN_APPLE,2));
 	}
 	
 	@EventHandler

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Game;
+import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonArenaRestore;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonChat;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
@@ -21,7 +22,7 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Game.Events.GameStateChangeEvent;
+import me.kingingo.kcore.Kit.Shop.MultiKitShop;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.ARENA_SETTINGS;
 import me.kingingo.kcore.StatsManager.Stats;
@@ -65,6 +66,9 @@ public class MultiGames extends Game{
 	@Getter
 	@Setter
 	private int played_games=0;
+	@Getter
+	@Setter
+	private MultiKitShop kitshop;
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
@@ -127,7 +131,6 @@ public class MultiGames extends Game{
 			schematics.clear();
 			schematics=null;
 		}else if(GameType.SkyWars1vs1==type){
-			
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);
