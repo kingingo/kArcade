@@ -752,7 +752,7 @@ public class SkyWars extends TeamGame{
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
 		case 300: 
-
+			
 			Chest chest;
 			for(Team t : type.getTeam()){
 				for(Location loc : getWorldData().getLocs(getChestSpawn(t))){
@@ -998,10 +998,9 @@ public class SkyWars extends TeamGame{
 			switch(getManager().getHoliday()){
 			case HALLOWEEN:
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				
 				break;
 			case WEIHNACHTEN:
-				
+				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 				break;
 			default:
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());

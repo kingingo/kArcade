@@ -672,7 +672,6 @@ public class DeathGames extends SoloGame{
 		if(getManager().getHoliday()!=null){
 			switch(getManager().getHoliday()){
 			case WEIHNACHTEN:
-				new AddonNight(getManager().getInstance(), getWorldData().getWorld());
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler() {
 					
 					@Override

@@ -48,8 +48,6 @@ public class Versus extends MultiGame{
 	@Setter
 	private ArenaType max_type;
 	@Getter
-	private ArenaType type;
-	@Getter
 	private AddonMove addonMove;
 	private MultiGameArenaRestore area;
 	private Scoreboard scoreboard;
@@ -123,9 +121,33 @@ public class Versus extends MultiGame{
 		UtilScoreboard.setScore(scoreboard, "§7----------------", DisplaySlot.SIDEBAR, 0);
 	}
 	
-	public void setType(ArenaType type){
-		this.type=type;
-		setTeam(type.getTeam().length);
+	@EventHandler
+	public void Join(MultiGamePlayerJoinEvent ev){
+		if(ev.getGame()!=this)return;
+		//Prüft ob dieser Spieler für die Arena angemeldet ist.
+		if(getTeamList().containsKey(ev.getPlayer())){
+			//Spieler wird zu der Location des Teams teleportiert
+			
+			System.out.println("JOIN: "+ev.getPlayer().getName()+" "+getTeamList().containsKey(ev.getPlayer()));
+			
+			if(getTeamList().containsKey(ev.getPlayer())){
+				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getWorldData().getTeams(this).containsKey(getTeamList().get(ev.getPlayer())));
+				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0)));
+				
+				for(Team t : getGames().getWorldData().getTeams(this).keySet()){
+					System.out.println("T: "+t.Name());
+				}
+				
+				if(getGames().getWorldData().existLoc(this, getTeamList().get(ev.getPlayer()))){
+					System.out.println("JOIN2: "+getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).contains(0));
+				}
+			}
+			
+			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 1, 0) );
+			setTimer(-1);
+			ev.setCancelled(true);
+			updateInfo();
+		}
 	}
 	
 	@EventHandler

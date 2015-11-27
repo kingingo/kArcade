@@ -715,7 +715,7 @@ public class SheepWars extends TeamGame{
 				break;
 			case WEIHNACHTEN:
 				et=EntityType.SNOWMAN;
-				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 				getWorldData().getWorld().setStorm(true);
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
 

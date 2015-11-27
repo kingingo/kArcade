@@ -6,10 +6,13 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
+import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.GameStateChangeReason;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Kit.Kit;
 import me.kingingo.kcore.Kit.KitType;
@@ -32,15 +35,25 @@ import me.kingingo.kcore.Kit.Perks.PerkSneakDamage;
 import me.kingingo.kcore.Kit.Perks.PerkTNT;
 import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.MultiKitShop;
+import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import me.kingingo.kcore.Permission.kPermission;
+import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.Update.UpdateType;
+import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.InventorySize;
+import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
+import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
+import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Util.UtilWorld;
 
 import org.bukkit.DyeColor;
@@ -52,6 +65,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.Potion.Tier;
@@ -217,7 +232,139 @@ public class SkyWars1vs1 extends MultiGame{
 			}));
 		}
 	}
+	
+	@EventHandler
+	public void Join(MultiGamePlayerJoinEvent ev){
+		if(ev.getGame()!=this)return;
+		//Prüft ob dieser Spieler für die Arena angemeldet ist.
+		if(getTeamList().containsKey(ev.getPlayer())){
+			//Spieler wird zu der Location des Teams teleportiert
+			
+			System.out.println("JOIN: "+ev.getPlayer().getName()+" "+getTeamList().containsKey(ev.getPlayer()));
+			
+			if(getTeamList().containsKey(ev.getPlayer())){
+				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getWorldData().getTeams(this).containsKey(getTeamList().get(ev.getPlayer())));
+				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0)));
+				
+				for(Team t : getGames().getWorldData().getTeams(this).keySet()){
+					System.out.println("T: "+t.Name());
+				}
+				
+				if(getGames().getWorldData().existLoc(this, getTeamList().get(ev.getPlayer()))){
+					System.out.println("JOIN2: "+getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).contains(0));
+				}
+			}
+			
+			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 13, 0) );
+			setTimer(-1);
+			ev.setCancelled(true);
+			updateInfo();
+		}
+	}
+	
+	@EventHandler
+	public void inGame(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.SEC)return;
+		if(getState()!=GameState.InGame)return;
+		setTimer(getTimer()-1);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
+		switch(getTimer()){
+		case 150: 
 
+			Chest chest;
+			for(Team t : getWorldData().getTeams(this).keySet()){
+				for(Location loc : getWorldData().getTeams(this).get(UtilSkyWars1vs1.getChestSpawn(t))){
+					if(loc.getBlock().getState() instanceof Chest){
+						chest=(Chest)loc.getBlock().getState();
+						for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
+							chest.getInventory().setItem(UtilSkyWars1vs1.emptySlot(chest.getInventory()), UtilSkyWars1vs1.rdmItem()); 
+						}
+					}
+				}
+			}
+			
+			for(Location loc : getWorldData().getTeams(this).get(Team.VILLAGE_RED)){
+				loc.getBlock().setType(Material.CHEST);
+				if(loc.getBlock().getState() instanceof Chest){
+					chest=(Chest)loc.getBlock().getState();
+					for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
+						chest.getInventory().setItem(UtilSkyWars1vs1.emptySlot(chest.getInventory()), UtilSkyWars1vs1.rdmItem()); 
+					}
+				}
+			}
+			
+			broadcastWithPrefix("§eDie Kisten wurden wieder gefüllt");
+			break;
+		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 10: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 5: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 4: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 3: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
+		case 0:
+			broadcastWithPrefix(Language.getText("GAME_END"));
+			setState(GameState.Restart,GameStateChangeReason.GAME_END);
+			break;
+		}
+	}
+	
+	Player v;
+	Player a;
+	@EventHandler
+	public void DeathSkyWars(PlayerDeathEvent ev){
+		if(ev.getEntity() instanceof Player && getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) )){
+			v = (Player)ev.getEntity();
+			
+			getGames().getStats().setInt(v, getGames().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
+			getGameList().addPlayer(v, PlayerState.OUT);
+			
+			if(ev.getEntity().getKiller() instanceof Player){
+				a = (Player)ev.getEntity().getKiller();
+				getGames().getStats().setInt(a, getGames().getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
+				broadcastWithPrefix("KILL_BY", new String[]{v.getName(),a.getName()});
+				return;
+			}
+			broadcastWithPrefix("DEATH", v.getName());
+			getGames().getStats().setInt(v, getGames().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
+		}
+	}
+	
+	@EventHandler
+	public void MultiGameStateChangeSkyWars1vs1(MultiGameStateChangeEvent ev){
+		if(ev.getTo()==GameState.Restart){
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			if(list.size()==1){
+				Player p = list.get(0);
+				getGames().getStats().setInt(p, getGames().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getGames().getCoins().addCoins(p, false, 5);
+				broadcastWithPrefix("GAME_WIN", p.getName());
+				new Title("§6§lGEWONNEN").send(p);
+			}else if(list.size()==2){
+				Player p = list.get(0);
+				Player p1 = list.get(1);
+				getGames().getStats().setInt(p, getGames().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
+				getGames().getStats().setInt(p1, getGames().getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
+				getGames().getCoins().addCoins(p, false, 5);
+				getGames().getCoins().addCoins(p1, false, 5);
+				new Title("§6§lGEWONNEN").send(p);
+				new Title("§6§lGEWONNEN").send(p1);
+			}
+		}
+		
+	}
+	
+	@EventHandler
+	public void ShopOpen(PlayerInteractEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.R)){
+			if(getState()!=GameState.LobbyPhase)return;
+			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
+				ev.getPlayer().openInventory(getGames().getKitshop().getInventory());
+			}
+		}
+	}
+	
 	@EventHandler
 	public void lobby(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
@@ -239,8 +386,12 @@ public class SkyWars1vs1 extends MultiGame{
 			UtilSkyWars1vs1.loadWorld(this, template, template_type);
 			
 			for(Player player : getGameList().getPlayers().keySet()){
+				getGames().getManager().Clear(player);
 				UtilPlayer.sendPacket(player, this.packet);
 			}
+
+			setTimer((60*5)+1);
+			setState(GameState.InGame);
 		}
 	}
 }

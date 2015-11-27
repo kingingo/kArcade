@@ -532,7 +532,7 @@ public class BedWars extends TeamGame{
 				getWorldData().getWorld().setStorm(false);
 				break;
 			case WEIHNACHTEN:
-				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
+				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 				
 				getWorldData().getWorld().setStorm(true);
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){

@@ -23,6 +23,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -80,7 +81,7 @@ public abstract class WorldData {
 	}
 
 	public void clearWorld(){
-		for(Entity e : getWorld().getEntities())e.remove();
+		for(Entity e : getWorld().getEntities())if(!(e instanceof Player))e.remove();
 	}
 	 
 	 public void Uninitialize(){
