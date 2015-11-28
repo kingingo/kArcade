@@ -10,6 +10,7 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
+import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -72,7 +73,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.Potion.Tier;
 import org.bukkit.potion.PotionType;
 
-public class SkyWars1vs1 extends MultiGame{
+public class SkyWars1vs1 extends MultiTeamGame{
 
 	private MultiGameArenaRestore area;
 	private kPacketPlayOutWorldBorder packet;

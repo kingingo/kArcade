@@ -14,6 +14,7 @@ import me.kingingo.karcade.Game.Multi.Addons.MultiAddonChat;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
+import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
 import me.kingingo.karcade.Game.Multi.Games.SkyWars1vs1.SkyWars1vs1;
 import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
 import me.kingingo.karcade.Service.Games.ServiceMultiGames;
@@ -332,10 +333,10 @@ public class MultiGames extends Game{
 								}
 									
 								if(settings.getTeam()==Team.SOLO){
-									settings.setTeam(g.littleTeam());
+									settings.setTeam(((MultiTeamGame)g).littleTeam());
 								}
-									
-								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+								
+								((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 									
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
@@ -370,10 +371,10 @@ public class MultiGames extends Game{
 							}
 								
 							if(settings.getTeam()==Team.SOLO){
-								settings.setTeam(g.littleTeam());
+								settings.setTeam(((MultiTeamGame)g).littleTeam());
 							}
 								
-							g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+							((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 							
 							g.setType(settings.getType());
@@ -422,10 +423,10 @@ public class MultiGames extends Game{
 								}
 									
 								if(settings.getTeam()==Team.SOLO){
-									settings.setTeam(g.littleTeam());
+									settings.setTeam(((MultiTeamGame)g).littleTeam());
 								}
 									
-								g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+								((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
@@ -448,24 +449,20 @@ public class MultiGames extends Game{
 					UtilDebug.debug("PacketReceive", e.getMessage());
 					UtilException.catchException(e, "versus"+getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getIp(), getManager().getMysql());
 					
-					if(g!=null){
-						if(((Versus)g).getMax_type()==null){
-							UtilDebug.debug("PacketReceive", "PACKET: 1");
-							System.out.println("PACKET: 1");
-						}else if(((Versus)g).getMax_type().getTeam()==null){
-							UtilDebug.debug("PacketReceive", "PACKET: 2");
-							System.out.println("PACKET: 2");
-						}
-						
-						if(settings.getType().getTeam()==null){
-							UtilDebug.debug("PacketReceive", "PACKET: 3");
-							System.out.println("PACKET: 3");
-						}else if(settings.getType()==null){
-							UtilDebug.debug("PacketReceive", "PACKET: 4");
-							System.out.println("PACKET: 4");
-						}
-					}else{
-						UtilDebug.debug("PacketReceive", "PACKET: 0");
+					if(((Versus)g).getMax_type()==null){
+						UtilDebug.debug("PacketReceive", "PACKET: 1");
+						System.out.println("PACKET: 1");
+					}else if(((Versus)g).getMax_type().getTeam()==null){
+						UtilDebug.debug("PacketReceive", "PACKET: 2");
+						System.out.println("PACKET: 2");
+					}
+					
+					if(settings.getType().getTeam()==null){
+						UtilDebug.debug("PacketReceive", "PACKET: 3");
+						System.out.println("PACKET: 3");
+					}else if(settings.getType()==null){
+						UtilDebug.debug("PacketReceive", "PACKET: 4");
+						System.out.println("PACKET: 4");
 					}
 				}
 			}else if(g instanceof SkyWars1vs1){
@@ -479,10 +476,10 @@ public class MultiGames extends Game{
 							}
 								
 							if(settings.getTeam()==Team.SOLO){
-								settings.setTeam(g.littleTeam());
+								settings.setTeam(((MultiTeamGame)g).littleTeam());
 							}
 								
-							g.getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+							((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 
 							g.setType(settings.getType());

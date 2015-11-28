@@ -10,6 +10,7 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
+import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
 import me.kingingo.kcore.Arena.ArenaType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
@@ -42,7 +43,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-public class Versus extends MultiGame{
+public class Versus extends MultiTeamGame{
 	
 	@Getter
 	@Setter

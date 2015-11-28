@@ -33,10 +33,12 @@ public class SoloGame extends SingleGame{
 	
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
-		if(isState(GameState.Restart)||isState(GameState.LobbyPhase))return;
-		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
-		if(getGameList().getPlayers(PlayerState.IN).size()<=1){
-			setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			if(isState(GameState.Restart)||isState(GameState.LobbyPhase))return;
+			getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
+			if(getGameList().getPlayers(PlayerState.IN).size()<=1){
+				setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
+			}
 		}
 	}
 	
@@ -76,7 +78,7 @@ public class SoloGame extends SingleGame{
 	    for(Player p : UtilServer.getPlayers()){
 	    	p.hidePlayer(player);
 	    }
-	    player.setGameMode(GameMode.CREATIVE);
+	    player.setGameMode(GameMode.SPECTATOR);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
 	    ((CraftPlayer)player).getHandle().k = false;
