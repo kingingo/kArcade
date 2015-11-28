@@ -274,7 +274,7 @@ public class QuickSurvivalGames extends SoloGame{
 				setState(GameState.InGame);
 				broadcastWithPrefixName("GAME_START");
 				setDamage(true);
-				move.setnotMove(false);
+				move.setMove(true);
 			break;
 		}
 	}
@@ -313,7 +313,7 @@ public class QuickSurvivalGames extends SoloGame{
 			case 1:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
 			case 0:
 				setDamage(false);
-				move.setnotMove(true);
+				move.setMove(false);
 				Title title = new Title("","");
 				broadcastWithPrefixName("TELEPORT_TO_DEATHMATCH_ARENA");
 				setStart(6);
@@ -360,7 +360,7 @@ public class QuickSurvivalGames extends SoloGame{
 			broadcastWithPrefixName("DEATHMATCH_START");
 			setStart(176);
 			setDamage(true);
-			move.setnotMove(false);
+			move.setMove(true);
 			setState(GameState.DeathMatch);
 		break;
 		}
@@ -485,7 +485,7 @@ public class QuickSurvivalGames extends SoloGame{
 		getManager().DebugLog(time, this.getClass().getName());
 		move=new AddonMove(getManager());
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
-		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
+		move.setMove(false);
 		setState(GameState.StartGame);
 		
 		for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove();

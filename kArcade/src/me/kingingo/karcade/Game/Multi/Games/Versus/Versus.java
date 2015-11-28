@@ -3,13 +3,13 @@ package me.kingingo.karcade.Game.Multi.Games.Versus;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
+import me.kingingo.karcade.Game.Multi.Addons.MultiAddonMove;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
-import me.kingingo.karcade.Game.Single.addons.AddonMove;
 import me.kingingo.kcore.Arena.ArenaType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
@@ -48,7 +48,7 @@ public class Versus extends MultiGame{
 	@Setter
 	private ArenaType max_type;
 	@Getter
-	private AddonMove addonMove;
+	private MultiAddonMove addonMove;
 	private MultiGameArenaRestore area;
 	private Scoreboard scoreboard;
 	
@@ -108,7 +108,7 @@ public class Versus extends MultiGame{
 		setPickItem(true);
 		setDropItembydeath(false);
 		setFoodlevelchange(false);
-		addonMove=new AddonMove(games.getManager());
+		addonMove=new MultiAddonMove(this);
 		
 		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
 		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lVERSUS Board:");
@@ -220,7 +220,7 @@ public class Versus extends MultiGame{
 		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.LobbyPhase){
 			if(area!=null)area.restore();
-			this.addonMove.setnotMove(true);
+			this.addonMove.setMove(false);
 
 			if(getKit()!=null){
 				UtilScoreboard.resetScore(scoreboard, "§7"+getKit().kit, DisplaySlot.SIDEBAR);
@@ -242,7 +242,7 @@ public class Versus extends MultiGame{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Start(MultiGameStartEvent ev){
 		if(ev.getGame()!=this)return;
-			this.addonMove.setnotMove(false);
+			this.addonMove.setMove(true);
 			
 			for(Player player : getTeamList().keySet()){
 				if(getKit()!=null){
@@ -265,20 +265,9 @@ public class Versus extends MultiGame{
 				UtilScoreboard.setScore(scoreboard, "§7Default", DisplaySlot.SIDEBAR, 2);
 			}
 			
-			TeamTab(scoreboard);
+			setTeamTab(scoreboard);
 			setDamagePvP(true);
 			setDamage(true);
 			setState(GameState.InGame);
 	}
-	
-	@EventHandler
-	public void Move(MultiGamePlayerJoinEvent ev){
-		if(ev.getGame()!=this)return;
-		//Prüft ob dieser Spieler für die Arena angemeldet ist.
-		if(getTeamList().containsKey(ev.getPlayer())){
-			//Fügt Spieler zu AddonMove hinzu
-			addonMove.getMovelist().add(ev.getPlayer());
-		}
-	}
-
 }

@@ -294,7 +294,7 @@ public class SurvivalGames extends TeamGame{
 				broadcastWithPrefix("GAME_START");
 				setDamage(true);
 				//tnp.setAktiv(true);
-				move.setnotMove(false);
+				move.setMove(true);
 			break;
 		}
 	}
@@ -343,7 +343,7 @@ public class SurvivalGames extends TeamGame{
 					p.teleport(r);
 					list.remove(r);
 				}
-				move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
+				move.setMove(false);
 				setDamage(false);
 				setProjectileDamage(false);
 				//tnp.setAktiv(false);
@@ -390,7 +390,7 @@ public class SurvivalGames extends TeamGame{
 			case 170:
 				setDamage(true);
 				setProjectileDamage(true);
-				move.setnotMove(false);
+				move.setMove(true);
 				broadcastWithPrefix("DEATHMATCH_START", getStart());
 				break;
 			case 5:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
@@ -534,7 +534,7 @@ public class SurvivalGames extends TeamGame{
 		}
 		getManager().DebugLog(time, this.getClass().getName());
 		move=new AddonMove(getManager());
-		move.setnotMove(true, getGameList().getPlayers(PlayerState.IN));
+		move.setMove(false);
 		
 		setState(GameState.StartGame);
 		getManager().DebugLog(time, this.getClass().getName());

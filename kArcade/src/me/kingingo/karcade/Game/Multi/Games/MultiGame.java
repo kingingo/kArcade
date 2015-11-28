@@ -12,7 +12,6 @@ import me.kingingo.karcade.Game.Events.TeamAddEvent;
 import me.kingingo.karcade.Game.Events.TeamDelEvent;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.MultiWorldData;
-import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameUpdateInfo;
@@ -36,7 +35,6 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
@@ -221,10 +219,45 @@ public class MultiGame extends kListener{
 		return list;
 	}
 	
-	public void TeamTab(Scoreboard board){
+	public void setTab(Player p,Color enemy, Color friend){
+		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+		UtilScoreboard.addTeam(board, "friend", friend.toString());
+		UtilScoreboard.addTeam(board, "enemy", enemy.toString());
+		
+		for(Player player : UtilServer.getPlayers()){
+			if(player.getUniqueId()==p.getUniqueId()){
+				UtilScoreboard.addPlayerToTeam(board, "enemy", player);
+			}else{
+				UtilScoreboard.addPlayerToTeam(board, "friend", player);
+			}
+		}
+		
+		p.setScoreboard(board);
+	}
+	
+	public void setTeamTab(Team team, Color enemy, Color friend){
+		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+		UtilScoreboard.addTeam(board, "friend", friend.toString());
+		UtilScoreboard.addTeam(board, "enemy", enemy.toString());
+		
+		for(Player player : UtilServer.getPlayers()){
+			if(getTeam(player)!=team){
+				UtilScoreboard.addPlayerToTeam(board, "enemy", player);
+			}else{
+				UtilScoreboard.addPlayerToTeam(board, "friend", player);
+			}
+		}
+		
+		for(Player player : getTeamList().keySet())if(getTeamList().get(player)==team)player.setScoreboard(board);
+	}
+	
+	public void setTeamTab(Scoreboard board){
 	    if(board==null)board=Bukkit.getScoreboardManager().getNewScoreboard();
 	    for (Player p : getTeamList().keySet()) {
-	    	if(!UtilScoreboard.existTeam(board, getTeamList().get(p).Name()))UtilScoreboard.addTeam(board, getTeamList().get(p).Name(), getTeamList().get(p).getColor());
+	    	if(!UtilScoreboard.existTeam(board, getTeamList().get(p).Name())){
+	    		UtilScoreboard.addTeam(board, getTeamList().get(p).Name(), getTeamList().get(p).getColor());
+	    	}
+	    	
 	    	UtilScoreboard.addPlayerToTeam(board, getTeamList().get(p).Name(), p);
 	    	p.setScoreboard(board);
 	    }
