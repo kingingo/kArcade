@@ -101,36 +101,33 @@ public class MultiGames extends Game{
 		if(GameType.Versus==type){
 			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
 			getWorldData().createCustomWorld("90,quartz_block");
-			ArrayList<File> schematics = getWorldData().loadSchematics();
+			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);
 			
-			long time;
 			Versus v;
 			File file;
-			for(int i = 0; i<=(schematics.size()<=6?schematics.size():6); i++){
-				if(!schematics.isEmpty()){
-					time=System.currentTimeMillis();
-					if(schematics.size()==1){
-						file = schematics.get(0);
+			int size = zips.size();
+			for(int i = 0; i<(size<=6?size:6); i++){
+				if(!zips.isEmpty()){
+					if(zips.size()==1){
+						file = zips.get(0);
 					}else{
-						file = schematics.get(UtilMath.r(schematics.size()));
+						file = zips.get(UtilMath.r(zips.size()));
 					}
-					getWorldData().pasteSchematic(loc, file);
-					v=new Versus(this, file.getName().replaceAll(".schematic", "") ,loc);
+					v=new Versus(this, file ,loc);
 					games.put(v.getArena(), v);
-					loc=loc.add(0, 0, 600);
-					schematics.remove(file);
-					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+					loc=loc.add(0, 0, 5000);
+					zips.remove(file);
 				}else{
 					break;
 				}
 			}
 			
 			loc=null;
-			time=0;
+			size=0;
 			v=null;
-			schematics.clear();
-			schematics=null;
+			zips.clear();
+			zips=null;
 		}else if(GameType.SkyWars1vs1==type){
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
@@ -139,7 +136,8 @@ public class MultiGames extends Game{
 			long time;
 			SkyWars1vs1 v;
 			File file;
-			for(int i = 0; i<=(zips.size()<=4?zips.size():4); i++){
+			int size = zips.size();
+			for(int i = 0; i<(size<=4?size:4); i++){
 				if(!zips.isEmpty()){
 					time=System.currentTimeMillis();
 					if(zips.size()==1){
@@ -151,7 +149,6 @@ public class MultiGames extends Game{
 					v=new SkyWars1vs1(this, "Loading ...",loc,file);
 					games.put(v.getArena(), v);
 					zips.remove(file);
-					
 					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
 				}else{
 					break;

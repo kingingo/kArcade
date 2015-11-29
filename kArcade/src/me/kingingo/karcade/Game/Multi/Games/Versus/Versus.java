@@ -1,5 +1,7 @@
 package me.kingingo.karcade.Game.Multi.Games.Versus;
 
+import java.io.File;
+
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
@@ -53,34 +55,12 @@ public class Versus extends MultiTeamGame{
 	private MultiGameArenaRestore area;
 	private Scoreboard scoreboard;
 	
-	public Versus(MultiGames games,String Map,Location location) {
-		super(games,Map,location);
-		games.getManager().DebugLog(new String[]{"Versus "+getArena(),"Map "+Map});
+	public Versus(MultiGames games,File file,Location location) {
+		super(games,"",location);
+		getWorldData().loadSchematic(this, location, file);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
-		Location ecke1 = null;
-		Location ecke2 = null;
-		
-		for(Block block : UtilLocation.searchBlocks(Material.SPONGE, 100, location)){
-			if(block.getRelative(BlockFace.UP).getType()==Material.WOOL){
-				if(block.getRelative(BlockFace.UP).getData()==14){
-					getWorldData().addLoc(this, Team.RED, block.getRelative(BlockFace.UP).getLocation());
-				}else if(block.getRelative(BlockFace.UP).getData()==11){
-					getWorldData().addLoc(this, Team.BLUE, block.getRelative(BlockFace.UP).getLocation());
-				}else if(block.getRelative(BlockFace.UP).getData()==5){
-					getWorldData().addLoc(this, Team.GREEN, block.getRelative(BlockFace.UP).getLocation());
-				}else if(block.getRelative(BlockFace.UP).getData()==4){
-					getWorldData().addLoc(this, Team.YELLOW, block.getRelative(BlockFace.UP).getLocation());
-				}else if(block.getRelative(BlockFace.UP).getData()==1){
-					getWorldData().addLoc(this, Team.ORANGE, block.getRelative(BlockFace.UP).getLocation());
-				}else if(block.getRelative(BlockFace.UP).getData()==7){
-					getWorldData().addLoc(this, Team.GRAY, block.getRelative(BlockFace.UP).getLocation());
-				}
-				block.getRelative(BlockFace.UP).setType(Material.AIR);
-				block.setType(Material.AIR);
-			}
-		}
-		setMax_type( ArenaType.withTeamAnzahl( getWorldData().getTeams(this).size() ) );
+		setMax_type( ArenaType.withTeamAnzahl( getWorldData().getTeams(this).size()-2 ) );
 		if(getMax_type()==null){
 			String s="";
 			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
@@ -95,14 +75,15 @@ public class Versus extends MultiTeamGame{
 				}
 			}
 		}
-		ecke1 = UtilLocation.getLowestLocInCase(location, Material.BARRIER);
-		ecke2 = UtilLocation.getHighestLocInCase(location, Material.BARRIER);
-		
-		if(ecke1==null||ecke2==null){
-			Log("ECKE1: "+(ecke1==null)+" ECKE2:"+(ecke2==null));
-			Log("LOC: "+location.toString());
+			
+		if(!getWorldData().existLoc(this, Team.SHEEP_RED)||
+				getWorldData().existLoc(this, Team.SHEEP_RED)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
+			Log("Fehler SHEEP_RED NICHT GEFUNDEN");
+		}else if(!getWorldData().existLoc(this, Team.SHEEP_BLUE)||
+				getWorldData().existLoc(this, Team.SHEEP_BLUE)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
+			Log("Fehler SHEEP_BLUE NICHT GEFUNDEN");
 		}else{
-			area=new MultiGameArenaRestore(this, ecke1, ecke2);
+			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.SHEEP_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.SHEEP_BLUE).get(0));
 		}
 		
 		setDropItem(false);

@@ -127,7 +127,8 @@ public class MultiWorldData extends WorldData{
 		        }
 		    }
 		    in.close();
-		    
+		    br.close();
+		    fstream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

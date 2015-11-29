@@ -295,7 +295,8 @@ public class SingleWorldData extends WorldData{
 		        }
 		    }
 		    in.close();
-		    
+		    br.close();
+		    fstream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -307,6 +308,5 @@ public class SingleWorldData extends WorldData{
 		for(Team team : locs.keySet())log("TEAM:"+team.Name()+" LOC:"+locs.get(team).size());
 		
 		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld(getGameName())));
-		log("LOC: "+UtilLocation.getLocString(locs.get(Team.BLACK).get(0)));
 	}
 }
