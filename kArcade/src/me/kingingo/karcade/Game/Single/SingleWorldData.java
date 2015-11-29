@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 
@@ -89,6 +90,7 @@ public class SingleWorldData extends WorldData{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	    new File(folder + File.separator + "uid.dat").delete();
 	}
 	 
 	public void Initialize(){
@@ -305,5 +307,6 @@ public class SingleWorldData extends WorldData{
 		for(Team team : locs.keySet())log("TEAM:"+team.Name()+" LOC:"+locs.get(team).size());
 		
 		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld(getGameName())));
+		log("LOC: "+UtilLocation.getLocString(locs.get(Team.BLACK).get(0)));
 	}
 }

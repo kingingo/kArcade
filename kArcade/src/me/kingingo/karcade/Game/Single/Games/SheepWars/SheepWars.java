@@ -23,10 +23,13 @@ import me.kingingo.karcade.Game.Single.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.Single.addons.AddonEntityTeamKing;
 import me.kingingo.karcade.Game.Single.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
+import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.karcade.Service.Games.ServiceSheepWars;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Calendar.Calendar;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -89,6 +92,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -288,16 +292,16 @@ public class SheepWars extends TeamGame{
 	//TEAM GREEN
 	//SPEZIAL VILLAGER BLACK
 	
-//	@EventHandler
-//	public void WorldData(WorldDataInitializeEvent ev){
-//		if(getManager().getHoliday()==CalendarType.WEIHNACHTEN){
-//			if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
-//				ev.getWorldData().setBiome(ev.getWorldData().getLocs(Team.BLACK.Name()).get(0), Biome.ICE_PLAINS);
-//			}else{
-//				ev.getWorldData().setBiome(ev.getWorldData().getLocs(Team.RED.Name()).get(0),500, Biome.ICE_PLAINS);
-//			}
-//		}
-//	}
+	@EventHandler
+	public void WorldData(WorldDataInitializeEvent ev){
+		if(Calendar.holiday==CalendarType.WEIHNACHTEN){
+			if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
+				ev.getWorldData().setBiome(getWorldData().getLocs(Team.BLACK).get(0), Biome.ICE_PLAINS);
+			}else{
+				ev.getWorldData().setBiome(getWorldData().getLocs(Team.RED).get(0), Biome.ICE_PLAINS);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void WorldLoad(WorldLoadEvent ev){
@@ -717,14 +721,6 @@ public class SheepWars extends TeamGame{
 				et=EntityType.SNOWMAN;
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 				getWorldData().getWorld().setStorm(true);
-				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
-
-					@Override
-					public void onRun() {
-						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team).get(0), 10);
-					}
-					
-				},UpdateType.MIN_005);
 				break;
 			default:
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());

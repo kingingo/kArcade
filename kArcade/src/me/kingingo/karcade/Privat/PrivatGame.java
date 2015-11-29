@@ -30,7 +30,7 @@ public class PrivatGame{
 	@Getter
 	private SheepWarsType sheepWarsType=SheepWarsType._2x4;
 	@Getter
-	private SkyWarsType skyWarsType=SkyWarsType._12x1;
+	private SkyWarsType skyWarsType=SkyWarsType._8x1;
 	@Getter
 	private InventoryPageBase choose;
 	@Getter

@@ -7,7 +7,8 @@ import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilMath;
 
 public enum SkyWarsType {
-//_6x1(50,1,3,6,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK}),
+_8x1(50,1,4,8,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
+_8x2(50,1,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
 _12x1(50,1,6,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN}),
 _12x2(50,2,12,24,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN});
 
@@ -36,7 +37,7 @@ public static SkyWarsType getSkyWarsTypeWithSize(int size){
 			return type;
 		}
 	}
-	return SkyWarsType._12x1;
+	return SkyWarsType._8x1;
 }
 
 public static SkyWarsType random(){

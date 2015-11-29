@@ -14,10 +14,12 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Util.UtilFile;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilWorld;
+import me.kingingo.kcore.Util.UtilWorldEdit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
@@ -208,7 +210,7 @@ public abstract class WorldData {
 	 }
 	 
 	 public void setBiome(Location l,Biome biome){
-		 setBiome(l, 300, biome);
+		 setBiome(l, 60, biome);
 	 }
 	 
 	public void setBiome(Location l,int add,Biome biome){	
@@ -220,7 +222,12 @@ public abstract class WorldData {
 		
 		for(int x = min_x; x < max_x; x++){
 			for(int z = min_z; z < max_z; z++){
-				getWorld().setBiome(x, z, biome);
+				if(l.getWorld().getBiome(x, z)!=biome){
+					getWorld().loadChunk(x,z);
+					getWorld().setBiome(x, z, biome);
+					getWorld().refreshChunk(x, z);
+//					getWorld().unloadChunk(x,z);
+				}
 			}
 		}
 	}

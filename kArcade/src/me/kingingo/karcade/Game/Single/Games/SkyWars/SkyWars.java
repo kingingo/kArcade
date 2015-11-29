@@ -118,7 +118,7 @@ public class SkyWars extends TeamGame{
 		setItemPickup(true);
 		setItemDrop(true);
 		setRespawn(true);
-		setWorldData(new SingleWorldData(manager,getType()));
+		setWorldData(new SingleWorldData(manager,getType().getTyp()+type.getTeam().length,getType().getKürzel()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		getWorldData().Initialize();
 		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
@@ -276,7 +276,7 @@ public class SkyWars extends TeamGame{
 	
 	public ItemStack Sonstiges(){
 		try{
-			switch(UtilMath.r(39)){
+			switch(UtilMath.r(43)){
 			case 0: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
 			case 1: return new ItemStack(Material.GOLDEN_APPLE,1);
 			case 2: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
@@ -299,21 +299,27 @@ public class SkyWars extends TeamGame{
 			case 19:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
 			case 20:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
 			case 21:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
-			case 22:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
-			case 23:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
-			case 24:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
-			case 25:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
-			case 26:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
-			case 27:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
-			case 28:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
-			case 29:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
-			case 30:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
-			case 31:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
-			case 32:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
-			case 33:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
-			case 34:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
-			case 35: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
-			case 36: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 22:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16,10));
+			case 24:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16,10));
+			case 25:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16,10));
+			case 26:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16,10));
+			case 27:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16,10));
+			case 28:return new ItemStack(Material.EGG,UtilMath.RandomInt(16,10));
+			case 29:return new ItemStack(Material.EGG,UtilMath.RandomInt(16,10));
+			case 30:return new ItemStack(Material.EGG,UtilMath.RandomInt(16,10));
+			case 31:return new ItemStack(Material.EGG,UtilMath.RandomInt(16,10));
+			case 32:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
+			case 33:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
+			case 34:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
+			case 35:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
+			case 36:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			case 37:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
+			case 38:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
+			case 39:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
+			case 40:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
+			case 41:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			case 42: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 43: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
 			default: return new ItemStack(Material.STICK);
 			}
 		}catch(NullPointerException e){
@@ -527,8 +533,8 @@ public class SkyWars extends TeamGame{
 		template_type.put("ARROW",1);
 		template_type.put("POTION",4);
 		template_type.put("FOOD",3);
-		template_type.put("SNOWBALL",3);
-		template_type.put("EGG",3);
+//		template_type.put("SNOWBALL",3);
+//		template_type.put("EGG",3);
 		template_type.put("WEB",3);
 		template_type.put("LAVA-BUCKET",1);
 		template_type.put("WATER-BUCKET",1);
@@ -599,12 +605,12 @@ public class SkyWars extends TeamGame{
 				case "FOOD":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , rdmFood());
 					break;
-				case "SNOWBALL":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16, 8)));
-					break;
-				case "EGG":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(16, 8)));
-					break;
+//				case "SNOWBALL":
+//					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16, 8)));
+//					break;
+//				case "EGG":
+//					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(16, 8)));
+//					break;
 				case "WEB":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(16, 8)));
 					break;
