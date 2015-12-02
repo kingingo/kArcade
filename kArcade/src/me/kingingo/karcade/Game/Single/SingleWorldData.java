@@ -308,5 +308,6 @@ public class SingleWorldData extends WorldData{
 		for(Team team : locs.keySet())log("TEAM:"+team.Name()+" LOC:"+locs.get(team).size());
 		
 		Bukkit.getPluginManager().callEvent(new WorldLoadEvent(Bukkit.getWorld(getGameName())));
+		log("Map Name: "+UtilLocation.getLocString(locs.get(Team.RED).get(0)));
 	}
 }

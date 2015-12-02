@@ -21,6 +21,7 @@ import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Sethbling;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Snowball;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Sugar;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Brew.Items.Wolf;
+import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -28,13 +29,14 @@ import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
 import me.kingingo.kcore.StatsManager.Stats;
-import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
@@ -55,6 +57,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+
+import com.mysql.jdbc.log.Log;
 
 public class Falldown extends SoloGame{
 
@@ -117,8 +121,9 @@ public class Falldown extends SoloGame{
 	//TEAM RED
 	
 	@EventHandler
-	public void World(WorldLoadEvent ev){
-		UtilMap.setCrystals(getWorldData().getLocs(Team.RED).get(0), 40);
+	public void World(WorldDataInitializeEvent ev){
+		System.err.println("LOC: "+UtilLocation.getLocString(getWorldData().getLocs(Team.RED).get(0)));
+		UtilMap.setCrystals(getWorldData().getLocs(Team.RED).get(0), 25);
 	}
 	
 	Player player;

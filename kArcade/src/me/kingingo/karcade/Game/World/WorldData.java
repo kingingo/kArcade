@@ -210,7 +210,7 @@ public abstract class WorldData {
 	 }
 	 
 	 public void setBiome(Location l,Biome biome){
-		 setBiome(l, 60, biome);
+		 setBiome(l, 200, biome);
 	 }
 	 
 	public void setBiome(Location l,int add,Biome biome){	
@@ -220,16 +220,17 @@ public abstract class WorldData {
 		int min_z = l.getBlockZ()-add;
 		int max_z = l.getBlockZ()+add;
 		
-		for(int x = min_x; x < max_x; x++){
-			for(int z = min_z; z < max_z; z++){
-				if(l.getWorld().getBiome(x, z)!=biome){
-					getWorld().loadChunk(x,z);
-					getWorld().setBiome(x, z, biome);
-					getWorld().refreshChunk(x, z);
-//					getWorld().unloadChunk(x,z);
-				}
-			}
-		}
+		UtilWorldEdit.setBiome(new Location(l.getWorld(),min_x,90,min_z), new Location(l.getWorld(),max_x,90,max_z),biome);
+		
+//		for(int x = min_x; x < max_x; x++){
+//			for(int z = min_z; z < max_z; z++){
+//				if(l.getWorld().getBiome(x, z)!=biome){
+//					getWorld().loadChunk(x,z);
+//					getWorld().setBiome(x, z, biome);
+//					new Location(l.getWorld(),x,110,z).getBlock().setType(Material.AIR);
+//				}
+//			}
+//		}
 	}
 	
 	public void pasteSchematic(Location l,File file){

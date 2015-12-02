@@ -19,9 +19,12 @@ import me.kingingo.karcade.Game.Single.addons.AddonDropItems;
 import me.kingingo.karcade.Game.Single.addons.AddonEnterhacken;
 import me.kingingo.karcade.Game.Single.addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
+import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Calendar.Calendar;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -48,6 +51,7 @@ import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
+import me.kingingo.kcore.Util.UtilWorldEdit;
 import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
@@ -157,16 +161,16 @@ public class BedWars extends TeamGame{
 	//TEAM GREEN
 	//SPEZIAL VILLAGER BLACK
 	
-//	@EventHandler
-//	public void WorldData(WorldDataInitializeEvent ev){
-//		if(getManager().getHoliday()==CalendarType.WEIHNACHTEN){
-//			if(getWorldData().getLocs().containsKey(Team.BLACK.Name())&&!getWorldData().getLocs().get(Team.BLACK.Name()).isEmpty()){
-//				ev.getWorldData().setBiome(ev.getWorldData().getLocs(Team.BLACK.Name()).get(0), Biome.ICE_PLAINS);
-//			}else{
-//				ev.getWorldData().setBiome(ev.getWorldData().getLocs(Team.RED.Name()).get(0),500, Biome.ICE_PLAINS);
-//			}
-//		}
-//	}
+	@EventHandler
+	public void WorldData(WorldDataInitializeEvent ev){
+		if(Calendar.holiday==CalendarType.WEIHNACHTEN){
+			if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
+				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.BLACK).get(0), 150);
+			}else{
+				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.RED).get(0), 150);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void WorldLoad(WorldLoadEvent ev){
@@ -532,17 +536,9 @@ public class BedWars extends TeamGame{
 				getWorldData().getWorld().setStorm(false);
 				break;
 			case WEIHNACHTEN:
+				et=EntityType.SNOWMAN;
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
-				
-				getWorldData().getWorld().setStorm(true);
-				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler(){
-
-					@Override
-					public void onRun() {
-						for(Team team : getTyp().getTeam())UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, getWorldData().getLocs(team).get(0), 10);
-					}
-					
-				},UpdateType.MIN_005);
+				getWorldData().getWorld().setStorm(false);
 				break;
 			default:
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());

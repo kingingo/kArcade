@@ -14,8 +14,11 @@ import me.kingingo.karcade.Game.Single.SingleWorldData;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.Single.addons.AddonVoteTeam;
+import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
+import me.kingingo.kcore.Calendar.Calendar;
+import me.kingingo.kcore.Calendar.Calendar.CalendarType;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -61,6 +64,7 @@ import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
+import me.kingingo.kcore.Util.UtilWorldEdit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -244,6 +248,17 @@ public class SkyWars extends TeamGame{
 	//VILLAGER_RED RED_WOOL/EMERALD NORMAL_CHEST
 	//SHEEP WOOL/BEDROCK ISLAND CHEST
 	//SPAWN WOOL/REDSTONE
+	
+	@EventHandler
+	public void WorldData(WorldDataInitializeEvent ev){
+		if(Calendar.holiday==CalendarType.WEIHNACHTEN){
+			if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
+				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.BLACK).get(0), 150);
+			}else{
+				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.RED).get(0), 150);
+			}
+		}
+	}
 
 	@EventHandler
 	public void load(WorldLoadEvent ev){
@@ -1004,9 +1019,6 @@ public class SkyWars extends TeamGame{
 			switch(getManager().getHoliday()){
 			case HALLOWEEN:
 				new AddonNight(getManager().getInstance(),getWorldData().getWorld());
-				break;
-			case WEIHNACHTEN:
-				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 				break;
 			default:
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());

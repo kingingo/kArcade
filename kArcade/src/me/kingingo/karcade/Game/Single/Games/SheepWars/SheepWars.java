@@ -84,6 +84,7 @@ import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
+import me.kingingo.kcore.Util.UtilWorldEdit;
 import me.kingingo.kcore.Villager.VillagerShop;
 import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
@@ -296,9 +297,9 @@ public class SheepWars extends TeamGame{
 	public void WorldData(WorldDataInitializeEvent ev){
 		if(Calendar.holiday==CalendarType.WEIHNACHTEN){
 			if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
-				ev.getWorldData().setBiome(getWorldData().getLocs(Team.BLACK).get(0), Biome.ICE_PLAINS);
+				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.BLACK).get(0), 150);
 			}else{
-				ev.getWorldData().setBiome(getWorldData().getLocs(Team.RED).get(0), Biome.ICE_PLAINS);
+				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.RED).get(0), 150);
 			}
 		}
 	}
@@ -720,7 +721,7 @@ public class SheepWars extends TeamGame{
 			case WEIHNACHTEN:
 				et=EntityType.SNOWMAN;
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
-				getWorldData().getWorld().setStorm(true);
+				getWorldData().getWorld().setStorm(false);
 				break;
 			default:
 				new AddonDay(getManager().getInstance(),getWorldData().getWorld());
