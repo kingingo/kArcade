@@ -165,7 +165,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getWorldData().getTeams(this).size()),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getWorldData().getTeams(this).size()-2),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());

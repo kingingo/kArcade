@@ -202,7 +202,7 @@ public class Game implements Listener{
 	
 	@EventHandler
 	public void OpenChest(PlayerInteractEvent ev){
-		if(getState() == GameState.LobbyPhase){
+		if(getState() == GameState.LobbyPhase&&ev.getPlayer().getWorld().getUID()==getManager().getLobby().getWorld().getUID()){
 			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
 				if(ev.getClickedBlock().getType()==Material.BREWING_STAND||ev.getClickedBlock().getType()==Material.DROPPER||ev.getClickedBlock().getType()==Material.DISPENSER||ev.getClickedBlock().getType()==Material.ANVIL||ev.getClickedBlock().getType()==Material.ENCHANTMENT_TABLE||ev.getClickedBlock().getType()==Material.TRAP_DOOR||ev.getClickedBlock().getType()==Material.WORKBENCH||ev.getClickedBlock().getType()==Material.FURNACE||ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
 			}

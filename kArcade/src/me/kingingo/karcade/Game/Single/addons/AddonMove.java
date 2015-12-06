@@ -2,11 +2,13 @@ package me.kingingo.karcade.Game.Single.addons;
 
 import lombok.Getter;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffectType;
 
 public class AddonMove implements Listener{
 
@@ -23,9 +25,17 @@ public class AddonMove implements Listener{
 		this.move=move;
 		
 		if(this.move){
-			for(Player player : UtilServer.getPlayers())player.setWalkSpeed(0.2F);
+			for(Player player : UtilServer.getPlayers()){
+				player.setWalkSpeed(0.2F);
+				player.removePotionEffect(PotionEffectType.JUMP);
+				player.setFoodLevel(20);
+			}
 		}else{
-			for(Player player : UtilServer.getPlayers())player.setWalkSpeed(0);
+			for(Player player : UtilServer.getPlayers()){
+				player.setWalkSpeed(0);
+				UtilPlayer.addPotionEffect(player, PotionEffectType.JUMP, 60*60, 200);
+				player.setFoodLevel(6);
+			}
 		}
 	}
 	

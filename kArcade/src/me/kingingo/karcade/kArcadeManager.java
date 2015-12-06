@@ -454,6 +454,7 @@ public class kArcadeManager implements Listener{
 			getInstance().getConfig().set("Config.Server.Game", packet.getTyp().getTyp());
 			getInstance().saveConfig();
 			getGame().setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 		}
 	}
 	

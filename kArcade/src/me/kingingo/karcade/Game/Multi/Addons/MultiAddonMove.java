@@ -4,9 +4,11 @@ import lombok.Getter;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Listener.kListener;
+import me.kingingo.kcore.Util.UtilPlayer;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.potion.PotionEffectType;
 
 public class MultiAddonMove extends kListener{
 
@@ -23,9 +25,17 @@ public class MultiAddonMove extends kListener{
 		this.move=move;
 		
 		if(this.move){
-			for(Player player : game.getGameList().getPlayers().keySet())player.setWalkSpeed(0.2F);
+			for(Player player : game.getGameList().getPlayers().keySet()){
+				player.setWalkSpeed(0.2F);
+				player.removePotionEffect(PotionEffectType.JUMP);
+				player.setFoodLevel(20);
+			}
 		}else{
-			for(Player player : game.getGameList().getPlayers().keySet())player.setWalkSpeed(0);
+			for(Player player : game.getGameList().getPlayers().keySet()){
+				player.setWalkSpeed(0);
+				UtilPlayer.addPotionEffect(player, PotionEffectType.JUMP, 60*60, 200);
+				player.setFoodLevel(6);
+			}
 		}
 	}
 	
@@ -37,8 +47,12 @@ public class MultiAddonMove extends kListener{
 			//Fügt Spieler zu AddonMove hinzu
 			if(this.move){
 				ev.getPlayer().setWalkSpeed(0.2F);
+				ev.getPlayer().removePotionEffect(PotionEffectType.JUMP);
+				ev.getPlayer().setFoodLevel(20);
 			}else{
 				ev.getPlayer().setWalkSpeed(0);
+				UtilPlayer.addPotionEffect(ev.getPlayer(), PotionEffectType.JUMP, 60*60, 200);
+				ev.getPlayer().setFoodLevel(6);
 			}
 		}
 	}

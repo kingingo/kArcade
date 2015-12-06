@@ -76,6 +76,7 @@ public class MultiGames extends Game{
 		setTyp(GameType.get(type));
 		UtilServer.createLagListener(manager.getCmd());
 		setState(GameState.Laden);
+		updateInfo(GameState.LobbyPhase);
 		setSet_default_scoreboard(false);
 		registerListener();
 		ServiceMultiGames.setGames(this);
@@ -182,13 +183,13 @@ public class MultiGames extends Game{
 	 */
 	@EventHandler
 	public void updateInfo(UpdateEvent ev){
-		if(ev.getType()==UpdateType.SLOW&&!isState(GameState.Laden)){
+		if(ev.getType()==UpdateType.SLOW){
+			updateInfo();
 			if(haveToRestart()&&isState(GameState.Restart)){
 				if(UtilServer.getPlayers().isEmpty()){
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 				}
 			}
-			updateInfo();
 		}
 	}
 	
@@ -238,7 +239,6 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	  public void MobSpawn(CreatureSpawnEvent ev){
-//		if(ev.getSpawnReason()==SpawnReason.CUSTOM)return;
 	    if (!isCreatureSpawn()){
 			if(getManager().getService().isDebug())System.err.println("[MultiGame] CreatureSpawnEvent GLOBAL Cancelled TRUE!");
 	    	ev.setCancelled(true);
@@ -404,7 +404,7 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	public void PacketReceive(PacketReceiveEvent ev){
-		if(getType()==GameType.Versus&&ev.getPacket() instanceof ARENA_SETTINGS){
+		if(ev.getPacket() instanceof ARENA_SETTINGS){
 			ARENA_SETTINGS settings = (ARENA_SETTINGS)ev.getPacket();
 			MultiGame g = games.get(settings.getArena());
 			if(g instanceof Versus){

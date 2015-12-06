@@ -262,7 +262,11 @@ public class UtilSkyWars1vs1 {
 			chests=new Chest[game.getWorldData().getLocs(game,UtilSkyWars1vs1.getChestSpawn(t)).size()];
 			
 			for(Location loc : game.getWorldData().getLocs(game,UtilSkyWars1vs1.getChestSpawn(t))){
-				loc.getBlock().setType(Material.CHEST);
+				if(loc instanceof Chest){
+					((Chest)loc).getInventory().clear();
+				}else{
+					loc.getBlock().setType(Material.CHEST);
+				}
 				chests[i]=((Chest)loc.getBlock().getState());
 				i++;
 			}
@@ -273,7 +277,11 @@ public class UtilSkyWars1vs1 {
 		
 		Chest chest;
 		for(Location loc : game.getWorldData().getLocs(game,Team.VILLAGE_RED)){
-			loc.getBlock().setType(Material.CHEST);
+			if(loc instanceof Chest){
+				((Chest)loc).getInventory().clear();
+			}else{
+				loc.getBlock().setType(Material.CHEST);
+			}
 			if(loc.getBlock().getState() instanceof Chest){
 				chest=(Chest)loc.getBlock().getState();
 				for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
@@ -465,15 +473,12 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static int emptySlot(Inventory inv){
-		int slot=0;
-		for(int i = 0 ; i<2000; i++){
-			slot=UtilMath.r(inv.getSize());
-			if(inv.getItem(slot)==null||inv.getItem(slot).getType()==Material.AIR){
-				return slot;
-			}
-		}
-		System.out.println("NOT FIND A EMPTY SLOT");
-		return 0;
+		String s = "";
+		for(int i = 0 ; i<inv.getSize(); i++)if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)s=i+",";
+		s=s.substring(0,s.length()-1);
+		String[] sp = s.split(",");
+		s=null;
+		return Integer.valueOf( sp[UtilMath.r(sp.length)] );
 	}
 	
 	public static void add(HashMap<Chest,ArrayList<String>> template,HashMap<String,Integer> template_type,Chest g,String type){

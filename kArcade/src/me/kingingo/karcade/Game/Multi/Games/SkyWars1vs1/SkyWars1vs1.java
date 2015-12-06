@@ -94,16 +94,10 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		setUpdateTo("versus");
 		getWorldData().loadSchematic(this, location, file);
 		
-		for(Team team : getWorldData().getTeams(this).keySet()){
-			for(Location loc : getWorldData().getTeams(this).get(team)){
-				loc.getBlock().setType(Material.EMERALD_BLOCK);
-				Log(UtilLocation.getLocString(loc));
-			}
-		}
-		
 		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)14),null);
 		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)11),null);
 
+		
 		setBlockBreak(true);
 		setBlockPlace(true);
 		setDropItem(true);
@@ -114,6 +108,8 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		setDamage(false);
 		getEntityDamage().add(DamageCause.FALL);
 		
+		this.template=new HashMap<>();
+		this.template_type=new HashMap<>();
 		UtilSkyWars1vs1.loadWorld(this, template, template_type);
 		
 		if(games.getKitshop()==null){
@@ -256,8 +252,9 @@ public class SkyWars1vs1 extends MultiTeamGame{
 				}
 			}
 			
-			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 13, 0) );
-			setTimer(-1);
+			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 14, 0) );
+			ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
+			setTimer(35);
 			ev.setCancelled(true);
 			updateInfo();
 		}
@@ -268,6 +265,8 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setTimer(getTimer()-1);
+		if(getTimer()<0)setTimer((60*5)+1);
+		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
 		switch(getTimer()){
 		case 150: 
@@ -358,8 +357,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
-		if(getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.R)){
-			if(getState()!=GameState.LobbyPhase)return;
+		if(getState()==GameState.LobbyPhase&&getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.R)){
 			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
 				ev.getPlayer().openInventory(getGames().getKitshop().getInventory());
 			}
@@ -369,11 +367,14 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	@EventHandler
 	public void lobby(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
-		if(ev.getTo()==GameState.LobbyPhase){
+		if(ev.getTo()==GameState.Restart){
 			if(area!=null)area.restore();
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)14),null);
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)11),null);
-			
+
+			this.template.clear();
+			this.template_type.clear();
+			UtilSkyWars1vs1.loadWorld(this, template, template_type);
 			setDamagePvP(false);
 			setDamage(false);
 		}
@@ -384,14 +385,14 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(ev.getGame() == this){
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
-			UtilSkyWars1vs1.loadWorld(this, template, template_type);
 			
 			for(Player player : getGameList().getPlayers().keySet()){
 				getGames().getManager().Clear(player);
 				UtilPlayer.sendPacket(player, this.packet);
 			}
 
-			setTimer((60*5)+1);
+			setDamagePvP(true);
+			setDamage(true);
 			setState(GameState.InGame);
 		}
 	}
