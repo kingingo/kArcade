@@ -272,7 +272,7 @@ public class UtilSkyWars1vs1 {
 			}
 			i=0;
 			
-			UtilSkyWars1vs1.fillIslandChests(t,chests,template,template_type);
+			fillIslandChests(t,chests,template,template_type);
 		}
 		
 		Chest chest;
@@ -314,7 +314,10 @@ public class UtilSkyWars1vs1 {
 		template_type.put("BOW",1);
 		template_type.put("TOOL",2);
 		
-		for(Chest chest : chests)template.put(chest, new ArrayList<String>());
+		for(Chest chest : chests){
+			chest.getInventory().clear();
+			template.put(chest, new ArrayList<String>());
+		}
 		
 		if(UtilMath.r(100)>70){
 			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
@@ -341,6 +344,8 @@ public class UtilSkyWars1vs1 {
 				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.r(template_type.size())]);
 			}
 		}
+		
+		list=null;
 		
 		for(Chest chest : template.keySet()){
 			for(String i : template.get(chest)){
@@ -473,12 +478,15 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static int emptySlot(Inventory inv){
-		String s = "";
-		for(int i = 0 ; i<inv.getSize(); i++)if(inv.getItem(i)==null||inv.getItem(i).getType()==Material.AIR)s=i+",";
-		s=s.substring(0,s.length()-1);
-		String[] sp = s.split(",");
-		s=null;
-		return Integer.valueOf( sp[UtilMath.r(sp.length)] );
+		int slot=0;
+		for(int i = 0 ; i<2000; i++){
+			slot=UtilMath.r(inv.getSize());
+			if(inv.getItem(slot)==null||inv.getItem(slot).getType()==Material.AIR){
+				return slot;
+			}
+		}
+		System.out.println("NOT FIND A EMPTY SLOT");
+		return 0;
 	}
 	
 	public static void add(HashMap<Chest,ArrayList<String>> template,HashMap<String,Integer> template_type,Chest g,String type){

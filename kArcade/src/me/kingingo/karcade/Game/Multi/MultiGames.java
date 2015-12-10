@@ -292,7 +292,7 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
-		if(getKitManager().getKits().containsKey(UtilPlayer.getRealUUID(ev.getPlayer()))){
+		if(getKitManager() != null && getKitManager().getKits().containsKey(UtilPlayer.getRealUUID(ev.getPlayer()))){
 			getKitManager().getKits().remove(UtilPlayer.getRealUUID(ev.getPlayer()));
 		}
 		ev.setQuitMessage(null);

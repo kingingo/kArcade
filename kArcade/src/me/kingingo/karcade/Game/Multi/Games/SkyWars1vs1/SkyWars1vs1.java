@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
+import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
-import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
@@ -51,7 +51,6 @@ import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
-import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
@@ -65,6 +64,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -82,6 +82,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	
 	public SkyWars1vs1(MultiGames games,String Map,Location location,File file) {
 		super(games,Map, location);
+		setStartCountdown(31);
 		this.packet=UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10);
 		Location ecke1 = getPasteLocation().clone();
 		ecke1.setY(255);
@@ -230,7 +231,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void Join(MultiGamePlayerJoinEvent ev){
 		if(ev.getGame()!=this)return;
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
@@ -251,10 +252,9 @@ public class SkyWars1vs1 extends MultiTeamGame{
 					System.out.println("JOIN2: "+getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).contains(0));
 				}
 			}
-			
-			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 14, 0) );
+			setTimer(-1);
+			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 12, 0) );
 			ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
-			setTimer(35);
 			ev.setCancelled(true);
 			updateInfo();
 		}
@@ -268,33 +268,8 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(getTimer()<0)setTimer((60*5)+1);
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
+		
 		switch(getTimer()){
-		case 150: 
-
-			Chest chest;
-			for(Team t : getWorldData().getTeams(this).keySet()){
-				for(Location loc : getWorldData().getTeams(this).get(UtilSkyWars1vs1.getChestSpawn(t))){
-					if(loc.getBlock().getState() instanceof Chest){
-						chest=(Chest)loc.getBlock().getState();
-						for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
-							chest.getInventory().setItem(UtilSkyWars1vs1.emptySlot(chest.getInventory()), UtilSkyWars1vs1.rdmItem()); 
-						}
-					}
-				}
-			}
-			
-			for(Location loc : getWorldData().getTeams(this).get(Team.VILLAGE_RED)){
-				loc.getBlock().setType(Material.CHEST);
-				if(loc.getBlock().getState() instanceof Chest){
-					chest=(Chest)loc.getBlock().getState();
-					for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
-						chest.getInventory().setItem(UtilSkyWars1vs1.emptySlot(chest.getInventory()), UtilSkyWars1vs1.rdmItem()); 
-					}
-				}
-			}
-			
-			broadcastWithPrefix("§eDie Kisten wurden wieder gefüllt");
-			break;
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 10: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -316,6 +291,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	public void DeathSkyWars(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player && getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) )){
 			v = (Player)ev.getEntity();
+			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
 			
 			getGames().getStats().setInt(v, getGames().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
 			getGameList().addPlayer(v, PlayerState.OUT);
@@ -328,6 +304,16 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			}
 			broadcastWithPrefix("DEATH", v.getName());
 			getGames().getStats().setInt(v, getGames().getStats().getInt(Stats.DEATHS, v)+1, Stats.DEATHS);
+		}
+	}
+	
+	@EventHandler
+	public void chat(MultiGameAddonChatEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			ev.setCancelled(true);
+			
+			for(Player player : getGameList().getPlayers().keySet())
+				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+"§8 » §7"+ev.getMessage());
 		}
 	}
 	
@@ -372,21 +358,20 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)14),null);
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)11),null);
 
-			this.template.clear();
-			this.template_type.clear();
 			UtilSkyWars1vs1.loadWorld(this, template, template_type);
 			setDamagePvP(false);
 			setDamage(false);
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.NORMAL)
 	public void start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
 			
 			for(Player player : getGameList().getPlayers().keySet()){
+				player.closeInventory();
 				getGames().getManager().Clear(player);
 				UtilPlayer.sendPacket(player, this.packet);
 			}

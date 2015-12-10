@@ -1,15 +1,11 @@
 package me.kingingo.karcade.Game.Multi.Games;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.Game.GameList;
-import me.kingingo.karcade.Game.Events.TeamAddEvent;
-import me.kingingo.karcade.Game.Events.TeamDelEvent;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.MultiWorldData;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
@@ -21,7 +17,6 @@ import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
-import me.kingingo.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
@@ -34,14 +29,11 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Versus.PlayerKit;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -62,14 +54,14 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
 public class MultiGame extends kListener{
 	@Getter
 	private MultiGames games;
+	@Getter
+	@Setter
+	private int startCountdown=11;
 	@Getter
 	private GameState state=GameState.Laden;
 	@Getter
@@ -322,6 +314,10 @@ public class MultiGame extends kListener{
 	public void StateChange(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=ev.getTo()){
+			if(getGames().getStats()!=null){
+				for(Player player : getGameList().getPlayers().keySet())getGames().getStats().SaveAllPlayerData(player);
+			}
+			
 			if(this instanceof MultiTeamGame && (((MultiTeamGame)this).islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM)){
 				for(Player player : getGameList().getPlayers(PlayerState.IN)){
 					getGames().getStats().setInt(player, getGames().getStats().getInt(Stats.WIN, player)+1, Stats.WIN);
@@ -390,7 +386,6 @@ public class MultiGame extends kListener{
 				setTimer(getTimer()-1);
 				
 				if(getTimer()==0){
-//					info.getList().clear();
 					setState(GameState.LobbyPhase);
 				}
 			}
@@ -402,7 +397,7 @@ public class MultiGame extends kListener{
 		if(ev.getType()==UpdateType.SEC){
 			if(getState() == GameState.LobbyPhase||getState() == GameState.Laden){
 				if(getTimer()<0){
-					setTimer(11);
+					setTimer(getStartCountdown());
 				}
 				setTimer(getTimer()-1);
 				
@@ -460,20 +455,21 @@ public class MultiGame extends kListener{
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
-	public void start(MultiGameStartEvent ev){
-		if(ev.getGame()!=this)return;
-		for(Player p : getGameList().getPlayers().keySet()){
-			for(Player p1 : getGameList().getPlayers().keySet()){
-				p.hidePlayer(p1);
-				p1.hidePlayer(p);
+	public void MultiGamestart(MultiGameStartEvent ev){
+		if(ev.getGame()==this){
+			for(Player p : getGameList().getPlayers().keySet()){
+				for(Player p1 : getGameList().getPlayers().keySet()){
+					p.hidePlayer(p1);
+					p1.hidePlayer(p);
+				}
 			}
-		}
-		
-		for(Player p : getGameList().getPlayers().keySet()){
-			for(Player p1 : getGameList().getPlayers().keySet()){
-				p.hidePlayer(p1);
-				p.showPlayer(p1);
-				p1.showPlayer(p);
+			
+			for(Player p : getGameList().getPlayers().keySet()){
+				for(Player p1 : getGameList().getPlayers().keySet()){
+					p.hidePlayer(p1);
+					p.showPlayer(p1);
+					p1.showPlayer(p);
+				}
 			}
 		}
 	}
