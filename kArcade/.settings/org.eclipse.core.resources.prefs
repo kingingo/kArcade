@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
-encoding//src/me/kingingo/karcade/Game/Single/addons/AddonBedTeamKing.java=UTF-8
-encoding//src/me/kingingo/karcade/Game/Single/addons/AddonEntityKing.java=UTF-8
-encoding//src/me/kingingo/karcade/Game/Single/addons/AddonEntityTeamKing.java=UTF-8
+encoding//src/me/kingingo/karcade/Game/Multi/Addons/MultiAddonBedTeamKing.java=UTF-8
+encoding//src/me/kingingo/karcade/Game/Single/Addons/AddonBedTeamKing.java=UTF-8
+encoding//src/me/kingingo/karcade/Game/Single/Addons/AddonEntityKing.java=UTF-8
+encoding//src/me/kingingo/karcade/Game/Single/Addons/AddonEntityTeamKing.java=UTF-8

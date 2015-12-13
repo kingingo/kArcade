@@ -4,8 +4,8 @@ import java.util.List;
 
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Single.SingleGame;
-import me.kingingo.karcade.Game.Single.addons.AddonSpecCompass;
-import me.kingingo.karcade.Game.Single.addons.AddonSpectator;
+import me.kingingo.karcade.Game.Single.Addons.AddonSpecCompass;
+import me.kingingo.karcade.Game.Single.Addons.AddonSpectator;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.PlayerState;

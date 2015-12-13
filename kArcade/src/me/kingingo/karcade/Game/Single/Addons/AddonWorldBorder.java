@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Single.addons;
+package me.kingingo.karcade.Game.Single.Addons;
 
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Listener.kListener;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
@@ -20,6 +21,9 @@ public class MultiGameAddonAreaRestoreExplosionEvent extends Event implements Ca
 	@Getter
 	@Setter
 	private boolean build=true;
+	@Getter
+	@Setter
+	private MultiGame game;
 	
 	public MultiGameAddonAreaRestoreExplosionEvent(List<Block> blocks){
 		this.blocks=blocks;

@@ -98,7 +98,6 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)14),null);
 		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)11),null);
 
-		
 		setBlockBreak(true);
 		setBlockPlace(true);
 		setDropItem(true);

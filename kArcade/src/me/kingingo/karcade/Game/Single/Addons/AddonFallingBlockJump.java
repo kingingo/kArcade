@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Single.addons;
+package me.kingingo.karcade.Game.Single.Addons;
 
 import java.util.Random;
 

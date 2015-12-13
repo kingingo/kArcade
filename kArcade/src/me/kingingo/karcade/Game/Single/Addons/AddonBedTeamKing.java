@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Single.addons;
+package me.kingingo.karcade.Game.Single.Addons;
 
 import java.util.HashMap;
 
@@ -24,11 +24,11 @@ import org.bukkit.material.Bed;
 public class AddonBedTeamKing implements Listener {
 	
 	@Getter
-	kArcadeManager manager;;
+	private kArcadeManager manager;;
 	@Getter
-	HashMap<Team,Block> teams = new HashMap<>();
+	private HashMap<Team,Block> teams = new HashMap<>();
 	@Getter
-	TeamGame team;
+	private TeamGame team;
 	
 	public AddonBedTeamKing(kArcadeManager manager,Team[] teams,TeamGame team){
 		this.manager=manager;

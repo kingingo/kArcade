@@ -11,7 +11,7 @@ import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.GameList;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
-import me.kingingo.karcade.Game.Single.addons.AddonSpecCompass;
+import me.kingingo.karcade.Game.Single.Addons.AddonSpecCompass;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Language.Language;

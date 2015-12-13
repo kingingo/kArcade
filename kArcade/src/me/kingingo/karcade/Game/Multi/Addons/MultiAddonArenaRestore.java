@@ -7,6 +7,7 @@ import me.kingingo.kcore.Listener.kListener;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -29,7 +30,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent fill;
 	@EventHandler
 	public void PlayerBucketFill(PlayerBucketFillEvent ev){
-		fill = new MultiGameAddonAreaRestoreEvent(ev.getBlockClicked(), "PlayerBucketFillEvent"+ev.getBlockClicked().getType().name()+"  "+ev.getBlockFace().name());
+		fill = new MultiGameAddonAreaRestoreEvent(ev.getPlayer(),ev.getBlockClicked(), "PlayerBucketFillEvent"+ev.getBlockClicked().getType().name()+"  "+ev.getBlockFace().name());
 		Bukkit.getPluginManager().callEvent(fill);
 		ev.setCancelled(!fill.isBuild());
 		fill=null;
@@ -38,7 +39,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent bucket;
 	@EventHandler(ignoreCancelled=false)
 	public void bucket(PlayerBucketEmptyEvent ev){
-		bucket = new MultiGameAddonAreaRestoreEvent(ev.getBlockClicked().getRelative(ev.getBlockFace()), "PlayerBucketEmptyEvent");
+		bucket = new MultiGameAddonAreaRestoreEvent(ev.getPlayer(),ev.getBlockClicked().getRelative(ev.getBlockFace()), "PlayerBucketEmptyEvent");
 		Bukkit.getPluginManager().callEvent(bucket);
 		ev.setCancelled(!bucket.isBuild());
 		bucket=null;
@@ -58,7 +59,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent burn;
 	@EventHandler(ignoreCancelled=false)
 	public void BlockBurn(BlockBurnEvent ev){
-		burn = new MultiGameAddonAreaRestoreEvent(ev.getBlock(), "BlockBurnEvent");
+		burn = new MultiGameAddonAreaRestoreEvent(null,ev.getBlock(), "BlockBurnEvent");
 		Bukkit.getPluginManager().callEvent(burn);
 		ev.setCancelled(!burn.isBuild());
 		burn=null;
@@ -67,7 +68,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent ignite;
 	@EventHandler(ignoreCancelled=false)
 	public void BlockIgnite(BlockIgniteEvent ev){
-		ignite = new MultiGameAddonAreaRestoreEvent(ev.getBlock(), "BlockIgniteEvent");
+		ignite = new MultiGameAddonAreaRestoreEvent(ev.getPlayer(),ev.getBlock(), "BlockIgniteEvent");
 		Bukkit.getPluginManager().callEvent(ignite);
 		ev.setCancelled(!ignite.isBuild());
 		ignite=null;
@@ -76,7 +77,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent fade;
 	@EventHandler(ignoreCancelled=false)
 	public void BlockFade(BlockFadeEvent ev){
-		fade = new MultiGameAddonAreaRestoreEvent(ev.getBlock(), "BlockFadeEvent");
+		fade = new MultiGameAddonAreaRestoreEvent(null,ev.getBlock(), "BlockFadeEvent");
 		Bukkit.getPluginManager().callEvent(fade);
 		ev.setCancelled(!fade.isBuild());
 		fade=null;
@@ -85,7 +86,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent form;
 	@EventHandler(ignoreCancelled=false)
 	public void BlockForm(BlockFormEvent ev){
-		form = new MultiGameAddonAreaRestoreEvent(ev.getBlock(), "BlockFormEvent");
+		form = new MultiGameAddonAreaRestoreEvent(null,ev.getBlock(), "BlockFormEvent");
 		Bukkit.getPluginManager().callEvent(form);
 		ev.setCancelled(!form.isBuild());
 		form=null;
@@ -102,10 +103,10 @@ public class MultiAddonArenaRestore extends kListener{
 //		}
 //	}
 	
-	public boolean check(Block to,MultiGameAddonAreaRestoreEvent from,BlockFace face){
+	public boolean check(Player player,Block to,MultiGameAddonAreaRestoreEvent from,BlockFace face){
 		if(to.getRelative(face).getType()!=to.getType()){
 			if(to.getRelative(face).getTypeId()<=8&&to.getRelative(face).getTypeId()<=11){
-				from=new MultiGameAddonAreaRestoreEvent(to.getRelative(face), "BlockFromToEvent");
+				from=new MultiGameAddonAreaRestoreEvent(player,to.getRelative(face), "BlockFromToEvent");
 				Bukkit.getPluginManager().callEvent(from);
 				from=null;
 				return true;
@@ -117,7 +118,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent from;
 	@EventHandler(ignoreCancelled=false)
 	public void BlockFromTo(BlockFromToEvent ev){
-		from = new MultiGameAddonAreaRestoreEvent(ev.getToBlock(), "BlockFromToEvent");
+		from = new MultiGameAddonAreaRestoreEvent(null,ev.getToBlock(), "BlockFromToEvent");
 		Bukkit.getPluginManager().callEvent(from);
 		ev.setCancelled(!from.isBuild());
 
@@ -137,7 +138,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent bbreak;
 	@EventHandler(ignoreCancelled=false)
 	public void breakb(BlockBreakEvent ev){
-		bbreak = new MultiGameAddonAreaRestoreEvent(ev.getBlock(), "BlockBreakEvent");
+		bbreak = new MultiGameAddonAreaRestoreEvent(ev.getPlayer(),ev.getBlock(), "BlockBreakEvent");
 		Bukkit.getPluginManager().callEvent(bbreak);
 		ev.setCancelled(!bbreak.isBuild());
 		bbreak=null;
@@ -146,7 +147,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent place;
 	@EventHandler(ignoreCancelled=false)
 	public void place(BlockPlaceEvent ev){
-		place = new MultiGameAddonAreaRestoreEvent(ev.getBlock().getLocation(),ev.getBlockReplacedState(), "BlockPlaceEvent");
+		place = new MultiGameAddonAreaRestoreEvent(ev.getPlayer(),ev.getBlock().getLocation(),ev.getBlockReplacedState(), "BlockPlaceEvent");
 		Bukkit.getPluginManager().callEvent(place);
 		ev.setCancelled(!place.isBuild());
 		place=null;

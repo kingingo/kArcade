@@ -18,6 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 public class MultiGameArenaRestore extends kListener{
 	
@@ -104,9 +105,10 @@ public class MultiGameArenaRestore extends kListener{
 			blocks.clear();
 		}
 		
-		@EventHandler(ignoreCancelled=false)
+		@EventHandler(priority=EventPriority.LOW,ignoreCancelled=false)
 		public void MultiGameAddonAreaRestoreExplosion(MultiGameAddonAreaRestoreExplosionEvent ev){
 			if(!ev.getBlocks().isEmpty()&&isInArea(ev.getBlocks().get(0).getLocation())){
+				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
 					for(Block b : ev.getBlocks()){
@@ -121,9 +123,10 @@ public class MultiGameArenaRestore extends kListener{
 			}
 		}
 		
-		@EventHandler(ignoreCancelled=false)
+		@EventHandler(priority=EventPriority.LOW,ignoreCancelled=false)
 		public void MultiGameAddonAreaRestore(MultiGameAddonAreaRestoreEvent ev){
 			if(isInArea(ev.getLocation())){
+				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
 					if(!blocks.containsKey(ev.getLocation())){

@@ -28,16 +28,13 @@ import org.bukkit.inventory.ItemStack;
 public class PrivatServer extends kListener{
 
 	private kArcadeManager manager;
-	private HashMap<GameType,InventoryPageBase> maps;
 	private InventoryBase base;
 	private Game game;
-	private InventoryPageBase choose_game;
 	
 	public PrivatServer(final kArcadeManager manager){
 		super(manager.getInstance(),"PrivateServer");
 		this.manager=manager;
 		this.game=(Game)manager.getGame();
-		this.maps=new HashMap<GameType,InventoryPageBase>();
 		this.base=new InventoryBase(manager.getInstance(), InventorySize._27.getSize(), "Privat Server:");
 
 		this.base.getMain().addButton(0, new ButtonBase(new Click(){
@@ -68,17 +65,7 @@ public class PrivatServer extends kListener{
 			
 		}, UtilItem.Item(new ItemStack(Material.REDSTONE_BLOCK), new String[]{}, "§cSpiel stoppen")));
 		
-		for(GameType type : maps.keySet()){
-			
-			
-			
-		}
-
+		
 	}
 	
-	public InventoryPageBase loadMaps(GameType type){
-		String folder = kArcade.FilePath+File.separator+type.getTyp();
-		
-		return null;
-	}
 }
