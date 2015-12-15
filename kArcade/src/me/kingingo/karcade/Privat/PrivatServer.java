@@ -1,16 +1,10 @@
 package me.kingingo.karcade.Privat;
 
-import java.io.File;
-import java.util.HashMap;
-
-import me.kingingo.karcade.kArcade;
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Enum.GameState;
-import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Inventory.InventoryBase;
-import me.kingingo.kcore.Inventory.InventoryPageBase;
 import me.kingingo.kcore.Inventory.Item.Click;
 import me.kingingo.kcore.Inventory.Item.Buttons.ButtonBase;
 import me.kingingo.kcore.Language.Language;
