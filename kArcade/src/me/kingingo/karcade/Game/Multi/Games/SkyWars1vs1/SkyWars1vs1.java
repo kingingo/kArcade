@@ -90,9 +90,9 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		Location ecke2 = getPasteLocation().clone();
 		ecke2.setY(0);
 		ecke2.add(-125, 0, -125);
-		this.area=new MultiGameArenaRestore(this, ecke1,ecke2);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
+		this.area=new MultiGameArenaRestore(this, ecke1,ecke2);
 		getWorldData().loadSchematic(this, location, file);
 		
 		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)14),null);
