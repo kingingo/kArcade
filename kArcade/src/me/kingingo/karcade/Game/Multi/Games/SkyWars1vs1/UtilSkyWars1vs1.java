@@ -262,12 +262,11 @@ public class UtilSkyWars1vs1 {
 			chests=new Chest[game.getWorldData().getLocs(game,UtilSkyWars1vs1.getChestSpawn(t)).size()];
 			
 			for(Location loc : game.getWorldData().getLocs(game,UtilSkyWars1vs1.getChestSpawn(t))){
-				if(loc instanceof Chest){
-					((Chest)loc).getInventory().clear();
-				}else{
+				if(!(loc.getBlock().getState() instanceof Chest)){
 					loc.getBlock().setType(Material.CHEST);
 				}
 				chests[i]=((Chest)loc.getBlock().getState());
+				chests[i].getInventory().clear();
 				i++;
 			}
 			i=0;
@@ -277,13 +276,12 @@ public class UtilSkyWars1vs1 {
 		
 		Chest chest;
 		for(Location loc : game.getWorldData().getLocs(game,Team.VILLAGE_RED)){
-			if(loc instanceof Chest){
-				((Chest)loc).getInventory().clear();
-			}else{
+			if(!(loc.getBlock().getState() instanceof Chest)){
 				loc.getBlock().setType(Material.CHEST);
 			}
 			if(loc.getBlock().getState() instanceof Chest){
 				chest=(Chest)loc.getBlock().getState();
+				chest.getInventory().clear();
 				for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
 					chest.getInventory().setItem(UtilSkyWars1vs1.emptySlot(chest.getInventory()), UtilSkyWars1vs1.rdmItem()); 
 				}
