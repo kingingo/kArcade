@@ -264,9 +264,9 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setTimer(getTimer()-1);
-		if(getTimer()<0)setTimer((60*5)+1);
+		if(getTimer()<0)setTimer((60*8)+1);
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
+		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
 		
 		switch(getTimer()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -311,14 +311,16 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
 			ev.setCancelled(true);
 			
-			for(Player player : getGameList().getPlayers().keySet())
+			for(Player player : getGameList().getPlayers().keySet()){
+				System.out.println("[AddonChat:"+getArena()+"] "+ev.getPlayer().getName()+": "+ev.getMessage());
 				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+"§8 » §7"+ev.getMessage());
+			}
 		}
 	}
 	
 	@EventHandler
 	public void MultiGameStateChangeSkyWars1vs1(MultiGameStateChangeEvent ev){
-		if(ev.getTo()==GameState.Restart){
+		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
 			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
 			if(list.size()==1){
 				Player p = list.get(0);
