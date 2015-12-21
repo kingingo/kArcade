@@ -140,6 +140,15 @@ public class MultiGame extends kListener{
 		this.pasteLocation=pasteLocation;
 		this.gameList=new GameList(games.getManager());
 		this.arena="arena"+games.getGames().size();
+		this.min_team=2;
+		this.max_team=0;
+		for(Team team : games.getSpielerTeams()){
+			if(getWorldData().existLoc(this, team)){
+				this.max_team++;
+			}
+		}
+		
+		
 	}
 	
 	public void setType(ArenaType type){
@@ -152,12 +161,12 @@ public class MultiGame extends kListener{
 	}
 	
 	public void updateInfo(){
-		updateInfo(null, 0, null, null, true);
+		updateInfo(null, null, null, true);
 	}
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
-	public void updateInfo(GameState state,int teams,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),(teams>0 ? teams : getGames().getWorldData().getTeams(this).size()-2),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
+	public void updateInfo(GameState state,GameType type,String arena,boolean apublic){
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());

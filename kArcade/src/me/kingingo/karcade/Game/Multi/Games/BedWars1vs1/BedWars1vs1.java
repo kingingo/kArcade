@@ -3,6 +3,7 @@ package me.kingingo.karcade.Game.Multi.Games.BedWars1vs1;
 import java.io.File;
 import java.util.ArrayList;
 
+import lombok.Getter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
 import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiAddonBedKingDeathEvent;
@@ -43,6 +44,7 @@ import org.bukkit.inventory.ItemStack;
 public class BedWars1vs1 extends MultiTeamGame{
 
 	private kPacketPlayOutWorldBorder packet;
+	@Getter
 	private MultiGameArenaRestore area;
 	
 	public BedWars1vs1(MultiGames games, String Map, Location pasteLocation,File file) {
@@ -74,6 +76,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 		setDamage(false);
 		getEntityDamage().add(DamageCause.FALL);
 		UtilBedWars1vs1.getAddonBed(games).addMultiGame(this, new Team[]{Team.RED,Team.BLUE});
+		UtilBedWars1vs1.getAddonDropItems(getGames()).getGames().add(this);
 	}
 	
 	@EventHandler
@@ -204,7 +207,6 @@ public class BedWars1vs1 extends MultiTeamGame{
 				new Title("§6§lGEWONNEN").send(p1);
 			}
 		}
-		
 	}
 	
 	@EventHandler

@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.Multi.Games.BedWars1vs1;
 
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonBedTeamKing;
+import me.kingingo.karcade.Game.Multi.Addons.MultiAddonDropItems;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Merchant.Merchant;
@@ -20,9 +21,19 @@ import org.bukkit.inventory.ItemStack;
 
 public class UtilBedWars1vs1 {
 	private static MultiAddonBedTeamKing addonBed;
+	private static MultiAddonDropItems dropitems;
 
 	public static MultiAddonBedTeamKing getAddonBed(){
 		return getAddonBed(null);
+	}
+	
+	public static MultiAddonDropItems getAddonDropItems(){
+		return getAddonDropItems(null);
+	}
+	
+	public static MultiAddonDropItems getAddonDropItems(MultiGames multiGames){
+		if(dropitems==null&&multiGames!=null)dropitems=new MultiAddonDropItems(multiGames.getManager().getInstance(),3);
+		return dropitems;
 	}
 	
 	public static MultiAddonBedTeamKing getAddonBed(MultiGames multiGames){

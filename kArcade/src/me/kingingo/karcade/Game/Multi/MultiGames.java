@@ -15,9 +15,13 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
+import me.kingingo.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
 import me.kingingo.karcade.Game.Multi.Games.SkyWars1vs1.SkyWars1vs1;
 import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
 import me.kingingo.karcade.Service.Games.ServiceMultiGames;
+import me.kingingo.kcore.Addons.AddonDay;
+import me.kingingo.kcore.Addons.AddonSun;
+import me.kingingo.kcore.Arena.ArenaType;
 import me.kingingo.kcore.Client.Events.ClientReceiveMessageEvent;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
@@ -70,10 +74,13 @@ public class MultiGames extends Game{
 	@Getter
 	@Setter
 	private MultiKitShop kitshop;
+	@Getter
+	private Team[] spielerTeams;
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
 		setTyp(GameType.get(type));
+		this.spielerTeams=ArenaType._TEAMx6.getTeam();
 		UtilServer.createLagListener(manager.getCmd());
 		setState(GameState.Laden);
 		updateInfo(GameState.LobbyPhase);
@@ -129,6 +136,38 @@ public class MultiGames extends Game{
 			v=null;
 			zips.clear();
 			zips=null;
+		}else if(GameType.BedWars1vs1==type){
+			getWorldData().createCleanWorld();
+			ArrayList<File> zips = getWorldData().loadZips();
+			Location loc = new Location(getWorldData().getWorld(),0,90,0);
+			
+			long time;
+			BedWars1vs1 v;
+			File file;
+			int size = zips.size();
+			for(int i = 0; i<(size<=4?size:4); i++){
+				if(!zips.isEmpty()){
+					time=System.currentTimeMillis();
+					if(zips.size()==1){
+						file = zips.get(0);
+					}else{
+						file = zips.get(UtilMath.r(zips.size()));
+					}
+					loc=loc.add(0, 0, 5000);
+					v=new BedWars1vs1(this, "Loading ...",loc,file);
+					games.put(v.getArena(), v);
+					zips.remove(file);
+					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+				}else{
+					break;
+				}
+			}
+			
+			loc=null;
+			time=0;
+			v=null;
+			zips.clear();
+			zips=null;
 		}else if(GameType.SkyWars1vs1==type){
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
@@ -167,6 +206,9 @@ public class MultiGames extends Game{
 		for(MultiGame game : games.values()){
 			game.setState(GameState.LobbyPhase,false);
 		}
+
+		new AddonDay(getManager().getInstance(), getWorldData().getWorld());
+		new AddonSun(getManager().getInstance(), getWorldData().getWorld());
 		setState(GameState.LobbyPhase);
 	}
 	
@@ -360,7 +402,7 @@ public class MultiGames extends Game{
 								Bukkit.getPluginManager().callEvent(event);
 							}
 					}
-				}else if(g instanceof SkyWars1vs1){
+				}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1){
 					if(settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
 						if(UtilPlayer.isOnline(settings.getPlayer())){
 							if(warte_liste.containsKey(settings.getPlayer())){
@@ -462,7 +504,7 @@ public class MultiGames extends Game{
 						System.out.println("PACKET: 4");
 					}
 				}
-			}else if(g instanceof SkyWars1vs1){
+			}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1){
 				if(settings.getArena().equalsIgnoreCase(g.getArena())&&
 						(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
 						

@@ -57,7 +57,6 @@ public class Versus extends MultiTeamGame{
 		getWorldData().loadSchematic(this, location, file);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
-		setMax_type( ArenaType.withTeamAnzahl( getWorldData().getTeams(this).size()-2 ) );
 		if(getMax_type()==null){
 			String s="";
 			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();

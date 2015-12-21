@@ -141,10 +141,10 @@ public class SkyWars extends TeamGame{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.LUCK, 2)})
 			}),
 			new Kit("§eHulk",new String[]{"§8x1§7 Leder Rüstung mit Schutz 1","§8x1§7 Stärke 2 Trank"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN),kPermission.SKYWARS_KIT_HULK,KitType.KAUFEN,2000,500,new Perk[]{
-				new PerkEquipment(new ItemStack[]{UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), DyeColor.GREEN),
-						UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.GREEN),
-						UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.GREEN),
-						UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN),
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+						UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+						UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+						UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
 						new ItemStack(Material.POTION,1,(byte)8233)})
 			}),
 			new Kit("§eSuperMario",new String[]{"§8x1§7 Roter Lederbrustpanzer","§8x1§7 Blaue Lederhose","§8x1§7 Sprungkraft 1 Trank"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.RED),kPermission.SKYWARS_KIT_MARIO,KitType.KAUFEN,2000,500,new Perk[]{
