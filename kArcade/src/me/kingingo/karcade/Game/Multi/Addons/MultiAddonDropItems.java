@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
-import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Listener.kListener;

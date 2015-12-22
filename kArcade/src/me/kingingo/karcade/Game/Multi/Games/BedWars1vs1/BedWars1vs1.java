@@ -12,6 +12,7 @@ import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
+import me.kingingo.kcore.Enum.GameCase;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -24,6 +25,7 @@ import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilPlayer;
@@ -34,6 +36,7 @@ import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -63,9 +66,6 @@ public class BedWars1vs1 extends MultiTeamGame{
 		setUpdateTo("versus");
 		getWorldData().loadSchematic(this, pasteLocation, file);
 		
-		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)14),null);
-		UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.STAINED_GLASS,1,(byte)11),null);
-
 		setBlockBreak(true);
 		setBlockPlace(true);
 		setDropItem(true);
@@ -77,6 +77,11 @@ public class BedWars1vs1 extends MultiTeamGame{
 		getEntityDamage().add(DamageCause.FALL);
 		UtilBedWars1vs1.getAddonBed(games).addMultiGame(this, new Team[]{Team.RED,Team.BLUE});
 		UtilBedWars1vs1.getAddonDropItems(getGames()).getGames().add(this);
+		
+		UtilBedWars1vs1.setVillager(UtilBedWars1vs1.getVillagerSpawn(Team.RED), this, EntityType.VILLAGER);
+		UtilBedWars1vs1.setVillager(UtilBedWars1vs1.getVillagerSpawn(Team.BLUE), this, EntityType.VILLAGER);
+		
+		for(Location loc : getWorldData().getLocs(this, Team.BLACK))UtilBedWars1vs1.setSpezialVillager(loc, this, EntityType.VILLAGER);
 	}
 	
 	@EventHandler
@@ -123,6 +128,8 @@ public class BedWars1vs1 extends MultiTeamGame{
 				}
 			}
 			setTimer(-1);
+			GameCase gcase = GameCase.getGameCase(ev.getPlayer(), getGames().getManager().getMysql());
+			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0,10, 0), 2, 5, gcase.getWall((byte)UtilInv.GetData(getTeam(ev.getPlayer()).getItem())),gcase.getGround((byte)UtilInv.GetData(getTeam(ev.getPlayer()).getItem())));
 			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 12, 0) );
 			ev.setCancelled(true);
 			updateInfo();
@@ -225,8 +232,6 @@ public class BedWars1vs1 extends MultiTeamGame{
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
-			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
-			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
 			
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
