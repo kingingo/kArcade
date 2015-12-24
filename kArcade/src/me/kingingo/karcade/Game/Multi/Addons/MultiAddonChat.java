@@ -1,6 +1,6 @@
 package me.kingingo.karcade.Game.Multi.Addons;
 
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonChatEvent;
 import me.kingingo.kcore.Listener.kListener;
 
 import org.bukkit.Bukkit;

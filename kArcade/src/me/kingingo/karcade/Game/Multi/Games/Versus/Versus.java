@@ -7,7 +7,7 @@ import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonMove;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
@@ -57,21 +57,7 @@ public class Versus extends MultiTeamGame{
 		getWorldData().loadSchematic(this, location, file);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
-		if(getMax_type()==null){
-			String s="";
-			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
-			UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
-			UtilDebug.debug("MaxType", new String[]{"SIZE:"+getWorldData().getTeams(this).size(),s});
-		}else{
-			String s="";
-			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
-			for(Team t : getMax_type().getTeam()){
-				if(!getWorldData().getTeams(this).containsKey(t)){
-					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.Name()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
-				}
-			}
-		}
-			
+		
 		if(!getWorldData().existLoc(this, Team.SHEEP_RED)||
 				getWorldData().existLoc(this, Team.SHEEP_RED)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
 			Log("Fehler SHEEP_RED NICHT GEFUNDEN");
@@ -97,6 +83,24 @@ public class Versus extends MultiTeamGame{
 		UtilScoreboard.setScore(scoreboard, "§eKit: ", DisplaySlot.SIDEBAR, 3);
 		UtilScoreboard.setScore(scoreboard, "  ", DisplaySlot.SIDEBAR, 1);
 		UtilScoreboard.setScore(scoreboard, "§7----------------", DisplaySlot.SIDEBAR, 0);
+		
+		loadMaxTeam();
+		setMax_type(ArenaType.withTeamAnzahl(getMax_team()));
+		
+		if(getMax_type()==null){
+			String s="";
+			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
+			UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
+			UtilDebug.debug("MaxType", new String[]{"SIZE:"+getWorldData().getTeams(this).size(),s});
+		}else{
+			String s="";
+			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
+			for(Team t : getMax_type().getTeam()){
+				if(!getWorldData().getTeams(this).containsKey(t)){
+					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.Name()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
+				}
+			}
+		}
 	}
 	
 	@EventHandler
@@ -105,21 +109,6 @@ public class Versus extends MultiTeamGame{
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
-			
-			System.out.println("JOIN: "+ev.getPlayer().getName()+" "+getTeamList().containsKey(ev.getPlayer()));
-			
-			if(getTeamList().containsKey(ev.getPlayer())){
-				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getWorldData().getTeams(this).containsKey(getTeamList().get(ev.getPlayer())));
-				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0)));
-				
-				for(Team t : getGames().getWorldData().getTeams(this).keySet()){
-					System.out.println("T: "+t.Name());
-				}
-				
-				if(getGames().getWorldData().existLoc(this, getTeamList().get(ev.getPlayer()))){
-					System.out.println("JOIN2: "+getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).contains(0));
-				}
-			}
 			
 			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 1, 0) );
 			setTimer(-1);

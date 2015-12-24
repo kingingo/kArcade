@@ -259,8 +259,10 @@ public class UtilSkyWars1vs1 {
 		int i=0;
 		Chest[] chests;
 		for(Team t : game.getWorldData().getTeams(game).keySet()){
+			if(game.getWorldData().getTeams(game).get(t).isEmpty())continue;
 			chests=new Chest[game.getWorldData().getLocs(game,UtilSkyWars1vs1.getChestSpawn(t)).size()];
-			
+
+			i=0;
 			for(Location loc : game.getWorldData().getLocs(game,UtilSkyWars1vs1.getChestSpawn(t))){
 				if(!(loc.getBlock().getState() instanceof Chest)){
 					loc.getBlock().setType(Material.CHEST);
@@ -269,9 +271,8 @@ public class UtilSkyWars1vs1 {
 				chests[i].getInventory().clear();
 				i++;
 			}
-			i=0;
 			
-			fillIslandChests(t,chests,template,template_type);
+			if(i!=0)fillIslandChests(t,chests,template,template_type);
 		}
 		
 		Chest chest;
@@ -324,7 +325,7 @@ public class UtilSkyWars1vs1 {
 			template_type.remove("BOW");
 			template_type.remove("ARROW");
 		}
-
+		
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");

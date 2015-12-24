@@ -128,6 +128,8 @@ public class MultiGame extends kListener{
 	@Setter 
 	private int max_team=0;
 	@Getter
+	private int teams=0;
+	@Getter
 	@Setter 
 	private int team=0;
 	@Getter
@@ -142,13 +144,16 @@ public class MultiGame extends kListener{
 		this.arena="arena"+games.getGames().size();
 		this.min_team=2;
 		this.max_team=0;
+	}
+	
+	public void loadMaxTeam(){
+		setMax_team(0);
 		for(Team team : games.getSpielerTeams()){
-			if(getWorldData().existLoc(this, team)){
-				this.max_team++;
+			if(getWorldData().existLoc(this, team)&&!getWorldData().getLocs(this, team).isEmpty()){
+				setMax_team(getMax_team()+1);
 			}
 		}
-		
-		
+		Log("Max Team: "+getMax_team());
 	}
 	
 	public void setType(ArenaType type){

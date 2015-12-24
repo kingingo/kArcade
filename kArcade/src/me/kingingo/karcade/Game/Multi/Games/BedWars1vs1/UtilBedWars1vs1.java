@@ -32,7 +32,7 @@ public class UtilBedWars1vs1 {
 	}
 	
 	public static MultiAddonDropItems getAddonDropItems(MultiGames multiGames){
-		if(dropitems==null&&multiGames!=null)dropitems=new MultiAddonDropItems(multiGames.getManager().getInstance(),3);
+		if(dropitems==null&&multiGames!=null)dropitems=new MultiAddonDropItems(multiGames.getManager().getInstance(),1);
 		return dropitems;
 	}
 	
@@ -53,8 +53,9 @@ public class UtilBedWars1vs1 {
 		return UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,i), "§bBronze");
 	}
 	
-	public static void setSpezialVillager(Location l,MultiGame game,EntityType e){
+	public static VillagerShop setSpezialVillager(Location l,MultiGame game,EntityType e){
 		l=l.add(0.5,0.5,0.5);
+		l.getChunk().load();
 		VillagerShop v = new VillagerShop(game.getGames().getManager().getInstance(),e,"Spezial-Shop",l,InventorySize._27);
 		
 		Merchant rustung = new Merchant();
@@ -97,6 +98,7 @@ public class UtilBedWars1vs1 {
 		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in größter Not!"}, "§cSpezial"), gold, 16);
 		
 		v.finish();
+		return v;
 	}
 	
 	public static Team getVillagerSpawn(Team team){
@@ -114,8 +116,9 @@ public class UtilBedWars1vs1 {
 		}
 	}
 	
-	public static void setVillager(Team t,MultiGame game,EntityType e){
+	public static VillagerShop setVillager(Team t,MultiGame game,EntityType e){
 		Location l=game.getWorldData().getLocs(game, t).get(0).add(0.5,0.3,0.5);
+		l.getChunk().load();
 		VillagerShop v = new VillagerShop(game.getGames().getManager().getInstance(),e,t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
@@ -249,6 +252,7 @@ public class UtilBedWars1vs1 {
 		spezial.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.getMaterial(30)), "Spinnennetz")));
 		v.addShop(UtilItem.Item(new ItemStack(46), new String[]{"§aZeige deinen Gegnern wer der Chef auf dem Schlachtfeld ist!"}, "§cSpezial"), spezial, 17);
 		v.finish();
+		return v;
 	}
 	
 	public static DyeColor cd(String s){

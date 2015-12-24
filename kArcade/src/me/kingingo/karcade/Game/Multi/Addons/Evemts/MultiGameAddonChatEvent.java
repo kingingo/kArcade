@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Multi.Events;
+package me.kingingo.karcade.Game.Multi.Addons.Evemts;
 
 import lombok.Getter;
 import lombok.Setter;

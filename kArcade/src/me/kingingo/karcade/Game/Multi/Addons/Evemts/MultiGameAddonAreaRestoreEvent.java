@@ -1,4 +1,4 @@
-package me.kingingo.karcade.Game.Multi.Events;
+package me.kingingo.karcade.Game.Multi.Addons.Evemts;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,16 +31,19 @@ public class MultiGameAddonAreaRestoreEvent extends Event implements Cancellable
 	private MultiGame game;
 	@Getter
 	private Player player;
+	@Getter
+	private BuildType buildType;
 	
-	public MultiGameAddonAreaRestoreEvent(Player player,Location location,BlockState replBlockState,String event){
+	public MultiGameAddonAreaRestoreEvent(Player player,BuildType buildType,Location location,BlockState replBlockState,String event){
 		this.location=location;
+		this.buildType=buildType;
 		this.player=player;
 		this.replacedState=replBlockState;
 		this.event=event;
 	}
 	
-	public MultiGameAddonAreaRestoreEvent(Player player,Block block,String event){
-		this(player,block.getLocation(),block.getState(),event);
+	public MultiGameAddonAreaRestoreEvent(Player player,BuildType buildType,Block block,String event){
+		this(player,buildType,block.getLocation(),block.getState(),event);
 	}
 	
 	@Override

@@ -48,6 +48,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -281,7 +282,7 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	  public void MobSpawn(CreatureSpawnEvent ev){
-	    if (!isCreatureSpawn()){
+	    if (!isCreatureSpawn()&&ev.getSpawnReason()!=SpawnReason.CUSTOM){
 			if(getManager().getService().isDebug())System.err.println("[MultiGame] CreatureSpawnEvent GLOBAL Cancelled TRUE!");
 	    	ev.setCancelled(true);
 	    }
@@ -394,8 +395,6 @@ public class MultiGames extends Game{
 									}
 								}
 								((Versus)g).setType(settings.getType());
-								g.setMin_team(settings.getMin_team());
-								g.setMax_team(settings.getMax_team());
 								g.setState(GameState.Laden);
 									
 								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
@@ -417,8 +416,6 @@ public class MultiGames extends Game{
 							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 							
 							g.setType(settings.getType());
-							g.setMin_team(settings.getMin_team());
-							g.setMax_team(settings.getMax_team());
 							g.setState(GameState.Laden);
 								
 							event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
@@ -474,8 +471,6 @@ public class MultiGames extends Game{
 								}
 
 								g.setType(settings.getType());
-								g.setMin_team(settings.getMin_team());
-								g.setMax_team(settings.getMax_team());
 								g.setState(GameState.Laden);
 									
 								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
@@ -522,8 +517,6 @@ public class MultiGames extends Game{
 							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 
 							g.setType(settings.getType());
-							g.setMin_team(settings.getMin_team());
-							g.setMax_team(settings.getMax_team());
 							g.setState(GameState.Laden);
 								
 							event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);

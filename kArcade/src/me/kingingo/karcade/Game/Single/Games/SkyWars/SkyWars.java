@@ -277,16 +277,19 @@ public class SkyWars extends TeamGame{
 			fillIslandChests(t,chests);
 		}
 		
-		Chest chest;
-		for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED)){
-			loc.getBlock().setType(Material.CHEST);
-			if(loc.getBlock().getState() instanceof Chest){
-				chest=(Chest)loc.getBlock().getState();
-				for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
-					chest.getInventory().setItem(emptySlot(chest.getInventory()), rdmItem()); 
+		if(getWorldData().existLoc(Team.VILLAGE_RED)&&!getWorldData().getLocs(Team.VILLAGE_RED).isEmpty()){
+			Chest chest;
+			for(Location loc : getWorldData().getLocs(Team.VILLAGE_RED)){
+				loc.getBlock().setType(Material.CHEST);
+				if(loc.getBlock().getState() instanceof Chest){
+					chest=(Chest)loc.getBlock().getState();
+					for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
+						chest.getInventory().setItem(emptySlot(chest.getInventory()), rdmItem()); 
+					}
 				}
 			}
 		}
+		
 	}
 	
 	public ItemStack Sonstiges(){

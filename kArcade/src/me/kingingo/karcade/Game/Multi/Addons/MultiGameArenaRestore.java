@@ -1,15 +1,20 @@
 package me.kingingo.karcade.Game.Multi.Addons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonAreaRestoreEvent;
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonAreaRestoreExplosionEvent;
+import lombok.Getter;
+import lombok.Setter;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.BuildType;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreEvent;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreExplosionEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -23,6 +28,7 @@ import org.bukkit.event.EventPriority;
 public class MultiGameArenaRestore extends kListener{
 	
 		private MultiGame game;
+		@Getter
 		private HashMap<Location,BlockState> blocks;
 		private int X = 0;
 		private int Y = 1;
@@ -31,6 +37,15 @@ public class MultiGameArenaRestore extends kListener{
 		private int Max = 1;
 		public int MinMax[][];
 		private World world;
+		@Getter
+		@Setter
+		private boolean onlyBuild=false; //TRUE Man kann nur noch das zerstören was man selber gesetzt hat!
+		@Getter
+		@Setter
+		private ArrayList<Material> bypass;
+		@Getter
+		@Setter
+		private ArrayList<Material> blacklist;
 		
 		public MultiGameArenaRestore(MultiGame game,Location ecke1,Location ecke2){
 			super(game.getGames().getManager().getInstance(),"GameArenaRestore: "+game.getArena());
@@ -96,26 +111,40 @@ public class MultiGameArenaRestore extends kListener{
 			}
 			
 			for(Entity e : world.getEntities()){
-				if(!(e instanceof Player)&&!(e instanceof ItemFrame)&&!(e instanceof ArmorStand)){
+				if((!(e instanceof Player))&&(!(e instanceof ItemFrame))&&(!(e instanceof ArmorStand))){
 					if(isInArea(e.getLocation())){
 						e.remove();
 					}
 				}
 			}
+			
 			blocks.clear();
 		}
-		
+
+		ArrayList<Block> delete;
 		@EventHandler(priority=EventPriority.LOW,ignoreCancelled=false)
 		public void MultiGameAddonAreaRestoreExplosion(MultiGameAddonAreaRestoreExplosionEvent ev){
 			if(!ev.getBlocks().isEmpty()&&isInArea(ev.getBlocks().get(0).getLocation())){
 				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
-					for(Block b : ev.getBlocks()){
-						if(!blocks.containsKey(b.getLocation())){
-							blocks.put(b.getLocation(),b.getState());
+					if(delete==null)this.delete=new ArrayList<>();
+					delete.clear();
+					Block b;
+					for(int i = 0; i<ev.getBlocks().size() ; i++){
+						b=ev.getBlocks().get(i);
+						if(isOnlyBuild()){
+							if(blacklist.contains(b.getType())||!blocks.containsKey(b.getLocation())){
+								delete.add(b);
+							}
+						}else{
+							if(!blocks.containsKey(b.getLocation())){
+								blocks.put(b.getLocation(),b.getState());
+							}
 						}
 					}
+					
+					for(Block de : delete)ev.getBlocks().remove(de);
 					return;
 				}
 				
@@ -129,8 +158,26 @@ public class MultiGameArenaRestore extends kListener{
 				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
-					if(!blocks.containsKey(ev.getLocation())){
-						blocks.put(ev.getLocation(),ev.getReplacedState());
+					if(isOnlyBuild()){
+						if(ev.getBuildType()==BuildType.PLACE){
+							if(!blocks.containsKey(ev.getLocation())){
+								blocks.put(ev.getLocation(),ev.getReplacedState());
+							}
+						}else{
+							if(bypass!=null&&bypass.contains(ev.getReplacedState().getType())){
+								if(!blocks.containsKey(ev.getLocation())){
+									blocks.put(ev.getLocation(),ev.getReplacedState());
+								}
+							}else{
+								if(!blocks.containsKey(ev.getLocation())){
+									ev.setBuild(false);
+								}
+							}
+						}
+					}else{
+						if(!blocks.containsKey(ev.getLocation())){
+							blocks.put(ev.getLocation(),ev.getReplacedState());
+						}
 					}
 					return;
 				}

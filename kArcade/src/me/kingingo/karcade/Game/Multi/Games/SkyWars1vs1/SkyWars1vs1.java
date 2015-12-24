@@ -6,12 +6,12 @@ import java.util.HashMap;
 
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
-import me.kingingo.karcade.Game.Multi.Events.MultiGameAddonChatEvent;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
-import me.kingingo.kcore.Enum.GameCase;
+import me.kingingo.kcore.Enum.GameCage;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -51,7 +51,6 @@ import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilTime;
@@ -227,6 +226,8 @@ public class SkyWars1vs1 extends MultiTeamGame{
 				})
 			}));
 		}
+		
+		loadMaxTeam();
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
@@ -235,24 +236,9 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
-			
-			System.out.println("JOIN: "+ev.getPlayer().getName()+" "+getTeamList().containsKey(ev.getPlayer()));
-			
-			if(getTeamList().containsKey(ev.getPlayer())){
-				System.out.println("JOIN1:"+getTeamList().get(ev.getPlayer()).Name()+" "+getGames().getWorldData().getTeams(this).containsKey(getTeamList().get(ev.getPlayer())));
-				System.out.println("LOC:"+UtilLocation.getLocString(getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0)));
-				
-				for(Team t : getGames().getWorldData().getTeams(this).keySet()){
-					System.out.println("T: "+t.Name());
-				}
-				
-				if(getGames().getWorldData().existLoc(this, getTeamList().get(ev.getPlayer()))){
-					System.out.println("JOIN2: "+getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).contains(0));
-				}
-			}
 			setTimer(-1);
-			GameCase gcase = GameCase.getGameCase(ev.getPlayer(), getGames().getManager().getMysql());
-			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0,10, 0), 2, 5, gcase.getWall((byte)UtilInv.GetData(getTeam(ev.getPlayer()).getItem())),gcase.getGround((byte)UtilInv.GetData(getTeam(ev.getPlayer()).getItem())));
+			GameCage gcase = GameCage.getGameCase(ev.getPlayer(), getGames().getManager().getMysql());
+			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0,10, 0), 2, 5,gcase.getGround((byte)UtilInv.GetData(getTeam(ev.getPlayer()).getItem())),gcase.getWall((byte)UtilInv.GetData(getTeam(ev.getPlayer()).getItem())));
 			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 12, 0) );
 			ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 			ev.setCancelled(true);
@@ -369,6 +355,8 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(ev.getGame() == this){
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
+			
+			
 			
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
