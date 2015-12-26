@@ -23,7 +23,7 @@ public class ServiceMultiGames {
 		}else{
 			if(args[1].equalsIgnoreCase("bw")){
 				ARENA_SETTINGS s = new ARENA_SETTINGS(ArenaType._TEAMx2, "arena0", "", p, Team.RED, 2, 2);
-				ARENA_SETTINGS s1 = new ARENA_SETTINGS(ArenaType._TEAMx2, "arena0", "", Bukkit.getPlayer("t3ker"), Team.BLUE, 2, 2);
+				ARENA_SETTINGS s1 = new ARENA_SETTINGS(ArenaType._TEAMx2, "arena0", "", Bukkit.getPlayer("maniilp"), Team.BLUE, 2, 2);
 				Bukkit.getPluginManager().callEvent(new PacketReceiveEvent(s, games.getManager().getPacketManager()));
 				Bukkit.getPluginManager().callEvent(new PacketReceiveEvent(s1, games.getManager().getPacketManager()));
 				

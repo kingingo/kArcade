@@ -464,6 +464,8 @@ public class MultiGames extends Game{
 									
 								((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+								g.setMax_team(settings.getMax_team());
+								g.setMin_team(settings.getMin_team());
 								
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
 									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
@@ -515,7 +517,8 @@ public class MultiGames extends Game{
 								
 							((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-
+							g.setMax_team(settings.getMax_team());
+							g.setMin_team(settings.getMin_team());
 							g.setType(settings.getType());
 							g.setState(GameState.Laden);
 								

@@ -85,7 +85,7 @@ public class Versus extends MultiTeamGame{
 		UtilScoreboard.setScore(scoreboard, "§7----------------", DisplaySlot.SIDEBAR, 0);
 		
 		loadMaxTeam();
-		setMax_type(ArenaType.withTeamAnzahl(getMax_team()));
+		setMax_type(ArenaType.withTeamAnzahl(getTeams()));
 		
 		if(getMax_type()==null){
 			String s="";

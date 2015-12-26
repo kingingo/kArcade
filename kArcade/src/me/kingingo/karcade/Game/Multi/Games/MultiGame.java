@@ -126,9 +126,10 @@ public class MultiGame extends kListener{
 	private int min_team=0;
 	@Getter
 	@Setter 
-	private int max_team=0;
+	private int max_team=0; // wird von spiel zu spiel geändert!
 	@Getter
-	private int teams=0;
+	@Setter 
+	private int teams=0; // Maximale Team größe
 	@Getter
 	@Setter 
 	private int team=0;
@@ -142,18 +143,18 @@ public class MultiGame extends kListener{
 		this.pasteLocation=pasteLocation;
 		this.gameList=new GameList(games.getManager());
 		this.arena="arena"+games.getGames().size();
-		this.min_team=2;
+		this.min_team=0;
 		this.max_team=0;
 	}
 	
 	public void loadMaxTeam(){
-		setMax_team(0);
+		setTeams(0);
 		for(Team team : games.getSpielerTeams()){
 			if(getWorldData().existLoc(this, team)&&!getWorldData().getLocs(this, team).isEmpty()){
-				setMax_team(getMax_team()+1);
+				setTeams(getTeams()+1);
 			}
 		}
-		Log("Max Team: "+getMax_team());
+		Log("Max Team: "+getTeams());
 	}
 	
 	public void setType(ArenaType type){
@@ -171,7 +172,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(GameState state,GameType type,String arena,boolean apublic){
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
+		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),teams,team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());

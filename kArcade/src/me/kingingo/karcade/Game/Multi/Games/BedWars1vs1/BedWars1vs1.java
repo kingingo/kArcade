@@ -211,7 +211,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 			if(list.size()==1){
 				Player p = list.get(0);
 				getGames().getStats().setInt(p, getGames().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-				getGames().getCoins().addCoins(p, false, 5);
+				getGames().getCoins().addCoins(p, false, 12);
 				broadcastWithPrefix("GAME_WIN", p.getName());
 				new Title("§6§lGEWONNEN").send(p);
 			}else if(list.size()==2){
@@ -219,8 +219,8 @@ public class BedWars1vs1 extends MultiTeamGame{
 				Player p1 = list.get(1);
 				getGames().getStats().setInt(p, getGames().getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				getGames().getStats().setInt(p1, getGames().getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
-				getGames().getCoins().addCoins(p, false, 5);
-				getGames().getCoins().addCoins(p1, false, 5);
+				getGames().getCoins().addCoins(p, false, 12);
+				getGames().getCoins().addCoins(p1, false, 12);
 				new Title("§6§lGEWONNEN").send(p);
 				new Title("§6§lGEWONNEN").send(p1);
 			}

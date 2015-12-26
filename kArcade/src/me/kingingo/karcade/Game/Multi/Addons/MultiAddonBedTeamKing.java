@@ -13,6 +13,7 @@ import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.UtilBlock;
+import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -89,8 +90,6 @@ public class MultiAddonBedTeamKing extends kListener {
 					break;
 				}
 			}
-
-			
 			UtilBlock.placeBed(loc, face);
 			if(game instanceof BedWars1vs1){
 				((BedWars1vs1)game).getArea().getBlocks().put(loc,loc.getBlock().getState());
@@ -106,16 +105,19 @@ public class MultiAddonBedTeamKing extends kListener {
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void Death(MultiGameAddonAreaRestoreEvent ev){
 		if(ev.getGame()!=null&&this.games.containsKey(ev.getGame())&&ev.getLocation().getBlock().getType()==Material.BED_BLOCK){
+			
 			t = null;
 			twin=UtilBlock.getTwinLocation( ev.getLocation().getBlock() );
+			
 			for(Team tt : this.games.get(ev.getGame()).keySet()){
 				if(this.games.get(ev.getGame()).get(tt).getLocation().equals(ev.getLocation()) || this.games.get(ev.getGame()).get(tt).getLocation().equals(twin)){
 					t=tt;
 					break;
 				}
 			}
-			
-			if(t==null ||  ev.getGame().getGameList().isPlayerState( ev.getPlayer() )!=PlayerState.IN || (ev.getGame() instanceof MultiTeamGame && ((MultiTeamGame)ev.getGame()).getTeamList().get(ev.getPlayer())==t)){
+
+			if(t==null ||  ev.getGame().getGameList().isPlayerState( ev.getPlayer() )!=PlayerState.IN 
+					|| (ev.getGame() instanceof MultiTeamGame && ((MultiTeamGame)ev.getGame()).getTeamList().get(ev.getPlayer())==t)){
 				ev.setBuild(false);
 				ev.setCancelled(true);
 				return;
