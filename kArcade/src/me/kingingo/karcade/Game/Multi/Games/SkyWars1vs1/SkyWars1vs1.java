@@ -98,7 +98,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		
 		setBlockBreak(true);
 		setBlockPlace(true);
-		setDropItem(true);
+		setDropItem(false);
 		setPickItem(true);
 		setDropItembydeath(true);
 		setFoodlevelchange(true);
@@ -347,6 +347,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			UtilSkyWars1vs1.loadWorld(this, template, template_type);
 			setDamagePvP(false);
 			setDamage(false);
+			setDropItem(false);
 		}
 	}
 	
@@ -363,7 +364,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 				getGames().getManager().Clear(player);
 				UtilPlayer.sendPacket(player, this.packet);
 			}
-
+			setDropItem(true);
 			setDamagePvP(true);
 			setDamage(true);
 			setState(GameState.InGame);

@@ -2,13 +2,17 @@ package me.kingingo.karcade.Game.Single.Games.Masterbuilders;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 import me.kingingo.karcade.kArcadeManager;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
@@ -28,6 +32,7 @@ import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
+import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 
@@ -41,7 +46,7 @@ public class Masterbuilders extends SoloGame{
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)10), "§cOkey"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)4), "§eGut"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)13), "§ageil"),
-			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)5), "§3Sehr geil"),};
+			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)5), "§3Sehr geil")};
 	
 	public Masterbuilders(kArcadeManager manager,MasterbuildersType mtype) {
 		super(manager);
@@ -85,15 +90,47 @@ public class Masterbuilders extends SoloGame{
 		}
 	}
 	
+	@EventHandler
+	public void win(UpdateEvent ev){
+		if(ev.getType()!=UpdateType.SEC)return;
+		
+	}
+	
 	int team=-1;
+	HashMap<Team,HashMap<Player,Integer>> vote = new HashMap<>();
 	@EventHandler
 	public void lookTime(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.SchutzModus)return;
+		for(Player player : UtilServer.getPlayers())UtilDisplay.displayTextBar(player, "");
 		if(getStart()<0){
-			setStart(20);
+			setStart(21);
 			this.team++;
-			for(Player player : UtilServer.getPlayers())player.teleport(getWorldData().getLocs(this.mtype.getTeam()[team]).get(0).clone().add(0, 5, 0));
+			
+			if(mtype.getTeam().length==this.team){
+				setState(GameState.DeathMatch);
+				setStart(15);
+				return;
+			}else{
+				for(Player player : UtilServer.getPlayers())player.teleport(getWorldData().getLocs(this.mtype.getTeam()[team]).get(0).clone().add(0, 5, 0));	
+			}
+		}
+		setStart(getStart()-1);
+	}
+	
+	@EventHandler
+	public void interact(PlayerInteractEvent ev){
+		if(getState() == GameState.SchutzModus){
+			if(ev.getPlayer().getItemInHand()!=null
+					&&(ev.getPlayer().getInventory().getHeldItemSlot()<=0
+					|| ev.getPlayer().getInventory().getHeldItemSlot()>=6)){
+				if(vote.containsKey(mtype.getTeam()[team])){
+					vote.put(mtype.getTeam()[team], new HashMap<>());
+				}
+				
+				vote.get(mtype.getTeam()[team]).put(ev.getPlayer(), ev.getPlayer().getInventory().getHeldItemSlot());
+				new Title(null,ev.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName()).send(ev.getPlayer());
+			}
 		}
 	}
 	
@@ -118,6 +155,7 @@ public class Masterbuilders extends SoloGame{
 			setState(GameState.SchutzModus);
 			for(Player player : UtilServer.getPlayers()){
 				player.setGameMode(GameMode.ADVENTURE);
+				player.getInventory().setContents(this.items_bewertung);
 			}
 			break;
 		}
