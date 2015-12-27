@@ -182,6 +182,34 @@ public class SchematicParser {
 			        		((ArrayList)list.get(Team.VILLAGE_ORANGE.Name())).add( UtilVector.subtract(caller.getLocation().toVector(), block.getLocation().toVector()) );
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==0){
+		        			if(!list.containsKey(Team.VILLAGE_WHITE.Name())){
+			        			list.put(Team.VILLAGE_WHITE.Name(), new ArrayList<Vector>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_WHITE.Name())).add( UtilVector.subtract(caller.getLocation().toVector(), block.getLocation().toVector()) );
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==9){
+		        			if(!list.containsKey(Team.VILLAGE_CYAN.Name())){
+			        			list.put(Team.VILLAGE_CYAN.Name(), new ArrayList<Vector>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_CYAN.Name())).add( UtilVector.subtract(caller.getLocation().toVector(), block.getLocation().toVector()) );
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==3){
+		        			if(!list.containsKey(Team.VILLAGE_AQUA.Name())){
+			        			list.put(Team.VILLAGE_AQUA.Name(), new ArrayList<Vector>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_AQUA.Name())).add( UtilVector.subtract(caller.getLocation().toVector(), block.getLocation().toVector()) );
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==15){
+		        			if(!list.containsKey(Team.VILLAGE_BLACK.Name())){
+			        			list.put(Team.VILLAGE_BLACK.Name(), new ArrayList<Vector>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_BLACK.Name())).add( UtilVector.subtract(caller.getLocation().toVector(), block.getLocation().toVector()) );
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.BEDROCK){
 		        		if(block.getData()==14){
@@ -413,6 +441,22 @@ public class SchematicParser {
 			}
 			if(list.containsKey(Team.VILLAGE_GRAY.Name())){
 				out.write("VILLAGE_GRAY:"+VectorListTOStringList(list.get(Team.VILLAGE_GRAY.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_CYAN.Name())){
+				out.write("VILLAGE_CYAN:"+VectorListTOStringList(list.get(Team.VILLAGE_CYAN.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_AQUA.Name())){
+				out.write("VILLAGE_AQUA:"+VectorListTOStringList(list.get(Team.VILLAGE_AQUA.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_WHITE.Name())){
+				out.write("VILLAGE_WHITE:"+VectorListTOStringList(list.get(Team.VILLAGE_WHITE.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_BLACK.Name())){
+				out.write("VILLAGE_BLACK:"+VectorListTOStringList(list.get(Team.VILLAGE_BLACK.Name())));
 				out.write("\n");
 			}
 			if(list.containsKey(Team.SHEEP_BLUE.Name())){

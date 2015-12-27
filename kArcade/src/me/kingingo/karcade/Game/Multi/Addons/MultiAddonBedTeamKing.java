@@ -1,5 +1,6 @@
 package me.kingingo.karcade.Game.Multi.Addons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import lombok.Getter;
@@ -8,19 +9,16 @@ import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiAddonBedKingDeathEvent;
 import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreEvent;
 import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
-import me.kingingo.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.UtilBlock;
-import me.kingingo.kcore.Util.UtilLocation;
+import me.kingingo.kcore.Util.UtilDirection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.material.Bed;
@@ -30,7 +28,9 @@ public class MultiAddonBedTeamKing extends kListener {
 	@Getter
 	private MultiGames multiGames;
 	@Getter
-	private HashMap<MultiGame,HashMap<Team,Block>> games = new HashMap<>();
+	private HashMap<MultiGame,ArrayList<Team>> games_boolean = new HashMap<>();
+	@Getter
+	private HashMap<MultiGame,HashMap<Team,Location[]>> games = new HashMap<>();
 	
 	public MultiAddonBedTeamKing(MultiGames multiGames){
 		super(multiGames.getManager().getInstance(),"MultiAddonBedTeamKing");
@@ -54,29 +54,20 @@ public class MultiAddonBedTeamKing extends kListener {
 	}
 	
 	public void refreshMultiGame(MultiGame game,Team[] teams){
-		Location loc=null;
-		BlockFace face=null;
+		this.games_boolean.get(game).clear();
 		for(Team team : teams){
-			loc=game.getWorldData().getLocs(game, getBlockTeam(team)).get(0);
-			loc.getChunk().load();
+			this.games.get(game).get(team)[0].getBlock().setType(Material.AIR);
+			this.games.get(game).get(team)[1].getBlock().setType(Material.AIR);
 			
-			for(BlockFace f : BlockFace.values()){
-				if(loc.getBlock().getRelative(f).getType()==Material.BED_BLOCK){
-					face=f;
-					break;
-				}
-			}
+			UtilBlock.placeBed(this.games.get(game).get(team)[0], UtilDirection.getDirection(this.games.get(game).get(team)[0], this.games.get(game).get(team)[1]).getBlockFace());
 			
-			this.games.get(game).put(team, loc.getBlock());
-			if(game instanceof BedWars1vs1){
-				((BedWars1vs1)game).getArea().getBlocks().put(loc,loc.getBlock().getState());
-				((BedWars1vs1)game).getArea().getBlocks().put(loc.getBlock().getRelative(face).getLocation(),loc.getBlock().getRelative(face).getState());
-			}
+			this.games_boolean.get(game).add(team);
 		}
 	}
 	
 	public void addMultiGame(MultiGame game,Team[] teams){
 		this.games.put(game, new HashMap<>());
+		this.games_boolean.put(game, new ArrayList<>());
 		
 		Location loc=null;
 		BlockFace face=null;
@@ -91,12 +82,8 @@ public class MultiAddonBedTeamKing extends kListener {
 				}
 			}
 			UtilBlock.placeBed(loc, face);
-			if(game instanceof BedWars1vs1){
-				((BedWars1vs1)game).getArea().getBlocks().put(loc,loc.getBlock().getState());
-				((BedWars1vs1)game).getArea().getBlocks().put(loc.getBlock().getRelative(face).getLocation(),loc.getBlock().getRelative(face).getState());
-			}
-			
-			this.games.get(game).put(team, loc.getBlock());
+			this.games.get(game).put(team, new Location[]{loc,loc.getBlock().getRelative(face).getLocation()});
+			this.games_boolean.get(game).add(team);
 		}
 	}
 	
@@ -107,11 +94,14 @@ public class MultiAddonBedTeamKing extends kListener {
 		if(ev.getGame()!=null&&this.games.containsKey(ev.getGame())&&ev.getLocation().getBlock().getType()==Material.BED_BLOCK){
 			
 			t = null;
-			twin=UtilBlock.getTwinLocation( ev.getLocation().getBlock() );
-			
 			for(Team tt : this.games.get(ev.getGame()).keySet()){
-				if(this.games.get(ev.getGame()).get(tt).getLocation().equals(ev.getLocation()) || this.games.get(ev.getGame()).get(tt).getLocation().equals(twin)){
+				if(this.games.get(ev.getGame()).get(tt)[0].equals(ev.getLocation())){
 					t=tt;
+					twin=this.games.get(ev.getGame()).get(tt)[1];
+					break;
+				}else if(this.games.get(ev.getGame()).get(tt)[1].equals(ev.getLocation())){
+					t=tt;
+					twin=this.games.get(ev.getGame()).get(tt)[0];
 					break;
 				}
 			}
@@ -127,7 +117,7 @@ public class MultiAddonBedTeamKing extends kListener {
 			
 			ev.getLocation().getBlock().setType(Material.AIR);
 			twin.getBlock().setType(Material.AIR);
-			this.games.get(ev.getGame()).remove(t);
+			this.games_boolean.get(ev.getGame()).remove(t);
 		}
 	}
 }

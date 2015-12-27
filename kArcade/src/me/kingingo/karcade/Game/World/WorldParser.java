@@ -181,6 +181,34 @@ public class WorldParser {
 			        		((ArrayList)list.get(Team.VILLAGE_ORANGE.Name())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==9){
+		        			if(!list.containsKey(Team.VILLAGE_CYAN.Name())){
+			        			list.put(Team.VILLAGE_CYAN.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_CYAN.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==3){
+		        			if(!list.containsKey(Team.VILLAGE_AQUA.Name())){
+			        			list.put(Team.VILLAGE_AQUA.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_AQUA.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==15){
+		        			if(!list.containsKey(Team.VILLAGE_BLACK.Name())){
+			        			list.put(Team.VILLAGE_BLACK.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_BLACK.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        		}else if(block.getData()==0){
+		        			if(!list.containsKey(Team.VILLAGE_WHITE.Name())){
+			        			list.put(Team.VILLAGE_WHITE.Name(), new ArrayList<Location>());
+			        		}
+			        		((ArrayList)list.get(Team.VILLAGE_WHITE.Name())).add(block.getLocation());
+			        		block.setTypeId(0);
+			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.BEDROCK){
 		        		if(block.getData()==14){
@@ -412,6 +440,22 @@ public class WorldParser {
 			}
 			if(list.containsKey(Team.VILLAGE_GRAY.Name())){
 				out.write("VILLAGE_GRAY:"+LocListTOStringList(list.get(Team.VILLAGE_GRAY.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_BLACK.Name())){
+				out.write("VILLAGE_BLACK:"+LocListTOStringList(list.get(Team.VILLAGE_BLACK.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_AQUA.Name())){
+				out.write("VILLAGE_AQUA:"+LocListTOStringList(list.get(Team.VILLAGE_AQUA.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_CYAN.Name())){
+				out.write("VILLAGE_CYAN:"+LocListTOStringList(list.get(Team.VILLAGE_CYAN.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.VILLAGE_WHITE.Name())){
+				out.write("VILLAGE_WHITE:"+LocListTOStringList(list.get(Team.VILLAGE_WHITE.Name())));
 				out.write("\n");
 			}
 			if(list.containsKey(Team.SHEEP_BLUE.Name())){

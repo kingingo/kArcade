@@ -209,13 +209,13 @@ public class SkyWars extends TeamGame{
 			new Kit( "ßeVip",new String[]{"ß8x1ß7 Steinschwert","ß8x1ß7 Bogen","ß8x8ß7 Pfeile","ß8x2ß7 Heal Potions"}, new ItemStack(Material.GOLD_NUGGET),kPermission.SKYWARS_KIT_VIP,KitType.VIP,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.STONE_SWORD),new ItemStack(Material.BOW),new ItemStack(Material.ARROW,8),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(2)})
 			}),
-			new Kit( "ßeUltra",new String[]{"ß8x1ß7 Steinschwert mit Schaerfe 1","ß8x1ß7 Eisenpickaxe","ß8x16ß7 Steine","ß8x4ß7 Heal Potions"}, new ItemStack(Material.GOLD_INGOT),kPermission.SKYWARS_KIT_ULTRA,KitType.ULTRA,0,0,new Perk[]{
+			new Kit( "ßeUltra",new String[]{"ß8x1ß7 Steinschwert mit Schaerfe 1","ß8x1ß7 Eisenpickaxe","ß8x16ß7 Steine","ß8x4ß7 Heal Potions"}, new ItemStack(Material.GOLD_NUGGET),kPermission.SKYWARS_KIT_ULTRA,KitType.ULTRA,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.STONE_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.IRON_PICKAXE),new ItemStack(Material.STONE,16),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
 			}),
 			new Kit( "ßeLegend",new String[]{"ß8x1ß7 Eisenpanzer","ß8x1ß7 Eisenschuhe","ß8x1ß7 Steinschwert","ß8x8ß7 Steaks","ß8x4ß7 Heal Potions"}, new ItemStack(Material.IRON_INGOT),kPermission.SKYWARS_KIT_LEGEND,KitType.LEGEND,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.STONE_SWORD),new ItemStack(Material.IRON_CHESTPLATE),new ItemStack(Material.IRON_BOOTS),new ItemStack(Material.COOKED_BEEF,8),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
 			}),
-			new Kit( "ßeMVP",new String[]{"ß8x1ß7 Steinschwert mit Rueckstoﬂ","ß8x1ß7 Diamanthelm","ß8x1ß7 Diamantschuhe","ß8x4ß7 Heal Potion"}, new ItemStack(Material.EMERALD),kPermission.SKYWARS_KIT_MVP,KitType.MVP,0,0,new Perk[]{
+			new Kit( "ßeMVP",new String[]{"ß8x1ß7 Steinschwert mit Rueckstoﬂ","ß8x1ß7 Diamanthelm","ß8x1ß7 Diamantschuhe","ß8x4ß7 Heal Potion"}, new ItemStack(Material.GOLD_INGOT),kPermission.SKYWARS_KIT_MVP,KitType.MVP,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.STONE_SWORD), Enchantment.KNOCKBACK, 1),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.DIAMOND_BOOTS),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
 			}),
 			new Kit( "ßeMVP+",new String[]{"ß8x1ß7 Diamanthelm","ß8x1ß7 Eisenbrustpanzer","ß8x16ß7 Steine","ß8x8ß7 Eisenschwert","ß8x4ß7 Heal Potion"}, new ItemStack(Material.DIAMOND),kPermission.SKYWARS_KIT_MVPPLUS,KitType.MVP_PLUS,0,0,new Perk[]{

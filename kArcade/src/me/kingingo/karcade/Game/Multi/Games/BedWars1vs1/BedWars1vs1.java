@@ -107,7 +107,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 				getGames().getStats().setInt(ev.getKiller(), getGames().getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getKiller())+1, Stats.BEDWARS_ZERSTOERTE_BEDs);
 			}
 			
-			for(Player player : UtilServer.getPlayers()){
+			for(Player player : getGameList().getPlayers().keySet()){
 				t.setSubtitle(Language.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
 				t.send(player);
 			}
@@ -170,8 +170,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 			v = (Player)ev.getEntity();
 			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
 			
-			
-			if(!UtilBedWars1vs1.getAddonBed().getGames().get(this).containsKey( getTeam(v) )){
+			if(!UtilBedWars1vs1.getAddonBed().getGames_boolean().get(this).contains(getTeam(v))){
 				getGameList().addPlayer(v, PlayerState.OUT);
 				getGames().getStats().setInt(v, getGames().getStats().getInt(Stats.LOSE, v)+1, Stats.LOSE);
 			}
