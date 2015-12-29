@@ -43,6 +43,8 @@ public class AddonArea extends kListener{
 		@Getter
 		@Setter
 		private boolean onlyBuild=false; //TRUE Man kann nur noch das zerstören was man selber gesetzt hat!
+		@Getter
+		private ArrayList<Player> players = new ArrayList<>();
 		
 		public AddonArea(JavaPlugin instance ,Location ecke1,Location ecke2){
 			super(instance,"AddonArea");
@@ -144,7 +146,7 @@ public class AddonArea extends kListener{
 		
 		@EventHandler(priority=EventPriority.LOW,ignoreCancelled=false)
 		public void addonAreaRestoreEvent(AddonAreaRestoreEvent ev){
-			if(isInArea(ev.getLocation())){
+			if(isInArea(ev.getLocation())&&players.contains(ev.getPlayer())){
 				ev.setCancelled(true);
 				if(isOnlyBuild()){
 					if(ev.getBuildType()==BuildType.PLACE){
@@ -161,6 +163,9 @@ public class AddonArea extends kListener{
 						blocks.put(ev.getLocation(),ev.getReplacedState());
 					}
 				}
+			}else if(players.contains(ev.getPlayer())){
+				ev.setBuild(false);
+				ev.setCancelled(true);
 			}
 		}
 		

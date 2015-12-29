@@ -59,7 +59,10 @@ public class SingleWorldData extends WorldData{
 	}
 	
 	public ArrayList<Location> getLocs(Team team){
-		if(!locs.containsKey(team)){
+		if(team==null){
+			logErr("Team == NULL!");
+			return null;
+		}else if(!locs.containsKey(team)){
 			logErr("Team NOT Found! "+team.Name());
 			return null;
 		}else{

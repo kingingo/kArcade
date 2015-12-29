@@ -18,6 +18,8 @@ import me.kingingo.karcade.Game.Single.Games.CaveWars.CaveWars;
 import me.kingingo.karcade.Game.Single.Games.CaveWars.CaveWarsType;
 import me.kingingo.karcade.Game.Single.Games.DeathGames.DeathGames;
 import me.kingingo.karcade.Game.Single.Games.Falldown.Falldown;
+import me.kingingo.karcade.Game.Single.Games.Masterbuilders.Masterbuilders;
+import me.kingingo.karcade.Game.Single.Games.Masterbuilders.MasterbuildersType;
 import me.kingingo.karcade.Game.Single.Games.OneInTheChamber.OneInTheChamber;
 import me.kingingo.karcade.Game.Single.Games.QuickSurvivalGames.QuickSurvivalGames;
 import me.kingingo.karcade.Game.Single.Games.SheepWars.SheepWars;
@@ -300,6 +302,8 @@ public class kArcadeManager implements Listener{
 			return new QuickSurvivalGames(this);
 		}else if(GameType.SkyWars.getTyp().equalsIgnoreCase(game)){
 			return new SkyWars(this,SkyWarsType.random());
+		}else if(GameType.Masterbuilders.getTyp().equalsIgnoreCase(game)){
+			return new Masterbuilders(this,MasterbuildersType.random());
 		}else{
 			return new OneInTheChamber(this);
 		}
