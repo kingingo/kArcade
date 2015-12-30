@@ -2,11 +2,14 @@ package me.kingingo.karcade.Game.Multi.Games.BedWars1vs1;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import lombok.Getter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.BuildType;
 import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiAddonBedKingDeathEvent;
+import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreEvent;
 import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonChatEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import me.kingingo.karcade.Game.Multi.Events.MultiGameStartEvent;
@@ -28,7 +31,6 @@ import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilPlayer;
-import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Util.UtilWorld;
 import me.kingingo.kcore.Villager.VillagerShop;
@@ -36,11 +38,13 @@ import me.kingingo.kcore.Villager.Event.VillagerShopEvent;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -97,6 +101,32 @@ public class BedWars1vs1 extends MultiTeamGame{
 		for(Location loc : getWorldData().getLocs(this, Team.BLACK))spezial=UtilBedWars1vs1.setSpezialVillager(loc, this, EntityType.VILLAGER);
 
 		loadMaxTeam();
+	}
+	
+	Team t;
+	HashMap<Team,ArrayList<Block>> block = new HashMap<>();
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void MultiGameAddonAreaRestore(MultiGameAddonAreaRestoreEvent ev){
+		if(area.isInArea(ev.getLocation())){
+			ev.setGame(this);
+			if(ev.getReplacedState().getBlock().getType()==Material.GLOWSTONE){
+				if(ev.getBuildType()==BuildType.BREAK){
+					t = getTeam(ev.getPlayer());
+					if(block.containsKey(t)){
+						if(block.get(t).contains(ev.getReplacedState().getBlock())){
+							block.get(t).remove(ev.getReplacedState().getBlock());
+							ev.getReplacedState().getBlock().getWorld().dropItem(ev.getReplacedState().getBlock().getLocation().add(0,0.1,0),new ItemStack(Material.GLOWSTONE,1));
+							ev.getReplacedState().getBlock().setTypeId(0);
+						}
+					}
+					ev.setBuild(false);
+				}else if(ev.getBuildType()==BuildType.PLACE){
+					if(!block.containsKey(getTeam(ev.getPlayer())))block.put(getTeam(ev.getPlayer()), new ArrayList<Block>());
+					block.get(getTeam(ev.getPlayer())).add(ev.getReplacedState().getBlock());
+					ev.getReplacedState().getBlock().getDrops().clear();
+				}
+			}
+		}
 	}
 	
 	@EventHandler

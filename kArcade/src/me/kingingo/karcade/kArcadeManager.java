@@ -168,6 +168,8 @@ public class kArcadeManager implements Listener{
 		}
 		
 		if(getGame() instanceof SingleGame)getGame().setState(GameState.LobbyPhase);
+		
+		new AddonDay(getInstance(), getLobby().getWorld());
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)

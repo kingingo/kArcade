@@ -64,9 +64,9 @@ public class kArcade extends JavaPlugin{
 			saveConfig();
 			updater=new Updater(this);
 			if(id==-1){
-				c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER",this,updater);
+				c = new Client(this,getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"TEST-SERVER");
 			}else{
-				c = new Client(getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"a"+id,this,updater);
+				c = new Client(this,getConfig().getString("Config.Client.Host"),getConfig().getInt("Config.Client.Port"),"a"+id);
 			}
 			cmd=new CommandHandler(this);
 			cmd.register(CommandScan.class, new CommandScan(permManager));

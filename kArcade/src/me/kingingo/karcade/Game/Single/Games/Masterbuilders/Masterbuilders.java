@@ -1,8 +1,8 @@
 package me.kingingo.karcade.Game.Single.Games.Masterbuilders;
 
-import java.awt.List;
+import io.netty.channel.rxtx.RxtxChannelConfig.Paritybit;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -18,8 +18,15 @@ import me.kingingo.karcade.Game.Single.Games.SoloGame;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
+import me.kingingo.kcore.Enum.ParticleItem;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
+import me.kingingo.kcore.Inventory.InventoryBase;
+import me.kingingo.kcore.Inventory.InventoryPageBase;
+import me.kingingo.kcore.Inventory.Item.Click;
+import me.kingingo.kcore.Inventory.Item.Buttons.ButtonBack;
+import me.kingingo.kcore.Inventory.Item.Buttons.ButtonBase;
+import me.kingingo.kcore.Inventory.Item.Buttons.ButtonOpenInventory;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Language.LanguageType;
 import me.kingingo.kcore.Permission.kPermission;
@@ -27,7 +34,10 @@ import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
+import me.kingingo.kcore.Util.UtilBlock;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilFirework;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilLocation;
@@ -62,7 +72,7 @@ import org.bukkit.util.Vector;
 
 public class Masterbuilders extends SoloGame{
 	
-	private HashMap<Player, Team> area;
+	private HashMap<String, Team> area;
 	private HashMap<Team, AddonArea> team_areas;
 	private MasterbuildersType mtype;
 	private AddonMainArea mainArea;
@@ -82,6 +92,12 @@ public class Masterbuilders extends SoloGame{
 	
 	private Scoreboard scoreENG;
 	private Scoreboard scoreGER;
+	
+	private InventoryBase option;
+	private InventoryPageBase ground;
+	private InventoryPageBase particle;
+	
+	private HashMap<Team,HashMap<Location,UtilParticle>> particles;
 	
 	public Masterbuilders(kArcadeManager manager,MasterbuildersType mtype) {
 		super(manager);
@@ -108,6 +124,151 @@ public class Masterbuilders extends SoloGame{
 		setWorldData(new SingleWorldData(getManager(), getType()));
 		getWorldData().Initialize();
 		
+		this.option=new InventoryBase(getManager().getInstance());
+		this.option.setMain(new InventoryPageBase(InventorySize._9, "§bOption"));
+		
+		this.ground=new InventoryPageBase(InventorySize._45, "§bChange Ground:");
+		this.option.addPage(this.ground);
+		this.ground.addButton(4,new ButtonBack(this.option.getMain(), UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
+		ItemStack[] blocks = new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.STONE), "§7Stone Block"),
+				UtilItem.RenameItem(new ItemStack(Material.GRASS), "§7Grass Block"),
+				UtilItem.RenameItem(new ItemStack(Material.DIRT), "§7Dirt Block"),
+				UtilItem.RenameItem(new ItemStack(Material.SAND), "§7Sand Block"),
+				UtilItem.RenameItem(new ItemStack(Material.SANDSTONE), "§7Sandstone Block"),
+				UtilItem.RenameItem(new ItemStack(Material.WATER_BUCKET), "§7Water"),
+				UtilItem.RenameItem(new ItemStack(Material.LAVA_BUCKET), "§7Lava"),
+				UtilItem.RenameItem(new ItemStack(Material.WOOD), "§7Wood Block"),
+				UtilItem.RenameItem(new ItemStack(Material.COBBLESTONE), "§7Cobblestone Block"),
+				UtilItem.RenameItem(new ItemStack(Material.NETHERRACK), "§7Netherrack Block"),
+				UtilItem.RenameItem(new ItemStack(Material.BRICK), "§7Brick Block"),
+				UtilItem.RenameItem(new ItemStack(Material.ENDER_STONE), "§7Enderstone Block"),
+				UtilItem.RenameItem(new ItemStack(Material.MYCEL), "§7Mycel Block"),
+				UtilItem.RenameItem(new ItemStack(Material.DIAMOND_BLOCK), "§7Diamond Block"),
+				UtilItem.RenameItem(new ItemStack(Material.GOLD_BLOCK), "§7Gold Block"),
+				UtilItem.RenameItem(new ItemStack(Material.IRON_BLOCK), "§7Iron Block"),
+				UtilItem.RenameItem(new ItemStack(Material.ICE), "§7Ice Block"),
+				UtilItem.RenameItem(new ItemStack(Material.SNOW_BLOCK), "§7Snow Block"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY), "§7Clay Block"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)1), "§7Clay Block (Orange)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)2), "§7Clay Block (Magental)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)3), "§7Clay Block (Light Blue)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)4), "§7Clay Block (Yellow)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)5), "§7Clay Block (Lime)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)6), "§7Clay Block (Pink)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)7), "§7Clay Block (Gray)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)8), "§7Clay Block (Light Gray)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)9), "§7Clay Block (Cyan)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)10), "§7Clay Block (Purple)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)11), "§7Clay Block (Blue)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)12), "§7Clay Block (Brown)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)13), "§7Clay Block (Green)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)14), "§7Clay Block (Red)"),
+				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)15), "§7Clay Block (Black)")};
+		
+		int slot = 9;
+		Click click = new Click(){
+
+			@Override
+			public void onClick(Player player, ActionType action, Object obj) {
+				if(getState()==GameState.InGame&&obj instanceof ItemStack){
+					if(area.containsKey(player.getName())){
+						AddonArea a = team_areas.get(area.get(player.getName()));
+						int y = a.MinMax[a.Y][a.Min]-1;
+						ItemStack i = ((ItemStack)obj);
+						
+						for(int x = a.MinMax[a.X][a.Min]; x<a.MinMax[a.X][a.Max]; x++){
+							for(int z = a.MinMax[a.Z][a.Min]; z<a.MinMax[a.Z][a.Max]; z++){
+								if(a.getWorld().getBlockAt(x, y, z).getType()!=Material.COAL_BLOCK){
+									if(i.getType()==Material.WATER_BUCKET){
+										a.getWorld().getBlockAt(x, y, z).setType(Material.WATER);
+									}else if(i.getType()==Material.LAVA_BUCKET){
+										a.getWorld().getBlockAt(x, y, z).setType(Material.LAVA);
+									}else{
+										a.getWorld().getBlockAt(x, y, z).setTypeIdAndData(i.getTypeId(), (byte)i.getData().getData(), true);
+									}
+								}
+							}
+						}
+						
+						y=0;
+						i=null;
+						a=null;
+					}
+				}
+				player.closeInventory();
+			}
+			
+		};
+		
+		for(ItemStack i : blocks){
+			this.ground.addButton(slot, new ButtonBase(click, i));
+			slot++;
+		}
+		this.option.getMain().addButton(2, new ButtonOpenInventory(ground, UtilItem.RenameItem(new ItemStack(82), "§bChange the Ground")));
+		this.particles=new HashMap<>();
+		this.particle=new InventoryPageBase(InventorySize._45, "§bParticle:");
+		this.option.addPage(this.particle);
+		this.particle.addButton(4,new ButtonBack(this.option.getMain(), UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
+		this.particle.addButton(8,new ButtonBase(new Click(){
+
+			@Override
+			public void onClick(Player player, ActionType action, Object obj) {
+				if(getState()==GameState.InGame&&obj instanceof ItemStack){
+					if(area.containsKey(player.getName())){
+						if(particles.containsKey(area.get(player.getName()))){
+							particles.get(area.get(player.getName())).clear();
+						}
+					}
+				}
+				player.closeInventory();
+			}
+			
+		}, UtilItem.RenameItem(new ItemStack(Material.BUCKET), "§bClear All")));
+		
+		ParticleItem[] items = new ParticleItem[]{ParticleItem.ANGRY_VILLAGER,
+				ParticleItem.FOOTSTEP,
+				ParticleItem.HEART,
+				ParticleItem.EXPLODE,
+				ParticleItem.RED_DUST,
+				ParticleItem.REDSTONE,
+				ParticleItem.DRIP_WATER,
+				ParticleItem.DRIP_LAVA,
+				ParticleItem.SNOWBALL,
+				ParticleItem.CRIT,
+				ParticleItem.HAPPY_VILLAGER,
+				ParticleItem.SLIME,
+				ParticleItem.NOTE,
+				ParticleItem.FLAME,
+				ParticleItem.SMOKE_NORMAL,
+				ParticleItem.CLOUD};
+		
+		 slot = 9;
+		 click = new Click(){
+
+			@Override
+			public void onClick(Player player, ActionType action, Object obj) {
+				if(getState()==GameState.InGame&&obj instanceof ItemStack){
+					if(area.containsKey(player.getName())){
+						if(!particles.containsKey(area.get(player.getName()))){
+							particles.put(area.get(player.getName()), new HashMap<Location,UtilParticle>());
+						}
+						
+						player.getInventory().setItem(7, ((ItemStack)obj));
+					}
+				}
+				player.closeInventory();
+			}
+			
+		};
+		
+		for(ParticleItem i : items){
+			this.particle.addButton(slot, new ButtonBase(click, i.getItem()));
+			slot++;
+		}
+		
+		this.option.getMain().addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
+		this.option.getMain().fill(Material.STAINED_GLASS_PANE, (byte)7);
+		
 		setState(GameState.LobbyPhase);
 		getManager().DebugLog(l, this.getClass().getName());
 	}
@@ -128,6 +289,23 @@ public class Masterbuilders extends SoloGame{
 		case AQUA:return Team.VILLAGE_AQUA;
 		default:
 		return Team.VILLAGE_RED;
+		}
+	}
+	
+	@EventHandler
+	public void particle(UpdateEvent ev){
+		if(ev.getType()==UpdateType.FAST){
+			if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
+				if(!particles.isEmpty()){
+					for(Team t : particles.keySet()){
+						if(!particles.get(t).isEmpty()){
+							for(Location loc : particles.get(t).keySet()){
+								particles.get(t).get(loc).display(0, 3, loc, 20);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -159,33 +337,48 @@ public class Masterbuilders extends SoloGame{
 				Collections.sort(ranking,kRank.DESCENDING);
 				
 				if(!ranking.isEmpty()){
-					getStats().setInt(ranking.get(0).getPlayer(), getStats().getInt(Stats.WIN, ranking.get(0).getPlayer()), Stats.WIN);
+					if(UtilPlayer.isOnline(ranking.get(0).getPlayer())){
+						getCoins().addCoins(Bukkit.getPlayer(ranking.get(0).getPlayer()), false, 15);
+						getStats().setInt(Bukkit.getPlayer(ranking.get(0).getPlayer()), getStats().getInt(Stats.WIN, Bukkit.getPlayer(ranking.get(0).getPlayer()))+1, Stats.WIN);
+					}
 
 					for(Player player : getGameList().getPlayers().keySet()){
-						if(ranking.get(0).getPlayer().getUniqueId()==player.getUniqueId()){
-							
+						if(!ranking.get(0).getPlayer().equalsIgnoreCase(player.getName())){
+							if(player.isOnline()){
+								getStats().setInt(player, getStats().getInt(Stats.LOSE, player)+1, Stats.LOSE);
+							}
 						}
 					}
 					
 					UtilScoreboard.resetScore(scoreGER, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreGER, "§a§lGewinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreGER, 5, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(scoreGER, "§7"+ranking.get(0).getPlayer().getName(), DisplaySlot.SIDEBAR, 5);
+					UtilScoreboard.setScore(scoreGER, "§7"+ranking.get(0).getPlayer(), DisplaySlot.SIDEBAR, 5);
 
 					UtilScoreboard.resetScore(scoreENG, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreENG, "§a§lWinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreENG, 5, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(scoreENG, "§7"+ranking.get(0).getPlayer().getName(), DisplaySlot.SIDEBAR, 5);
+					UtilScoreboard.setScore(scoreENG, "§7"+ranking.get(0).getPlayer(), DisplaySlot.SIDEBAR, 5);
 					
-					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§e§l1",ranking.get(0).getPlayer().getName()});
-					setWinner( ranking.get(0).getPlayer().getName() );
+					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§e§l1",ranking.get(0).getPlayer()});
+					setWinner( ranking.get(0).getPlayer() );
 					
 					if(area.containsKey(ranking.get(0).getPlayer())){
-						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getLocs( area.get(ranking.get(0).getPlayer()) ).get(0) );
+						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getLocs( area.get(ranking.get(0).getPlayer()) ).get(0).clone().add(0, 5, 0) );
 					}
 				}
-				if(ranking.size()>=2)broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§6§l2",ranking.get(1).getPlayer().getName()});
-				if(ranking.size()>=3)broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§c§l3",ranking.get(2).getPlayer().getName()});
+				if(ranking.size()>=2){
+					if(UtilPlayer.isOnline(ranking.get(1).getPlayer())){
+						getCoins().addCoins(Bukkit.getPlayer(ranking.get(1).getPlayer()), false, 10);
+					}
+					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§6§l2",ranking.get(1).getPlayer()});
+				}
+				if(ranking.size()>=3){
+					if(UtilPlayer.isOnline(ranking.get(2).getPlayer())){
+						getCoins().addCoins(Bukkit.getPlayer(ranking.get(2).getPlayer()), false, 5);
+					}
+					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§c§l3",ranking.get(2).getPlayer()});
+				}
 			}else if(getStart()==0){
 				setState(GameState.Restart);	
 			}
@@ -201,59 +394,51 @@ public class Masterbuilders extends SoloGame{
 		}
 	}
 	
-	@EventHandler
-	public void EntityChangeBlock(EntityChangeBlockEvent ev){
-		if(ev.getEntityType()==EntityType.FALLING_BLOCK){
-			ev.getEntity().remove();
-			ev.getBlock().setType(Material.AIR);
-		}
-	}
-	
-	int team=-1;
-	ArrayList<Player> list;
+	String p;
+	ArrayList<String> list;
 	boolean explosion=false;
 	@EventHandler
 	public void lookTime(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.SchutzModus)return;
-		if(list==null)list=getGameList().getPlayers(PlayerState.IN);
-		if(getStart()<0){
+		if(list==null){
+			list=new ArrayList<>();
+			for(Player player : getGameList().getPlayers(PlayerState.IN))list.add(player.getName());
+		}
+		if(getStart()<-5){
 			setStart(21);
 			if(ranking==null)ranking = new ArrayList<>();
 			
-			if(!explosion&&team!=-1){
-				Player p = list.get(team);
+			if(!explosion&&p!=null){
 				int i=0;
 					
-				if(p!=null){
-					for(Player p1 : vote.get(area.get(list.get(team))).keySet()){
-						i+=vote.get(area.get(list.get(team))).get(p1);
-					}
-					ranking.add(new kRank(p, i));
+				for(Player p1 : vote.get(area.get(p)).keySet()){
+					i+=vote.get(area.get(p)).get(p1);
+				}
+				ranking.add(new kRank(p, i));
 					
-					if(i<=(vote.get(area.get(list.get(team))).size())){
-						if(this.team_areas.containsKey(area.get(p))&&!this.team_areas.get(area.get(p)).getBlocks().isEmpty()){
-							UtilParticle.EXPLOSION_HUGE.display(4.0F, 4, ((Location)this.team_areas.get(area.get(p)).getBlocks().keySet().toArray()[0]), 40);
-							for(Location loc : this.team_areas.get(area.get(list.get(team))).getBlocks().keySet()){
-								loc.getWorld().spawnFallingBlock(loc, loc.getBlock().getType(), loc.getBlock().getData()).setVelocity(new Vector(UtilMath.RandomInt(10, -10),UtilMath.RandomInt(15, 13),UtilMath.RandomInt(10, -10)));
-								loc.getBlock().setType(Material.AIR);
-							}
-							explosion=true;
-							setStart(3);
-							return;
+				if(i<(vote.get(area.get(p)).size())){
+					if(this.team_areas.containsKey(area.get(p))&&!this.team_areas.get(area.get(p)).getBlocks().isEmpty()){
+						UtilParticle.EXPLOSION_HUGE.display(4.0F, 4, ((Location)this.team_areas.get(area.get(p)).getBlocks().keySet().toArray()[0]), 40);
+						for(Location loc : this.team_areas.get(area.get(p)).getBlocks().keySet()){
+							loc.getWorld().spawnFallingBlock(loc, loc.getBlock().getType(), loc.getBlock().getData()).setVelocity(new Vector(UtilMath.RandomInt(10, -10),UtilMath.RandomInt(15, 13),UtilMath.RandomInt(10, -10)));
+							loc.getBlock().setType(Material.AIR);
 						}
+						explosion=true;
+						setStart(-1);
+						return;
 					}
 				}else{
-					getManager().DebugLog("PLAYER == NULL");
+					if(UtilPlayer.isOnline(p)){
+						getCoins().addCoins(Bukkit.getPlayer(p), false, 2);
+					}
 				}
+				
 				p=null;
 				i=0;
 			}
 			
-			this.team++;
-			explosion=false;
-			
-			if(area.size()==this.team){
+			if(list.isEmpty()){
 				for(Player player : UtilServer.getPlayers())player.getInventory().clear();
 				UtilScoreboard.resetScore(scoreGER, 2, DisplaySlot.SIDEBAR);
 				UtilScoreboard.resetScore(scoreGER, 3, DisplaySlot.SIDEBAR);
@@ -264,32 +449,42 @@ public class Masterbuilders extends SoloGame{
 				setState(GameState.DeathMatch);
 				setStart(15);
 				return;
-			}else{
-				
-
-				UtilScoreboard.resetScore(scoreGER, 5, DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(scoreGER, "§7"+list.get(team).getName(), DisplaySlot.SIDEBAR, 5);
-				
-				UtilScoreboard.resetScore(scoreENG, 5, DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(scoreENG, "§7"+list.get(team).getName(), DisplaySlot.SIDEBAR, 5);
-				
-
-				for(Player player : UtilServer.getPlayers()){
-					if(Language.getLanguage(player)==LanguageType.GERMAN){
-						player.getInventory().setContents(this.items_bewertungGER);
-					}else{
-						player.getInventory().setContents(this.items_bewertungENG);
-					}
-					player.teleport(getWorldData().getLocs(area.get(list.get(team))).get(0).clone().add(0, 5, 0));	
+			}
+			
+			p=list.get(0);
+			list.remove(p);
+			explosion=false;
+			
+			for(Player player : UtilServer.getPlayers()){
+				if(Language.getLanguage(player)==LanguageType.GERMAN){
+					player.getInventory().setContents(this.items_bewertungGER);
+				}else{
+					player.getInventory().setContents(this.items_bewertungENG);
+				}
+				player.teleport(getWorldData().getLocs(area.get(p)).get(0).clone().add(0, 5, 0));	
+			}
+		}
+		
+		setStart(getStart()-1);
+		
+		if(getStart()==0){
+			Title en = new Title("§7Built by","§e"+p);
+			Title ger = new Title("§7Gebaut von","§e"+p);
+			
+			for(Player player : UtilServer.getPlayers()){
+				player.getInventory().clear();
+				if(Language.getLanguage(player)==LanguageType.GERMAN){
+					ger.send(player);
+				}else{
+					en.send(player);
 				}
 			}
 		}
-		setStart(getStart()-1);
 
 		UtilScoreboard.resetScore(scoreENG, 2, DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(scoreENG, "§7"+UtilTime.formatSeconds(getStart()), DisplaySlot.SIDEBAR, 2);
+		UtilScoreboard.setScore(scoreENG, "§7"+ (getStart()<=0? "0 sec" : UtilTime.formatSeconds(getStart())) , DisplaySlot.SIDEBAR, 2);
 		UtilScoreboard.resetScore(scoreGER, 2, DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(scoreGER, "§7"+UtilTime.formatSeconds(getStart()), DisplaySlot.SIDEBAR, 2);
+		UtilScoreboard.setScore(scoreGER, "§7"+(getStart()<=0? "0 sec" : UtilTime.formatSeconds(getStart())), DisplaySlot.SIDEBAR, 2);
 	}
 
 	@EventHandler
@@ -297,18 +492,19 @@ public class Masterbuilders extends SoloGame{
 		if(getState()==GameState.SchutzModus)ev.setCancelled(true);
 	}
 	
+	ParticleItem particleItem;
 	@EventHandler
 	public void interact(PlayerInteractEvent ev){
-		if(getState() == GameState.SchutzModus&&team!=-1){
+		if(getState() == GameState.SchutzModus&&p!=null){
 			if(ev.getPlayer().getItemInHand()!=null
 					&&(ev.getPlayer().getInventory().getHeldItemSlot()>=0
 					&& ev.getPlayer().getInventory().getHeldItemSlot()<=this.items_bewertungGER.length-1)){
-				if(!vote.containsKey(area.get(list.get(team)))){
-					vote.put(area.get(list.get(team)), new HashMap<>());
+				if(!vote.containsKey(area.get(p))){
+					vote.put(area.get(p), new HashMap<>());
 				}
 				
-				if(ev.getPlayer().getUniqueId()==list.get(team).getUniqueId())return;
-				if(vote.get(area.get(list.get(team))).containsKey(ev.getPlayer())&&vote.get(area.get(list.get(team))).get(ev.getPlayer())==ev.getPlayer().getInventory().getHeldItemSlot())return;
+				if(ev.getPlayer().getName().equalsIgnoreCase(p))return;
+				if(vote.get(area.get(p)).containsKey(ev.getPlayer())&&vote.get(area.get(p)).get(ev.getPlayer())==ev.getPlayer().getInventory().getHeldItemSlot())return;
 				
 				if(Language.getLanguage(ev.getPlayer())==LanguageType.GERMAN){
 					ev.getPlayer().getInventory().setContents(this.items_bewertungGER);
@@ -317,11 +513,37 @@ public class Masterbuilders extends SoloGame{
 				}
 				
 				ev.getPlayer().setItemInHand(UtilItem.addEnchantmentGlow(ev.getPlayer().getItemInHand()));
-				vote.get(area.get(list.get(team))).remove(ev.getPlayer());
-				vote.get(area.get(list.get(team))).put(ev.getPlayer(), ev.getPlayer().getInventory().getHeldItemSlot());
+				vote.get(area.get(p)).remove(ev.getPlayer());
+				vote.get(area.get(p)).put(ev.getPlayer(), ev.getPlayer().getInventory().getHeldItemSlot());
 				new Title("",ev.getPlayer().getItemInHand().getItemMeta().getDisplayName()).send(ev.getPlayer());
 				ev.getPlayer().updateInventory();
 				ev.getPlayer().playSound(ev.getPlayer().getLocation(), Sound.BLAZE_HIT, 1F, 1F);
+			}
+		}else if(getState()==GameState.InGame&&area.containsKey(ev.getPlayer().getName())){
+			if(ev.getPlayer().getItemInHand()!=null){
+				if(ev.getPlayer().getItemInHand().getType()==Material.BOOK){
+					ev.getPlayer().openInventory(this.option.getMain());
+				}else if(ev.getPlayer().getItemInHand().hasItemMeta()){
+					if(ev.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+						if(ev.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("§b")){
+							particleItem=ParticleItem.valueOf(ev.getPlayer().getItemInHand());
+							
+							if(particleItem!=null){
+								if(!particles.containsKey(area.get(ev.getPlayer().getName()))){
+									particles.put(area.get(ev.getPlayer().getName()), new HashMap<Location,UtilParticle>());
+								}
+								
+								if(particles.get(area.get(ev.getPlayer().getName())).size()>=20){
+									ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+Language.getText("MASTERBUILDER_PARTICLE_MAX"));
+								}else{
+									ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+Language.getText("MASTERBUILDER_PARTICLE_PLACE"));
+									particles.get(area.get(ev.getPlayer().getName())).put(ev.getPlayer().getLocation(), particleItem.getParticle());
+								}
+								ev.setCancelled(true);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -353,13 +575,9 @@ public class Masterbuilders extends SoloGame{
 			broadcastWithPrefixName("BUILD_END");
 			UtilScoreboard.resetScore(scoreENG, 3, DisplaySlot.SIDEBAR);
 			UtilScoreboard.setScore(scoreENG, "§cVote Time:", DisplaySlot.SIDEBAR, 3);
-			UtilScoreboard.resetScore(scoreENG, 6, DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(scoreENG, "§f§lBuilder:", DisplaySlot.SIDEBAR, 6);
 			
 			UtilScoreboard.resetScore(scoreGER, 3, DisplaySlot.SIDEBAR);
 			UtilScoreboard.setScore(scoreGER, "§cVote Zeit:", DisplaySlot.SIDEBAR, 3);
-			UtilScoreboard.resetScore(scoreGER, 6, DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(scoreGER, "§f§lBauer:", DisplaySlot.SIDEBAR, 6);
 			
 			setStart(-1);
 			setState(GameState.SchutzModus);
@@ -456,12 +674,17 @@ public class Masterbuilders extends SoloGame{
 		UtilScoreboard.setScore(scoreGER, "§7-", DisplaySlot.SIDEBAR, 2);
 		UtilScoreboard.setScore(scoreGER, "", DisplaySlot.SIDEBAR, 1);
 		
+		UtilScoreboard.setTeams(scoreENG, getManager().getPermManager().getScoreboard().getTeams());
+		UtilScoreboard.setTeams(scoreGER, getManager().getPermManager().getScoreboard().getTeams());
+		
 		int i=0;
+		ItemStack option = UtilItem.RenameItem(new ItemStack(Material.BOOK), "§bOption");
 		for(Player player : UtilServer.getPlayers()){
 			getManager().Clear(player);
+			player.getInventory().setItem(8, option);
 			getGameList().addPlayer(player, PlayerState.IN);
-			area.put(player, mtype.getTeam()[i]);
-			player.teleport(getWorldData().getLocs(area.get(player)).get(0).clone().add(0, 5, 0));
+			area.put(player.getName(), mtype.getTeam()[i]);
+			player.teleport(getWorldData().getLocs(area.get(player.getName())).get(0).clone().add(0, 5, 0));
 
 			createArea(mtype.getTeam()[i],player);
 			if(Language.getLanguage(player)==LanguageType.GERMAN){
@@ -476,6 +699,8 @@ public class Masterbuilders extends SoloGame{
 			i++;
 		}
 		new AddonDay(getManager().getInstance(), getWorldData().getWorld());
+		
+		if(Bukkit.getPluginManager().getPlugin("AAC").isEnabled())new AACListener(getManager().getInstance());
 	}
 	
 }

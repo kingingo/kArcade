@@ -3,7 +3,6 @@ package me.kingingo.karcade.Game.Single.Events;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.Addons.Evemts.BuildType;
-import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;

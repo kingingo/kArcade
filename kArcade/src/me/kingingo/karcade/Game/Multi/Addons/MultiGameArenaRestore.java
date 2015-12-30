@@ -154,7 +154,7 @@ public class MultiGameArenaRestore extends kListener{
 		
 		@EventHandler(priority=EventPriority.LOW,ignoreCancelled=false)
 		public void MultiGameAddonAreaRestore(MultiGameAddonAreaRestoreEvent ev){
-			if(isInArea(ev.getLocation())){
+			if(isInArea(ev.getLocation())&&ev.isBuild()){
 				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){

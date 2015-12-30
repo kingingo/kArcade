@@ -293,6 +293,14 @@ public class SingleWorldData extends WorldData{
 		    			locs.put(Team.SHEEP_BLACK, WorldParser.StringListTOLocList(tokens[1],getWorld()));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_WHITE.Name())){
 		    			locs.put(Team.SHEEP_WHITE, WorldParser.StringListTOLocList(tokens[1],getWorld()));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_AQUA.Name())){
+		    			locs.put(Team.VILLAGE_AQUA, WorldParser.StringListTOLocList(tokens[1],getWorld()));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_BLACK.Name())){
+		    			locs.put(Team.VILLAGE_BLACK, WorldParser.StringListTOLocList(tokens[1],getWorld()));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_CYAN.Name())){
+		    			locs.put(Team.VILLAGE_CYAN, WorldParser.StringListTOLocList(tokens[1],getWorld()));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_WHITE.Name())){
+		    			locs.put(Team.VILLAGE_WHITE, WorldParser.StringListTOLocList(tokens[1],getWorld()));
 		    		}
 		        }
 		    }

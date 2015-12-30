@@ -5,19 +5,13 @@ import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Multi.Addons.Evemts.BuildType;
-import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreEvent;
-import me.kingingo.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreExplosionEvent;
-import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Single.Events.AddonAreaRestoreEvent;
 import me.kingingo.karcade.Game.Single.Events.AddonAreaRestoreExplosionEvent;
-import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -33,12 +27,13 @@ public class AddonArea extends kListener{
 	
 		@Getter
 		private HashMap<Location,BlockState> blocks;
-		private int X = 0;
-		private int Y = 1;
-		private int Z = 2;
-		private int Min = 0;
-		private int Max = 1;
+		public int X = 0;
+		public int Y = 1;
+		public int Z = 2;
+		public int Min = 0;
+		public int Max = 1;
 		public int MinMax[][];
+		@Getter
 		private World world;
 		@Getter
 		@Setter

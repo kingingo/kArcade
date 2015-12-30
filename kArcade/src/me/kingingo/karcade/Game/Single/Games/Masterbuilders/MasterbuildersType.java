@@ -1,14 +1,12 @@
 package me.kingingo.karcade.Game.Single.Games.Masterbuilders;
 
-import java.util.HashMap;
-
 import lombok.Getter;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilMath;
 
 public enum MasterbuildersType {
-_12x1(6,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN}),
-_6x1(3,6,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.GRAY});
+_12x1(3,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN});
+//_6x1(3,6,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.GRAY});
 
 @Getter
 private Team[] team;

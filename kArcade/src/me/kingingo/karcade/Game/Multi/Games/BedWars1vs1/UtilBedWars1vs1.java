@@ -126,6 +126,7 @@ public class UtilBedWars1vs1 {
 		Merchant bloecke = new Merchant();
 		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(24,4)));
 		bloecke.addOffer(new MerchantOffer(Bronze(7),new ItemStack(Material.ENDER_STONE)));
+		bloecke.addOffer(new MerchantOffer(Bronze(10),new ItemStack(Material.GLOWSTONE)));
 		v.addShop(UtilItem.Item(new ItemStack(24), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBlöcke"), bloecke, 9);
 	
 		Merchant spitzhacken = new Merchant();
