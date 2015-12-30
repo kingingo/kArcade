@@ -52,6 +52,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -331,6 +332,13 @@ public class SingleGame extends Game{
 		}
 		if((!isState(GameState.InGame))||BlockPlaceDeny.contains(ev.getBlock().getType()) || (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))){
 			if(getManager().getService().isDebug())System.err.println("[Game] Cancelled TRUE bei BLOCKPLACE1 "+ev.getBlock().getType().name());
+			ev.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void TNT (EntityExplodeEvent ev){
+		if(!Explosion){
 			ev.setCancelled(true);
 		}
 	}
