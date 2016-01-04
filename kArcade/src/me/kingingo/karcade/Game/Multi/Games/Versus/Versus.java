@@ -62,7 +62,7 @@ public class Versus extends MultiTeamGame{
 				getWorldData().existLoc(this, Team.SHEEP_RED)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
 			Log("Fehler SHEEP_RED NICHT GEFUNDEN");
 		}else if(!getWorldData().existLoc(this, Team.SHEEP_BLUE)||
-				getWorldData().existLoc(this, Team.SHEEP_BLUE)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
+				getWorldData().existLoc(this, Team.SHEEP_BLUE)&&getWorldData().getLocs(this, Team.SHEEP_BLUE).isEmpty()){
 			Log("Fehler SHEEP_BLUE NICHT GEFUNDEN");
 		}else{
 			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.SHEEP_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.SHEEP_BLUE).get(0));

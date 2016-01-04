@@ -30,11 +30,11 @@ public class MultiGameArenaRestore extends kListener{
 		private MultiGame game;
 		@Getter
 		private HashMap<Location,BlockState> blocks;
-		private int X = 0;
-		private int Y = 1;
-		private int Z = 2;
-		private int Min = 0;
-		private int Max = 1;
+		public int X = 0;
+		public int Y = 1;
+		public int Z = 2;
+		public int Min = 0;
+		public int Max = 1;
 		public int MinMax[][];
 		private World world;
 		@Getter
