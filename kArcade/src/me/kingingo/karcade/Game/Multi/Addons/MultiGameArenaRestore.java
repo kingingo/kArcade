@@ -39,6 +39,9 @@ public class MultiGameArenaRestore extends kListener{
 		private World world;
 		@Getter
 		@Setter
+		private boolean blockBurn=false;
+		@Getter
+		@Setter
 		private boolean onlyBuild=false; //TRUE Man kann nur noch das zerstören was man selber gesetzt hat!
 		@Getter
 		@Setter
@@ -158,25 +161,29 @@ public class MultiGameArenaRestore extends kListener{
 				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
-					if(isOnlyBuild()){
-						if(ev.getBuildType()==BuildType.PLACE){
-							if(!blocks.containsKey(ev.getLocation())){
-								blocks.put(ev.getLocation(),ev.getReplacedState());
-							}
-						}else{
-							if(bypass!=null&&bypass.contains(ev.getReplacedState().getType())){
+					if(ev.getBuildType() == BuildType.BURN && isBlockBurn()){
+						ev.setBuild(false);
+					}else{
+						if(isOnlyBuild()){
+							if(ev.getBuildType()!=BuildType.BREAK){
 								if(!blocks.containsKey(ev.getLocation())){
 									blocks.put(ev.getLocation(),ev.getReplacedState());
 								}
 							}else{
-								if(!blocks.containsKey(ev.getLocation())){
-									ev.setBuild(false);
+								if(bypass!=null&&bypass.contains(ev.getReplacedState().getType())){
+									if(!blocks.containsKey(ev.getLocation())){
+										blocks.put(ev.getLocation(),ev.getReplacedState());
+									}
+								}else{
+									if(!blocks.containsKey(ev.getLocation())){
+										ev.setBuild(false);
+									}
 								}
 							}
-						}
-					}else{
-						if(!blocks.containsKey(ev.getLocation())){
-							blocks.put(ev.getLocation(),ev.getReplacedState());
+						}else{
+							if(!blocks.containsKey(ev.getLocation())){
+								blocks.put(ev.getLocation(),ev.getReplacedState());
+							}
 						}
 					}
 					return;

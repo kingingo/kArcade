@@ -57,7 +57,7 @@ public class MultiAddonArenaRestore extends kListener{
 	MultiGameAddonAreaRestoreEvent burn;
 	@EventHandler(ignoreCancelled=false)
 	public void BlockBurn(BlockBurnEvent ev){
-		burn = new MultiGameAddonAreaRestoreEvent(null,BuildType.PLACE,ev.getBlock(), "BlockBurnEvent");
+		burn = new MultiGameAddonAreaRestoreEvent(null,BuildType.BURN,ev.getBlock(), "BlockBurnEvent");
 		Bukkit.getPluginManager().callEvent(burn);
 		ev.setCancelled(!burn.isBuild());
 		burn=null;

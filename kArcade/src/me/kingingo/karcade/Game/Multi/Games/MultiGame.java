@@ -45,6 +45,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -295,6 +296,12 @@ public class MultiGame extends kListener{
 
 	public void setState(GameState gs,GameStateChangeReason reason){
 		setState(gs, reason, true);
+	}
+	
+
+	@EventHandler(ignoreCancelled=false)
+	public void BlockBurn(BlockBurnEvent ev){
+		
 	}
 	
 	@EventHandler(ignoreCancelled=false)
