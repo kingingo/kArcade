@@ -681,6 +681,11 @@ public class Masterbuilders extends SoloGame{
 		ItemStack option = UtilItem.RenameItem(new ItemStack(Material.BOOK), "§bOption");
 		for(Player player : UtilServer.getPlayers()){
 			getManager().Clear(player);
+			if(i>=12){
+				System.err.println("MasterBuilders zu viele Spieler Online ("+UtilServer.getPlayers().size()+")! Der Spieler "+player.getName()+" wird gegickt");
+				player.kickPlayer("To many Players!");
+				break;
+			}
 			player.getInventory().setItem(8, option);
 			getGameList().addPlayer(player, PlayerState.IN);
 			area.put(player.getName(), mtype.getTeam()[i]);
