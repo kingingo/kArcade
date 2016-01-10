@@ -2,6 +2,7 @@ package me.kingingo.karcade.Game.Single.Addons;
 
 import me.kingingo.karcade.Game.Single.SingleGame;
 import me.kingingo.kcore.Listener.kListener;
+import me.kingingo.kcore.Util.UtilLocation;
 
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
@@ -20,6 +21,7 @@ public class AddonWorldBorder extends kListener{
 		this.border.setWarningDistance(20);
 		
 		Log("Radius: "+this.border.getSize());
+		Log("LOCATION: "+UtilLocation.getLocString(center));
 	}
 	
 	public double getSize(){
