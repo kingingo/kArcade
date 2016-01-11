@@ -73,6 +73,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandScan.class, new CommandScan(permManager));
 			pManager=new PacketManager(this,c);
 			permManager=new PermissionManager(this,GroupTyp.GAME,pManager,mysql);
+			permManager.setAsync(true);
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permManager,mysql,c,pManager,cmd);
 			cmd.register(CommandSend.class, new CommandSend(c));
 			cmd.register(CommandStart.class, new CommandStart(manager));
@@ -82,7 +83,6 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			cmd.register(CommandTppos.class, new CommandTppos());
 			UtilServer.createLagListener(cmd);
-			new MemoryFix(this);
 			new AACHack("A"+id,mysql, pManager);
 			new ListenerCMD(this);
 

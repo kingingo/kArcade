@@ -84,7 +84,10 @@ public class Game implements Listener{
 	}
 	
 	public Gems getGems(){
-		if(gems==null)gems=new Gems(getManager().getMysql());
+		if(this.gems==null){
+			this.gems=new Gems(getManager().getMysql());
+			this.gems.setAsync(true);
+		}
 		return gems;
 	}
 	
@@ -93,7 +96,10 @@ public class Game implements Listener{
 	}
 	
 	public Coins getCoins(){
-		if(coins==null)coins=new Coins(getManager().getInstance(),getManager().getMysql());
+		if(this.coins==null){
+			this.coins=new Coins(getManager().getInstance(),getManager().getMysql());
+			this.coins.setAsync(true);
+		}
 		return coins;
 	}
 
@@ -102,10 +108,13 @@ public class Game implements Listener{
 	}
 	
 	public void setStats(){
-		if(stats==null)this.stats=new StatsManager(
+		if(stats==null){
+			this.stats=new StatsManager(
 				getManager().getInstance(),
 				getManager().getMysql(),
 				getType());
+			this.stats.setAsync(true);
+		}
 	}
 	
 	public void setTyp(GameType typ){

@@ -302,6 +302,8 @@ public class kArcadeManager implements Listener{
 			return new MultiGames(this,game);
 		}else if(GameType.QuickSurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new QuickSurvivalGames(this);
+		}else if("SkyWars128".equalsIgnoreCase(game)){
+			return new SkyWars(this,SkyWarsType._32x4);
 		}else if(GameType.SkyWars.getTyp().equalsIgnoreCase(game)){
 			return new SkyWars(this,SkyWarsType.random());
 		}else if(GameType.Masterbuilders.getTyp().equalsIgnoreCase(game)){

@@ -843,7 +843,13 @@ public class SkyWars extends TeamGame{
 				getStats().setInt(a, getStats().getInt(Stats.KILLS, a)+1, Stats.KILLS);
 				UtilScoreboard.resetScore(a.getScoreboard(), "§e"+ (kills.get(a.getName())-1) , DisplaySlot.SIDEBAR);
 				UtilScoreboard.setScore(a.getScoreboard(), "§e"+kills.get(a.getName()), DisplaySlot.SIDEBAR, 5);
-				getCoins().addCoins(a, false, 5);
+				
+				if(type==SkyWarsType._32x4){
+					getCoins().addCoins(a, false, 12);	
+				}else{
+					getCoins().addCoins(a, false, 5);
+				}
+				
 				broadcastWithPrefix("KILL_BY", new String[]{v.getName(),a.getName()});
 				return;
 			}
@@ -880,35 +886,26 @@ public class SkyWars extends TeamGame{
 			if(list.size()==1){
 				Player p = list.get(0);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-				getCoins().addCoins(p, false, 25);
+				if(type==SkyWarsType._32x4){
+					getCoins().addCoins(p, false, 100);	
+				}else{
+					getCoins().addCoins(p, false, 25);
+				}
 				broadcastWithPrefix("GAME_WIN", p.getName());
 				new Title("§6§lGEWONNEN").send(p);
-			}else if(list.size()==2){
-				Player p = list.get(0);
-				Player p1 = list.get(1);
-				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
-				getStats().setInt(p1, getStats().getInt(Stats.WIN, p1)+1, Stats.WIN);
-				getCoins().addCoins(p, false, 25);
-				getCoins().addCoins(p1, false, 25);
-				new Title("§6§lGEWONNEN").send(p);
-				new Title("§6§lGEWONNEN").send(p1);
+			}else{
+
+				Title t = new Title("§6§lGEWONNEN");
+				for(Player player : list){
+					if(type==SkyWarsType._32x4){
+						getCoins().addCoins(player, false, 100);	
+					}else{
+						getCoins().addCoins(player, false, 25);
+					}
+					getStats().setInt(player, getStats().getInt(Stats.WIN, player)+1, Stats.WIN);
+					t.send(player);
+				}
 			}
-			
-//			if(kills.size()>=3){
-//				String p;
-//				kills=UtilList.getRanked(kills, 3);
-//				for(int i = 0; i<kills.size(); i++){
-//					p=(String)kills.keySet().toArray()[i];
-//					if(i==0){
-//						broadcast("§6§l1. Platz§8 "+p+" §7Kills: "+kills.get(p));
-//					}else if(i==1){
-//						broadcast("§e§l2. Platz§8 "+p+" §7Kills: "+kills.get(p));
-//					}else if(i==2){
-//						broadcast("§c§l3. Platz§8 "+p+" §7Kills: "+kills.get(p));
-//						break;
-//					}
-//				}
-//			}
 		}
 		
 	}
