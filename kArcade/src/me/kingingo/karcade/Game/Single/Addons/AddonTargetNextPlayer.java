@@ -6,6 +6,7 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.Game.Single.SingleGame;
+import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Language.Language;
@@ -67,6 +68,9 @@ public class AddonTargetNextPlayer implements Listener {
 			target=null;
 			dis=-1;
 			for(Player p1 : list){
+				if(game instanceof TeamGame){
+					if( ((TeamGame)game).getTeam(p) == ((TeamGame)game).getTeam(p1))continue;
+				}
 				if(p.getWorld()!=p1.getWorld())continue;
 				if(p==p1)continue;
 				if(p.getLocation().distance(p1.getLocation())<=getRadius()){

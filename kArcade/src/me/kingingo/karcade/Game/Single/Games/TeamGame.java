@@ -290,6 +290,7 @@ public class TeamGame extends SingleGame{
 	    	setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 	    }
 	    player.setGameMode(GameMode.SPECTATOR);
+	    player.setAllowFlight(true);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
 	    for(Player p : UtilServer.getPlayers()){

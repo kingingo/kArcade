@@ -1,7 +1,5 @@
 package me.kingingo.karcade.Game.Single.Games.Masterbuilders;
 
-import io.netty.channel.rxtx.RxtxChannelConfig.Paritybit;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,11 +34,9 @@ import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
 import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
-import me.kingingo.kcore.Util.UtilBlock;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilFirework;
 import me.kingingo.kcore.Util.UtilItem;
-import me.kingingo.kcore.Util.UtilLocation;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilPlayer;
@@ -56,11 +52,9 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -553,7 +547,7 @@ public class Masterbuilders extends SoloGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		if(getStart()<0){
-			setStart((5*60)+1);
+			setStart((7*60)+1);
 		}
 		setStart(getStart()-1);
 		

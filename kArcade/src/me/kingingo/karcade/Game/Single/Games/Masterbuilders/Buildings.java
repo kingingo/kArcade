@@ -4,6 +4,16 @@ import lombok.Getter;
 
 public enum Buildings {
 	
+	TENT ("Zelt","Tent"),
+	GARDEN ("Garten","Garden"),
+	PIXELART ("Pixelart","Pixelart"),
+	FISH ("Fisch","Fish"),
+	CHAIR ("Stuhl","Chair"),
+	HEART ("Herz","Heart"),
+	TREE ("Baum","Tree"),
+	EPICPVP ("EpicPvP","EpicPvP"),
+	BENCH ("Sitzbank","Bench"),
+	ROCKET ("Rakete","Rocket"),
 	FOOD("Essen","Food"),
 	ANIMAL("Tier","Animal"),
 	INSECT("Insekt","Insect"),
@@ -31,7 +41,7 @@ public enum Buildings {
 	PISTOL("Pistole","Pistol"),
 	FANTASY_TREE("Fantasie Baum","Fantasy Tree"),
 	COMPUTER_MOUSE("Computer Maus","Computer Mouse"),
-	AEROPLANE("Flugzeug","Aeroplane"),
+	AIRPLANE("Flugzeug","AIRPLANE"),
 	PIG("Schwein","Pig"),
 	BRIDGE("Bruecke","Bridge"),
 	CAR("Auto","Car"),

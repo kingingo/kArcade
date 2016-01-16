@@ -104,7 +104,10 @@ public class Game implements Listener{
 	}
 
 	public void setStats(GameType type){
-		if(stats==null)this.stats=new StatsManager(getManager().getInstance(),getManager().getMysql(),type);
+		if(stats==null){
+			this.stats=new StatsManager(getManager().getInstance(),getManager().getMysql(),type);
+			this.stats.setAsync(true);
+		}
 	}
 	
 	public void setStats(){

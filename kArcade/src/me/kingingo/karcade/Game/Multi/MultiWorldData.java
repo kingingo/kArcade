@@ -87,6 +87,8 @@ public class MultiWorldData extends WorldData{
 		    			locs.get(game).put(Team.VILLAGE_RED, SchematicParser.StringListTOVectorList(paste,tokens[1]));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_YELLOW.Name())){
 		    			locs.get(game).put(Team.VILLAGE_YELLOW, SchematicParser.StringListTOVectorList(paste,tokens[1]));
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_BLACK.Name())){
+		    			locs.get(game).put(Team.VILLAGE_BLACK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_GREEN.Name())){
 		    			locs.get(game).put(Team.VILLAGE_GREEN, SchematicParser.StringListTOVectorList(paste,tokens[1]));
 		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_BLUE.Name())){

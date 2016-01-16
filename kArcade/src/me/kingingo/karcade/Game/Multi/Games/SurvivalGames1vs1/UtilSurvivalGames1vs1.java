@@ -8,7 +8,6 @@ import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
-import me.kingingo.kcore.Util.UtilParticle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -20,39 +19,38 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.EnderChest;
 
 public class UtilSurvivalGames1vs1 {
 	@Getter
 	private static ItemStack enderchest_compass=UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§bCompass"); //Der Kompass zeigt immer auf die E-Chest
 	
-	public static void loadEnderChest(MultiGame game, Location loc,long time, Inventory echest){
-		if(loc!=null){
-			loc.getWorld().playSound(loc, Sound.BLAZE_HIT, 1f, 1f);
-			loc.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 1);
-			loc.getBlock().setType(Material.AIR);
+	public static void loadEnderChest(SurvivalGames1vs1 game){
+		if(game.getEnderchest_loc()!=null){
+			game.getEnderchest_loc().getWorld().playSound(game.getEnderchest_loc(), Sound.BLAZE_HIT, 1f, 1f);
+			game.getEnderchest_loc().getWorld().playEffect(game.getEnderchest_loc(), Effect.ENDER_SIGNAL, 1);
+			game.getEnderchest_loc().getBlock().setType(Material.AIR);
 		}
 		
-		if(echest==null){
-			echest=Bukkit.createInventory(null, 27);
+		if(game.getEnderchest_inv()==null){
+			game.setEnderchest_inv(Bukkit.createInventory(null, 27));
 			
-			echest.setItem(emptySlot(echest), rdmItem());
-			echest.setItem(emptySlot(echest), rdmItem());
-			echest.setItem(emptySlot(echest), rdmItem());
+			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), rdmItem());
+			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), rdmItem());
+			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), rdmItem());
 		}
 		
 		ArrayList<Location> locs = (ArrayList<Location>) game.getWorldData().getLocs(game, Team.VILLAGE_BLACK).clone();
-		locs.remove(loc);
-		loc=locs.get(UtilMath.r(locs.size()));
+		locs.remove(game.getEnderchest_loc());
+		game.setEnderchest_loc(locs.get(UtilMath.r(locs.size())));
 		locs.clear();
 		locs=null;
 		
-		loc.getWorld().spawnFallingBlock(loc.clone().add(0, 4, 0), Material.ENDER_CHEST, (byte)0);
-		loc.getWorld().playSound(loc.clone().add(0, 4, 0), Sound.BLAZE_HIT, 1f, 1f);
-		loc.getWorld().playEffect(loc.clone().add(0, 4, 0), Effect.ENDER_SIGNAL, 1);
+		game.getEnderchest_loc().getWorld().spawnFallingBlock(game.getEnderchest_loc().clone().add(0, 6, 0), Material.ENDER_CHEST, (byte)0);
+		game.getEnderchest_loc().getWorld().playSound(game.getEnderchest_loc().clone().add(0, 4, 0), Sound.BLAZE_HIT, 1f, 1f);
+		game.getEnderchest_loc().getWorld().playEffect(game.getEnderchest_loc().clone().add(0, 4, 0), Effect.ENDER_SIGNAL, 1);
 		
-		for(Player player : game.getGameList().getPlayers().keySet())player.setCompassTarget(loc);
-		time=System.currentTimeMillis();
+		for(Player player : game.getGameList().getPlayers().keySet())player.setCompassTarget(game.getEnderchest_loc());
+		game.setEnderchest_time(System.currentTimeMillis());
 	}
 	
 	public static ItemStack Sonstiges(){
@@ -296,7 +294,9 @@ public class UtilSurvivalGames1vs1 {
 	public static void loadWorld(MultiGame game,HashMap<Chest,ArrayList<String>> template,HashMap<String,Integer> template_type){
 		int i=0;
 		Chest[] chests;
-		for(Team t : game.getWorldData().getTeams(game).keySet()){
+		Team[] teams = new Team[]{Team.RED,Team.BLUE};
+		
+		for(Team t : teams){
 			if(game.getWorldData().getTeams(game).get(t).isEmpty())continue;
 			chests=new Chest[game.getWorldData().getLocs(game,UtilSurvivalGames1vs1.getChestSpawn(t)).size()];
 
@@ -321,6 +321,7 @@ public class UtilSurvivalGames1vs1 {
 			}
 			if(loc.getBlock().getState() instanceof Chest){
 				chests[i]=((Chest)loc.getBlock().getState());
+				i++;
 			}
 		}
 		
@@ -331,24 +332,24 @@ public class UtilSurvivalGames1vs1 {
 		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
 		template.clear();
 		template_type.clear();
-		template_type.put("SWORD",2);
-		template_type.put("BLOCK",6);
-		template_type.put("HELM",1);
-		template_type.put("CHESTPLATE",1);
-		template_type.put("LEGGINGS",1);
-		template_type.put("BOOTS",1);
-		template_type.put("ARROW",3);
-		template_type.put("POTION",8);
-		template_type.put("FOOD",6);
-		template_type.put("SNOWBALL",6);
-		template_type.put("EGG",6);
-		template_type.put("WEB",6);
-		template_type.put("LAVA-BUCKET",3);
-		template_type.put("WATER-BUCKET",3);
-		template_type.put("TNT",4);
-		template_type.put("FIRE",4);
-		template_type.put("BOW",1);
-		template_type.put("TOOL",4);
+		template_type.put("SWORD",5);
+		template_type.put("BLOCK",10);
+		template_type.put("HELM",8);
+		template_type.put("CHESTPLATE",8);
+		template_type.put("LEGGINGS",8);
+		template_type.put("BOOTS",8);
+		template_type.put("ARROW",20);
+		template_type.put("POTION",15);
+		template_type.put("FOOD",30);
+		template_type.put("SNOWBALL",10);
+		template_type.put("EGG",20);
+		template_type.put("WEB",20);
+		template_type.put("LAVA-BUCKET",12);
+		template_type.put("WATER-BUCKET",12);
+		template_type.put("TNT",20);
+		template_type.put("FIRE",20);
+		template_type.put("BOW",5);
+		template_type.put("TOOL",20);
 		template_type.put("SLIME",1);
 		
 		for(Chest chest : chests){

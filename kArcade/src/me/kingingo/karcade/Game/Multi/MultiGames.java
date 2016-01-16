@@ -17,6 +17,7 @@ import me.kingingo.karcade.Game.Multi.Games.MultiGame;
 import me.kingingo.karcade.Game.Multi.Games.MultiTeamGame;
 import me.kingingo.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
 import me.kingingo.karcade.Game.Multi.Games.SkyWars1vs1.SkyWars1vs1;
+import me.kingingo.karcade.Game.Multi.Games.SurvivalGames1vs1.SurvivalGames1vs1;
 import me.kingingo.karcade.Game.Multi.Games.Versus.Versus;
 import me.kingingo.karcade.Service.Games.ServiceMultiGames;
 import me.kingingo.kcore.Addons.AddonDay;
@@ -28,6 +29,7 @@ import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Kit.Shop.MultiKitShop;
+import me.kingingo.kcore.MySQL.Callback;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.ARENA_SETTINGS;
 import me.kingingo.kcore.StatsManager.Stats;
@@ -39,6 +41,7 @@ import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
+import me.kingingo.kcore.Versus.PlayerKit;
 import me.kingingo.kcore.Versus.PlayerKitManager;
 
 import org.bukkit.Bukkit;
@@ -109,6 +112,7 @@ public class MultiGames extends Game{
 		
 		if(GameType.Versus==type){
 			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
+			this.kitManager.setAsync(true);
 			getWorldData().createCustomWorld("90,quartz_block");
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);
@@ -188,6 +192,38 @@ public class MultiGames extends Game{
 					}
 					loc=loc.add(0, 0, 5000);
 					v=new SkyWars1vs1(this, "Loading ...",loc,file);
+					games.put(v.getArena(), v);
+					zips.remove(file);
+					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+				}else{
+					break;
+				}
+			}
+			
+			loc=null;
+			time=0;
+			v=null;
+			zips.clear();
+			zips=null;
+		}else if(GameType.SurvivalGames1vs1==type){
+			getWorldData().createCleanWorld();
+			ArrayList<File> zips = getWorldData().loadZips();
+			Location loc = new Location(getWorldData().getWorld(),0,90,0);
+			
+			long time;
+			SurvivalGames1vs1 v;
+			File file;
+			int size = zips.size();
+			for(int i = 0; i<(size<=4?size:4); i++){
+				if(!zips.isEmpty()){
+					time=System.currentTimeMillis();
+					if(zips.size()==1){
+						file = zips.get(0);
+					}else{
+						file = zips.get(UtilMath.r(zips.size()));
+					}
+					loc=loc.add(0, 0, 5000);
+					v=new SurvivalGames1vs1(this, "Loading ...",loc,file);
 					games.put(v.getArena(), v);
 					zips.remove(file);
 					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
@@ -380,19 +416,32 @@ public class MultiGames extends Game{
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 									
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
+									
+									getStats().getAsyncInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()),new Callback() {
 										
-									System.out.println("G: "+g.getKit()==null);
-									System.out.println("G: "+settings.getKit());
-										
-									if(g.getKit()!=null){
-										System.out.println("G: "+g.getKit().id);
-										System.out.println("G: "+g.getKit().kit==null);
-									}
-										
-									if(g.getKit()!=null){
-										g.getKit().kit=settings.getKit();
-									}
+										@Override
+										public void done(Object i) {
+											if(i instanceof Integer){
+												getKitManager().loadAsyncKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(),((Integer)i) , new Callback() {
+													
+													@Override
+													public void done(Object value) {
+														if(value instanceof PlayerKit){
+															g.setKit(((PlayerKit)value));
+															System.out.println(settings.getPlayer()+" G: "+g.getKit()==null);
+															System.out.println(settings.getPlayer()+" G: "+settings.getKit());
+															
+															if(g.getKit()!=null){
+																System.out.println(settings.getPlayer()+" G: "+g.getKit().id);
+																System.out.println(settings.getPlayer()+" G: "+g.getKit().kit==null);
+																g.getKit().kit=settings.getKit();
+															}
+														}
+													}
+												});
+											}
+										}
+									});
 								}
 								((Versus)g).setType(settings.getType());
 								g.setState(GameState.Laden);
@@ -401,7 +450,7 @@ public class MultiGames extends Game{
 								Bukkit.getPluginManager().callEvent(event);
 							}
 					}
-				}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1){
+				}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
 					if(settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
 						if(UtilPlayer.isOnline(settings.getPlayer())){
 							if(warte_liste.containsKey(settings.getPlayer())){
@@ -501,7 +550,7 @@ public class MultiGames extends Game{
 						System.out.println("PACKET: 4");
 					}
 				}
-			}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1){
+			}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
 				if(settings.getArena().equalsIgnoreCase(g.getArena())&&
 						(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
 						

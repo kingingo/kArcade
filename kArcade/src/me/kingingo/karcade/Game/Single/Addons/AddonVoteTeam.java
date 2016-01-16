@@ -6,7 +6,9 @@ import java.util.List;
 
 import lombok.Getter;
 import me.kingingo.karcade.Game.Single.SingleGame;
+import me.kingingo.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
 import me.kingingo.kcore.Enum.GameState;
+import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Util.InventorySize;
@@ -70,12 +72,14 @@ public class AddonVoteTeam implements Listener{
 		}
 	}
 	
+	Player p;
+	Team old;
 	@EventHandler
 	public void Inv(InventoryClickEvent ev){
 		if(game.getState()!=GameState.LobbyPhase)return;
 		if (!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
 		if(ev.getInventory().getName().equalsIgnoreCase("§lVote:")){
-			Player p = (Player)ev.getWhoClicked();
+			p = (Player)ev.getWhoClicked();
 					ev.setCancelled(true);
 					p.closeInventory();
 					
@@ -86,9 +90,9 @@ public class AddonVoteTeam implements Listener{
 					
 					if(vote.containsKey(p)){
 						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+Language.getText(p, "VOTE_TEAM_REMOVE",vote.get(p).Name()));
-						Team t = vote.get(p);
+						old = vote.get(p);
 						vote.remove(p);
-						fixItem(t);
+						fixItem(old);
 					}
 					
 					for(Team t : list){
@@ -97,6 +101,7 @@ public class AddonVoteTeam implements Listener{
 								if(isVotet(t)+1 != UtilServer.getPlayers().size()){
 									vote.put(p, t);
 									fixItem(t);
+									Bukkit.getPluginManager().callEvent(new AddonVoteTeamPlayerChooseEvent(p, t,PlayerState.IN));
 									UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+Language.getText(p, "VOTE_TEAM_ADD",t.getColor()+t.Name()));
 								}
 							}else{
@@ -104,6 +109,11 @@ public class AddonVoteTeam implements Listener{
 							}
 							break;
 						}
+					}
+					
+					if(!vote.containsKey(p)){
+						Bukkit.getPluginManager().callEvent(new AddonVoteTeamPlayerChooseEvent(p, old,PlayerState.OUT));
+						old=null;
 					}
 		}
 	}
@@ -119,12 +129,14 @@ public class AddonVoteTeam implements Listener{
 	}
 	
 	public ItemStack fixItem(Team t){
-		ItemStack i = inv.getItem(invslot.get(t));
+		int sl = invslot.get(t);
+		ItemStack i = inv.getItem(sl);
 		List<String> l = new ArrayList<>();
 		l.add("§c"+isVotet(t)+"§7/§c"+MaxInTeam);
 		l.add("§7---------------");
 		inTeam(t, l);
 		UtilItem.SetDescriptions(i, l);
+		inv.setItem(sl, i);
 		return i;
 	}
 	
@@ -191,6 +203,7 @@ public class AddonVoteTeam implements Listener{
 	
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
+		if(game.getState()!=GameState.LobbyPhase)return;
 		if(getVote().containsKey(ev.getPlayer())){
 			Team t = vote.get(ev.getPlayer());
 			vote.remove(ev.getPlayer());

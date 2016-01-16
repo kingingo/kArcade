@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 public class WorldParser {
@@ -38,6 +39,103 @@ public class WorldParser {
 		        		((ArrayList)list.get(Team.SOLO.Name())).add(block.getLocation());
 		        		block.setTypeId(0);
 		        		block.getRelative(BlockFace.UP).setTypeId(0);
+		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK
+		        			&&block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getState() instanceof Sign){
+	        					Sign sign = (Sign)block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getState();
+				        		Team team=null;
+		        				if(block.getData()==0){
+			        				
+			        				switch(Integer.valueOf(sign.getLine(0))){
+				        				case 1: team=Team.TEAM_1; break;
+				        				case 2: team=Team.TEAM_2; break;
+				        				case 3: team=Team.TEAM_3; break;
+				        				case 4: team=Team.TEAM_4; break;
+				        				case 5: team=Team.TEAM_5; break;
+				        				case 6: team=Team.TEAM_6; break;
+				        				case 7: team=Team.TEAM_7; break;
+				        				case 8: team=Team.TEAM_8; break;
+				        				case 9: team=Team.TEAM_9; break;
+				        				case 10: team=Team.TEAM_10; break;
+				        				case 11: team=Team.TEAM_11; break;
+				        				case 12: team=Team.TEAM_12; break;
+				        				case 13: team=Team.TEAM_13; break;
+				        				case 14: team=Team.TEAM_14; break;
+				        				case 15: team=Team.TEAM_15; break;
+				        				case 16: team=Team.TEAM_16; break;
+				        				case 17: team=Team.TEAM_17; break;
+				        				case 18: team=Team.TEAM_18; break;
+				        				case 19: team=Team.TEAM_19; break;
+				        				case 20: team=Team.TEAM_20; break;
+				        				case 21: team=Team.TEAM_21; break;
+				        				case 22: team=Team.TEAM_22; break;
+				        				case 23: team=Team.TEAM_23; break;
+				        				case 24: team=Team.TEAM_24; break;
+				        				case 25: team=Team.TEAM_25; break;
+				        				case 26: team=Team.TEAM_26; break;
+				        				case 27: team=Team.TEAM_27; break;
+				        				case 28: team=Team.TEAM_28; break;
+				        				case 29: team=Team.TEAM_29; break;
+				        				case 30: team=Team.TEAM_30; break;
+				        				case 31: team=Team.TEAM_31; break;
+				        				case 32: team=Team.TEAM_32; break;
+			        				}
+			        				
+			        				if(team!=null){
+			        					if(!list.containsKey(team.Name())){
+						        			list.put(team.Name(), new ArrayList<Location>());
+						        		}
+						        		((ArrayList)list.get(team.Name())).add(block.getLocation());
+			        				}
+		        				}else if(block.getData()==5){
+			        				
+			        				switch(Integer.valueOf(sign.getLine(0))){
+				        				case 1: team=Team.TEAM_POINT_1; break;
+				        				case 2: team=Team.TEAM_POINT_2; break;
+				        				case 3: team=Team.TEAM_POINT_3; break;
+				        				case 4: team=Team.TEAM_POINT_4; break;
+				        				case 5: team=Team.TEAM_POINT_5; break;
+				        				case 6: team=Team.TEAM_POINT_6; break;
+				        				case 7: team=Team.TEAM_POINT_7; break;
+				        				case 8: team=Team.TEAM_POINT_8; break;
+				        				case 9: team=Team.TEAM_POINT_9; break;
+				        				case 10: team=Team.TEAM_POINT_10; break;
+				        				case 11: team=Team.TEAM_POINT_11; break;
+				        				case 12: team=Team.TEAM_POINT_12; break;
+				        				case 13: team=Team.TEAM_POINT_13; break;
+				        				case 14: team=Team.TEAM_POINT_14; break;
+				        				case 15: team=Team.TEAM_POINT_15; break;
+				        				case 16: team=Team.TEAM_POINT_16; break;
+				        				case 17: team=Team.TEAM_POINT_17; break;
+				        				case 18: team=Team.TEAM_POINT_18; break;
+				        				case 19: team=Team.TEAM_POINT_19; break;
+				        				case 20: team=Team.TEAM_POINT_20; break;
+				        				case 21: team=Team.TEAM_POINT_21; break;
+				        				case 22: team=Team.TEAM_POINT_22; break;
+				        				case 23: team=Team.TEAM_POINT_23; break;
+				        				case 24: team=Team.TEAM_POINT_24; break;
+				        				case 25: team=Team.TEAM_POINT_25; break;
+				        				case 26: team=Team.TEAM_POINT_26; break;
+				        				case 27: team=Team.TEAM_POINT_27; break;
+				        				case 28: team=Team.TEAM_POINT_28; break;
+				        				case 29: team=Team.TEAM_POINT_29; break;
+				        				case 30: team=Team.TEAM_POINT_30; break;
+				        				case 31: team=Team.TEAM_POINT_31; break;
+				        				case 32: team=Team.TEAM_POINT_32; break;
+			        				}
+			        				
+			        				if(team!=null){
+			        					if(!list.containsKey(team.Name())){
+						        			list.put(team.Name(), new ArrayList<Location>());
+						        		}
+						        		((ArrayList)list.get(team.Name())).add(block.getLocation());
+			        				}
+		        				}
+		        				
+		        				
+				        		block.setTypeId(0);
+				        		block.getRelative(BlockFace.UP).setTypeId(0);
+				        		block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).setTypeId(0);
+		        		
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
 		        		if(block.getData()==14){
 		        			if(!list.containsKey(Team.RED.Name())){
@@ -504,6 +602,262 @@ public class WorldParser {
 			}
 			if(list.containsKey(Team.SHEEP_BLACK.Name())){
 				out.write("SHEEP_BLACK:"+LocListTOStringList(list.get(Team.SHEEP_BLACK.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_1.Name())){
+				out.write("TEAM_1:"+LocListTOStringList(list.get(Team.TEAM_1.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_2.Name())){
+				out.write("TEAM_2:"+LocListTOStringList(list.get(Team.TEAM_2.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_3.Name())){
+				out.write("TEAM_3:"+LocListTOStringList(list.get(Team.TEAM_3.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_4.Name())){
+				out.write("TEAM_4:"+LocListTOStringList(list.get(Team.TEAM_4.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_5.Name())){
+				out.write("TEAM_5:"+LocListTOStringList(list.get(Team.TEAM_5.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_6.Name())){
+				out.write("TEAM_6:"+LocListTOStringList(list.get(Team.TEAM_6.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_7.Name())){
+				out.write("TEAM_7:"+LocListTOStringList(list.get(Team.TEAM_7.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_8.Name())){
+				out.write("TEAM_8:"+LocListTOStringList(list.get(Team.TEAM_8.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_9.Name())){
+				out.write("TEAM_9:"+LocListTOStringList(list.get(Team.TEAM_9.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_10.Name())){
+				out.write("TEAM_10:"+LocListTOStringList(list.get(Team.TEAM_10.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_11.Name())){
+				out.write("TEAM_11:"+LocListTOStringList(list.get(Team.TEAM_11.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_12.Name())){
+				out.write("TEAM_12:"+LocListTOStringList(list.get(Team.TEAM_12.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_13.Name())){
+				out.write("TEAM_13:"+LocListTOStringList(list.get(Team.TEAM_13.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_14.Name())){
+				out.write("TEAM_14:"+LocListTOStringList(list.get(Team.TEAM_14.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_15.Name())){
+				out.write("TEAM_15:"+LocListTOStringList(list.get(Team.TEAM_15.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_16.Name())){
+				out.write("TEAM_16:"+LocListTOStringList(list.get(Team.TEAM_16.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_17.Name())){
+				out.write("TEAM_17:"+LocListTOStringList(list.get(Team.TEAM_17.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_18.Name())){
+				out.write("TEAM_18:"+LocListTOStringList(list.get(Team.TEAM_18.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_19.Name())){
+				out.write("TEAM_19:"+LocListTOStringList(list.get(Team.TEAM_19.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_20.Name())){
+				out.write("TEAM_20:"+LocListTOStringList(list.get(Team.TEAM_20.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_21.Name())){
+				out.write("TEAM_21:"+LocListTOStringList(list.get(Team.TEAM_21.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_22.Name())){
+				out.write("TEAM_22:"+LocListTOStringList(list.get(Team.TEAM_22.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_23.Name())){
+				out.write("TEAM_23:"+LocListTOStringList(list.get(Team.TEAM_23.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_24.Name())){
+				out.write("TEAM_24:"+LocListTOStringList(list.get(Team.TEAM_24.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_25.Name())){
+				out.write("TEAM_25:"+LocListTOStringList(list.get(Team.TEAM_25.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_26.Name())){
+				out.write("TEAM_26:"+LocListTOStringList(list.get(Team.TEAM_26.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_27.Name())){
+				out.write("TEAM_27:"+LocListTOStringList(list.get(Team.TEAM_27.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_28.Name())){
+				out.write("TEAM_28:"+LocListTOStringList(list.get(Team.TEAM_28.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_29.Name())){
+				out.write("TEAM_29:"+LocListTOStringList(list.get(Team.TEAM_29.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_30.Name())){
+				out.write("TEAM_30:"+LocListTOStringList(list.get(Team.TEAM_30.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_31.Name())){
+				out.write("TEAM_31:"+LocListTOStringList(list.get(Team.TEAM_31.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_32.Name())){
+				out.write("TEAM_32:"+LocListTOStringList(list.get(Team.TEAM_32.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_1.Name())){
+				out.write("TEAM_POINT_1:"+LocListTOStringList(list.get(Team.TEAM_POINT_1.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_2.Name())){
+				out.write("TEAM_POINT_2:"+LocListTOStringList(list.get(Team.TEAM_POINT_2.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_3.Name())){
+				out.write("TEAM_POINT_3:"+LocListTOStringList(list.get(Team.TEAM_POINT_3.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_4.Name())){
+				out.write("TEAM_POINT_4:"+LocListTOStringList(list.get(Team.TEAM_POINT_4.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_5.Name())){
+				out.write("TEAM_POINT_5:"+LocListTOStringList(list.get(Team.TEAM_POINT_5.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_6.Name())){
+				out.write("TEAM_POINT_6:"+LocListTOStringList(list.get(Team.TEAM_POINT_6.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_7.Name())){
+				out.write("TEAM_POINT_7:"+LocListTOStringList(list.get(Team.TEAM_POINT_7.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_8.Name())){
+				out.write("TEAM_POINT_8:"+LocListTOStringList(list.get(Team.TEAM_POINT_8.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_9.Name())){
+				out.write("TEAM_POINT_9:"+LocListTOStringList(list.get(Team.TEAM_POINT_9.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_10.Name())){
+				out.write("TEAM_POINT_10:"+LocListTOStringList(list.get(Team.TEAM_POINT_10.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_11.Name())){
+				out.write("TEAM_POINT_11:"+LocListTOStringList(list.get(Team.TEAM_POINT_11.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_12.Name())){
+				out.write("TEAM_POINT_12:"+LocListTOStringList(list.get(Team.TEAM_POINT_12.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_13.Name())){
+				out.write("TEAM_POINT_13:"+LocListTOStringList(list.get(Team.TEAM_POINT_13.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_14.Name())){
+				out.write("TEAM_POINT_14:"+LocListTOStringList(list.get(Team.TEAM_POINT_14.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_15.Name())){
+				out.write("TEAM_POINT_15:"+LocListTOStringList(list.get(Team.TEAM_POINT_15.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_16.Name())){
+				out.write("TEAM_POINT_16:"+LocListTOStringList(list.get(Team.TEAM_POINT_16.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_17.Name())){
+				out.write("TEAM_POINT_17:"+LocListTOStringList(list.get(Team.TEAM_POINT_17.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_18.Name())){
+				out.write("TEAM_POINT_18:"+LocListTOStringList(list.get(Team.TEAM_POINT_18.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_19.Name())){
+				out.write("TEAM_POINT_19:"+LocListTOStringList(list.get(Team.TEAM_POINT_19.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_20.Name())){
+				out.write("TEAM_POINT_20:"+LocListTOStringList(list.get(Team.TEAM_POINT_20.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_21.Name())){
+				out.write("TEAM_POINT_21:"+LocListTOStringList(list.get(Team.TEAM_POINT_21.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_22.Name())){
+				out.write("TEAM_POINT_22:"+LocListTOStringList(list.get(Team.TEAM_POINT_22.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_23.Name())){
+				out.write("TEAM_POINT_23:"+LocListTOStringList(list.get(Team.TEAM_POINT_23.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_24.Name())){
+				out.write("TEAM_POINT_24:"+LocListTOStringList(list.get(Team.TEAM_POINT_24.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_25.Name())){
+				out.write("TEAM_POINT_25:"+LocListTOStringList(list.get(Team.TEAM_POINT_25.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_26.Name())){
+				out.write("TEAM_POINT_26:"+LocListTOStringList(list.get(Team.TEAM_POINT_26.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_27.Name())){
+				out.write("TEAM_POINT_27:"+LocListTOStringList(list.get(Team.TEAM_POINT_27.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_28.Name())){
+				out.write("TEAM_POINT_28:"+LocListTOStringList(list.get(Team.TEAM_POINT_28.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_29.Name())){
+				out.write("TEAM_POINT_29:"+LocListTOStringList(list.get(Team.TEAM_POINT_29.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_30.Name())){
+				out.write("TEAM_POINT_30:"+LocListTOStringList(list.get(Team.TEAM_POINT_30.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_31.Name())){
+				out.write("TEAM_POINT_31:"+LocListTOStringList(list.get(Team.TEAM_POINT_31.Name())));
+				out.write("\n");
+			}
+			if(list.containsKey(Team.TEAM_POINT_32.Name())){
+				out.write("TEAM_POINT_32:"+LocListTOStringList(list.get(Team.TEAM_POINT_32.Name())));
 				out.write("\n");
 			}
 			out.close();

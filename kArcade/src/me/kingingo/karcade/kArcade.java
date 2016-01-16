@@ -31,7 +31,6 @@ import me.kingingo.kcore.Util.UtilException;
 import me.kingingo.kcore.Util.UtilFile;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilWorld;
-import me.kingingo.kcore.memory.MemoryFix;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -87,7 +86,7 @@ public class kArcade extends JavaPlugin{
 			new ListenerCMD(this);
 
 			new AntiCrashListener(this.pManager,this.mysql);
-			new BungeeCordFirewallListener(mysql, "a"+id);
+			new BungeeCordFirewallListener(mysql,cmd, "a"+id);
 			if( !getConfig().getBoolean("Config.Server.World-Save") )UtilWorld.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){

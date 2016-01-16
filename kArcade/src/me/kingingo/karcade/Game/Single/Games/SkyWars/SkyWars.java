@@ -11,7 +11,10 @@ import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.SingleWorldData;
+import me.kingingo.karcade.Game.Single.Addons.AddonChat;
+import me.kingingo.karcade.Game.Single.Addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.Single.Addons.AddonVoteTeam;
+import me.kingingo.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
@@ -19,6 +22,7 @@ import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
+import me.kingingo.kcore.Enum.GameCage;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -46,8 +50,10 @@ import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.SingleKitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
+import me.kingingo.kcore.MySQL.Callback;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
@@ -57,7 +63,9 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
@@ -98,6 +106,7 @@ public class SkyWars extends TeamGame{
 	@Getter
 	private LaunchItemManager ilManager;
 	private CreeperSpawner creeper;
+	private AddonTargetNextPlayer targetNextPlayer;
 	
 	public SkyWars(kArcadeManager manager,SkyWarsType type){
 		super(manager);
@@ -125,11 +134,22 @@ public class SkyWars extends TeamGame{
 		setWorldData(new SingleWorldData(manager,getType().getTyp()+type.getTeam().length,getType().getKürzel()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		getWorldData().Initialize();
-		if(type.getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
+		
+		if(type.getTeam_size()!=1){
+			if(type==SkyWarsType._32x4){
+				setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._36,type.getTeam_size()));
+			}else{
+				setVoteTeam(new AddonVoteTeam(this,type.getTeam(),InventorySize._18,type.getTeam_size()));
+			}
+		}
 		
 		kitshop=new SingleKitShop(getManager().getInstance(), getGems(),getCoins(), getManager().getPermManager(), "Kit-Shop", InventorySize._9, new Kit[]{
+			
 			new Kit("§aStarter-Kit",new String[]{"§8x1§7 Leder Rüstung","§8x1§7 Holzschwert mit Schärfe 1"},new ItemStack(Material.LEATHER_HELMET),kPermission.SKYWARS_KIT_STARTERKIT,KitType.STARTER,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.LEATHER_BOOTS),new ItemStack(Material.LEATHER_LEGGINGS),new ItemStack(Material.LEATHER_CHESTPLATE),new ItemStack(Material.LEATHER_HELMET)})
+			}),
+			new Kit( "§eMLG",new String[]{"§8x64§7 Brick","§8x12§7 TNT","§8x1§7 Redstone Fackel","§8x2§7 Wasser Eimer","§8x1§7 Boot","§8x8§7 Spinnenweben"}, new ItemStack(Material.WATER_BUCKET),kPermission.SKYWARS_KIT_MLG,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BRICK,64),new ItemStack(Material.TNT,12),new ItemStack(Material.REDSTONE_TORCH_ON,1),new ItemStack(Material.WATER_BUCKET,2),new ItemStack(Material.BOAT,1),new ItemStack(Material.WEB,8)})
 			}),
 			new Kit("§ePanzer",new String[]{"§8x1§7 Diamanthelm mit Dornen 1,Unbreaking 1","§8x1§7 Eisenbrustpanzer mit Unbreaking 1","§8x1§7 Eisenhose mit Unbreaking 1","§8x1§7 Eisenschuhe mit Unbreaking 1"},new ItemStack(Material.SLIME_BALL),kPermission.SKYWARS_KIT_PANZER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(UtilItem.EnchantItem(new ItemStack(Material.DIAMOND_CHESTPLATE), Enchantment.DURABILITY, 1), Enchantment.THORNS, 1),
@@ -138,7 +158,7 @@ public class SkyWars extends TeamGame{
 						UtilItem.EnchantItem(new ItemStack(Material.IRON_BOOTS), Enchantment.DURABILITY, 1)})
 			}),
 			new Kit("§eGlueckshase",new String[]{"§8x1§7 Eisenspitzhacke mit Glueck 2"},new ItemStack(Material.RABBIT_FOOT),kPermission.SKYWARS_KIT_HASE,KitType.KAUFEN,2000,500,new Perk[]{
-				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.LUCK, 2)})
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.IRON_PICKAXE), Enchantment.LOOT_BONUS_BLOCKS, 2)})
 			}),
 			new Kit("§eHulk",new String[]{"§8x1§7 Leder Rüstung mit Schutz 1","§8x1§7 Stärke 2 Trank"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN),kPermission.SKYWARS_KIT_HULK,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
@@ -218,8 +238,8 @@ public class SkyWars extends TeamGame{
 			new Kit( "§eMVP",new String[]{"§8x1§7 Steinschwert mit Rueckstoß","§8x1§7 Diamanthelm","§8x1§7 Diamantschuhe","§8x4§7 Heal Potion"}, new ItemStack(Material.GOLD_INGOT),kPermission.SKYWARS_KIT_MVP,KitType.MVP,0,0,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.STONE_SWORD), Enchantment.KNOCKBACK, 1),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.DIAMOND_BOOTS),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
 			}),
-			new Kit( "§eMVP+",new String[]{"§8x1§7 Diamanthelm","§8x1§7 Eisenbrustpanzer","§8x16§7 Steine","§8x8§7 Eisenschwert","§8x4§7 Heal Potion"}, new ItemStack(Material.DIAMOND),kPermission.SKYWARS_KIT_MVPPLUS,KitType.MVP_PLUS,0,0,new Perk[]{
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.STONE,16),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
+			new Kit( "§eMVP+",new String[]{"§8x1§7 Diamanthelm","§8x1§7 Eisenbrustpanzer","§8x16§7 Steine","§8x1§7 Eisenschwert","§8x4§7 Heal Potion"}, new ItemStack(Material.DIAMOND),kPermission.SKYWARS_KIT_MVPPLUS,KitType.MVP_PLUS,0,0,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.IRON_SWORD),new ItemStack(Material.IRON_CHESTPLATE),new ItemStack(Material.DIAMOND_HELMET),new ItemStack(Material.STONE,16),new Potion(PotionType.INSTANT_HEAL, Tier.TWO, true).toItemStack(4)})
 			}),
 			new Kit( "§aSuperman",new String[]{"Der Superman ist das Beste kit in SkyWars!"}, new ItemStack(Material.DIAMOND_SWORD),kPermission.SKYWARS_KIT_SUPERMAN,KitType.ADMIN,2000,new Perk[]{
 				new PerkNoHunger(),
@@ -289,7 +309,17 @@ public class SkyWars extends TeamGame{
 				}
 			}
 		}
-		
+
+		if(type==SkyWarsType._32x4){
+			GameCage gcase = GameCage.GLASS;
+			int color;
+			for(Team t : type.getTeam()){
+				if(getWorldData().existLoc(t)){
+					color=UtilMath.r(15);
+					UtilMap.makeQuadrat(null,getWorldData().getLocs(t).get(0).clone().add(0, 10, 0), 2, 5,gcase.getGround((byte)color),gcase.getWall((byte)color));
+				}
+			}
+		}
 	}
 	
 	public ItemStack Sonstiges(){
@@ -440,21 +470,25 @@ public class SkyWars extends TeamGame{
 	}
 	
 	public Team getChestSpawn(Team team){
-		switch(team){
-		case RED:return Team.SHEEP_RED;
-		case BLUE:return Team.SHEEP_BLUE;
-		case YELLOW:return Team.SHEEP_YELLOW;
-		case GREEN:return Team.SHEEP_GREEN;
-		case GRAY:return Team.SHEEP_GRAY;
-		case PINK:return Team.SHEEP_PINK;
-		case ORANGE:return Team.SHEEP_ORANGE;
-		case PURPLE:return Team.SHEEP_PURPLE;
-		case WHITE:return Team.SHEEP_WHITE;
-		case BLACK:return Team.SHEEP_BLACK;
-		case CYAN:return Team.SHEEP_CYAN;
-		case AQUA:return Team.SHEEP_AQUA;
-		default:
-		return Team.SHEEP_RED;
+		if(type==SkyWarsType._32x4){
+			return Team.getPoint(team);
+		}else{
+			switch(team){
+			case RED:return Team.SHEEP_RED;
+			case BLUE:return Team.SHEEP_BLUE;
+			case YELLOW:return Team.SHEEP_YELLOW;
+			case GREEN:return Team.SHEEP_GREEN;
+			case GRAY:return Team.SHEEP_GRAY;
+			case PINK:return Team.SHEEP_PINK;
+			case ORANGE:return Team.SHEEP_ORANGE;
+			case PURPLE:return Team.SHEEP_PURPLE;
+			case WHITE:return Team.SHEEP_WHITE;
+			case BLACK:return Team.SHEEP_BLACK;
+			case CYAN:return Team.SHEEP_CYAN;
+			case AQUA:return Team.SHEEP_AQUA;
+			default:
+			return Team.SHEEP_RED;
+			}
 		}
 	}
 	
@@ -542,24 +576,22 @@ public class SkyWars extends TeamGame{
 		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
 		template.clear();
 		template_type.clear();
-		template_type.put("SWORD",3);
-		template_type.put("BLOCK",3);
-		template_type.put("HELM",2);
-		template_type.put("CHESTPLATE",2);
-		template_type.put("LEGGINGS",2);
-		template_type.put("BOOTS",2);
-		template_type.put("ARROW",1);
-		template_type.put("POTION",4);
-		template_type.put("FOOD",3);
-//		template_type.put("SNOWBALL",3);
-//		template_type.put("EGG",3);
-		template_type.put("WEB",3);
-		template_type.put("LAVA-BUCKET",1);
-		template_type.put("WATER-BUCKET",1);
-		template_type.put("TNT",1);
-		template_type.put("FIRE",1);
-		template_type.put("BOW",1);
-		template_type.put("TOOL",2);
+		template_type.put("SWORD",(type==SkyWarsType._32x4 ? 6 : 3));
+		template_type.put("BLOCK",(type==SkyWarsType._32x4 ? 6 : 3));
+		template_type.put("HELM",(type==SkyWarsType._32x4 ? 6 : 2));
+		template_type.put("CHESTPLATE",(type==SkyWarsType._32x4 ? 6 : 2));
+		template_type.put("LEGGINGS",(type==SkyWarsType._32x4 ? 6 : 2));
+		template_type.put("BOOTS",(type==SkyWarsType._32x4 ? 6 : 2));
+		template_type.put("ARROW",(type==SkyWarsType._32x4 ? 2 : 1));
+		template_type.put("POTION",(type==SkyWarsType._32x4 ? 8 : 4));
+		template_type.put("FOOD",(type==SkyWarsType._32x4 ? 6 : 3));
+		template_type.put("WEB",(type==SkyWarsType._32x4 ? 6 : 3));
+		template_type.put("LAVA-BUCKET",(type==SkyWarsType._32x4 ? 2 : 1));
+		template_type.put("WATER-BUCKET",(type==SkyWarsType._32x4 ? 2 : 1));
+		template_type.put("TNT",(type==SkyWarsType._32x4 ? 2 : 1));
+		template_type.put("FIRE",(type==SkyWarsType._32x4 ? 2 : 1));
+		template_type.put("BOW",(type==SkyWarsType._32x4 ? 2 : 1));
+		template_type.put("TOOL",(type==SkyWarsType._32x4 ? 4 : 2));
 		
 		for(Chest chest : chests)template.put(chest, new ArrayList<String>());
 		
@@ -570,6 +602,13 @@ public class SkyWars extends TeamGame{
 		}else{
 			template_type.remove("BOW");
 			template_type.remove("ARROW");
+		}
+		
+		if(type==SkyWarsType._32x4){
+			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
+			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
+			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
+			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
 		}
 
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
@@ -871,6 +910,17 @@ public class SkyWars extends TeamGame{
 		}
 	}
 	
+	@EventHandler
+	public void teamuse(AddonVoteTeamPlayerChooseEvent ev){
+		if(type==SkyWarsType._32x4){
+			if(ev.getState()==PlayerState.IN){
+				ev.getPlayer().teleport(getWorldData().getLocs(ev.getTeam()).get(0).clone().add(0, 12,0));
+			}else{
+				ev.getPlayer().teleport(getManager().getLobby());
+			}
+		}
+	}
+	
 	public Player TeamPartner(Player p){
 		for(Player p1 : getPlayerFrom(getTeam(p))){
 			if(p1==p)continue;
@@ -910,31 +960,54 @@ public class SkyWars extends TeamGame{
 		
 	}
 	
+	@EventHandler
+	public void statsLOADED(PlayerStatsLoadedEvent ev){
+		if(getState()!=GameState.LobbyPhase)return;
+		int w = getStats().getInt(Stats.WIN, ev.getPlayer());
+		int l = getStats().getInt(Stats.LOSE, ev.getPlayer());
+		
+		Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (((Integer)w)+((Integer)l))),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", ((Integer)w)),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", ((Integer)l)),
+					});
+			}
+		});
+	}
+	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
-		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
-		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
-			});
+		getStats().loadPlayerStats(ev.getPlayer());
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	
 	@EventHandler
 	public void GameStartSkyWars(GameStartEvent ev){
 		getWorldData().clearWorld();
+
+		if(type==SkyWarsType._32x4){
+			this.targetNextPlayer=new AddonTargetNextPlayer(250, this);
+			this.targetNextPlayer.setAktiv(true);
+			
+			for(Team t : type.getTeam()){
+				if(getWorldData().existLoc(t)){
+					UtilMap.makeQuadrat(null,getWorldData().getLocs(t).get(0).clone().add(0, 10, 0), 2, 5,new ItemStack(Material.AIR),null);
+				}
+			}
+		}
 		
 		HashMap<Player,String> kits = new HashMap<>();
 		
@@ -956,11 +1029,18 @@ public class SkyWars extends TeamGame{
 				p.showPlayer(player);
 				player.showPlayer(p);
 			}
+			
+
+			if(type==SkyWarsType._32x4){
+				p.getInventory().addItem(new ItemStack(Material.COMPASS));
+			}
 		}
 		PlayerVerteilung(verteilung(type.getTeam(),type.getTeam_size()), plist);
 		
 		for(Player player : getTeamList().keySet()){
-			player.teleport(getWorldData().getLocs(getTeamList().get(player)).get(0));
+			if(player.getWorld().getUID()!=getWorldData().getWorld().getUID()){
+				player.teleport(getWorldData().getLocs(getTeamList().get(player)).get(0));
+			}
 		}
 
 		Scoreboard ps;
@@ -1010,7 +1090,7 @@ public class SkyWars extends TeamGame{
 		for(Player player : UtilServer.getPlayers()){
 			if(player.getWorld().getName().equalsIgnoreCase("world")){
 				System.out.println("WORLD: "+player.getName());
-				getManager().getMysql().Update("INSERT INTO list_exception (server,ip,time,exceptiontype,message) VALUES ('a"+kArcade.id+"','null','"+UtilTime.now()+"','SkyWars Spieler Verteilung','Spieler: "+player.getName()+" ANZAHL:"+UtilServer.getPlayers().size()+" VER:"+getERR(type.getTeam(),type.getTeam_size())+"');");
+				getManager().getMysql().asyncUpdate("INSERT INTO list_exception (server,ip,time,exceptiontype,message) VALUES ('a"+kArcade.id+"','null','"+UtilTime.now()+"','SkyWars Spieler Verteilung','Spieler: "+player.getName()+" ANZAHL:"+UtilServer.getPlayers().size()+" VER:"+getERR(type.getTeam(),type.getTeam_size())+"');");
 				UtilBG.sendToServer(player, getManager().getInstance());
 			}
 		}
@@ -1028,7 +1108,12 @@ public class SkyWars extends TeamGame{
 
 
 		getWorldData().getWorld().setStorm(false);
-		setStart((60*15)+1);
+		
+		if(type==SkyWarsType._32x4){
+			setStart((60*25)+1);
+		}else{
+			setStart((60*15)+1);
+		}
 		setState(GameState.InGame);
 	}
 	

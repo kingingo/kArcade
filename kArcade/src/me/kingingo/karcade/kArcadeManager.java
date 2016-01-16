@@ -296,6 +296,8 @@ public class kArcadeManager implements Listener{
 			return new SurvivalGames(this);
 		}else if(GameType.Versus.getTyp().equalsIgnoreCase(game)){
 			return new MultiGames(this,game);
+		}else if(GameType.SurvivalGames1vs1.getTyp().equalsIgnoreCase(game)){
+			return new MultiGames(this,game);
 		}else if(GameType.BedWars1vs1.getTyp().equalsIgnoreCase(game)){
 			return new MultiGames(this,game);
 		}else if(GameType.SkyWars1vs1.getTyp().equalsIgnoreCase(game)){

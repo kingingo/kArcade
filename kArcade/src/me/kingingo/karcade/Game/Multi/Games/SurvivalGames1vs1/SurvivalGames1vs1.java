@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.kingingo.karcade.Game.Multi.MultiGames;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonMove;
 import me.kingingo.karcade.Game.Multi.Addons.MultiGameArenaRestore;
@@ -27,17 +28,23 @@ import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilPlayer;
+import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilTime;
 import me.kingingo.kcore.Util.UtilWorld;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class SurvivalGames1vs1 extends MultiTeamGame{
 
@@ -50,9 +57,16 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	private HashMap<String,Integer> template_type;
 	
 	//Enderchest Variabeln
+	@Getter
+	@Setter
 	private long enderchest_time=0; //Change Time
+	@Getter
+	@Setter
 	private Location enderchest_loc=null; //Last Location
+	@Getter
+	@Setter
 	private Inventory enderchest_inv=null; //Inventory Enderchest
+	private Scoreboard scoreboard;
 	
 	//VILLAGER GREEN NORMAL CHEST
 	//VILLAGER BLACK ENDERCHEST LOCS
@@ -68,7 +82,20 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	public SurvivalGames1vs1(MultiGames games,String Map,Location location,File file) {
 		super(games,Map, location);
 		setStartCountdown(31);
-	
+		UtilBG.setHub("versus");
+		setUpdateTo("versus");
+		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
+		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
+		UtilScoreboard.setScore(scoreboard, " ", DisplaySlot.SIDEBAR, 3);
+		UtilScoreboard.setScore(scoreboard, "§7Time: ", DisplaySlot.SIDEBAR, 2);
+		UtilScoreboard.setScore(scoreboard, "  ", DisplaySlot.SIDEBAR, 0);
+		
+		this.template_type=new HashMap<>();
+		this.template=new HashMap<>();
+		this.addonMove=new MultiAddonMove(this);
+		this.addonMove.setMove(false);
+		getWorldData().loadSchematic(this, location, file);
+		
 		if(!getWorldData().existLoc(this, Team.VILLAGE_RED)||
 				getWorldData().existLoc(this, Team.VILLAGE_RED)&&getWorldData().getLocs(this, Team.VILLAGE_RED).isEmpty()){
 			Log("Fehler VILLAGE_RED NICHT GEFUNDEN");
@@ -81,12 +108,6 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 			//this.area.MinMax
 		}
 		
-		UtilBG.setHub("versus");
-		setUpdateTo("versus");
-		this.template_type=new HashMap<>();
-		this.template=new HashMap<>();
-		this.addonMove=new MultiAddonMove(this);
-		getWorldData().loadSchematic(this, location, file);
 		UtilSurvivalGames1vs1.loadWorld(this, template, template_type);
 		
 		setBlockBreak(true);
@@ -98,7 +119,6 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		setDamagePvP(false);
 		setDamage(false);
 		getEntityDamage().add(DamageCause.FALL);
-
 		loadMaxTeam();
 	}
 
@@ -109,9 +129,28 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
 			setTimer(-1);
-			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 12, 0) );
+			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0));
 			ev.setCancelled(true);
 			updateInfo();
+		}
+	}
+	
+
+	@EventHandler(ignoreCancelled=false)
+	public void enderchest(PlayerInteractEvent ev){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+			ev.setCancelled(true);
+			if(getState()!=GameState.InGame)return;
+			
+			if(ev.getClickedBlock()!=null){
+				if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
+					if(getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+						ev.getPlayer().openInventory(enderchest_inv);
+						return;
+					}
+				}
+				ev.setCancelled(false);
+			}
 		}
 	}
 	
@@ -121,15 +160,17 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		if(getState()!=GameState.InGame)return;
 		
 		if((System.currentTimeMillis() - this.enderchest_time) >= (TimeSpan.SECOND*30)){
-			UtilSurvivalGames1vs1.loadEnderChest(this, enderchest_loc, enderchest_time, enderchest_inv);
+			UtilSurvivalGames1vs1.loadEnderChest(this);
 		}
 		
 		setTimer(getTimer()-1);
+		UtilScoreboard.resetScore(scoreboard, 1, DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(scoreboard, "§c"+UtilTime.formatSeconds(getTimer()), DisplaySlot.SIDEBAR, 1);
 		if(getTimer()<0)setTimer((60*12)+1);
 		
 		for(Player player : getGameList().getPlayers().keySet()){
 			UtilDisplay.displayTextBar(Language.getText(player, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), player);
-			player.setLevel( (int)((TimeSpan.SECOND*30)-(System.currentTimeMillis() - this.enderchest_time)) );
+			player.setLevel( (int)(((TimeSpan.SECOND*30)-(System.currentTimeMillis() - this.enderchest_time))/1000) );
 		}
 		
 		switch(getTimer()){
@@ -223,13 +264,15 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
-			enderchest_inv.clear();
+			
+			if(enderchest_inv!=null)enderchest_inv.clear();
 			enderchest_inv=null;
-			UtilSurvivalGames1vs1.loadEnderChest(this, enderchest_loc, enderchest_time, enderchest_inv);
+			UtilSurvivalGames1vs1.loadEnderChest(this);
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
 				getGames().getManager().Clear(player);
 				player.getInventory().setItem(8, UtilSurvivalGames1vs1.getEnderchest_compass());
+				player.setScoreboard(scoreboard);
 				UtilPlayer.sendPacket(player, this.packet);
 			}
 			setDropItem(true);
