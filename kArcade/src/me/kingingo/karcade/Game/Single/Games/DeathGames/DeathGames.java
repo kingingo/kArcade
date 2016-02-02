@@ -34,7 +34,7 @@ import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkHealByKill;
 import me.kingingo.kcore.Kit.Perks.PerkHitEffect;
 import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
-import me.kingingo.kcore.Kit.Perks.PerkLessDamage;
+import me.kingingo.kcore.Kit.Perks.PerkLessAttack;
 import me.kingingo.kcore.Kit.Perks.PerkMoreHeart;
 import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
 import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
@@ -56,6 +56,7 @@ import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.Scheduler.kScheduler;
 import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
@@ -229,7 +230,7 @@ public class DeathGames extends SoloGame{
 			}),
 			new Kit( "§aSchildkroete",new String[]{"Die Schildkroete hat 5 Herzen mehr!","macht aber dennoch ","weniger Schaden!"}, new ItemStack(Material.IRON_CHESTPLATE),kPermission.DEATHGAMES_KIT_SCHILDKROETE,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkMoreHeart(30),
-				new PerkLessDamage(75)
+				new PerkLessAttack(75)
 			}),
 			new Kit( "§aRitter",new String[]{"Der Ritter bekommt bei unter 4 Herzen Stärke 1."}, new ItemStack(Material.LEATHER_CHESTPLATE),kPermission.DEATHGAMES_KIT_RITTER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkPotionEffectByHearth(PotionEffectType.INCREASE_DAMAGE, 1, 7)
@@ -621,25 +622,36 @@ public class DeathGames extends SoloGame{
 		}
 	}
 
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void JoinHologram(PlayerJoinEvent ev){
+	@EventHandler
+	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
-			});
+		Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+					});
+			}
+		});
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void JoinHologram(PlayerJoinEvent ev){
+		if(getState()!=GameState.LobbyPhase)return;
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
 	

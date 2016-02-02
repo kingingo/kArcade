@@ -15,14 +15,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Chest;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class UtilSurvivalGames1vs1 {
 	@Getter
-	private static ItemStack enderchest_compass=UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§bCompass"); //Der Kompass zeigt immer auf die E-Chest
+	private static ItemStack enderchest_compass=UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§bCompass §7»§b Enderchest"); //Der Kompass zeigt immer auf die E-Chest
 	
 	public static void loadEnderChest(SurvivalGames1vs1 game){
 		if(game.getEnderchest_loc()!=null){
@@ -33,10 +32,14 @@ public class UtilSurvivalGames1vs1 {
 		
 		if(game.getEnderchest_inv()==null){
 			game.setEnderchest_inv(Bukkit.createInventory(null, 27));
+
+			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.ENDER_PEARL));
+			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.ENDER_PEARL));
+			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.ENDER_PEARL));
 			
-			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), rdmItem());
-			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), rdmItem());
-			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), rdmItem());
+			if(UtilMath.r(100)>50){
+				game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.IRON_SWORD));
+			}
 		}
 		
 		ArrayList<Location> locs = (ArrayList<Location>) game.getWorldData().getLocs(game, Team.VILLAGE_BLACK).clone();
@@ -55,72 +58,55 @@ public class UtilSurvivalGames1vs1 {
 	
 	public static ItemStack Sonstiges(){
 		try{
-			switch(UtilMath.r(39)){
-			case 0: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			switch(UtilMath.r(29)){
+			case 0: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(2,1));
 			case 1: return new ItemStack(Material.GOLDEN_APPLE,1);
-			case 2: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
-			case 3: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
-			case 4: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
-			case 5: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
+			case 2: return new ItemStack(Material.ARROW,UtilMath.RandomInt(10,2));
+			case 3: return new ItemStack(Material.ARROW,UtilMath.RandomInt(10,2));
+			case 4: return new ItemStack(Material.ARROW,UtilMath.RandomInt(10,2));
+			case 5: return new ItemStack(Material.ARROW,UtilMath.RandomInt(10,2));
 			case 6: return new ItemStack(Material.FISHING_ROD);
 			case 7: return new ItemStack(Material.FISHING_ROD);
 			case 8: return new ItemStack(Material.FISHING_ROD);
 			case 9: return new ItemStack(Material.TNT);
 			case 10: return new ItemStack(Material.TNT);
 			case 11: return new ItemStack(Material.TNT);
-			case 12:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
-			case 13:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
-			case 14:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
-			case 15:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
-			case 16:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
-			case 17:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
-			case 18:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
-			case 19:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
-			case 20:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
-			case 21:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
-			case 22:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
-			case 23:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
-			case 24:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(32,10));
-			case 25:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
-			case 26:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
-			case 27:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
-			case 28:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
-			case 29:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
-			case 30:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(12,8));
-			case 31:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(12,8));
-			case 32:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(12,8));
-			case 33:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(12,8));
-			case 34:return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
-			case 35: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
-			case 36: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
+			case 12:return new ItemStack(Material.POTION,UtilMath.RandomInt(2, 1),(short)16389);
+			case 13:return new ItemStack(Material.POTION,UtilMath.RandomInt(2, 1),(short)16421);
+			case 14:return new ItemStack(Material.POTION,UtilMath.RandomInt(2, 1),(short)8229);
+			case 15:return new ItemStack(Material.POTION,UtilMath.RandomInt(2, 1),(short)8197);
+			case 16:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(4,2));
+			case 17:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(4,2));
+			case 18:return new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(4,2));
+			case 19:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(4,2));
+			case 20:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(4,2));
+			case 21:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(4,2));
+			case 22:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(4,2));
+			case 23:return new ItemStack(Material.BREAD,UtilMath.RandomInt(4,2));
+			case 24:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(4,2));
+			case 25:return new ItemStack(Material.COOKED_CHICKEN,UtilMath.RandomInt(4,2));
+			case 26:return new ItemStack(Material.COOKED_FISH,UtilMath.RandomInt(4,2));
+			case 27:return new ItemStack(Material.COOKED_RABBIT,UtilMath.RandomInt(4,2));
+			case 28:return new ItemStack(Material.BREAD,UtilMath.RandomInt(4,2));
 			default: return new ItemStack(Material.STICK);
 			}
 		}catch(NullPointerException e){
 			System.err.println("Error: ");
 			e.printStackTrace();
-			return new ItemStack(Material.BREAD,UtilMath.RandomInt(12,8));
+			return new ItemStack(Material.BREAD,UtilMath.RandomInt(4,2));
 		}
 	}
 	
 	public static ItemStack Tools(){
-		switch(UtilMath.r(5)){
-		case 0: return new ItemStack(Material.DIAMOND_SWORD);
-		case 1: return new ItemStack(Material.IRON_SWORD);
-		case 2: return new ItemStack(Material.DIAMOND_AXE);
-		case 3: return new ItemStack(Material.DIAMOND_PICKAXE);
-		case 4: return new ItemStack(Material.BOW);
+		switch(UtilMath.r(7)){
+		case 0: return new ItemStack(Material.WOOD_SWORD);
+		case 1: return new ItemStack(Material.GOLD_SWORD);
+		case 2: return new ItemStack(Material.GOLD_AXE);
+		case 3: return new ItemStack(Material.WOOD_AXE);
+		case 4: return new ItemStack(Material.STONE_AXE);
+		case 5: return new ItemStack(Material.STONE_SWORD);
+		case 6: return new ItemStack(Material.BOW);
 		default: return new ItemStack(Material.WOOD_SWORD);
-		}
-	}
-	
-	public static ItemStack DiaRüstung(){
-		switch(UtilMath.r(4)){
-		case 0: return new ItemStack(Material.DIAMOND_HELMET);
-		case 1: return new ItemStack(Material.DIAMOND_CHESTPLATE);
-		case 2: return new ItemStack(Material.DIAMOND_LEGGINGS);
-		case 3: return new ItemStack(Material.DIAMOND_BOOTS);
-		default:
-			return new ItemStack(Material.LEATHER_HELMET);
 		}
 	}
 	
@@ -137,59 +123,11 @@ public class UtilSurvivalGames1vs1 {
 	
 	public static ItemStack rdmItem(){
 		ItemStack item;
-		int r = UtilMath.r(1000);
-		if(r>=150&&r<=155){
-			item=UtilItem.RenameItem(new ItemStack(Material.SLIME_BALL), "§cX");
-			item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
-			return item;
-		}
-		
-		switch(UtilMath.r(6)){
-		case 0: item = Sonstiges();break;
-		case 1: item = IronRüstung();break;
-		case 2: item = DiaRüstung();break;
-		case 3: item = Tools();break;
-		case 4: item = Sonstiges();break;
-		case 5: item = Sonstiges();break;
+		switch(UtilMath.r(3)){
+		case 0: item = IronRüstung();break;
+		case 1: item = Tools();break;
+		case 2: item = Sonstiges();break;
 		default: item = new ItemStack(Material.APPLE);break;
-		}
-		
-		if(item.getType()==Material.BOW){
-			r=UtilMath.r(100);
-			if(r>=0&&r<=40){
-				item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
-			}else if(r>=40&&r<=60){
-				item.addEnchantment(Enchantment.ARROW_FIRE, 1);
-			}
-		}else if(item.getType()==Material.IRON_CHESTPLATE){
-			r=UtilMath.r(100);
-			if(r>=0&&r<=30){
-				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
-			}else if(r>=30&&r<=50){
-				item.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
-			}
-		}else if(item.getType()==Material.DIAMOND_CHESTPLATE){
-			r=UtilMath.r(100);
-			if(r>=0&&r<=40){
-				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
-			}else if(r>=30&&r<=50){
-				item.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
-			}
-		}else if(item.getType()==Material.IRON_SWORD){
-			item.addEnchantment(Enchantment.DAMAGE_ALL, 3);
-		}else if(item.getType()==Material.DIAMOND_SWORD){
-			r=UtilMath.r(100);
-			if(r>=0&&r<=40){
-				item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-			}else if(r>=40&&r<=60){
-				item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-				item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
-				item.addEnchantment(Enchantment.KNOCKBACK, 1);
-			}
-		}else if(item.getType()==Material.DIAMOND_AXE){
-			item.addEnchantment(Enchantment.DIG_SPEED, 3);
-		}else if(item.getType()==Material.DIAMOND_PICKAXE){
-			item.addEnchantment(Enchantment.DIG_SPEED, 3);
 		}
 		return item;
 	}
@@ -213,80 +151,60 @@ public class UtilSurvivalGames1vs1 {
 		}
 	}
 	
-	public static Material rdmBlock(){
-		switch(UtilMath.r(3)){
-		case 0:return Material.STONE;
-		case 1:return Material.DIRT;
-		case 2:return Material.WOOD;
-		default: return Material.BEDROCK;
-		}
-	}
-	
 	public static ItemStack rdmFood(){
-		switch(UtilMath.r(4)){
-		case 0:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(16, 8));
-		case 1:return new ItemStack(Material.BREAD,UtilMath.RandomInt(16, 8));
-		case 2:return new ItemStack(Material.CAKE);
-		case 3:return new ItemStack(Material.CARROT,UtilMath.RandomInt(16, 8));
-		default: return new ItemStack(Material.GOLDEN_CARROT,UtilMath.RandomInt(16, 8));
+		switch(UtilMath.r(6)){
+		case 0:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(3, 2));
+		case 1:return new ItemStack(Material.BREAD,UtilMath.RandomInt(3, 2));
+		case 2:return new ItemStack(Material.CARROT,UtilMath.RandomInt(3, 2));
+		case 3: return new ItemStack(Material.GOLDEN_CARROT,UtilMath.RandomInt(3, 2));
+		case 4: return new ItemStack(Material.APPLE,UtilMath.RandomInt(3, 2));
+		case 5: return new ItemStack(Material.CAKE,1);
+		default: return new ItemStack(Material.GOLDEN_CARROT,UtilMath.RandomInt(3, 2));
 		}
 	}
 	
 	public static Material rdmHelm(){
 		switch(UtilMath.r(4)){
-		case 0:return Material.DIAMOND_HELMET;
-		case 1:return Material.GOLD_HELMET;
-		case 2:return Material.IRON_HELMET;
-		case 3:return Material.CHAINMAIL_HELMET;
+		case 0:return Material.GOLD_HELMET;
+		case 1:return Material.IRON_HELMET;
+		case 2:return Material.CHAINMAIL_HELMET;
 		default: return Material.LEATHER_HELMET;
 		}
 	}
 	
 	public static Material rdmChestplate(){
 		switch(UtilMath.r(4)){
-		case 0:return Material.DIAMOND_CHESTPLATE;
-		case 1:return Material.GOLD_CHESTPLATE;
-		case 2:return Material.IRON_CHESTPLATE;
-		case 3:return Material.CHAINMAIL_CHESTPLATE;
+		case 0:return Material.GOLD_CHESTPLATE;
+		case 1:return Material.IRON_CHESTPLATE;
+		case 2:return Material.CHAINMAIL_CHESTPLATE;
 		default: return Material.LEATHER_CHESTPLATE;
 		}
 	}
 	
 	public static Material rdmLeggings(){
 		switch(UtilMath.r(4)){
-		case 0:return Material.DIAMOND_LEGGINGS;
-		case 1:return Material.GOLD_LEGGINGS;
-		case 2:return Material.IRON_LEGGINGS;
-		case 3:return Material.CHAINMAIL_LEGGINGS;
+		case 0:return Material.GOLD_LEGGINGS;
+		case 1:return Material.IRON_LEGGINGS;
+		case 2:return Material.CHAINMAIL_LEGGINGS;
 		default: return Material.LEATHER_LEGGINGS;
-		}
-	}
-	
-	public static Material rdmTool(){
-		switch(2){
-		case 0: return Material.IRON_PICKAXE;
-		case 1: return Material.IRON_AXE;
-		default: return Material.DIAMOND_PICKAXE;
 		}
 	}
 	
 	public static Material rdmBoots(){
 		switch(UtilMath.r(4)){
-			case 0:return Material.DIAMOND_BOOTS;
-			case 1:return Material.GOLD_BOOTS;
-			case 2:return Material.IRON_BOOTS;
-			case 3:return Material.CHAINMAIL_BOOTS;
+			case 0:return Material.GOLD_BOOTS;
+			case 1:return Material.IRON_BOOTS;
+			case 2:return Material.CHAINMAIL_BOOTS;
 			default: return Material.LEATHER_BOOTS;
 		}
 	}
 	
 	public static ItemStack rdmPotion(){
-		switch(UtilMath.r(5)){
-			case 0:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
-			case 1:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
-			case 2:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
-			case 3:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16385);
-			case 4:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16387);
+		switch(UtilMath.r(4)){
+			case 0:return new ItemStack(Material.POTION,1,(short)16421);
+			case 1:return new ItemStack(Material.POTION,1,(short)16389);
+			case 2:return new ItemStack(Material.POTION,1,(short)8229);
+			case 3:return new ItemStack(Material.POTION,1,(short)8197);
 			default: return new ItemStack(Material.POTION,1);
 		}
 	}
@@ -332,35 +250,32 @@ public class UtilSurvivalGames1vs1 {
 		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
 		template.clear();
 		template_type.clear();
-		template_type.put("SWORD",5);
-		template_type.put("BLOCK",10);
-		template_type.put("HELM",8);
-		template_type.put("CHESTPLATE",8);
-		template_type.put("LEGGINGS",8);
-		template_type.put("BOOTS",8);
-		template_type.put("ARROW",20);
-		template_type.put("POTION",15);
-		template_type.put("FOOD",30);
-		template_type.put("SNOWBALL",10);
-		template_type.put("EGG",20);
-		template_type.put("WEB",20);
-		template_type.put("LAVA-BUCKET",12);
-		template_type.put("WATER-BUCKET",12);
-		template_type.put("TNT",20);
-		template_type.put("FIRE",20);
-		template_type.put("BOW",5);
-		template_type.put("TOOL",20);
-		template_type.put("SLIME",1);
+		template_type.put("SWORD",4);
+		template_type.put("HELM",6);
+		template_type.put("CHESTPLATE",6);
+		template_type.put("LEGGINGS",6);
+		template_type.put("BOOTS",6);
+		template_type.put("ARROW",5);
+		template_type.put("POTION",3);
+		template_type.put("FOOD",15);
+		template_type.put("SNOWBALL",8);
+		template_type.put("EGG",8);
+		template_type.put("WEB",8);
+		template_type.put("TNT",4);
+		template_type.put("FIRE",3);
+		template_type.put("BOW",3);
+		template_type.put("ENDERPEARL",1);
+		template_type.put("ANGLE",1);
 		
 		for(Chest chest : chests){
 			chest.getInventory().clear();
 			template.put(chest, new ArrayList<String>());
 		}
 		
-		if(UtilMath.r(100)>=90){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SLIME");
+		if(UtilMath.r(100)>=94){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ENDERPEARL");
 		}else{
-			template_type.remove("SLIME");
+			template_type.remove("ENDERPEARL");
 		}
 		
 		if(UtilMath.r(100)>=80){
@@ -378,8 +293,6 @@ public class UtilSurvivalGames1vs1 {
 		}
 
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"WEB");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"EGG");
@@ -393,6 +306,7 @@ public class UtilSurvivalGames1vs1 {
 			r=UtilMath.RandomInt(8, 5);
 			if(r<=list.size())continue;
 			for(int i = 0; i < (r-list.size()); i++){
+				if(template_type.size()==0)break;
 				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.r(template_type.size())]);
 			}
 		}
@@ -402,6 +316,9 @@ public class UtilSurvivalGames1vs1 {
 		for(Chest chest : template.keySet()){
 			for(String i : template.get(chest)){
 				switch(i){
+				case "ANGLE":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.FISHING_ROD) );
+					break;
 				case "SWORD":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(UtilItem.rdmSchwert()) );
 					break;
@@ -423,9 +340,6 @@ public class UtilSurvivalGames1vs1 {
 				case "ARROW":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ARROW,UtilMath.RandomInt(5, 2)));
 					break;
-				case "BLOCK":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBlock(),UtilMath.RandomInt(32, 16)));
-					break;
 				case "POTION":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmPotion()));
 					break;
@@ -433,13 +347,13 @@ public class UtilSurvivalGames1vs1 {
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , rdmFood());
 					break;
 				case "SNOWBALL":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16, 8)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(4, 2)));
 					break;
 				case "EGG":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(16, 8)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(4, 2)));
 					break;
 				case "WEB":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(16, 8)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(4, 2)));
 					break;
 				case "LAVA-BUCKET":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LAVA_BUCKET));
@@ -448,16 +362,13 @@ public class UtilSurvivalGames1vs1 {
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WATER_BUCKET));
 					break;
 				case "TNT":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.TNT,UtilMath.RandomInt(3, 1)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.TNT,UtilMath.RandomInt(2,1)));
 					break;
 				case "FIRE":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.FLINT_AND_STEEL));
 					break;
-				case "TOOL":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmTool()));
-					break;
-				case "SLIME":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.SLIME_BALL), (UtilMath.r(50)>=25? "§bX":"§dX")), Enchantment.KNOCKBACK, 5));	
+				case "ENDERPEARL":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ENDER_PEARL));
 					break;
 				default:
 					System.out.println("[UtilSurvivalGames1vs1]: Chest FAIL: "+i);
@@ -466,105 +377,80 @@ public class UtilSurvivalGames1vs1 {
 			}
 			template.get(chest).clear();
 		}
-		
-		for(Chest chest : template.keySet()){
-			for(ItemStack item : chest.getInventory().getContents()){
-				if(item!=null&&item.getType()!=Material.AIR){
-					if(item.getType()==Material.BOW){
-						switch(UtilMath.r(3)){
-						case 0:item.addEnchantment(Enchantment.ARROW_DAMAGE, 2);break;
-						case 1:item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);break;
-						case 2:item.addEnchantment(Enchantment.ARROW_DAMAGE, 2);item.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);break;
-						default:break;
-						}
-					}else if(UtilItem.isSword(item)){
-						if(item.getType()==Material.WOOD_SWORD){
-							item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-						}else if(item.getType()==Material.DIAMOND_SWORD){
-							r=UtilMath.r(100);
-							if(r>=50&&r<=55){
-								item.addEnchantment(Enchantment.FIRE_ASPECT, 2);
-							}else if(r>=0&&r<=40){
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-							}
-						}else if(item.getType()==Material.GOLD_SWORD){
-							r=UtilMath.r(100);
-							item.addEnchantment(Enchantment.DURABILITY, 2);
-							if(r>=0&&r<=60){
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-							}else if(r>=60&&r<=100){
-								item.addEnchantment(Enchantment.KNOCKBACK, 2);
-							}
-						}else if(item.getType()==Material.STONE_SWORD){
-							item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-						}else if(item.getType()==Material.IRON_SWORD){
-							r=UtilMath.r(100);
-							if(r>=40&&r<=80){
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-							}else{
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-							}
-						}
-					}else if(UtilItem.isArmor(item)){
-						if(UtilItem.isGoldArmor(item)){
-							r=UtilMath.r(100);
-							if(r>=0&&r<=60){
-								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-							}else{
-								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
-							}
-						}else if(UtilItem.isChainmailArmor(item)){
-							if(UtilItem.isChestplate(item)){
-								r=UtilMath.r(100);
-								if(r>=60&&r<=80){
-									item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-								}else{
-									item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-								}
-							}
-							item.addEnchantment(Enchantment.PROTECTION_FIRE, 3);
-						}else if(UtilItem.isIronArmor(item)){
-							r=UtilMath.r(100);
-							if(r>=60&&r<=80){
-								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-							}
-							item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, 4);
-						}
-					}
-				}
-			}
-		}
 	}
 	
 	public static void fillPlayerChest(Chest[] chests,HashMap<Chest,ArrayList<String>> template,HashMap<String,Integer> template_type){
 		//SWORD BLOCK HELM CHESTPLATE LEGGINGS BOOTS BOW ARROW POTION FOOD SNOWBALL EGG WEB LAVA-BUCKET WATER-BUCKET
 		template.clear();
 		template_type.clear();
-		template_type.put("SWORD",3);
-		template_type.put("BLOCK",3);
-		template_type.put("HELM",2);
-		template_type.put("CHESTPLATE",2);
-		template_type.put("LEGGINGS",2);
-		template_type.put("BOOTS",2);
+		template_type.put("SWORD",1);
 		template_type.put("ARROW",1);
-		template_type.put("POTION",4);
-		template_type.put("FOOD",3);
-		template_type.put("SNOWBALL",3);
-		template_type.put("EGG",3);
-		template_type.put("WEB",3);
-		template_type.put("LAVA-BUCKET",1);
-		template_type.put("WATER-BUCKET",1);
+		template_type.put("POTION",1);
+		template_type.put("FOOD",4);
+		template_type.put("SNOWBALL",1);
+		template_type.put("EGG",1);
+		template_type.put("WEB",1);
 		template_type.put("TNT",1);
 		template_type.put("FIRE",1);
 		template_type.put("BOW",1);
-		template_type.put("TOOL",2);
+		template_type.put("HELM",1);
+		template_type.put("CHESTPLATE",1);
+		template_type.put("LEGGINGS",1);
+		template_type.put("BOOTS",1);
+		template_type.put("ANGLE",1);
 		
 		for(Chest chest : chests){
 			chest.getInventory().clear();
 			template.put(chest, new ArrayList<String>());
 		}
 		
-		if(UtilMath.r(100)>=51){
+		for(int i = 0 ; i<1; i++){
+			switch(UtilMath.r(4)){
+			case 0:
+				if(template_type.containsKey("HELM")){
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"HELM");
+					template_type.remove("HELM");
+				}else{
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+					template_type.remove("CHESTPLATE");
+				}
+				break;
+			case 1:
+				if(template_type.containsKey("CHESTPLATE")){
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+					template_type.remove("CHESTPLATE");
+				}else{
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"HELM");
+					template_type.remove("HELM");
+				}
+				break;
+			case 2:
+				if(template_type.containsKey("LEGGINGS")){
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"LEGGINGS");
+					template_type.remove("LEGGINGS");
+				}else{
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOOTS");
+					template_type.remove("BOOTS");
+				}
+				break;
+			case 3:
+				if(template_type.containsKey("BOOTS")){
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOOTS");
+					template_type.remove("BOOTS");
+				}else{
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"LEGGINGS");
+					template_type.remove("LEGGINGS");
+				}
+				break;
+			}
+		}
+
+		template_type.remove("HELM");
+		template_type.remove("CHESTPLATE");
+		template_type.remove("LEGGINGS");
+		template_type.remove("BOOTS");
+		
+		if(UtilMath.r(100)>=94){
 			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
 			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
 		}else{
@@ -572,20 +458,24 @@ public class UtilSurvivalGames1vs1 {
 			template_type.remove("ARROW");
 		}
 		
+		if(UtilMath.r(100)>=81){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FIRE");
+		}else{
+			template_type.remove("FIRE");
+		}
+		
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
 		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
 		
 		int r;
 		ArrayList<String> list;
 		for(Chest chest : template.keySet()){
 			list=template.get(chest);
-			r=UtilMath.RandomInt(8, 5);
+			r=UtilMath.RandomInt(6, 4);
 			if(r<=list.size())continue;
 			for(int i = 0; i < (r-list.size()); i++){
+				if(template_type.size()==0)break;
 				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.r(template_type.size())]);
 			}
 		}
@@ -595,29 +485,29 @@ public class UtilSurvivalGames1vs1 {
 		for(Chest chest : template.keySet()){
 			for(String i : template.get(chest)){
 				switch(i){
+				case "ANGLE":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack( Material.FISHING_ROD ) );
+					break;
 				case "SWORD":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(UtilItem.rdmSchwert()) );
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack( (UtilMath.r(1)==0?Material.WOOD_SWORD:Material.WOOD_AXE) ) );
 					break;
 				case "HELM":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmHelm()));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LEATHER_HELMET));
 					break;
 				case "CHESTPLATE":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmChestplate()));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LEATHER_CHESTPLATE));
 					break;
 				case "LEGGINGS":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmLeggings()));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LEATHER_LEGGINGS));
 					break;
 				case "BOOTS":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBoots()));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LEATHER_BOOTS));
 					break;
 				case "BOW":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.BOW));
 					break;
 				case "ARROW":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ARROW,UtilMath.RandomInt(5, 2)));
-					break;
-				case "BLOCK":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBlock(),UtilMath.RandomInt(32, 16)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ARROW,UtilMath.RandomInt(4, 2)));
 					break;
 				case "POTION":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmPotion()));
@@ -626,13 +516,13 @@ public class UtilSurvivalGames1vs1 {
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , rdmFood());
 					break;
 				case "SNOWBALL":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16, 8)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(4, 2)));
 					break;
 				case "EGG":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(16, 8)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(4, 2)));
 					break;
 				case "WEB":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(16, 8)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(5, 2)));
 					break;
 				case "LAVA-BUCKET":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LAVA_BUCKET));
@@ -641,13 +531,10 @@ public class UtilSurvivalGames1vs1 {
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WATER_BUCKET));
 					break;
 				case "TNT":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.TNT,UtilMath.RandomInt(3, 1)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.TNT,UtilMath.RandomInt(2,1)));
 					break;
 				case "FIRE":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.FLINT_AND_STEEL));
-					break;
-				case "TOOL":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmTool()));
 					break;
 				default:
 					System.out.println("[UtilSurvivalGames1vs1]: Player Chest FAIL: "+i);
@@ -655,70 +542,6 @@ public class UtilSurvivalGames1vs1 {
 				}
 			}
 			template.get(chest).clear();
-		}
-		
-		for(Chest chest : template.keySet()){
-			for(ItemStack item : chest.getInventory().getContents()){
-				if(item!=null&&item.getType()!=Material.AIR){
-					if(item.getType()==Material.BOW){
-						switch(UtilMath.r(3)){
-						case 0:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);break;
-						case 1:item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);break;
-						case 2:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);item.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);break;
-						default:break;
-						}
-					}else if(UtilItem.isSword(item)){
-						if(item.getType()==Material.WOOD_SWORD){
-							item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-						}else if(item.getType()==Material.DIAMOND_SWORD){
-							r=UtilMath.r(100);
-							if(r>=50&&r<=55){
-								item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
-							}else if(r>=0&&r<=40){
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-							}
-						}else if(item.getType()==Material.GOLD_SWORD){
-							r=UtilMath.r(100);
-							item.addEnchantment(Enchantment.DURABILITY, 1);
-							if(r>=0&&r<=60){
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-							}else if(r>=60&&r<=100){
-								item.addEnchantment(Enchantment.KNOCKBACK, 1);
-							}
-						}else if(item.getType()==Material.STONE_SWORD){
-							item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-						}else if(item.getType()==Material.IRON_SWORD){
-							r=UtilMath.r(100);
-							if(r>=40&&r<=80){
-								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-							}
-						}
-					}else if(UtilItem.isArmor(item)){
-						if(UtilItem.isGoldArmor(item)){
-							r=UtilMath.r(100);
-							if(r>=0&&r<=60){
-								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-							}else{
-								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-							}
-						}else if(UtilItem.isChainmailArmor(item)){
-							if(UtilItem.isChestplate(item)){
-								r=UtilMath.r(100);
-								if(r>=60&&r<=80){
-									item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-								}
-							}
-							item.addEnchantment(Enchantment.PROTECTION_FIRE, 3);
-						}else if(UtilItem.isIronArmor(item)){
-							r=UtilMath.r(100);
-							if(r>=60&&r<=80){
-								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-							}
-							item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, 3);
-						}
-					}
-				}
-			}
 		}
 	}
 	

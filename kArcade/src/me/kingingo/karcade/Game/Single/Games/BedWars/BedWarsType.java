@@ -7,6 +7,7 @@ import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Util.UtilMath;
 
 public enum BedWarsType {
+_4x32(50,32,16,32,new Team[]{Team.RED,Team.BLUE,Team.YELLOW,Team.GREEN},3),
 _8x1(50,1,4,8,new Team[]{Team.RED,Team.BLUE,Team.YELLOW,Team.GREEN,Team.GRAY,Team.PINK,Team.ORANGE,Team.PURPLE},1),
 _2x4(10,4,4,8,new Team[]{Team.RED,Team.BLUE},1),
 _2x8(10,8,8,16,new Team[]{Team.RED,Team.BLUE},3),
@@ -43,6 +44,7 @@ public static BedWarsType random(){
 	int a = 0;
 	HashMap<Integer,BedWarsType> list = new HashMap<>();
 	for(BedWarsType t : BedWarsType.values()){
+		if(t==_4x32)continue;
 		for(int i = 0; i < t.getH()+1; i++){
 			list.put(a,t);
 			a++;

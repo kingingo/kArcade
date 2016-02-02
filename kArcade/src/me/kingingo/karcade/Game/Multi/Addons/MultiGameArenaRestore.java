@@ -39,6 +39,9 @@ public class MultiGameArenaRestore extends kListener{
 		private World world;
 		@Getter
 		@Setter
+		private boolean tntDestroy=true;
+		@Getter
+		@Setter
 		private boolean blockBurn=false;
 		@Getter
 		@Setter
@@ -131,23 +134,27 @@ public class MultiGameArenaRestore extends kListener{
 				ev.setGame(game);
 				ev.setCancelled(true);
 				if(game.getState() == GameState.InGame){
-					if(delete==null)this.delete=new ArrayList<>();
-					delete.clear();
-					Block b;
-					for(int i = 0; i<ev.getBlocks().size() ; i++){
-						b=ev.getBlocks().get(i);
-						if(isOnlyBuild()){
-							if(blacklist.contains(b.getType())||!blocks.containsKey(b.getLocation())){
-								delete.add(b);
-							}
-						}else{
-							if(!blocks.containsKey(b.getLocation())){
-								blocks.put(b.getLocation(),b.getState());
+					if(isTntDestroy()){
+						if(delete==null)this.delete=new ArrayList<>();
+						delete.clear();
+						Block b;
+						for(int i = 0; i<ev.getBlocks().size() ; i++){
+							b=ev.getBlocks().get(i);
+							if(isOnlyBuild()){
+								if(blacklist.contains(b.getType())||!blocks.containsKey(b.getLocation())){
+									delete.add(b);
+								}
+							}else{
+								if(!blocks.containsKey(b.getLocation())){
+									blocks.put(b.getLocation(),b.getState());
+								}
 							}
 						}
+						
+						for(Block de : delete)ev.getBlocks().remove(de);
+					}else{
+						ev.getBlocks().clear();
 					}
-					
-					for(Block de : delete)ev.getBlocks().remove(de);
 					return;
 				}
 				

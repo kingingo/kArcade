@@ -282,6 +282,8 @@ public class kArcadeManager implements Listener{
 			return new CaveWars(this,CaveWarsType.values()[UtilMath.RandomInt(CaveWarsType.values().length, 0)]);
 		}else if(GameType.SheepWars.getTyp().equalsIgnoreCase(game)){
 			return new SheepWars(this,SheepWarsType.values()[UtilMath.RandomInt(SheepWarsType.values().length, 0)]);
+		}else if("BedWars128".equalsIgnoreCase(game)){
+			return new BedWars(this, BedWarsType._4x32);
 		}else if(GameType.BedWars.getTyp().equalsIgnoreCase(game)){
 			return new BedWars(this, BedWarsType.random());
 		}else if(GameType.TroubleInMinecraft.getTyp().equalsIgnoreCase(game)){
@@ -304,6 +306,8 @@ public class kArcadeManager implements Listener{
 			return new MultiGames(this,game);
 		}else if(GameType.QuickSurvivalGames.getTyp().equalsIgnoreCase(game)){
 			return new QuickSurvivalGames(this);
+		}else if("SkyWars12".equalsIgnoreCase(game)){
+			return new SkyWars(this,SkyWarsType._12x1);
 		}else if("SkyWars128".equalsIgnoreCase(game)){
 			return new SkyWars(this,SkyWarsType._32x4);
 		}else if(GameType.SkyWars.getTyp().equalsIgnoreCase(game)){
@@ -466,7 +470,14 @@ public class kArcadeManager implements Listener{
 			getInstance().getConfig().set("Config.Server.Game", packet.getTyp().getTyp());
 			getInstance().saveConfig();
 			getGame().setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+			
+			Bukkit.getScheduler().runTask(getInstance(), new Runnable() {
+				
+				@Override
+				public void run() {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+				}
+			});
 		}
 	}
 	

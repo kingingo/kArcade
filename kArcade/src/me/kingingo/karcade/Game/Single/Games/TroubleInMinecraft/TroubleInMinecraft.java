@@ -49,6 +49,7 @@ import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.StatsManager.Event.PlayerStatsChangeEvent;
 import me.kingingo.kcore.StatsManager.Event.PlayerStatsCreateEvent;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
@@ -78,7 +79,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -714,29 +714,36 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void JoinHologram(PlayerJoinEvent ev){
+	@EventHandler
+	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
 		
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KARMA", getStats().getInt(Stats.TTT_KARMA, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_TESTS", getStats().getInt(Stats.TTT_TESTS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_TRAITOR_POINTS", getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DETECTIVE_POINTS", getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
-			});
+		Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KARMA", getStats().getInt(Stats.TTT_KARMA, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_TESTS", getStats().getInt(Stats.TTT_TESTS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_TRAITOR_POINTS", getStats().getInt(Stats.TTT_TRAITOR_PUNKTE, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DETECTIVE_POINTS", getStats().getInt(Stats.TTT_DETECTIVE_PUNKTE, ev.getPlayer())),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+					});
+			}
+		});
 	}
 	
 	@EventHandler

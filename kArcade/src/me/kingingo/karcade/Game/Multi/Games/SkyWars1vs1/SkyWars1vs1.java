@@ -172,7 +172,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 				new Kit( "§eDroide",new String[]{"§8x1§7 Regenerations Trank","§82x§7 Tränke der Heilung","§82x§7 Vergiftungs Tränke","§82x§7 Schadens Tränke"}, new ItemStack(Material.POTION),kPermission.SKYWARS_KIT_DROIDE,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,1,(short)16385),new ItemStack(Material.POTION,2,(short)16388),new ItemStack(Material.POTION,2,(short)16389),new ItemStack(Material.POTION,2,(short)16396)})
 				}),
-				new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 2"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,500,new Perk[]{
+				new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 1"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.KNOCKBACK,1)})
 				}),
 				new Kit( "§eHase",new String[]{"§8x2§7 Schnelligkeits Treanke","§8x2§7 Sprungkraft Treanke","§8x8§7 Kartotten"}, new ItemStack(Material.CARROT),kPermission.SKYWARS_KIT_HASE,KitType.KAUFEN,2000,500,new Perk[]{

@@ -27,6 +27,7 @@ import me.kingingo.kcore.Util.TimeSpan;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
+import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilTime;
@@ -36,13 +37,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -81,7 +86,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	
 	public SurvivalGames1vs1(MultiGames games,String Map,Location location,File file) {
 		super(games,Map, location);
-		setStartCountdown(31);
+		setStartCountdown(10);
 		UtilBG.setHub("versus");
 		setUpdateTo("versus");
 		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
@@ -105,9 +110,9 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		}else{
 			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.VILLAGE_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.VILLAGE_BLUE).get(0));
 			this.packet=UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10);
-			//this.area.MinMax
 		}
-		
+		this.area.setTntDestroy(false);
+		this.area.setOnlyBuild(true);
 		UtilSurvivalGames1vs1.loadWorld(this, template, template_type);
 		
 		setBlockBreak(true);
@@ -118,8 +123,29 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		setFoodlevelchange(true);
 		setDamagePvP(false);
 		setDamage(false);
-		getEntityDamage().add(DamageCause.FALL);
 		loadMaxTeam();
+	}
+	
+	@EventHandler
+	public void tnt(BlockPlaceEvent ev){
+		if(getState()==GameState.InGame){
+			if(ev.getBlock().getType()==Material.TNT&&area.isInArea(ev.getBlock().getLocation())){
+				UtilInv.remove(ev.getPlayer(), new ItemStack(Material.TNT), 1);
+				ev.getBlock().setType(Material.AIR);
+				ev.getBlock().getLocation().getWorld().spawnEntity(ev.getBlock().getLocation(),EntityType.PRIMED_TNT);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void BlockIgnite(BlockIgniteEvent ev){
+		if(getState()==GameState.InGame){
+			if(getGameList().getPlayers().containsKey(ev.getPlayer())){
+				if(ev.getCause() == IgniteCause.FLINT_AND_STEEL&&ev.getPlayer().getItemInHand().getType()==Material.FLINT_AND_STEEL){
+					ev.getPlayer().getItemInHand().setDurability((short) (ev.getPlayer().getItemInHand().getDurability() + ((short) (ev.getPlayer().getItemInHand().getType().getMaxDurability()/5))) );
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority=EventPriority.LOWEST)
@@ -139,17 +165,18 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	@EventHandler(ignoreCancelled=false)
 	public void enderchest(PlayerInteractEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
-			ev.setCancelled(true);
-			if(getState()!=GameState.InGame)return;
-			
-			if(ev.getClickedBlock()!=null){
-				if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
-					if(getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
-						ev.getPlayer().openInventory(enderchest_inv);
-						return;
+			if(getState()==GameState.InGame){
+				if(ev.getClickedBlock()!=null){
+					if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
+						if(getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+							ev.setCancelled(true);
+							ev.getPlayer().openInventory(enderchest_inv);
+							return;
+						}
 					}
 				}
-				ev.setCancelled(false);
+			}else{
+				ev.setCancelled(true);
 			}
 		}
 	}
@@ -264,7 +291,6 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
-			
 			if(enderchest_inv!=null)enderchest_inv.clear();
 			enderchest_inv=null;
 			UtilSurvivalGames1vs1.loadEnderChest(this);
@@ -275,6 +301,8 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 				player.setScoreboard(scoreboard);
 				UtilPlayer.sendPacket(player, this.packet);
 			}
+			
+			setTeamTab(scoreboard);
 			setDropItem(true);
 			setDamagePvP(true);
 			setDamage(true);

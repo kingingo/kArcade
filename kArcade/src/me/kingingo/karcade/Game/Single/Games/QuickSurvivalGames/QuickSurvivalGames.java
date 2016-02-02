@@ -20,6 +20,7 @@ import me.kingingo.kcore.Enum.Zeichen;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
@@ -53,7 +54,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -500,24 +500,31 @@ public class QuickSurvivalGames extends SoloGame{
 	}
 	
 	@EventHandler
-	public void JoinHologram(PlayerJoinEvent ev){
+	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
+		
+		Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
 
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
-			});
+				getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+					});
+			}
+		});
 	}
 	
 	@EventHandler

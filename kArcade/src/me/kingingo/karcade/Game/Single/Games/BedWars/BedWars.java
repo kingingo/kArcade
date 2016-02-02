@@ -36,6 +36,7 @@ import me.kingingo.kcore.Merchant.Merchant;
 import me.kingingo.kcore.Merchant.MerchantOffer;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
@@ -699,25 +700,37 @@ public class BedWars extends TeamGame{
 		}
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void JoinHologram(PlayerJoinEvent ev){
+	@EventHandler
+	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
-		" ",
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_BEDWARS", getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getPlayer())),
-		" ",
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
-		Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+		
+		Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_BEDWARS", getStats().getInt(Stats.BEDWARS_ZERSTOERTE_BEDs, ev.getPlayer())),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+				});
+			}
 		});
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void JoinHologram(PlayerJoinEvent ev){
+		if(getState()!=GameState.LobbyPhase)return;
 	}
 	
 }

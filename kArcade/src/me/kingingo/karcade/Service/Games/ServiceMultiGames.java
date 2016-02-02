@@ -27,6 +27,12 @@ public class ServiceMultiGames {
 				Bukkit.getPluginManager().callEvent(new PacketReceiveEvent(s, games.getManager().getPacketManager()));
 				Bukkit.getPluginManager().callEvent(new PacketReceiveEvent(s1, games.getManager().getPacketManager()));
 				
+			}else if(args[1].equalsIgnoreCase("sg")){
+				ARENA_SETTINGS s = new ARENA_SETTINGS(ArenaType._TEAMx2, "arena0", "", p, Team.RED, 2, 2);
+				ARENA_SETTINGS s1 = new ARENA_SETTINGS(ArenaType._TEAMx2, "arena0", "", Bukkit.getPlayer(args[2]), Team.BLUE, 2, 2);
+				Bukkit.getPluginManager().callEvent(new PacketReceiveEvent(s, games.getManager().getPacketManager()));
+				Bukkit.getPluginManager().callEvent(new PacketReceiveEvent(s1, games.getManager().getPacketManager()));
+				
 			}
 		}
 	}

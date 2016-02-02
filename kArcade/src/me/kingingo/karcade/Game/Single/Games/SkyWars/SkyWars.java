@@ -11,7 +11,6 @@ import me.kingingo.karcade.Events.WorldLoadEvent;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.SingleWorldData;
-import me.kingingo.karcade.Game.Single.Addons.AddonChat;
 import me.kingingo.karcade.Game.Single.Addons.AddonTargetNextPlayer;
 import me.kingingo.karcade.Game.Single.Addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
@@ -37,6 +36,7 @@ import me.kingingo.kcore.Kit.Perks.PerkEquipment;
 import me.kingingo.kcore.Kit.Perks.PerkHeal;
 import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkHolzfäller;
+import me.kingingo.kcore.Kit.Perks.PerkLessDamage;
 import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
 import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
@@ -50,7 +50,6 @@ import me.kingingo.kcore.Kit.Perks.PerkWalkEffect;
 import me.kingingo.kcore.Kit.Shop.SingleKitShop;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.LaunchItem.LaunchItemManager;
-import me.kingingo.kcore.MySQL.Callback;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
@@ -63,7 +62,6 @@ import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
-import me.kingingo.kcore.Util.UtilInv;
 import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
@@ -81,9 +79,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -149,7 +149,20 @@ public class SkyWars extends TeamGame{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.LEATHER_BOOTS),new ItemStack(Material.LEATHER_LEGGINGS),new ItemStack(Material.LEATHER_CHESTPLATE),new ItemStack(Material.LEATHER_HELMET)})
 			}),
 			new Kit( "§eMLG",new String[]{"§8x64§7 Brick","§8x12§7 TNT","§8x1§7 Redstone Fackel","§8x2§7 Wasser Eimer","§8x1§7 Boot","§8x8§7 Spinnenweben"}, new ItemStack(Material.WATER_BUCKET),kPermission.SKYWARS_KIT_MLG,KitType.KAUFEN,2000,500,new Perk[]{
-				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BRICK,64),new ItemStack(Material.TNT,12),new ItemStack(Material.REDSTONE_TORCH_ON,1),new ItemStack(Material.WATER_BUCKET,2),new ItemStack(Material.BOAT,1),new ItemStack(Material.WEB,8)})
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BRICK,64),new ItemStack(Material.TNT,12),new ItemStack(Material.REDSTONE_TORCH_ON,1),new ItemStack(Material.WATER_BUCKET,2),new ItemStack(Material.BOAT,1),new ItemStack(Material.WEB,8)}),
+				new PerkLessDamage(15,EntityType.PRIMED_TNT)
+			}),
+			new Kit( "§eSpinne",new String[]{"§8x12§7 Spinnweben","§8x1§7 Sprungkraft II Trank","§8x1§7 Angel","§8x2§7 Wasser Eimer","§8x8§7 Spinnenweben"}, new ItemStack(Material.WEB),kPermission.SKYWARS_KIT_SPINNE,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD),new ItemStack(Material.POTION,1,(byte)8233),new ItemStack(Material.WEB,12)})
+			}),
+			new Kit( "§eDoktor",new String[]{"§8x1§7 Weiße Leder Ruestung","§8x2§7 Heil Tränke II","§8x2§7 Schere","§8x8§7 Spinnenweben"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.WHITE),kPermission.SKYWARS_KIT_DOKTOR,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.WHITE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.WHITE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.WHITE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), DyeColor.WHITE),new ItemStack(Material.SHEARS),new ItemStack(Material.POTION,1,(byte)8229)})
+			}),
+			new Kit( "§eDagobert Duck",new String[]{"§8x1§7 Goldschwert","§8x2§7 Goldäpfel","§8x1§7 Goldbrustpanzer","§8x8§7 Gold"}, new ItemStack(Material.GOLD_CHESTPLATE),kPermission.SKYWARS_KIT_DAGOBERT_DUCK,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{new ItemStack(Material.GOLD_SWORD),new ItemStack(Material.GOLDEN_APPLE,2),new ItemStack(Material.GOLD_CHESTPLATE),new ItemStack(Material.GOLD_INGOT,8)})
+			}),
+			new Kit( "§eForster",new String[]{"§8x1§7 Steinaxt Schärfe 1","§8x1§7 Schere","§8x16§7 Laub","§8x5§7 Äpfel"}, new ItemStack(Material.LEAVES),kPermission.SKYWARS_KIT_FORSTER,KitType.KAUFEN,2000,500,new Perk[]{
+				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.STONE_AXE), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.APPLE,2),new ItemStack(Material.LEAVES,16),new ItemStack(Material.SHEARS,1)})
 			}),
 			new Kit("§ePanzer",new String[]{"§8x1§7 Diamanthelm mit Dornen 1,Unbreaking 1","§8x1§7 Eisenbrustpanzer mit Unbreaking 1","§8x1§7 Eisenhose mit Unbreaking 1","§8x1§7 Eisenschuhe mit Unbreaking 1"},new ItemStack(Material.SLIME_BALL),kPermission.SKYWARS_KIT_PANZER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(UtilItem.EnchantItem(new ItemStack(Material.DIAMOND_CHESTPLATE), Enchantment.DURABILITY, 1), Enchantment.THORNS, 1),
@@ -208,7 +221,7 @@ public class SkyWars extends TeamGame{
 			new Kit( "§eDroide",new String[]{"§8x1§7 Regenerations Trank","§82x§7 Tränke der Heilung","§82x§7 Vergiftungs Tränke","§82x§7 Schadens Tränke"}, new ItemStack(Material.POTION),kPermission.SKYWARS_KIT_DROIDE,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.POTION,1,(short)16385),new ItemStack(Material.POTION,2,(short)16388),new ItemStack(Material.POTION,2,(short)16389),new ItemStack(Material.POTION,2,(short)16396)})
 			}),
-			new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 2"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,500,new Perk[]{
+			new Kit( "§eStoßer",new String[]{"§8x1§7 Holzschwert mit Rückstoß 1"}, new ItemStack(Material.WOOD_SWORD),kPermission.SKYWARS_KIT_STOßER,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.KNOCKBACK,1)})
 			}),
 			new Kit( "§eHase",new String[]{"§8x2§7 Schnelligkeits Treanke","§8x2§7 Sprungkraft Treanke","§8x8§7 Kartotten"}, new ItemStack(Material.CARROT),kPermission.SKYWARS_KIT_HASE,KitType.KAUFEN,2000,500,new Perk[]{
@@ -378,12 +391,13 @@ public class SkyWars extends TeamGame{
 	}
 	
 	public ItemStack Tools(){
-		switch(UtilMath.r(5)){
+		switch(UtilMath.r(6)){
 		case 0: return new ItemStack(Material.DIAMOND_SWORD);
 		case 1: return new ItemStack(Material.IRON_SWORD);
 		case 2: return new ItemStack(Material.DIAMOND_AXE);
 		case 3: return new ItemStack(Material.DIAMOND_PICKAXE);
-		case 4: return new ItemStack(Material.BOW);
+		case 4: return new ItemStack(Material.SHEARS);
+		case 5: return new ItemStack(Material.BOW);
 		default: return new ItemStack(Material.WOOD_SWORD);
 		}
 	}
@@ -577,7 +591,8 @@ public class SkyWars extends TeamGame{
 		template.clear();
 		template_type.clear();
 		template_type.put("SWORD",(type==SkyWarsType._32x4 ? 6 : 3));
-		template_type.put("BLOCK",(type==SkyWarsType._32x4 ? 6 : 3));
+		template_type.put("AXT",(type==SkyWarsType._32x4 ? 6 : 2));
+		template_type.put("BLOCK",(type==SkyWarsType._32x4 ? 8 : 5));
 		template_type.put("HELM",(type==SkyWarsType._32x4 ? 6 : 2));
 		template_type.put("CHESTPLATE",(type==SkyWarsType._32x4 ? 6 : 2));
 		template_type.put("LEGGINGS",(type==SkyWarsType._32x4 ? 6 : 2));
@@ -596,7 +611,7 @@ public class SkyWars extends TeamGame{
 		for(Chest chest : chests)template.put(chest, new ArrayList<String>());
 		
 		
-		if(UtilMath.r(100)>70){
+		if(UtilMath.r(100)>80){
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
 		}else{
@@ -605,17 +620,18 @@ public class SkyWars extends TeamGame{
 		}
 		
 		if(type==SkyWarsType._32x4){
-			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
-			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
 		}
 
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOOTS");
 		add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
 		
 		int r;
@@ -632,6 +648,9 @@ public class SkyWars extends TeamGame{
 		for(Chest chest : template.keySet()){
 			for(String i : template.get(chest)){
 				switch(i){
+				case "AXT":
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(UtilItem.rdmAxt()) );
+					break;
 				case "SWORD":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(UtilItem.rdmSchwert()) );
 					break;
@@ -654,7 +673,7 @@ public class SkyWars extends TeamGame{
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.ARROW,UtilMath.RandomInt(16, 8)));
 					break;
 				case "BLOCK":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBlock(),UtilMath.RandomInt(32, 16)));
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmBlock(),UtilMath.RandomInt(48,32)));
 					break;
 				case "POTION":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(rdmPotion()));
@@ -662,12 +681,6 @@ public class SkyWars extends TeamGame{
 				case "FOOD":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , rdmFood());
 					break;
-//				case "SNOWBALL":
-//					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.SNOW_BALL,UtilMath.RandomInt(16, 8)));
-//					break;
-//				case "EGG":
-//					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.EGG,UtilMath.RandomInt(16, 8)));
-//					break;
 				case "WEB":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.WEB,UtilMath.RandomInt(16, 8)));
 					break;
@@ -703,6 +716,11 @@ public class SkyWars extends TeamGame{
 						case 1:item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);break;
 						case 2:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);item.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);break;
 						default:break;
+						}
+					}else if(UtilItem.isAxt(item)){
+						item.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+						if(item.getType()==Material.GOLD_AXE){
+							item.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
 						}
 					}else if(UtilItem.isSword(item)){
 						if(item.getType()==Material.WOOD_SWORD){
@@ -937,23 +955,27 @@ public class SkyWars extends TeamGame{
 				Player p = list.get(0);
 				getStats().setInt(p, getStats().getInt(Stats.WIN, p)+1, Stats.WIN);
 				if(type==SkyWarsType._32x4){
-					getCoins().addCoins(p, false, 100);	
+					getCoins().addCoins(p, false, 1000);	
+					getGems().addGems(p, true, 1000);
 				}else{
 					getCoins().addCoins(p, false, 25);
 				}
 				broadcastWithPrefix("GAME_WIN", p.getName());
 				new Title("§6§lGEWONNEN").send(p);
+				System.err.println("WINNER: "+p.getName());
 			}else{
 
 				Title t = new Title("§6§lGEWONNEN");
 				for(Player player : list){
 					if(type==SkyWarsType._32x4){
-						getCoins().addCoins(player, false, 100);	
+						getCoins().addCoins(player, false, 1000);		
+						getGems().addGems(player, true, 1000);
 					}else{
 						getCoins().addCoins(player, false, 25);
 					}
 					getStats().setInt(player, getStats().getInt(Stats.WIN, player)+1, Stats.WIN);
 					t.send(player);
+					System.err.println("WINNER: "+player.getName());
 				}
 			}
 		}

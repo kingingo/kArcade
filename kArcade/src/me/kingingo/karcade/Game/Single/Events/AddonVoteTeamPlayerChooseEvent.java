@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

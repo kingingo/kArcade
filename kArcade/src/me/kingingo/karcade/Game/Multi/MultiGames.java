@@ -416,32 +416,30 @@ public class MultiGames extends Game{
 								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 									
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
+									g.getKit().kit=settings.getKit();
 									
-									getStats().getAsyncInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()),new Callback() {
-										
-										@Override
-										public void done(Object i) {
-											if(i instanceof Integer){
-												getKitManager().loadAsyncKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(),((Integer)i) , new Callback() {
-													
-													@Override
-													public void done(Object value) {
-														if(value instanceof PlayerKit){
-															g.setKit(((PlayerKit)value));
-															System.out.println(settings.getPlayer()+" G: "+g.getKit()==null);
-															System.out.println(settings.getPlayer()+" G: "+settings.getKit());
-															
-															if(g.getKit()!=null){
-																System.out.println(settings.getPlayer()+" G: "+g.getKit().id);
-																System.out.println(settings.getPlayer()+" G: "+g.getKit().kit==null);
-																g.getKit().kit=settings.getKit();
-															}
-														}
-													}
-												});
-											}
-										}
-									});
+//									getStats().getAsyncInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()),new Callback() {
+//										
+//										@Override
+//										public void done(Object i) {
+//											if(i instanceof Integer){
+//												getKitManager().loadAsyncKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(),((Integer)i) , new Callback() {
+//													
+//													@Override
+//													public void done(Object value) {
+//														if(value instanceof PlayerKit){
+//															g.setKit(((PlayerKit)value));
+//															
+//															if(g.getKit()!=null){
+//																g.getKit().kit=settings.getKit();
+//															}
+//														}
+//													}
+//												});
+//											}
+//										}
+//									});
 								}
 								((Versus)g).setType(settings.getType());
 								g.setState(GameState.Laden);
@@ -493,8 +491,8 @@ public class MultiGames extends Game{
 	@EventHandler
 	public void PacketReceive(PacketReceiveEvent ev){
 		if(ev.getPacket() instanceof ARENA_SETTINGS){
-			ARENA_SETTINGS settings = (ARENA_SETTINGS)ev.getPacket();
-			MultiGame g = games.get(settings.getArena());
+			final ARENA_SETTINGS settings = (ARENA_SETTINGS)ev.getPacket();
+			final MultiGame g = games.get(settings.getArena());
 			if(g instanceof Versus){
 				try{
 					if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&
@@ -523,9 +521,15 @@ public class MultiGames extends Game{
 
 								g.setType(settings.getType());
 								g.setState(GameState.Laden);
+								
+								Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
 									
-								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
-								Bukkit.getPluginManager().callEvent(event);
+									@Override
+									public void run() {
+										event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+										Bukkit.getPluginManager().callEvent(event);
+									}
+								});
 							}else{
 								warte_liste.put(settings.getPlayer(),settings);
 							}
@@ -571,16 +575,19 @@ public class MultiGames extends Game{
 							g.setType(settings.getType());
 							g.setState(GameState.Laden);
 								
-							event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
-							Bukkit.getPluginManager().callEvent(event);
+							Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+								
+								@Override
+								public void run() {
+									event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+									Bukkit.getPluginManager().callEvent(event);
+								}
+							});
 						}else{
 							warte_liste.put(settings.getPlayer(),settings);
 						}
 				}	
 			}
-			
-			g=null;
-			settings=null;
 		}
 	}
 	

@@ -208,6 +208,12 @@ public class SingleGame extends Game{
 		this.gameList=new GameList(getManager());
 	}
 	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void loadStats(PlayerJoinEvent ev){
+		if(getState()!=GameState.LobbyPhase)return;
+		getStats().loadPlayerStats(ev.getPlayer());
+	}
+	
 	@EventHandler
 	public void soilChangeEntity(EntityInteractEvent event){
 	    if (!isSoilChange() && (event.getEntityType() != EntityType.PLAYER) && (event.getBlock().getType() == Material.SOIL)) event.setCancelled(true);

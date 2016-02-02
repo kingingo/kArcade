@@ -22,6 +22,7 @@ import me.kingingo.kcore.Enum.Team;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Permission.kPermission;
 import me.kingingo.kcore.StatsManager.Stats;
+import me.kingingo.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
 import me.kingingo.kcore.Util.Color;
@@ -52,7 +53,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -285,41 +285,31 @@ public class SkyPvP extends SoloGame{
 		}
 	}
 	
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void JoinHologram(PlayerJoinEvent ev){
+	@EventHandler
+	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		int win = getStats().getInt(Stats.WIN, ev.getPlayer());
 		int lose = getStats().getInt(Stats.LOSE, ev.getPlayer());
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats().clone().add(0,0.3,0),new String[]{
-			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-		"Server: SkyPvP §a"+kArcade.id,
-		"Map: "+getWorldData().getMapName(),
-		" ",
-		Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Stats",
-		"Coins: "+getCoins().getCoins(ev.getPlayer()),
-		"Rang: "+getStats().getRank(Stats.WIN, ev.getPlayer()),	
-		"Kills: "+getStats().getInt(Stats.KILLS, ev.getPlayer()),
-		"Tode: "+getStats().getInt(Stats.DEATHS, ev.getPlayer()),
-		" ",
-		"Gespielte Spiele: "+(win+lose),
-		"Gewonnene Spiele: "+win,
-		"Verlorene Spiele: "+lose
-		});
 		
-		getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
-			Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-			Language.getText(ev.getPlayer(), "",getType().getTyp()+" §a"+kArcade.id),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
-			" ",
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
-			Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
-			});
+		Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				getManager().getHologram().sendText(ev.getPlayer(),getManager().getLoc_stats(),new String[]{
+					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
+					Language.getText(ev.getPlayer(), "",getType().getTyp()+" §a"+kArcade.id),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_KILLS", getStats().getInt(Stats.KILLS, ev.getPlayer())),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_DEATHS", getStats().getInt(Stats.DEATHS, ev.getPlayer())),
+					" ",
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_GAMES", (win+lose)),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_WINS", win),
+					Language.getText(ev.getPlayer(), "GAME_HOLOGRAM_LOSE", lose),
+					});
+			}
+		});
 	}
 	
 	@EventHandler
