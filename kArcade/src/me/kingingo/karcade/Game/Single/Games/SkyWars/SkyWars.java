@@ -37,6 +37,7 @@ import me.kingingo.kcore.Kit.Perks.PerkHeal;
 import me.kingingo.kcore.Kit.Perks.PerkHealByHit;
 import me.kingingo.kcore.Kit.Perks.PerkHolzf‰ller;
 import me.kingingo.kcore.Kit.Perks.PerkLessDamage;
+import me.kingingo.kcore.Kit.Perks.PerkLessDamageCause;
 import me.kingingo.kcore.Kit.Perks.PerkMoreHearth;
 import me.kingingo.kcore.Kit.Perks.PerkNoExplosionDamage;
 import me.kingingo.kcore.Kit.Perks.PerkNoFalldamage;
@@ -84,11 +85,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -150,9 +153,10 @@ public class SkyWars extends TeamGame{
 			}),
 			new Kit( "ßeMLG",new String[]{"ß8x64ß7 Brick","ß8x12ß7 TNT","ß8x1ß7 Redstone Fackel","ß8x2ß7 Wasser Eimer","ß8x1ß7 Boot","ß8x8ß7 Spinnenweben"}, new ItemStack(Material.WATER_BUCKET),kPermission.SKYWARS_KIT_MLG,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BRICK,64),new ItemStack(Material.TNT,12),new ItemStack(Material.REDSTONE_TORCH_ON,1),new ItemStack(Material.WATER_BUCKET,2),new ItemStack(Material.BOAT,1),new ItemStack(Material.WEB,8)}),
-				new PerkLessDamage(15,EntityType.PRIMED_TNT)
+				new PerkLessDamage(5,EntityType.PRIMED_TNT),
+				new PerkLessDamageCause(40, DamageCause.FALL)
 			}),
-			new Kit( "ßeSpinne",new String[]{"ß8x12ß7 Spinnweben","ß8x1ß7 Sprungkraft II Trank","ß8x1ß7 Angel","ß8x2ß7 Wasser Eimer","ß8x8ß7 Spinnenweben"}, new ItemStack(Material.WEB),kPermission.SKYWARS_KIT_SPINNE,KitType.KAUFEN,2000,500,new Perk[]{
+			new Kit( "ßeSpinne",new String[]{"ß8x12ß7 Spinnweben","ß8x1ß7 Sprungkraft II Trank","ß8x1ß7 Angel","ß8x2ß7 Wasser Eimer"}, new ItemStack(Material.WEB),kPermission.SKYWARS_KIT_SPINNE,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD),new ItemStack(Material.POTION,1,(byte)8233),new ItemStack(Material.WEB,12)})
 			}),
 			new Kit( "ßeDoktor",new String[]{"ß8x1ß7 Weiﬂe Leder Ruestung","ß8x2ß7 Heil Tr‰nke II","ß8x2ß7 Schere","ß8x8ß7 Spinnenweben"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.WHITE),kPermission.SKYWARS_KIT_DOKTOR,KitType.KAUFEN,2000,500,new Perk[]{
@@ -611,7 +615,7 @@ public class SkyWars extends TeamGame{
 		for(Chest chest : chests)template.put(chest, new ArrayList<String>());
 		
 		
-		if(UtilMath.r(100)>80){
+		if(UtilMath.r(100)>99){
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
 			add( (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
 		}else{

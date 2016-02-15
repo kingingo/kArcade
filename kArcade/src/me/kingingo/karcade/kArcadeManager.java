@@ -1,5 +1,8 @@
 package me.kingingo.karcade;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -172,6 +175,24 @@ public class kArcadeManager implements Listener{
 		new AddonDay(getInstance(), getLobby().getWorld());
 	}
 	
+	public void setMaxMemory(int gb){
+ 		 try {
+ 			 File file = new File("start.sh");
+ 	         FileWriter fstream= new FileWriter(file);
+ 	 		 BufferedWriter out = new BufferedWriter(fstream);
+ 	 		 out.write("rm usercache.json");
+ 	 		 out.write("\n");
+ 	 		 out.write("rm -R world/playerdata/*");
+ 	 		 out.write("\n");
+ 	 		 out.write("screen -AdmS a"+kArcade.id+" java -server -XX:+UseConcMarkSweepGC -XX:MaxGCPauseMillis=50 -XX:+UseParNewGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=7 -XX:+AggressiveOpts -Xms100M -Xmx"+gb+"G -d64 -jar paperspigot.jar nogui");
+	 		 out.close();
+	 		 
+	 		 DebugLog("Der maximale Ram wurde auf "+gb+"GB gesetzt!");
+ 		 } catch (IOException e) {
+			e.printStackTrace();
+		}       		      
+	}
+	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Start(GameStartEvent ev){
 		Calendar.getHoliday();
@@ -273,6 +294,16 @@ public class kArcadeManager implements Listener{
 			if(list.get(i)==null)break;
 			getString_ranking()[i]="§l#"+i+"§r "+getGame().getStats().getName(list.get(i))+" "+s.getKÜRZEL()+": "+getGame().getStats().getIntWithUUID(s, list.get(i) );
 		}
+	}
+	
+	public void restart(){
+		Bukkit.getScheduler().runTask(getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+			}
+		});
 	}
 	
 	public Game Game(String game){
@@ -471,13 +502,7 @@ public class kArcadeManager implements Listener{
 			getInstance().saveConfig();
 			getGame().setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
 			
-			Bukkit.getScheduler().runTask(getInstance(), new Runnable() {
-				
-				@Override
-				public void run() {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
-				}
-			});
+			restart();
 		}
 	}
 	

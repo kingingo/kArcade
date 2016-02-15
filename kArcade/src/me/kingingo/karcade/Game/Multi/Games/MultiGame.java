@@ -17,9 +17,11 @@ import me.kingingo.kcore.Enum.GameStateChangeReason;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
+import me.kingingo.kcore.Inventory.Item.Buttons.ButtonBase;
 import me.kingingo.kcore.Language.Language;
 import me.kingingo.kcore.Listener.kListener;
 import me.kingingo.kcore.Packet.Packets.ARENA_STATUS;
+import me.kingingo.kcore.Packet.Packets.ARENA_WIN;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
@@ -28,6 +30,7 @@ import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilBG;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilEvent;
+import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilScoreboard;
 import me.kingingo.kcore.Util.UtilServer;
@@ -136,16 +139,35 @@ public class MultiGame extends kListener{
 	private int team=0;
 	@Getter
 	private ArenaType type;
+	@Getter
+	@Setter 
+	private ButtonBase button;
 	
 	public MultiGame(MultiGames games,String Map,Location pasteLocation) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
 		this.games=games;
 		this.Map=Map;
-		this.pasteLocation=pasteLocation;
+		this.pasteLocation=pasteLocation.clone();
 		this.gameList=new GameList(games.getManager());
 		this.arena="arena"+games.getGames().size();
 		this.min_team=0;
 		this.max_team=0;
+	}
+	
+	public void updateInfoButton(){
+		if(button==null)return;
+		String players = "";
+		for(Player player : getGameList().getPlayers().keySet()){
+			if(getGameList().getPlayers().get(player)==PlayerState.IN){
+				players+="§a"+player+"§7,";
+			}else if(getGameList().getPlayers().get(player)==PlayerState.OUT){
+				players+="§c"+player+"§7,";
+			}else if(getGameList().getPlayers().get(player)==PlayerState.BOTH){
+				players+="§d"+player+"§7,";
+			}
+		}
+		button.setItemStack(UtilItem.SetDescriptions(button.getItemStack(), new String[]{"§aMap§7 » §e"+getMap(),"§aStatus§7 »§e "+getState().name(),"§aSpieler §7»§e "+(players.length()>3?players.substring(0, players.length()-3):"")}));
+		button.refreshItemStack();
 	}
 	
 	public void loadMaxTeam(){
@@ -176,6 +198,7 @@ public class MultiGame extends kListener{
 		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new ARENA_STATUS( (state!=null ? state : getState()) , getGameList().getPlayers(PlayerState.IN).size(),teams,team , (type!=null ? type : getGames().getType()),"a"+kArcade.id , (arena!=null ? arena : getArena()) , apublic, getMap(),min_team,max_team,(kit==null?"null":kit.kit) ));
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
+		updateInfoButton();
 		getGames().getManager().getPacketManager().SendPacket(updateTo, ev.getPacket());
 	}
 	
@@ -342,6 +365,7 @@ public class MultiGame extends kListener{
 			
 			if(this instanceof MultiTeamGame && (((MultiTeamGame)this).islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM)){
 				for(Player player : getGameList().getPlayers(PlayerState.IN)){
+					getGames().getManager().getPacketManager().SendPacket(updateTo, new ARENA_WIN(player.getUniqueId(), "a"+kArcade.id, getGames().getType(), getArena()));
 					getGames().getStats().setInt(player, getGames().getStats().getInt(Stats.WIN, player)+1, Stats.WIN);
 				}
 				
@@ -365,6 +389,9 @@ public class MultiGame extends kListener{
 				}
 				
 				last_player = getGameList().getPlayers(PlayerState.IN).get(0);
+				
+				getGames().getManager().getPacketManager().SendPacket(updateTo, new ARENA_WIN(last_player.getUniqueId(), "a"+kArcade.id, getGames().getType(), getArena()));
+				
 				if(last_player!=null){
 					broadcastWithPrefix("GAME_WIN",last_player.getName());
 					t= new Title("",Language.getText("GAME_WIN",last_player.getName()));
@@ -378,6 +405,9 @@ public class MultiGame extends kListener{
 				setTimer(-1);
 				getGames().updatePlayedGames();
 			}
+			
+			UtilServer.getLagMeter().unloadChunks(null,null);
+			UtilServer.getLagMeter().entitiesClearAll();
 		}
 	}
 	

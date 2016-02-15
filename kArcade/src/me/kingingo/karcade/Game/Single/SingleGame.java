@@ -12,6 +12,7 @@ import me.kingingo.karcade.Game.GameList;
 import me.kingingo.karcade.Game.Events.GameStartEvent;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Single.Addons.AddonSpecCompass;
+import me.kingingo.karcade.Game.Single.Games.TeamGame;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Language.Language;
@@ -234,9 +235,9 @@ public class SingleGame extends Game{
 	
 	@EventHandler
 	public void InterBack(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.R) && getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer()) == PlayerState.OUT){
 			if(ev.getPlayer().getItemInHand()==null)return;
-			if(ev.getPlayer().getItemInHand().getTypeId()!=385)return;
+			if(ev.getPlayer().getItemInHand().getTypeId() != 385)return;
 				UtilBG.sendToServer(ev.getPlayer(), getManager().getInstance());
 				ev.setCancelled(true);
 			}

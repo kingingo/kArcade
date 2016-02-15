@@ -208,6 +208,7 @@ public class SingleWorldData extends WorldData{
 	}
 	
 	public void LoadWorldConfig(){
+		log("Map: "+getMapName());
 		String line=null;
 		try {
 			FileInputStream fstream = new FileInputStream(getFolder() + File.separator + "WorldConfig.dat");

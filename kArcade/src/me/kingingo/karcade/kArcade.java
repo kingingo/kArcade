@@ -99,8 +99,6 @@ public class kArcade extends JavaPlugin{
 			UtilBG.sendToServer(p,this);
 		}
 		for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKürzel().toLowerCase()));
-		mysql.close();
-		updater.stop();
 		if(manager.getGame() instanceof MultiGames){
 			for(MultiGame game : ((MultiGames)manager.getGame()).getGames().values()){
 				game.setState(GameState.Restart);
@@ -109,7 +107,7 @@ public class kArcade extends JavaPlugin{
 		}else{
 			manager.getGame().updateInfo();
 		}
-		c.disconnect(true);
+		UtilServer.disable();
 	}
 	
 	public void loadConfig()

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.kingingo.karcade.kArcadeManager;
+import me.kingingo.karcade.Command.CommandSpectate;
 import me.kingingo.karcade.Game.Game;
 import me.kingingo.karcade.Game.Events.GameStateChangeEvent;
 import me.kingingo.karcade.Game.Multi.Addons.MultiAddonArenaRestore;
@@ -28,6 +29,9 @@ import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
 import me.kingingo.kcore.Enum.Team;
+import me.kingingo.kcore.Inventory.InventoryPageBase;
+import me.kingingo.kcore.Inventory.Item.Click;
+import me.kingingo.kcore.Inventory.Item.Buttons.ButtonBase;
 import me.kingingo.kcore.Kit.Shop.MultiKitShop;
 import me.kingingo.kcore.MySQL.Callback;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
@@ -35,9 +39,13 @@ import me.kingingo.kcore.Packet.Packets.ARENA_SETTINGS;
 import me.kingingo.kcore.StatsManager.Stats;
 import me.kingingo.kcore.Update.UpdateType;
 import me.kingingo.kcore.Update.Event.UpdateEvent;
+import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.TabTitle;
 import me.kingingo.kcore.Util.UtilDebug;
+import me.kingingo.kcore.Util.UtilEvent.ActionType;
 import me.kingingo.kcore.Util.UtilException;
+import me.kingingo.kcore.Util.UtilInv;
+import me.kingingo.kcore.Util.UtilItem;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilServer;
@@ -45,7 +53,9 @@ import me.kingingo.kcore.Versus.PlayerKit;
 import me.kingingo.kcore.Versus.PlayerKitManager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -58,6 +68,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class MultiGames extends Game{
 	
@@ -80,6 +91,8 @@ public class MultiGames extends Game{
 	private MultiKitShop kitshop;
 	@Getter
 	private Team[] spielerTeams;
+	@Getter
+	private InventoryPageBase page;
 	
 	public MultiGames(kArcadeManager manager,String type){
 		super(manager);
@@ -95,6 +108,27 @@ public class MultiGames extends Game{
 		createGames(getType());
 		setApublic(false);
 		new MultiAddonChat(manager.getInstance());
+		manager.getCmd().register(CommandSpectate.class, new CommandSpectate(manager));
+	}
+	
+	public void createAdminPage(){
+		page=new InventoryPageBase(InventorySize._18, "§cTeam Interface");
+		
+		for(MultiGame game : getGames().values()){
+			game.setButton(new ButtonBase(new Click(){
+
+				@Override
+				public void onClick(Player p, ActionType a, Object o) {
+					p.setGameMode(GameMode.SPECTATOR);
+					p.teleport(game.getPasteLocation().clone().add(0, 10, 0));
+					for(Player player : game.getGameList().getPlayers().keySet())p.showPlayer(player);
+				}
+				
+			}, UtilItem.Item(new ItemStack(Material.COMMAND,1), new String[]{""}, "§a"+getType().name()+" §7[§e"+(game.getArena().replaceAll("arena", ""))+"§7]")));
+			page.addButton(game.getButton());
+		}
+		
+		UtilInv.getBase(getManager().getInstance()).addPage(page);
 	}
 	
 	public boolean haveToRestart(){
@@ -109,7 +143,8 @@ public class MultiGames extends Game{
 		setPacketServer("versushub");
 		new MultiAddonArenaRestore(getManager().getInstance());
 		setCreatureSpawn(false);
-		
+
+		long mem=0;
 		if(GameType.Versus==type){
 			this.kitManager=new PlayerKitManager(getManager().getMysql(), GameType.Versus);
 			this.kitManager.setAsync(true);
@@ -120,8 +155,11 @@ public class MultiGames extends Game{
 			Versus v;
 			File file;
 			int size = zips.size();
-			for(int i = 0; i<(size<=6?size:6); i++){
+			for(int i = 0; i<(size<=8?size:8); i++){
 				if(!zips.isEmpty()){
+					UtilServer.getLagMeter().unloadChunks(null,null);
+					UtilServer.getLagMeter().entitiesClearAll();
+					mem = Runtime.getRuntime().freeMemory();
 					if(zips.size()==1){
 						file = zips.get(0);
 					}else{
@@ -131,6 +169,7 @@ public class MultiGames extends Game{
 					games.put(v.getArena(), v);
 					loc=loc.add(0, 0, 5000);
 					zips.remove(file);
+					getManager().DebugLog("Mem: "+(Runtime.getRuntime().freeMemory()-mem)/1048576L);
 				}else{
 					break;
 				}
@@ -150,8 +189,11 @@ public class MultiGames extends Game{
 			BedWars1vs1 v;
 			File file;
 			int size = zips.size();
-			for(int i = 0; i<(size<=4?size:4); i++){
+			for(int i = 0; i<(size<=6?size:6); i++){
 				if(!zips.isEmpty()){
+					UtilServer.getLagMeter().unloadChunks(null,null);
+					UtilServer.getLagMeter().entitiesClearAll();
+					mem = Runtime.getRuntime().freeMemory();
 					time=System.currentTimeMillis();
 					if(zips.size()==1){
 						file = zips.get(0);
@@ -163,6 +205,7 @@ public class MultiGames extends Game{
 					games.put(v.getArena(), v);
 					zips.remove(file);
 					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+					getManager().DebugLog("Mem: "+(Runtime.getRuntime().freeMemory()-mem)/1048576L);
 				}else{
 					break;
 				}
@@ -182,8 +225,11 @@ public class MultiGames extends Game{
 			SkyWars1vs1 v;
 			File file;
 			int size = zips.size();
-			for(int i = 0; i<(size<=4?size:4); i++){
+			for(int i = 0; i<(size<=6?size:6); i++){
 				if(!zips.isEmpty()){
+					UtilServer.getLagMeter().unloadChunks(null,null);
+					UtilServer.getLagMeter().entitiesClearAll();
+					mem = Runtime.getRuntime().freeMemory();
 					time=System.currentTimeMillis();
 					if(zips.size()==1){
 						file = zips.get(0);
@@ -195,6 +241,7 @@ public class MultiGames extends Game{
 					games.put(v.getArena(), v);
 					zips.remove(file);
 					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+					getManager().DebugLog("Mem: "+(Runtime.getRuntime().freeMemory()-mem)/1048576L);
 				}else{
 					break;
 				}
@@ -216,6 +263,9 @@ public class MultiGames extends Game{
 			int size = zips.size();
 			for(int i = 0; i<(size<=4?size:4); i++){
 				if(!zips.isEmpty()){
+					UtilServer.getLagMeter().unloadChunks(null,null);
+					UtilServer.getLagMeter().entitiesClearAll();
+					mem = Runtime.getRuntime().freeMemory();
 					time=System.currentTimeMillis();
 					if(zips.size()==1){
 						file = zips.get(0);
@@ -227,6 +277,7 @@ public class MultiGames extends Game{
 					games.put(v.getArena(), v);
 					zips.remove(file);
 					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
+					getManager().DebugLog("Mem: "+(Runtime.getRuntime().freeMemory()-mem)/1048576L);
 				}else{
 					break;
 				}
@@ -247,6 +298,7 @@ public class MultiGames extends Game{
 		new AddonDay(getManager().getInstance(), getWorldData().getWorld());
 		new AddonSun(getManager().getInstance(), getWorldData().getWorld());
 		setState(GameState.LobbyPhase);
+		createAdminPage();
 	}
 	
 	@EventHandler
@@ -417,7 +469,9 @@ public class MultiGames extends Game{
 									
 								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
 									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
-									g.getKit().kit=settings.getKit();
+									if(g.getKit()!=null){
+										g.getKit().kit=settings.getKit();
+									}
 									
 //									getStats().getAsyncInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()),new Callback() {
 //										
