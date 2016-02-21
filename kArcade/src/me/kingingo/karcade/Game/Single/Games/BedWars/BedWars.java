@@ -93,7 +93,6 @@ public class BedWars extends TeamGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.BedWars);
-		setState(GameState.Laden);
 		this.typ=typ;
 		setItemDrop(true);
 		setItemPickup(true);

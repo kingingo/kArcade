@@ -73,7 +73,6 @@ public class SkyPvP extends SoloGame{
 		registerListener();
 		long l = System.currentTimeMillis();
 		setTyp(GameType.SkyPvP);
-		setState(GameState.Laden);
 		setMax_Players(12);
 		setMin_Players(5);
 		setDamage(true);

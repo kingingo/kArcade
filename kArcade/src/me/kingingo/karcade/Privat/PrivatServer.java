@@ -54,7 +54,7 @@ public class PrivatServer extends kListener{
 			@Override
 			public void onClick(Player player, ActionType action, Object obj) {
 				player.closeInventory();
-				game.setState(GameState.Laden);
+//				game.setState(GameState.Laden);
 			}
 			
 		}, UtilItem.Item(new ItemStack(Material.REDSTONE_BLOCK), new String[]{}, "§cSpiel stoppen")));

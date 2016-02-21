@@ -33,6 +33,7 @@ import me.kingingo.kcore.Inventory.InventoryPageBase;
 import me.kingingo.kcore.Inventory.Item.Click;
 import me.kingingo.kcore.Inventory.Item.Buttons.ButtonBase;
 import me.kingingo.kcore.Kit.Shop.MultiKitShop;
+import me.kingingo.kcore.LagMeter.LagMeter;
 import me.kingingo.kcore.MySQL.Callback;
 import me.kingingo.kcore.Packet.Events.PacketReceiveEvent;
 import me.kingingo.kcore.Packet.Packets.ARENA_SETTINGS;
@@ -56,6 +57,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -181,6 +183,7 @@ public class MultiGames extends Game{
 			zips.clear();
 			zips=null;
 		}else if(GameType.BedWars1vs1==type){
+			UtilServer.getLagMeter().getEntitiesBlackList().add(EntityType.VILLAGER);
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);

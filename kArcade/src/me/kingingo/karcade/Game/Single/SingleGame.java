@@ -538,7 +538,7 @@ public class SingleGame extends Game{
 			case 1:broadcastWithPrefix("RESTART_IN", start);break;
 			case 0: 
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
-				;break;
+				break;
 			}
 		}
 	  

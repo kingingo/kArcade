@@ -121,7 +121,6 @@ public class CaveWars extends TeamGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.CaveWars);
-		setState(GameState.Laden);
 		this.typ=typ;
 		setItemDrop(true);
 		setItemPickup(true);

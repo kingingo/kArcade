@@ -3,7 +3,6 @@ package me.kingingo.karcade.Game.Single.Games.Masterbuilders;
 import me.kingingo.kcore.Listener.kListener;
 import me.konsolas.aac.api.HackType;
 import me.konsolas.aac.api.PlayerViolationEvent;
-import me.konsolas.aac.api.PlayerViolationKickEvent;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,10 +16,10 @@ public class AACListener extends kListener{
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	public void onPlayerViolationKick(PlayerViolationKickEvent ev){
+	public void onPlayerViolationKick(PlayerViolationEvent ev){
 		if(ev.getHackType()==HackType.GLIDE
 				|| ev.getHackType()==HackType.FLY
-				|| ev.getHackType()==HackType.BLINK
+				|| ev.getHackType()==HackType.IMPOSSIBLEINTERACT
 				|| ev.getHackType()==HackType.NOFALL
 				|| ev.getHackType()==HackType.SPEED){
 			ev.setCancelled(true);

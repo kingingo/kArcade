@@ -70,7 +70,6 @@ public class Falldown extends SoloGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.Falldown);
-		setState(GameState.Laden);
 		setWorldData(new SingleWorldData(manager,getType()));
 		setMin_Players(2);
 		setCreatureSpawn(false);

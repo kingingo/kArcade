@@ -73,7 +73,7 @@ import me.kingingo.kcore.Util.UtilParticle;
 import me.kingingo.kcore.Util.UtilServer;
 import me.kingingo.kcore.Util.UtilString;
 import me.kingingo.kcore.Util.UtilTime;
-import me.konsolas.aac.api.PlayerViolationKickEvent;
+import me.konsolas.aac.api.PlayerViolationEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -115,7 +115,6 @@ public class DeathGames extends SoloGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.DeathGames);
-		setState(GameState.Laden);
 		setWorldData(new SingleWorldData(manager,getType()));
 		setupItems();
 		setCreatureSpawn(true);
@@ -471,7 +470,7 @@ public class DeathGames extends SoloGame{
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void kick(PlayerViolationKickEvent ev){
+	public void kick(PlayerViolationEvent ev){
 		if(getState()==GameState.SchutzModus){
 			ev.setCancelled(true);
 		}

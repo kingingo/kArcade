@@ -84,6 +84,8 @@ public class Masterbuilders extends SoloGame{
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)3), "§bAmazing"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)2), "§dWOW! EVERYTHING IS AWESOME!")};
 	
+	private InventoryPageBase word_vote;
+	
 	private Scoreboard scoreENG;
 	private Scoreboard scoreGER;
 	
@@ -98,7 +100,6 @@ public class Masterbuilders extends SoloGame{
 		registerListener();
 		long l = System.currentTimeMillis();
 		setTyp(GameType.Masterbuilders);
-		setState(GameState.Laden);
 		
 		setDamage(false);
 		setCreatureSpawn(false);
@@ -262,6 +263,8 @@ public class Masterbuilders extends SoloGame{
 		
 		this.option.getMain().addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
 		this.option.getMain().fill(Material.STAINED_GLASS_PANE, (byte)7);
+		
+		this.word_vote=new InventoryPageBase(InventorySize._9, "§7Vote");
 		
 		setState(GameState.LobbyPhase);
 		getManager().DebugLog(l, this.getClass().getName());

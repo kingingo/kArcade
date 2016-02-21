@@ -114,7 +114,6 @@ public class TroubleInMinecraft extends TeamGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.TroubleInMinecraft);
-		setState(GameState.Laden);
 		setMin_Players(6);
 		setMax_Players(16);
 		getInventoryTypDisallow().add(InventoryType.ANVIL);

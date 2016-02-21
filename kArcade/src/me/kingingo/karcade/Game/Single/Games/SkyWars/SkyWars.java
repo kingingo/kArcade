@@ -119,7 +119,6 @@ public class SkyWars extends TeamGame{
 		this.ilManager=new LaunchItemManager(getManager().getInstance());
 		this.creeper=new CreeperSpawner(this);
 		setTyp(GameType.SkyWars);
-		setState(GameState.Laden);
 		setMax_Players(type.getMax());
 		setMin_Players(type.getMin());
 		setDamage(true);

@@ -270,6 +270,7 @@ public class TeamGame extends SingleGame{
 	
 	public void SetSpectator(PlayerRespawnEvent ev,Player player)
 	  {
+	    if(isCoinsAktiv())getCoins().addCoins(player, true, 0);
 		if(spec==null)spec=new AddonSpectator(this);
 		delTeam(player);
 		getGameList().addPlayer(player, PlayerState.OUT);

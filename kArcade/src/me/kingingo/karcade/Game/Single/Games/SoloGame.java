@@ -85,6 +85,7 @@ public class SoloGame extends SingleGame{
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(this));
 	    player.getInventory().addItem(getCompass().getCompassItem());
 	    Bukkit.getPluginManager().callEvent(new KitShopPlayerDeleteEvent(player));
+	    if(isCoinsAktiv())getCoins().addCoins(player, true, 0);
 	  }
 	
 }

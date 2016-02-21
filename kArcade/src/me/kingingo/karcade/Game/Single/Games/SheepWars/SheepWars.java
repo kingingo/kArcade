@@ -147,7 +147,6 @@ public class SheepWars extends TeamGame{
 		registerListener();
 		long t = System.currentTimeMillis();
 		setTyp(GameType.SheepWars);
-		setState(GameState.Laden);
 		this.typ=typ;
 		setItemDrop(true);
 		setItemPickup(true);
