@@ -19,12 +19,14 @@ import me.kingingo.karcade.Game.Single.Addons.AddonPlaceBlockCanBreak;
 import me.kingingo.karcade.Game.Single.Addons.AddonVoteTeam;
 import me.kingingo.karcade.Game.Single.Events.AddonBedKingDeathEvent;
 import me.kingingo.karcade.Game.Single.Games.TeamGame;
+import me.kingingo.karcade.Game.Single.Games.SkyWars.SkyWarsType;
 import me.kingingo.karcade.Game.World.Event.WorldDataInitializeEvent;
 import me.kingingo.kcore.Addons.AddonDay;
 import me.kingingo.kcore.Addons.AddonHalloween;
 import me.kingingo.kcore.Addons.AddonNight;
 import me.kingingo.kcore.Calendar.Calendar;
 import me.kingingo.kcore.Calendar.Calendar.CalendarType;
+import me.kingingo.kcore.Enum.GameCage;
 import me.kingingo.kcore.Enum.GameState;
 import me.kingingo.kcore.Enum.GameType;
 import me.kingingo.kcore.Enum.PlayerState;
@@ -44,6 +46,7 @@ import me.kingingo.kcore.Util.InventorySize;
 import me.kingingo.kcore.Util.Title;
 import me.kingingo.kcore.Util.UtilDisplay;
 import me.kingingo.kcore.Util.UtilItem;
+import me.kingingo.kcore.Util.UtilMap;
 import me.kingingo.kcore.Util.UtilMath;
 import me.kingingo.kcore.Util.UtilPlayer;
 import me.kingingo.kcore.Util.UtilScoreboard;
@@ -173,6 +176,17 @@ public class BedWars extends TeamGame{
 	@EventHandler
 	public void WorldLoad(WorldLoadEvent ev){
 		getWorldData().setMapName( shortMap(getWorldData().getMapName()," "+getTyp().getTeam().length+"x"+getTyp().getTeam_size()) );
+		
+		if(getTyp()==BedWarsType._4x32){
+			GameCage gcase = GameCage.GLASS;
+			int color;
+			for(Team t : getTyp().getTeam()){
+				if(getWorldData().existLoc(t)){
+					color=UtilMath.r(15);
+					UtilMap.makeQuadrat(null,getWorldData().getLocs(t).get(0).clone().add(0, 10, 0), 6, 5,gcase.getGround((byte)color),gcase.getWall((byte)color));
+				}
+			}
+		}
 	}
 	
 	@EventHandler

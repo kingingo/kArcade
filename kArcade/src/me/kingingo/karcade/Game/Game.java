@@ -31,6 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -210,6 +211,11 @@ public class Game implements Listener{
 	
 	public void broadcast(String name,Object input){
 		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,name,input));
+	}
+
+	@EventHandler
+	public void PlayerBedEnter(PlayerBedEnterEvent ev){
+		ev.setCancelled(true);
 	}
 	
 	@EventHandler
