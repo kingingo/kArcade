@@ -1,5 +1,5 @@
 name: kArcade
 author: KingIngo
 version: 1.8
-main: me.kingingo.karcade.kArcade
+main: eu.epicpvp.karcade.kArcade
 depend: [kCore]
