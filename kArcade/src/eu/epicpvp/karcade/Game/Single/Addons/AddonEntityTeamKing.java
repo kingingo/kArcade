@@ -22,8 +22,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -32,6 +30,8 @@ import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AddonEntityTeamKing implements Listener {
 	

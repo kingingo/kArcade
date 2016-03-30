@@ -22,7 +22,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;

@@ -17,9 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
-import lombok.Setter;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Events.TeamAddEvent;
 import eu.epicpvp.karcade.Game.Events.TeamDelEvent;
@@ -35,6 +33,8 @@ import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
+import lombok.Getter;
+import lombok.Setter;
 
 public class TeamGame extends SingleGame{
 	

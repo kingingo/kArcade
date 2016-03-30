@@ -15,8 +15,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiGameArenaRestore;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.MultiGameAddonChatEvent;

@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -20,6 +18,8 @@ import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilDirection;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AddonTargetNextPlayer implements Listener {
 

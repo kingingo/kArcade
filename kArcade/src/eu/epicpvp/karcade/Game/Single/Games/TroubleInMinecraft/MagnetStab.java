@@ -6,11 +6,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.NPC.NPC;
 import eu.epicpvp.kcore.NPC.NPCManager;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
 
 public class MagnetStab extends kListener{
 	

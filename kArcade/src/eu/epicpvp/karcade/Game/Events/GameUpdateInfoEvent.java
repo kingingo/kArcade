@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus;
+import dev.wolveringer.dataserver.protocoll.packets.PacketInServerStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +13,9 @@ public class GameUpdateInfoEvent extends Event implements Cancellable{
 	private boolean cancel=false;
 	@Getter
 	@Setter
-	private PacketOutServerStatus packet;
+	private PacketInServerStatus packet;
 	
-	public GameUpdateInfoEvent(PacketOutServerStatus packet){
+	public GameUpdateInfoEvent(PacketInServerStatus packet){
 		this.packet=packet;
 	}
 	

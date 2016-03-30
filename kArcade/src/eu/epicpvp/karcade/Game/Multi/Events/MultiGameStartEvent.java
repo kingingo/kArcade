@@ -3,8 +3,8 @@ package eu.epicpvp.karcade.Game.Multi.Events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
+import lombok.Getter;
 
 public class MultiGameStartEvent extends Event{
 	private static HandlerList handlers = new HandlerList();

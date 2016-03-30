@@ -6,14 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AddonDropItems extends kListener {
 

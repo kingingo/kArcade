@@ -12,10 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
-import lombok.Setter;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
@@ -26,6 +24,8 @@ import eu.epicpvp.kcore.Util.TimeSpan;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilPlayer;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Tester implements Listener{
 

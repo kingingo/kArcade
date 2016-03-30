@@ -1,8 +1,8 @@
 package eu.epicpvp.karcade.Game.Single.Games.Masterbuilders;
 
-import lombok.Getter;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Util.UtilMath;
+import lombok.Getter;
 
 public enum MasterbuildersType {
 _12x1(3,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN});

@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Events.TeamAddEvent;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
@@ -28,6 +27,7 @@ import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
+import lombok.Getter;
 
 public class Defibrillator implements Listener,IShop{
 

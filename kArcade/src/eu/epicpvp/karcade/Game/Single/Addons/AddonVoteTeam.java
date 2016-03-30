@@ -18,8 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -33,6 +32,7 @@ import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
+import lombok.Getter;
 
 public class AddonVoteTeam implements Listener{
 	

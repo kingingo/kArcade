@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Util.UtilEvent;

@@ -11,9 +11,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
-import lombok.Setter;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
 import eu.epicpvp.kcore.Enum.Team;
@@ -21,6 +19,8 @@ import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
+import lombok.Setter;
 public class MultiAddonDropItems extends kListener {
 
 	@Getter

@@ -2,10 +2,10 @@ package eu.epicpvp.karcade.Service.Games;
 
 import org.bukkit.entity.Player;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Falldown;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ServiceFalldown {
 

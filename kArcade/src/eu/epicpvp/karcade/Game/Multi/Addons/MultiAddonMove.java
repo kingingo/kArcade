@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.potion.PotionEffectType;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Util.UtilPlayer;
+import lombok.Getter;
 
 public class MultiAddonMove extends kListener{
 

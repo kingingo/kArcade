@@ -1,13 +1,10 @@
 package eu.epicpvp.karcade.Game.Single.Games.CustomWars.Items;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWars;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWarsItem;

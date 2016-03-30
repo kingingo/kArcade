@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;

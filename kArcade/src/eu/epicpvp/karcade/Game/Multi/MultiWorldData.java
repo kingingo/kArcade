@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.World.WorldData;

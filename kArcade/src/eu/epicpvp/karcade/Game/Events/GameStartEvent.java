@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import lombok.Getter;
 import lombok.Setter;
 

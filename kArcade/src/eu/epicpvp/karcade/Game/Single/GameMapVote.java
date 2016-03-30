@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import lombok.Getter;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;

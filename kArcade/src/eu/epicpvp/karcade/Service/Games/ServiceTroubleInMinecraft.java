@@ -2,11 +2,11 @@ package eu.epicpvp.karcade.Service.Games;
 
 import org.bukkit.entity.Player;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.NPC.NPC;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ServiceTroubleInMinecraft {
 

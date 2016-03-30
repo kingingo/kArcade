@@ -11,13 +11,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilPlayer;
+import lombok.Getter;
 
 public class Shop implements Listener{
 

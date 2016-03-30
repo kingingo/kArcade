@@ -13,9 +13,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
-import lombok.Setter;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Language.Language;
@@ -24,6 +22,8 @@ import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilLocation;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilPlayer;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AddonQuadratGrenze implements Listener{
 

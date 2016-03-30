@@ -31,9 +31,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import lombok.Getter;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;

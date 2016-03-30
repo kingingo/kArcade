@@ -5,9 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
 import lombok.Getter;
 import lombok.Setter;
-import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
 
 public class PlayerUseBrewItemEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();

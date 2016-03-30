@@ -19,8 +19,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;

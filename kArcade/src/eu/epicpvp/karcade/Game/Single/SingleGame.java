@@ -45,7 +45,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Game;

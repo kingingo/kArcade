@@ -14,10 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
-import lombok.Setter;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonMove;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiGameArenaRestore;
@@ -41,6 +39,8 @@ import eu.epicpvp.kcore.Util.UtilLocation;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilTime;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Versus extends MultiTeamGame{
 	

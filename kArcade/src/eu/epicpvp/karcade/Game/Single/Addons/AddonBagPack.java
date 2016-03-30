@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
 
 public class AddonBagPack implements Listener {
 	

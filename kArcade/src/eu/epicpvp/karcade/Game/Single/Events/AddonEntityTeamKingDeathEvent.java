@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import lombok.Getter;
 import eu.epicpvp.kcore.Enum.Team;
+import lombok.Getter;
 
 public class AddonEntityTeamKingDeathEvent extends Event{
 	private static HandlerList handlers = new HandlerList();

@@ -8,9 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
+import eu.epicpvp.kcore.Enum.Team;
 import lombok.Getter;
 import lombok.Setter;
-import eu.epicpvp.kcore.Enum.Team;
 
 public class GameMap{
 	

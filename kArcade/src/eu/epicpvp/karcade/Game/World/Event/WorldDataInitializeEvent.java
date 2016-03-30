@@ -3,9 +3,9 @@ package eu.epicpvp.karcade.Game.World.Event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.World.GameMap;
 import eu.epicpvp.karcade.Game.World.WorldData;
+import lombok.Getter;
 
 public class WorldDataInitializeEvent extends Event{
 	private static HandlerList handlers = new HandlerList();

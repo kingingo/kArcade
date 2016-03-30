@@ -4,10 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Falldown;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.Events.PlayerUseBrewItemEvent;
 import eu.epicpvp.kcore.Listener.kListener;
+import lombok.Getter;
 
 public class BrewItem extends kListener{
 

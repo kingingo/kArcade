@@ -11,10 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.util.Vector;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.kcore.Util.UtilMath;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AddonFallingBlockJump implements Listener{
 

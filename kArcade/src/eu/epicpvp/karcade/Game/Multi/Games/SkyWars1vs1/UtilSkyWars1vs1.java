@@ -1,6 +1,5 @@
 package eu.epicpvp.karcade.Game.Multi.Games.SkyWars1vs1;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,8 +14,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
 import org.bukkit.potion.Potion.Tier;
+import org.bukkit.potion.PotionType;
 
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
@@ -44,10 +43,7 @@ import eu.epicpvp.kcore.Kit.Perks.PerkPoisen;
 import eu.epicpvp.kcore.Kit.Perks.PerkSneakDamage;
 import eu.epicpvp.kcore.Kit.Perks.PerkTNT;
 import eu.epicpvp.kcore.Kit.Perks.PerkWalkEffect;
-import eu.epicpvp.kcore.Kit.Shop.KitShop;
-import eu.epicpvp.kcore.Kit.Shop.SingleKitShop;
 import eu.epicpvp.kcore.Permission.PermissionType;
-import eu.epicpvp.kcore.Util.InventorySize;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
 

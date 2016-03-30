@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.material.Bed;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonBedKingDeathEvent;
@@ -20,6 +19,7 @@ import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Util.UtilBlock;
+import lombok.Getter;
 
 public class AddonBedTeamKing implements Listener {
 	

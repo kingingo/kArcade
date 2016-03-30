@@ -4,8 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -16,6 +15,7 @@ import eu.epicpvp.kcore.Util.Color;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilString;
+import lombok.Getter;
 
 public class AddonChat extends kListener{
 

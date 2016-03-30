@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 
 import com.google.common.collect.Lists;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Events.PlayerStateChangeEvent;
 import eu.epicpvp.karcade.Game.Single.Games.DeathGames.DeathGames;
 import eu.epicpvp.kcore.Enum.PlayerState;

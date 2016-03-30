@@ -26,9 +26,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
@@ -194,7 +194,7 @@ public class MultiGame extends kListener{
 	}
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
-	public void updateInfo(dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState state,GameType type,String arena,boolean apublic){	
+	public void updateInfo(dev.wolveringer.dataserver.gamestats.GameState state,GameType type,String arena,boolean apublic){	
 		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new PacketArenaStatus( 
 				(state!=null ? state : getState()) 
 				, getGameList().getPlayers(PlayerState.IN).size()

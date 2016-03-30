@@ -5,10 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
+import lombok.Getter;
 
 public class AddonMove implements Listener{
 

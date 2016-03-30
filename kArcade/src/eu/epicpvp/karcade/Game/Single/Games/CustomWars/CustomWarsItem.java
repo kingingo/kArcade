@@ -3,10 +3,10 @@ package eu.epicpvp.karcade.Game.Single.Games.CustomWars;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
+import lombok.Setter;
 
 public class CustomWarsItem extends kListener{
 

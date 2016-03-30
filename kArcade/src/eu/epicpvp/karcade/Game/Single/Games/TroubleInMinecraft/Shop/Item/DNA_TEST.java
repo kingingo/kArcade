@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
 import eu.epicpvp.kcore.Language.Language;
@@ -16,6 +15,7 @@ import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
 import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
 
 public class DNA_TEST extends kListener implements IShop{
 

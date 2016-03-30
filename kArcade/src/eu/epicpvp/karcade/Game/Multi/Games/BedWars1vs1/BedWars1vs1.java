@@ -15,9 +15,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiGameArenaRestore;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.BuildType;
@@ -46,6 +45,7 @@ import eu.epicpvp.kcore.Util.UtilTime;
 import eu.epicpvp.kcore.Util.UtilWorld;
 import eu.epicpvp.kcore.Villager.VillagerShop;
 import eu.epicpvp.kcore.Villager.Event.VillagerShopEvent;
+import lombok.Getter;
 
 public class BedWars1vs1 extends MultiTeamGame{
 

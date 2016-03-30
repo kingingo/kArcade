@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
+import lombok.Getter;
 
 public class UtilSurvivalGames1vs1 {
 	@Getter

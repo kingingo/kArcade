@@ -5,9 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import lombok.Getter;
 import lombok.Setter;
-import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 
 public class MultiGamePlayerJoinEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();

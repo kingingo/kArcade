@@ -15,13 +15,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import lombok.Getter;
-import lombok.Setter;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.BuildType;
 import eu.epicpvp.karcade.Game.Single.Events.AddonAreaRestoreEvent;
 import eu.epicpvp.karcade.Game.Single.Events.AddonAreaRestoreExplosionEvent;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Util.UtilLocation;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AddonArea extends kListener{
 	

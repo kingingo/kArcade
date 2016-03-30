@@ -2,9 +2,9 @@ package eu.epicpvp.karcade.Service.Games;
 
 import org.bukkit.entity.Player;
 
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.SkyWars;
 import lombok.Getter;
 import lombok.Setter;
-import eu.epicpvp.karcade.Game.Single.Games.SkyWars.SkyWars;
 
 public class ServiceSkyWars {
 

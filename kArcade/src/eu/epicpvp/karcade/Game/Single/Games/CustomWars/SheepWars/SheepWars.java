@@ -19,9 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWars;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWarsType;
@@ -59,6 +58,7 @@ import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Villager.Event.VillagerAddShopEvent;
+import lombok.Getter;
 
 public class SheepWars extends CustomWars{
 

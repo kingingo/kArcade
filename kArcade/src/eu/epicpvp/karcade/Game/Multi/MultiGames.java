@@ -24,12 +24,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import dev.wolveringer.client.connection.PacketListener;
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.Packet;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
-import lombok.Setter;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.dataserver.protocoll.packets.Packet;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Command.CommandSpectate;
 import eu.epicpvp.karcade.Game.Game;
@@ -69,6 +67,8 @@ import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Versus.PlayerKitManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class MultiGames extends Game{
 	

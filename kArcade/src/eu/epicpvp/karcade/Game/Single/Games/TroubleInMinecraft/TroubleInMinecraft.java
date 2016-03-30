@@ -22,10 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.gamestats.StatsKey;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -82,6 +81,7 @@ import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilString;
 import eu.epicpvp.kcore.Util.UtilTime;
+import lombok.Getter;
 
 public class TroubleInMinecraft extends TeamGame{
 	

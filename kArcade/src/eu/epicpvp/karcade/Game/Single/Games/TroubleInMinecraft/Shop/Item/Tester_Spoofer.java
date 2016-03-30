@@ -9,12 +9,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
+import lombok.Getter;
 
 public class Tester_Spoofer implements Listener,IShop{
 

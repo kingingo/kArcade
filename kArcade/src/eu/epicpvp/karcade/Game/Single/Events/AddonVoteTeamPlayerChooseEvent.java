@@ -4,9 +4,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import lombok.Getter;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import lombok.Getter;
 
 public class AddonVoteTeamPlayerChooseEvent extends Event{
 	private static HandlerList handlers = new HandlerList();

@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import lombok.Getter;
 import eu.epicpvp.kcore.Util.UtilItem;
+import lombok.Getter;
 
 public class AddonEnterhacken implements Listener {
 

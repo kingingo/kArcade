@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;

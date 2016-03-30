@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.material.Bed;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.MultiAddonBedKingDeathEvent;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreEvent;
@@ -22,6 +21,7 @@ import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Util.UtilBlock;
 import eu.epicpvp.kcore.Util.UtilDirection;
+import lombok.Getter;
 
 public class MultiAddonBedTeamKing extends kListener {
 	

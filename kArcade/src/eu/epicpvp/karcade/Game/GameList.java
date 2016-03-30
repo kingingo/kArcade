@@ -13,10 +13,10 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Events.PlayerStateChangeEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
+import lombok.Getter;
 
 public class GameList implements Listener{
 

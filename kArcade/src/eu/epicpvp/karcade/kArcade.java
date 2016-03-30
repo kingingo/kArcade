@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataclient.gamestats.GameType;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutServerStatus.GameState;
+import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.Command.CommandForceStart;
 import eu.epicpvp.karcade.Command.CommandScan;
 import eu.epicpvp.karcade.Command.CommandStart;

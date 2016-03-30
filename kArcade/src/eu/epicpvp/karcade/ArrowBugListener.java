@@ -1,18 +1,11 @@
 package eu.epicpvp.karcade;
 
-import java.util.ArrayList;
-
-import org.bukkit.World;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutSpawnEntity;
 import eu.epicpvp.kcore.PacketAPI.packetlistener.event.PacketListenerSendEvent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
 
 public class ArrowBugListener extends kListener{

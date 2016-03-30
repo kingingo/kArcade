@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import dev.wolveringer.dataclient.gamestats.GameType;
-import lombok.Getter;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Util.UtilMath;
+import lombok.Getter;
 
 public enum CustomWarsType {
 	_4x32(60*60*3,-1,32,64,128,new Team[]{Team.RED,Team.BLUE,Team.YELLOW,Team.GREEN},1,Arrays.asList(GameType.BedWars)),

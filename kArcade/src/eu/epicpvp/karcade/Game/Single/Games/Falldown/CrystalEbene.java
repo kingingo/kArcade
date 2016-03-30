@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.entity.EnderCrystal;
 
-import lombok.Getter;
 import eu.epicpvp.kcore.Util.UtilMap;
+import lombok.Getter;
 
 public class CrystalEbene {
 
