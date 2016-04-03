@@ -4,6 +4,19 @@
 	<groupId>eu.epicpvp</groupId>
 	<artifactId>core-karcarde</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<distributionManagement>
+        <repository>
+            <id>epicpvp-releases</id>
+            <name>epicpvp-artifactory-releases</name>
+            <url>http://149.202.150.185:8081/artifactory/epicpvp-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>epicpvp-snapshots</id>
+            <name>epicpvp-artifactory-snapshots</name>
+            <url>http://149.202.150.185:8081/artifactory/epicpvp-snapshots/</url>
+        </snapshotRepository>
+	</distributionManagement>
 
 	<parent>
 		<groupId>eu.epicpvp</groupId>
@@ -33,6 +46,10 @@
 		</plugins>
 	</build>
 	<repositories>
+	 	<repository>
+            <id>epicpvp-all</id>
+            <url>http://149.202.150.185:8081/artifactory/epicpvp-all/</url>
+        </repository>
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -47,18 +64,6 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>kCore</groupId>
-			<artifactId>kCore</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<!--<dependency>
-			<groupId>kArcade</groupId>
-			<artifactId>kArcade</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		 <dependency> <groupId>kSkyBlock</groupId> <artifactId>kSkyBlock</artifactId> 
-			<version>0.0.1-SNAPSHOT</version> </dependency> -->
 		<dependency>
 			<groupId>eu.epicpvp</groupId>
 			<artifactId>ViaVersion</artifactId>
@@ -103,7 +108,7 @@
 			<version>6.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>DatenClient</groupId>
+			<groupId>dev.wolveringer</groupId>
 			<artifactId>DatenClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -112,6 +117,11 @@
 			<artifactId>lombok</artifactId>
 			<version>1.16.8</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.epicpvp</groupId>
+			<artifactId>core-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

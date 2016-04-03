@@ -65,8 +65,10 @@ import eu.epicpvp.kcore.Addons.AddonHalloween;
 import eu.epicpvp.kcore.Addons.AddonNight;
 import eu.epicpvp.kcore.Calendar.Calendar;
 import eu.epicpvp.kcore.Calendar.Calendar.CalendarType;
+import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Merchant.Merchant;
 import eu.epicpvp.kcore.Merchant.MerchantOffer;
@@ -176,11 +178,11 @@ public class CustomWars extends TeamGame{
 		manager.DebugLog(t, this.getClass().getName());
 		setState(GameState.LobbyPhase);
 	}
-	//TODO!!!
-//	@EventHandler
-//	public void GameUpdateInfo(GameUpdateInfoEvent ev){
-//		ev.getPacket().setCtyp(getCustomType().name());
-//	}
+	
+	@EventHandler
+	public void ServerStatusUpdateCustom(ServerStatusUpdateEvent ev){
+		ev.getPacket().setSubstate(getCustomType().name());
+	}
 	
 	@EventHandler
 	public void Ranking(RankingEvent ev){
@@ -632,7 +634,7 @@ public class CustomWars extends TeamGame{
 	
 	@EventHandler
 	public void GameStateChange(GameStateChangeEvent ev){
-		if(ev.getTo()==GameState.Restart){
+		if(ev.getTo()==GameState.Restart && ev.getReason() != GameStateChangeReason.CHANGE_TYPE){
 			if(game_end()){
 				Team t = lastTeam();
 				for(Player p : getPlayerFrom(t)){
@@ -758,6 +760,7 @@ public class CustomWars extends TeamGame{
 	
 	@EventHandler
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
+		if(ev.getManager().getType() != getType())return;
 		if(getState()!=GameState.LobbyPhase)return;
 		
 		if(UtilPlayer.isOnline(ev.getPlayername())){

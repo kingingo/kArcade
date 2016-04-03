@@ -55,6 +55,7 @@ import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
 import eu.epicpvp.kcore.Enum.PlayerState;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Update.UpdateType;
@@ -209,12 +210,6 @@ public class SingleGame extends Game{
 		this.gameList=new GameList(getManager());
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void loadStats(PlayerJoinEvent ev){
-		if(getState()!=GameState.LobbyPhase)return;
-		getStats().loadPlayer(ev.getPlayer());
-	}
-	
 	@EventHandler
 	public void soilChangeEntity(EntityInteractEvent event){
 	    if (!isSoilChange() && (event.getEntityType() != EntityType.PLAYER) && (event.getBlock().getType() == Material.SOIL)) event.setCancelled(true);
@@ -231,6 +226,11 @@ public class SingleGame extends Game{
 		if(!InventoryTypDisallow.isEmpty()&&InventoryTypDisallow.contains(ev.getInventory().getType())){
 			ev.setCancelled(true);
 		}
+	}
+
+	@EventHandler
+	public void singlestatusUpdate(ServerStatusUpdateEvent ev){
+		if(getWorldData()!=null)ev.getPacket().setMots( (getWorldData().getMap() == null ? "Loading..." : getWorldData().getMapName()) );
 	}
 	
 	@EventHandler
@@ -504,10 +504,6 @@ public class SingleGame extends Game{
 		if(ev.getSpawnReason()==SpawnReason.CUSTOM)return;
 	    if ((!CreatureSpawn||!isState(GameState.InGame)) && !AllowSpawnCreature.contains(ev.getCreatureType())){
 		      ev.setCancelled(true);
-	    }
-	    
-	    if(ev.getEntityType() == EntityType.CHICKEN){
-	    	System.err.println("spawn chicken!!! "+ev.isCancelled());
 	    }
 	  }
 		

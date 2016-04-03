@@ -307,6 +307,7 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
+		if(ev.getManager().getType() != getType())return;
 		if(getState()!=GameState.LobbyPhase)return;
 		if(UtilPlayer.isOnline(ev.getPlayername())){
 			Player player = Bukkit.getPlayer(ev.getPlayername());

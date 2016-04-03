@@ -26,6 +26,7 @@ import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
@@ -70,6 +71,7 @@ public class Game extends kListener{
 	public Game(kArcadeManager manager) {
 		super(manager.getInstance(),"Game");
 		this.manager=manager;
+		this.money=new StatsManager(manager.getInstance(), manager.getClient(), GameType.Money);
 	}
 	
 	public void unregisterListener(){
@@ -194,6 +196,14 @@ public class Game extends kListener{
 	}
 	
 	@EventHandler
+	public void statusUpdate(ServerStatusUpdateEvent ev){
+		ev.getPacket().setTyp(getType());
+		ev.getPacket().setMaxPlayers(getMax_Players());
+		ev.getPacket().setPlayers(UtilServer.getPlayers().size());
+		ev.getPacket().setState(getState());
+	}
+	
+	@EventHandler
 	public void load(WorldDataInitializeEvent ev){
 		new AddonDay(getManager().getInstance(), ev.getWorldData().getWorld());
 	}
@@ -212,7 +222,6 @@ public class Game extends kListener{
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void loadStats(PlayerJoinEvent ev){
-		if(getState()!=GameState.LobbyPhase)return;
 		getStats().loadPlayer(ev.getPlayer());
 		getMoney().loadPlayer(ev.getPlayer());
 	}

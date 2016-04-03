@@ -50,6 +50,7 @@ import eu.epicpvp.kcore.Calendar.Calendar.CalendarType;
 import eu.epicpvp.kcore.Enum.GameCage;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Kit.Kit;
 import eu.epicpvp.kcore.Kit.Perk;
 import eu.epicpvp.kcore.Kit.Shop.SingleKitShop;
@@ -140,10 +141,10 @@ public class SkyWars extends TeamGame{
 	//SHEEP WOOL/BEDROCK ISLAND CHEST
 	//SPAWN WOOL/REDSTONE
 	
-//	@EventHandler //TODO !!!
-//	public void GameUpdateInfo(GameUpdateInfoEvent ev){
-//		ev.getPacket().setCtyp(type.name());
-//	}
+	@EventHandler
+	public void ServerStatusUpdateSW(ServerStatusUpdateEvent ev){
+		ev.getPacket().setSubstate(type.name());
+	}
 	
 	@EventHandler
 	public void WorldData(WorldDataInitializeEvent ev){
@@ -927,6 +928,7 @@ public class SkyWars extends TeamGame{
 	
 	@EventHandler
 	public void statsLOADED(PlayerStatsLoadedEvent ev){
+		if(ev.getManager().getType() != getType())return;
 		if(getState()!=GameState.LobbyPhase)return;
 		if(UtilPlayer.isOnline(ev.getPlayername())){
 			Player player = Bukkit.getPlayer(ev.getPlayername());

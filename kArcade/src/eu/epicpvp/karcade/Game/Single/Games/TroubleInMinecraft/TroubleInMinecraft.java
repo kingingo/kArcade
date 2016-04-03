@@ -699,6 +699,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void StatsChange(PlayerStatsChangeEvent ev){
+		if(ev.getManager().getType()!=getType())return;
 		if(getState()!=GameState.LobbyPhase&&getState()!=GameState.Laden){
 			if(UtilPlayer.isOnline(ev.getPlayername())){
 				Player player = Bukkit.getPlayer(ev.getPlayername());
@@ -717,6 +718,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
+		if(ev.getManager().getType() != getType())return;
 		if(getState()!=GameState.LobbyPhase)return;
 
 		if(UtilPlayer.isOnline(ev.getPlayername())){
@@ -927,6 +929,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void StatsCreate(PlayerStatsCreateEvent ev){
+		if(ev.getManager().getType() != getType())return;
 		if(UtilPlayer.isOnline(ev.getPlayername())){
 			ev.getManager().setInt(Bukkit.getPlayer(ev.getPlayername()), 150, StatsKey.TTT_KARMA);
 		}

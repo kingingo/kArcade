@@ -47,6 +47,7 @@ import eu.epicpvp.kcore.Addons.AddonSun;
 import eu.epicpvp.kcore.Arena.ArenaType;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Inventory.InventoryPageBase;
 import eu.epicpvp.kcore.Inventory.Item.Click;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
@@ -215,6 +216,11 @@ public class MultiGames extends Game{
 				}
 			}
 		});
+	}
+	
+	@EventHandler
+	public void statusUpdate(ServerStatusUpdateEvent ev){
+		ev.getPacket().setListed(false);
 	}
 	
 	public void createAdminPage(){

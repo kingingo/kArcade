@@ -28,10 +28,14 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.ClientWrapper;
+import dev.wolveringer.client.futures.TopTenResponseFuture;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutTopTen;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutTopTen.RankInformation;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
@@ -68,6 +72,7 @@ import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Nick.NickManager;
 import eu.epicpvp.kcore.Permission.PermissionManager;
 import eu.epicpvp.kcore.Pet.PetManager;
+import eu.epicpvp.kcore.Util.Color;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilServer;
@@ -275,14 +280,22 @@ public class kArcadeManager extends kListener{
 		return pet;
 	}
 	
-	public void setRanking(StatsKey win){ // TODO FIX!
-//		HashMap<Integer,UUID> list = getGame().getStats().getRanking(s, 10);
-//		setString_ranking(new String[11]);
-//		getString_ranking()[0]=Color.GREEN+getGame().getType().getTyp()+Color.ORANGE+"§l Ranking";
-//		for(int i : list.keySet()){
-//			if(list.get(i)==null)break;
-//			getString_ranking()[i]="§l#"+i+"§r "+getGame().getStats().getName(list.get(i))+" "+s.getK§RZEL()+": "+getGame().getStats().getIntWithUUID(s, list.get(i) );
-//		}
+	public void setRanking(StatsKey win){
+		TopTenResponseFuture response = getClient().getTopTen(getGame().getType(), win);
+		
+		response.getAsync(new Callback<PacketOutTopTen>() {
+			@Override
+			public void call(PacketOutTopTen packet) {
+				setString_ranking(new String[11]);
+				getString_ranking()[0]=Color.GREEN+getGame().getType().getTyp()+Color.ORANGE+"§l Ranking";
+				int i = 1;
+				
+				for(RankInformation rInfo : packet.getRanks()){
+					getString_ranking()[i]="§l#"+i+"§r "+rInfo.getPlayer()+" "+win.getMySQLName()+": "+rInfo.getTopValue();
+					i++;
+				}
+			}
+		});
 	}
 	
 	public void restart(){
@@ -506,9 +519,11 @@ public class kArcadeManager extends kListener{
 	     }
 	   }
 	
-	@EventHandler // TODO _16X1
-	public void Packet(ServerChangeGameTypeEvent ev){					//+ (packet.getCtyp().equalsIgnoreCase("none")?"":packet.getCtyp())
-		getInstance().getConfig().set("Config.Server.Game", ev.getType() );
+	@EventHandler 
+	public void Packet(ServerChangeGameTypeEvent ev){		
+		Log("Game Change to "+ev.getType() + " " + ev.getSubType());
+		getInstance().getConfig().set("Config.Server.Game", ev.getType()+(ev.getSubType().equalsIgnoreCase("none") ? "":ev.getSubType()));
+		
 		getInstance().saveConfig();
 		if(getGame()!=null)getGame().setState(GameState.Restart, GameStateChangeReason.CHANGE_TYPE);
 		restart();

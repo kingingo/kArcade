@@ -23,6 +23,7 @@ import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameUpdateInfoEvent;
 import eu.epicpvp.karcade.Game.World.GameMap;
+import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Inventory.InventoryPageBase;
 import eu.epicpvp.kcore.Inventory.Item.Click;
 import eu.epicpvp.kcore.Inventory.Item.IButton;
@@ -91,8 +92,8 @@ public class GameMapVote extends kListener{
 		}
 	}
 	
-	@EventHandler
-	public void sendPacket(GameUpdateInfoEvent ev){
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void sendPacket(ServerStatusUpdateEvent ev){
 		if(vote){
 			ev.getPacket().setMots("Voting...");
 		}
