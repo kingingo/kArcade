@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,16 +30,14 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
+import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import dev.wolveringer.dataserver.gamestats.GameState;
-import lombok.Getter;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
-import eu.epicpvp.karcade.Game.Events.GameUpdateInfoEvent;
 import eu.epicpvp.karcade.Game.Events.TeamDelEvent;
 import eu.epicpvp.karcade.Game.Single.GameMapVote;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
@@ -94,6 +91,7 @@ import eu.epicpvp.kcore.Util.UtilWorldEdit;
 import eu.epicpvp.kcore.Villager.VillagerShop;
 import eu.epicpvp.kcore.Villager.Event.VillagerShopEvent;
 import eu.epicpvp.kcore.kListen.kSort;
+import lombok.Getter;
 
 public class CustomWars extends TeamGame{
 
@@ -212,7 +210,7 @@ public class CustomWars extends TeamGame{
 		format = UtilTime.formatSeconds(getStart());
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", format));
-		getBoard().getObjective(DisplaySlot.SIDEBAR).setDisplayName("§e"+getType().getTyp()+" §7- §e"+format);
+		getBoard().getObjective(DisplaySlot.SIDEBAR).setDisplayName("Â§e"+getType().getTyp()+" Â§7- Â§e"+format);
 		
 		if( (getCustomType().getInGameTime()-2) == getStart()){
 			for(Player p : UtilServer.getPlayers()){
@@ -284,7 +282,7 @@ public class CustomWars extends TeamGame{
 		format = UtilTime.formatSeconds(getStart());
 		
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", format));
-		getBoard().getObjective(DisplaySlot.SIDEBAR).setDisplayName("§e"+getType().getTyp()+" §7- §e"+format);
+		getBoard().getObjective(DisplaySlot.SIDEBAR).setDisplayName("Â§e"+getType().getTyp()+" Â§7- Â§e"+format);
 		
 		switch(getStart()){
 			case 15:broadcastWithPrefix("GAME_END_IN", format);break;
@@ -301,7 +299,7 @@ public class CustomWars extends TeamGame{
 		}
 	}
 	
-	//ER PRÜFT OB NUR NOCH EIN TEAM ÜBRIG IST!
+	//ER PRÃœFT OB NUR NOCH EIN TEAM ÃœBRIG IST!
 	public boolean game_end(){
 		for(Player p : getTeamList().keySet()){
 			for(Player p1 : getTeamList().keySet()){
@@ -314,15 +312,15 @@ public class CustomWars extends TeamGame{
 	}
 
 	public static ItemStack Silber(int i){
-		return UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,i), "§bSilver");
+		return UtilItem.RenameItem(new ItemStack(Material.IRON_INGOT,i), "Â§bSilver");
 	}
 	
 	public static ItemStack Gold(int i){
-		return UtilItem.RenameItem(new ItemStack(Material.GOLD_INGOT,i), "§bGold");
+		return UtilItem.RenameItem(new ItemStack(Material.GOLD_INGOT,i), "Â§bGold");
 	}
 	
 	public static ItemStack Bronze(int i){
-		return UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,i), "§bBronze");
+		return UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,i), "Â§bBronze");
 	}
 	
 	String v;
@@ -341,10 +339,10 @@ public class CustomWars extends TeamGame{
 
 			if(this instanceof SheepWars){
 				if(((SheepWars)this).getKits().containsKey(victim)){
-					v=v+"§a["+((SheepWars)this).getKits().get(victim)+"§a]";
+					v=v+"Â§a["+((SheepWars)this).getKits().get(victim)+"Â§a]";
 				}
 				if(((SheepWars)this).getKits().containsKey(killer)){
-					k=k+"§a["+((SheepWars)this).getKits().get(killer)+"§a]";
+					k=k+"Â§a["+((SheepWars)this).getKits().get(killer)+"Â§a]";
 				}
 			}
 			
@@ -367,7 +365,7 @@ public class CustomWars extends TeamGame{
 			
 			if(this instanceof SheepWars){
 				if(((SheepWars)this).getKits().containsKey(victim)){
-					v=v+"§a["+((SheepWars)this).getKits().get(victim)+"§a]";
+					v=v+"Â§a["+((SheepWars)this).getKits().get(victim)+"Â§a]";
 				}
 			}
 			
@@ -574,11 +572,11 @@ public class CustomWars extends TeamGame{
 		}
 		
 		setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
-		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "§e"+getType().getTyp());
+		UtilScoreboard.addBoard(getBoard(), DisplaySlot.SIDEBAR, "Â§e"+getType().getTyp());
 		
 		int i = 0;
 		for(Team t : teams){
-			UtilScoreboard.setScore(getBoard(), "§a§l"+"❤ "+t.getColor()+t.Name(), DisplaySlot.SIDEBAR, getPlayerFrom(t).size());
+			UtilScoreboard.setScore(getBoard(), "Â§aÂ§l"+"â§¤ "+t.getColor()+t.Name(), DisplaySlot.SIDEBAR, getPlayerFrom(t).size());
 			getTeams().put(t, true);
 			setVillager(t,et);
 			list = getWorldData().getLocs(t);
@@ -651,22 +649,22 @@ public class CustomWars extends TeamGame{
 				}
 				Collections.sort(ranking,kSort.DESCENDING);
 
-				Bukkit.broadcastMessage("§a§l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+				Bukkit.broadcastMessage("Â§aÂ§lâ–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬");
 				if(t!=null){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("Winner - "+t.Name()).length())+"§eWinner §7- "+t.getColor()+t.Name());
+					Bukkit.broadcastMessage(UtilString.center("â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬".length(),("Winner - "+t.Name()).length())+"Â§eWinner Â§7- "+t.getColor()+t.Name());
 					Bukkit.broadcastMessage(" ");
 				}
 				
 				if(!this.ranking.isEmpty()&&this.ranking.size()>=1){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("1st Killer - "+this.ranking.get(0).getName()+" - "+this.ranking.get(0).getObj()).length())+"§e1st Killer - §7"+this.ranking.get(0).getName()+" - "+this.ranking.get(0).getObj());
+					Bukkit.broadcastMessage(UtilString.center("â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬".length(),("1st Killer - "+this.ranking.get(0).getName()+" - "+this.ranking.get(0).getObj()).length())+"Â§e1st Killer - Â§7"+this.ranking.get(0).getName()+" - "+this.ranking.get(0).getObj());
 				}
 				if(!this.ranking.isEmpty()&&this.ranking.size()>=2){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("2st Killer - "+this.ranking.get(1).getName()+" - "+this.ranking.get(1).getObj()).length())+"§62st Killer - §7"+this.ranking.get(1).getName()+" - "+this.ranking.get(1).getObj());
+					Bukkit.broadcastMessage(UtilString.center("â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬".length(),("2st Killer - "+this.ranking.get(1).getName()+" - "+this.ranking.get(1).getObj()).length())+"Â§62st Killer - Â§7"+this.ranking.get(1).getName()+" - "+this.ranking.get(1).getObj());
 				}
 				if(!this.ranking.isEmpty()&&this.ranking.size()>=3){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("3st Killer - "+this.ranking.get(2).getName()+" - "+this.ranking.get(2).getObj()).length())+"§c3st Killer - §7"+this.ranking.get(2).getName()+" - "+this.ranking.get(2).getObj());
+					Bukkit.broadcastMessage(UtilString.center("â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬".length(),("3st Killer - "+this.ranking.get(2).getName()+" - "+this.ranking.get(2).getObj()).length())+"Â§c3st Killer - Â§7"+this.ranking.get(2).getName()+" - "+this.ranking.get(2).getObj());
 				}
-				Bukkit.broadcastMessage("§a§l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+				Bukkit.broadcastMessage("Â§aÂ§lâ–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬â–¬");
 			}
 		}
 	}
@@ -676,19 +674,19 @@ public class CustomWars extends TeamGame{
 		Team team = getTeam(ev.getPlayer());
 		if(getTeams().containsKey(team)){
 			if(getTeams().get(team)){
-				UtilScoreboard.resetScore(getBoard(), "§a§l"+"❤ "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(getBoard(), "§a§l"+"❤ "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR, getPlayerFrom(team).size()-1);
+				UtilScoreboard.resetScore(getBoard(), "Â§aÂ§l"+"â§¤ "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR);
+				UtilScoreboard.setScore(getBoard(), "Â§aÂ§l"+"â§¤ "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR, getPlayerFrom(team).size()-1);
 			}else{
-				UtilScoreboard.resetScore(getBoard(), "§4§l"+"✖ "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(getBoard(), "§4§l"+"✖ "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR, getPlayerFrom(team).size()-1);
+				UtilScoreboard.resetScore(getBoard(), "Â§4Â§l"+"âœ– "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR);
+				UtilScoreboard.setScore(getBoard(), "Â§4Â§l"+"âœ– "+team.getColor()+team.Name(), DisplaySlot.SIDEBAR, getPlayerFrom(team).size()-1);
 			}
 		}
 	}
 	
 	@EventHandler
 	public void bedDeath(AddonBedKingDeathEvent ev){
-		UtilScoreboard.resetScore(getBoard(), "§a§l"+"❤ "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getBoard(), "§4§l"+"✖ "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
+		UtilScoreboard.resetScore(getBoard(), "Â§aÂ§l"+"â§¤ "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getBoard(), "Â§4Â§l"+"âœ– "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		Title t = new Title("","");
@@ -697,15 +695,15 @@ public class CustomWars extends TeamGame{
 		}
 		
 		for(Player player : UtilServer.getPlayers()){
-			t.setSubtitle(Language.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+			t.setSubtitle(Language.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"Â§l"+ev.getTeam().Name()));
 			t.send(player);
 		}
 	}
 	
 	@EventHandler
 	public void sheepDeath(AddonEntityTeamKingDeathEvent ev){
-		UtilScoreboard.resetScore(getBoard(), "§a§l"+"❤ "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getBoard(), "§4§l"+"✖ "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
+		UtilScoreboard.resetScore(getBoard(), "Â§aÂ§l"+"â§¤ "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getBoard(), "Â§4Â§l"+"âœ– "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		Title t = new Title("","");
@@ -714,7 +712,7 @@ public class CustomWars extends TeamGame{
 		}
 		
 		for(Player player : UtilServer.getPlayers()){
-			t.setSubtitle(Language.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+			t.setSubtitle(Language.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"Â§l"+ev.getTeam().Name()));
 			t.send(player);
 		}
 	}
@@ -732,18 +730,18 @@ public class CustomWars extends TeamGame{
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
 			if(ev.getMessage().toCharArray()[0]=='#'){
 				Team t = getTeam(ev.getPlayer());
-				broadcast("§7["+t.getColor()+t.Name()+"§7] "+ev.getPlayer().getDisplayName()+": §7"+ev.getMessage().subSequence(1, ev.getMessage().length()));
+				broadcast("Â§7["+t.getColor()+t.Name()+"Â§7] "+ev.getPlayer().getDisplayName()+": Â§7"+ev.getMessage().subSequence(1, ev.getMessage().length()));
 			}else{
 				Team t = getTeam(ev.getPlayer());
 				for(Player p : getPlayerFrom(getTeam(ev.getPlayer()))){
-					UtilPlayer.sendMessage(p,t.getColor()+"Team-Chat "+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+					UtilPlayer.sendMessage(p,t.getColor()+"Team-Chat "+ev.getPlayer().getDisplayName()+":Â§7 "+ev.getMessage());
 				}
 			}
 		}else if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":Â§7 "+ev.getMessage());
 		}
 	}
 	
@@ -773,8 +771,8 @@ public class CustomWars extends TeamGame{
 				@Override
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
-						Color.GREEN+getType().getTyp()+" "+ getCustomType().name().replaceAll("_", "") +Color.ORANGE+"§l Info",
-						Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+						Color.GREEN+getType().getTyp()+" "+ getCustomType().name().replaceAll("_", "") +Color.ORANGE+"Â§l Info",
+						Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" Â§a"+kArcade.id),
 						Language.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap()!=null ? getWorldData().getMapName() : "Loading...")),
 						" ",
 						Language.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
@@ -810,7 +808,7 @@ public class CustomWars extends TeamGame{
 		ItemStack r3 = UtilItem.RenameItem(new ItemStack(Material.DIAMOND_CHESTPLATE), "Diamanthemd");
 		r3.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 		rustung.addOffer(new MerchantOffer(Gold(50),r3));
-		v.addShop(UtilItem.Item(new ItemStack(Material.DIAMOND_CHESTPLATE), new String[]{"§aSpezial Schutz!"}, "§cRüstung"), rustung, 10);
+		v.addShop(UtilItem.Item(new ItemStack(Material.DIAMOND_CHESTPLATE), new String[]{"Â§aSpezial Schutz!"}, "Â§cRÃ¼stung"), rustung, 10);
 		
 		Merchant schwert = new Merchant();
 		ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "Spezial Schwert Lvl 1");
@@ -821,19 +819,19 @@ public class CustomWars extends TeamGame{
 		s2.addEnchantment(Enchantment.DAMAGE_ALL, 3);
 		s2.addEnchantment(Enchantment.FIRE_ASPECT, 1);
 		schwert.addOffer(new MerchantOffer(Gold(40),s2));
-		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"§aLehre deinen Gegner Schmerz!"}, "§cSchwerter"), schwert, 12);
+		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"Â§aLehre deinen Gegner Schmerz!"}, "Â§cSchwerter"), schwert, 12);
 		
 		Merchant trank = new Merchant();
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8229), "Heilung II")));
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8225), "Regeneration II")));
-		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8233), "Stärke II")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mit mir Drogen nehmen?"}, "§cTränke"), trank, 14);
+		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8233), "StÃ¤rke II")));
+		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"Â§aWillst du mit mir Drogen nehmen?"}, "Â§cTrÃ¤nke"), trank, 14);
 		
 		Merchant gold = new Merchant();
 		gold.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldener Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(10), UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL), "Enderpearl")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in größter Not!"}, "§cSpezial"), gold, 16);
+		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"Â§aRette dich in grÃ¶ÃŸter Not!"}, "Â§cSpezial"), gold, 16);
 		
 		v.finish();
 		return v;
@@ -855,7 +853,7 @@ public class CustomWars extends TeamGame{
 			bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(Material.STAINED_CLAY,4)));
 			bloecke.addOffer(new MerchantOffer(Bronze(8), new ItemStack(Material.STAINED_GLASS,1)));
 			bloecke.addOffer(new MerchantOffer(Bronze(7),new ItemStack(Material.ENDER_STONE)));
-			v.addShop(UtilItem.Item(new ItemStack(Material.STAINED_GLASS), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBlöcke"), bloecke, 9);
+			v.addShop(UtilItem.Item(new ItemStack(Material.STAINED_GLASS), new String[]{"Â§aHier findest du alles was du zum bauen brauchst"}, "Â§cBlÃ¶cke"), bloecke, 9);
 		
 			Merchant spitzhacken = new Merchant();
 			ItemStack spitzhack1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_PICKAXE), "Holzhacke");
@@ -874,7 +872,7 @@ public class CustomWars extends TeamGame{
 			spitzhack4.addEnchantment(Enchantment.DURABILITY, 1);
 			spitzhack4.addEnchantment(Enchantment.DIG_SPEED, 2);
 			spitzhacken.addOffer(new MerchantOffer(Gold(3), spitzhack4));
-			v.addShop(UtilItem.Item(new ItemStack(274), new String[]{"§aBaue Blöcke deines Gegners ab!"}, "§cSpitzhacken"), spitzhacken, 10);
+			v.addShop(UtilItem.Item(new ItemStack(274), new String[]{"Â§aBaue BlÃ¶cke deines Gegners ab!"}, "Â§cSpitzhacken"), spitzhacken, 10);
 			
 			Merchant rustung = new Merchant();
 			ItemStack r1 = UtilItem.RenameItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), c(t.getColor())), t.getColor()+"Lederhelm");
@@ -911,10 +909,10 @@ public class CustomWars extends TeamGame{
 			r8.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 			r8.addEnchantment(Enchantment.PROTECTION_FIRE, 2);
 			rustung.addOffer(new MerchantOffer(Gold(3),r8));
-			v.addShop(UtilItem.Item(new ItemStack(Material.IRON_CHESTPLATE), new String[]{"§aSchütze dich vor deinen Gegnern!"}, "§cRüstung"), rustung, 11);
+			v.addShop(UtilItem.Item(new ItemStack(Material.IRON_CHESTPLATE), new String[]{"Â§aSchÃ¼tze dich vor deinen Gegnern!"}, "Â§cRÃ¼stung"), rustung, 11);
 			
 			Merchant schwerter = new Merchant();
-			ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "Knüppel");
+			ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "KnÃ¼ppel");
 			s1.addEnchantment(Enchantment.KNOCKBACK, 1);
 			schwerter.addOffer(new MerchantOffer(Bronze(8), s1));
 			ItemStack s2 = UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD), "Goldschwert Lvl 1");
@@ -934,10 +932,10 @@ public class CustomWars extends TeamGame{
 			s5.addEnchantment(Enchantment.DAMAGE_ALL, 1);
 			s5.addEnchantment(Enchantment.KNOCKBACK, 1);
 			schwerter.addOffer(new MerchantOffer(Gold(3), s5));
-			v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"§aGreife deine Gegner an und töte sie!"}, "§cSchwerter"), schwerter, 12);
+			v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"Â§aGreife deine Gegner an und tÃ¶te sie!"}, "Â§cSchwerter"), schwerter, 12);
 			
 			Merchant bogen = new Merchant();
-			ItemStack b0 = UtilItem.RenameItem(new ItemStack(Material.BOW), "§bBogen Lvl 1");
+			ItemStack b0 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Â§bBogen Lvl 1");
 			bogen.addOffer(new MerchantOffer(Silber(10),b0));
 			ItemStack b1 = UtilItem.RenameItem(new ItemStack(Material.BOW), "Bogen Lvl 2");
 			b1.addEnchantment(Enchantment.ARROW_INFINITE, 1);
@@ -952,7 +950,7 @@ public class CustomWars extends TeamGame{
 			b3.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
 			bogen.addOffer(new MerchantOffer(Gold(13),b3));
 			bogen.addOffer(new MerchantOffer(Bronze(5),UtilItem.RenameItem(new ItemStack(Material.ARROW), "Pfeil")));
-			v.addShop(UtilItem.Item(new ItemStack(Material.BOW), new String[]{"§aDer fernkampf hat schon einige Kriege entschieden!"}, "§cBögen"), bogen, 13);
+			v.addShop(UtilItem.Item(new ItemStack(Material.BOW), new String[]{"Â§aDer fernkampf hat schon einige Kriege entschieden!"}, "Â§cBÃ¶gen"), bogen, 13);
 			
 			Merchant nahrung = new Merchant();
 			nahrung.addOffer(new MerchantOffer(Bronze(2), UtilItem.RenameItem(new ItemStack(Material.APPLE), "Apfel")));
@@ -960,19 +958,19 @@ public class CustomWars extends TeamGame{
 			nahrung.addOffer(new MerchantOffer(Bronze(3), UtilItem.RenameItem(new ItemStack(Material.getMaterial(364)), "Steak")));
 			nahrung.addOffer(new MerchantOffer(Bronze(5), UtilItem.RenameItem(new ItemStack(Material.CAKE), "Kuchen")));
 			nahrung.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldapfel")));
-			v.addShop(UtilItem.Item(new ItemStack(260), new String[]{"§aAuch ein Soldat muss irgendwann was essen!"}, "§cNahrung"),nahrung, 14);
+			v.addShop(UtilItem.Item(new ItemStack(260), new String[]{"Â§aAuch ein Soldat muss irgendwann was essen!"}, "Â§cNahrung"),nahrung, 14);
 			
 			Merchant kisten = new Merchant();
 			kisten.addOffer(new MerchantOffer(Silber(2), UtilItem.RenameItem(new ItemStack(Material.CHEST), "Kiste")));
-			v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "§cKisten"), kisten, 15);
+			v.addShop(UtilItem.Item(new ItemStack(54), new String[]{"Â§aDein Inventar ist nicht Unendlich, die Anzahl der Kisten schon!"}, "Â§cKisten"), kisten, 15);
 			
 			Merchant trank = new Merchant();
 			trank.addOffer(new MerchantOffer(Silber(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8261), "Heilung")));
 			trank.addOffer(new MerchantOffer(Silber(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8194), "Schnelligkeit")));
-			trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8227), "Feuerresitänz")));
+			trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8227), "FeuerresitÃ¤nz")));
 			trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8193), "Regeneration")));
-			trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8201), "Stärke")));
-			v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aAls Soldat kann man schonmal die eine oder andere Droge gebrauchen!"}, "§cTränke"), trank, 16);
+			trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8201), "StÃ¤rke")));
+			v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"Â§aAls Soldat kann man schonmal die eine oder andere Droge gebrauchen!"}, "Â§cTrÃ¤nke"), trank, 16);
 			
 			Merchant spezial = new Merchant();
 			for(CustomWarsItem item : items){
@@ -982,7 +980,7 @@ public class CustomWars extends TeamGame{
 			spezial.addOffer(new MerchantOffer(Gold(1), UtilItem.RenameItem(new ItemStack(Material.FLINT_AND_STEEL), "Feuerzeug")));
 			spezial.addOffer(new MerchantOffer(Bronze(5), UtilItem.RenameItem(new ItemStack(Material.LADDER), "Leiter")));
 			spezial.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.getMaterial(30)), "Spinnennetz")));
-			v.addShop(UtilItem.Item(new ItemStack(46), new String[]{"§aZeige deinen Gegnern wer der Chef auf dem Schlachtfeld ist!"}, "§cSpezial"), spezial, 17);
+			v.addShop(UtilItem.Item(new ItemStack(46), new String[]{"Â§aZeige deinen Gegnern wer der Chef auf dem Schlachtfeld ist!"}, "Â§cSpezial"), spezial, 17);
 			v.finish();
 			return v;
 	}

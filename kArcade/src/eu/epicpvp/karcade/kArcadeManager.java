@@ -30,6 +30,7 @@ import org.bukkit.potion.PotionEffect;
 
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.ClientWrapper;
+import dev.wolveringer.client.ProgressFuture;
 import dev.wolveringer.client.futures.TopTenResponseFuture;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
@@ -281,7 +282,7 @@ public class kArcadeManager extends kListener{
 	}
 	
 	public void setRanking(StatsKey win){
-		TopTenResponseFuture response = getClient().getTopTen(getGame().getType(), win);
+		ProgressFuture<PacketOutTopTen> response = getClient().getTopTen(getGame().getType(), win);
 		
 		response.getAsync(new Callback<PacketOutTopTen>() {
 			@Override

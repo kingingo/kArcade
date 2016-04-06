@@ -4,7 +4,6 @@
 	<groupId>eu.epicpvp</groupId>
 	<artifactId>core-karcarde</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
 	<distributionManagement>
         <repository>
             <id>epicpvp-releases</id>
@@ -17,13 +16,14 @@
             <url>http://149.202.150.185:8081/artifactory/epicpvp-snapshots/</url>
         </snapshotRepository>
 	</distributionManagement>
-
 	<parent>
 		<groupId>eu.epicpvp</groupId>
 		<artifactId>core-parent</artifactId>
 		<version>1.0</version>
 	</parent>
-
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>

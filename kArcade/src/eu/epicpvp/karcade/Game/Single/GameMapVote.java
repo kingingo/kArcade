@@ -1,6 +1,5 @@
 package eu.epicpvp.karcade.Game.Single;
 
-import java.awt.Button;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,16 +16,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
-import lombok.Getter;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
-import eu.epicpvp.karcade.Game.Events.GameUpdateInfoEvent;
 import eu.epicpvp.karcade.Game.World.GameMap;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Inventory.InventoryPageBase;
 import eu.epicpvp.kcore.Inventory.Item.Click;
-import eu.epicpvp.kcore.Inventory.Item.IButton;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Permission.Events.PlayerLoadPermissionEvent;
@@ -40,6 +36,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.kListen.kSort;
+import lombok.Getter;
 
 public class GameMapVote extends kListener{
 

@@ -122,7 +122,7 @@ public class UtilSkyWars1vs1 {
 					new PerkLessDamageCause(40, DamageCause.FALL)
 				}),
 				new Kit( "§eSpinne",new String[]{"§8x12§7 Spinnweben","§8x1§7 Sprungkraft II Trank","§8x1§7 Angel","§8x2§7 Wasser Eimer"}, new ItemStack(Material.WEB),PermissionType.SKYWARS_KIT_SPINNE,KitType.KAUFEN,2000,500,new Perk[]{
-					new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD),new ItemStack(Material.POTION,1,(byte)8235),new ItemStack(Material.WEB,12)})
+					new PerkEquipment(new ItemStack[]{new ItemStack(Material.FISHING_ROD),new ItemStack(Material.POTION,1,(byte)8235),new ItemStack(Material.WEB,12),new ItemStack(Material.WATER_BUCKET,2)})
 				}),
 				new Kit( "§eDoktor",new String[]{"§8x1§7 Wei§e Leder Ruestung","§8x2§7 Heil Tr§nke II","§8x2§7 Schere","§8x8§7 Spinnenweben"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.WHITE),PermissionType.SKYWARS_KIT_DOKTOR,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment(new ItemStack[]{UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.WHITE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), DyeColor.WHITE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.WHITE),UtilItem.LSetColor(new ItemStack(Material.LEATHER_BOOTS), DyeColor.WHITE),new ItemStack(Material.SHEARS),new ItemStack(Material.POTION,1,(byte)8229)})
@@ -166,7 +166,7 @@ public class UtilSkyWars1vs1 {
 				new Kit( "§eSprengmeister",new String[]{"§8x4§7 Creeper Spawner","§8x10§7 TnT","§8x1§7 Feuerzeug"}, new ItemStack(Material.TNT),PermissionType.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment((creeper == null ? new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL)} : new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL),creeper.getItem(4)}))
 				}),
-				new Kit( "§eJ§ger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),PermissionType.SKYWARS_KIT_JAEGER,KitType.KAUFEN,2000,500,new Perk[]{
+				new Kit( "§eJaeger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),PermissionType.SKYWARS_KIT_JAEGER,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,10)})
 				}),
 				new Kit( "§eEnchanter",new String[]{"§8x1§7 Enchantment Table","§8x64 §7Enchantment Bottles"}, new ItemStack(Material.ENCHANTMENT_TABLE),PermissionType.SKYWARS_KIT_ENCHANTER,KitType.KAUFEN,2000,500,new Perk[]{
