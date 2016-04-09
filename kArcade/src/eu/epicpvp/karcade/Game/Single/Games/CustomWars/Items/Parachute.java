@@ -36,7 +36,7 @@ public class Parachute extends CustomWarsItem{
 			e.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,600*20,1),true);
 			e.setPassenger(ev.getPlayer().getWorld().spawnEntity(ev.getPlayer().getLocation(), EntityType.CHICKEN));
 			ev.getPlayer().setPassenger(e);
-			Log("ADD "+ev.getPlayer());
+			logMessage("ADD "+ev.getPlayer());
 		}
 	}
 	
@@ -68,15 +68,15 @@ public class Parachute extends CustomWarsItem{
 					e.remove();
 					
 					if(ev.getPlayer().isSneaking()){
-						Log("REMOVE isSneaking "+ev.getPlayer());
+						logMessage("REMOVE isSneaking "+ev.getPlayer());
 					}
 					
 					if(ev.getPlayer().isOnGround()){
-						Log("REMOVE isOnGround "+ev.getPlayer());
+						logMessage("REMOVE isOnGround "+ev.getPlayer());
 					}
 					
 					if(ev.getPlayer().getLocation().getY()<-10){
-						Log("REMOVE ev.getPlayer().getLocation().getY()<-10 "+ev.getPlayer());
+						logMessage("REMOVE ev.getPlayer().getLocation().getY()<-10 "+ev.getPlayer());
 					}
 					
 					return;

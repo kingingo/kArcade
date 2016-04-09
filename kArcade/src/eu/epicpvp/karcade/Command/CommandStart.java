@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.AnvilGUI;
 import eu.epicpvp.kcore.Util.AnvilGUI.AnvilClickEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
@@ -40,9 +40,9 @@ public class CommandStart implements CommandExecutor{
 					        try{
 					        	Integer i = Integer.valueOf(ev.getName());
 					        	((SingleGame)Manager.getGame()).setStart(i);
-					        	UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+Language.getText(p, "GAME_TIME_CHANGE",i));
+					        	UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationManager.getText(p, "GAME_TIME_CHANGE",i));
 					        }catch(NumberFormatException e){
-					        	UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+Language.getText(p, "NO_INTEGER"));
+					        	UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationManager.getText(p, "NO_INTEGER"));
 					        }
 						}
 					}
@@ -56,7 +56,7 @@ public class CommandStart implements CommandExecutor{
 					 gui.open();
 			}else{
 				((SingleGame)Manager.getGame()).setStart(10);
-	        	UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+Language.getText(p, "GAME_TIME_CHANGE",10));
+	        	UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationManager.getText(p, "GAME_TIME_CHANGE",10));
 			}
 		return false;
 	}

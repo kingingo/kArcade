@@ -3,8 +3,8 @@ package eu.epicpvp.karcade.Game.Events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import lombok.Getter;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
+import lombok.Getter;
 
 public class GamePreStartEvent  extends Event{
 	private static HandlerList handlers = new HandlerList();

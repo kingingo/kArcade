@@ -35,8 +35,8 @@ import eu.epicpvp.karcade.Game.Multi.Games.MultiTeamGame;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.TimeSpan;
@@ -88,7 +88,6 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		super(games,Map, location);
 		setStartCountdown(10);
 		UtilBG.setHub("versus");
-		setUpdateTo("versus");
 		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
 		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
 		UtilScoreboard.setScore(scoreboard, " ", DisplaySlot.SIDEBAR, 3);
@@ -103,10 +102,10 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		
 		if(!getWorldData().existLoc(this, Team.VILLAGE_RED)||
 				getWorldData().existLoc(this, Team.VILLAGE_RED)&&getWorldData().getLocs(this, Team.VILLAGE_RED).isEmpty()){
-			Log("Fehler VILLAGE_RED NICHT GEFUNDEN");
+			logMessage("Fehler VILLAGE_RED NICHT GEFUNDEN");
 		}else if(!getWorldData().existLoc(this, Team.VILLAGE_BLUE)||
 				getWorldData().existLoc(this, Team.VILLAGE_BLUE)&&getWorldData().getLocs(this, Team.VILLAGE_BLUE).isEmpty()){
-			Log("Fehler VILLAGE_BLUE NICHT GEFUNDEN");
+			logMessage("Fehler VILLAGE_BLUE NICHT GEFUNDEN");
 		}else{
 			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.VILLAGE_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.VILLAGE_BLUE).get(0));
 			this.packet=UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10);
@@ -196,7 +195,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		if(getTimer()<0)setTimer((60*12)+1);
 		
 		for(Player player : getGameList().getPlayers().keySet()){
-			UtilDisplay.displayTextBar(Language.getText(player, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), player);
+			UtilDisplay.displayTextBar(TranslationManager.getText(player, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), player);
 			player.setLevel( (int)(((TimeSpan.SECOND*30)-(System.currentTimeMillis() - this.enderchest_time))/1000) );
 		}
 		
@@ -210,7 +209,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 0:
-			broadcastWithPrefix(Language.getText("GAME_END"));
+			broadcastWithPrefix(TranslationManager.getText("GAME_END"));
 			setState(GameState.Restart,GameStateChangeReason.GAME_END);
 			break;
 		}

@@ -15,7 +15,7 @@ import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 
 public class CommandTraitor implements CommandExecutor, Listener{
@@ -30,25 +30,25 @@ public class CommandTraitor implements CommandExecutor, Listener{
 	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "traitor", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		if(TTT.getState()!=GameState.LobbyPhase){
-			UtilPlayer.sendMessage(((Player)cs),Language.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(((Player)cs), "TTT_PASSE_LOBBYPHASE"));
+			UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_LOBBYPHASE"));
 			return false;
 		}
 		int t_p = TTT.getStats().getInt(StatsKey.TTT_PAESSE, ((Player)cs));
 		if(!(t_p>0)){
-			UtilPlayer.sendMessage(((Player)cs),Language.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(((Player)cs), "TTT_PASSE_KEINE","Traitor"));
+			UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_KEINE","Traitor"));
 			return false;
 		}
 		
 		int t = TTT.getTraitor();
 		int tt = TTT.isInTeam(Team.TRAITOR);
 		if(tt>=t){
-			((Player)cs).sendMessage(Language.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(((Player)cs), "TTT_PASSE_MAX_USED","Traitor"));
+			((Player)cs).sendMessage(TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_MAX_USED","Traitor"));
 			return false;
 		}
 		t_p=t_p-1;
 		TTT.getStats().setInt( ((Player)cs) , t_p, StatsKey.TTT_PAESSE);
 		TTT.addTeam(((Player)cs) , Team.TRAITOR);
-		UtilPlayer.sendMessage(((Player)cs),Language.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(((Player)cs), "TTT_PASSE_USE",new String[]{"Traitor",String.valueOf(t_p)}));
+		UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_USE",new String[]{"Traitor",String.valueOf(t_p)}));
 		return false;
 	}
 	

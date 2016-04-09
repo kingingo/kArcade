@@ -165,7 +165,7 @@ public class GameMapVote extends kListener{
 		for(GameMap m : worlds)getWorldData().Uninitialize(m);
 		
 		if(map==null){
-			Log("Close() Map ist null!?"); 
+			logMessage("Close() Map ist null!?"); 
 		}
 		
 		getWorldData().Initialize(map);

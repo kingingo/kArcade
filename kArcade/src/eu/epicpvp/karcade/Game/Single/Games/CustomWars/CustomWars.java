@@ -66,11 +66,11 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Merchant.Merchant;
 import eu.epicpvp.kcore.Merchant.MerchantOffer;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -209,7 +209,7 @@ public class CustomWars extends TeamGame{
 		
 		format = UtilTime.formatSeconds(getStart());
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", format));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "GAME_END_IN", format));
 		getBoard().getObjective(DisplaySlot.SIDEBAR).setDisplayName("Â§e"+getType().getTyp()+" Â§7- Â§e"+format);
 		
 		if( (getCustomType().getInGameTime()-2) == getStart()){
@@ -281,7 +281,7 @@ public class CustomWars extends TeamGame{
 		
 		format = UtilTime.formatSeconds(getStart());
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", format));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "GAME_END_IN", format));
 		getBoard().getObjective(DisplaySlot.SIDEBAR).setDisplayName("Â§e"+getType().getTyp()+" Â§7- Â§e"+format);
 		
 		switch(getStart()){
@@ -695,7 +695,7 @@ public class CustomWars extends TeamGame{
 		}
 		
 		for(Player player : UtilServer.getPlayers()){
-			t.setSubtitle(Language.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"Â§l"+ev.getTeam().Name()));
+			t.setSubtitle(TranslationManager.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"Â§l"+ev.getTeam().Name()));
 			t.send(player);
 		}
 	}
@@ -712,7 +712,7 @@ public class CustomWars extends TeamGame{
 		}
 		
 		for(Player player : UtilServer.getPlayers()){
-			t.setSubtitle(Language.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"Â§l"+ev.getTeam().Name()));
+			t.setSubtitle(TranslationManager.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"Â§l"+ev.getTeam().Name()));
 			t.send(player);
 		}
 	}
@@ -724,7 +724,7 @@ public class CustomWars extends TeamGame{
 		
 		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+			ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+TranslationManager.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
@@ -739,7 +739,7 @@ public class CustomWars extends TeamGame{
 			}
 		}else if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
+			UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":Â§7 "+ev.getMessage());
 		}
@@ -772,17 +772,17 @@ public class CustomWars extends TeamGame{
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 						Color.GREEN+getType().getTyp()+" "+ getCustomType().name().replaceAll("_", "") +Color.ORANGE+"Â§l Info",
-						Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" Â§a"+kArcade.id),
-						Language.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap()!=null ? getWorldData().getMapName() : "Loading...")),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" Â§a"+kArcade.id),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap()!=null ? getWorldData().getMapName() : "Loading...")),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						Language.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						Language.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
-						(getType()==GameType.BedWars ? Language.getText(player, "GAME_HOLOGRAM_BEDWARS", getStats().getInt(StatsKey.BEDWARS_ZERSTOERTE_BEDs, player)) : (getType()==GameType.SheepWars ? Language.getText(player, "GAME_HOLOGRAM_SHEEP", getStats().getInt(StatsKey.SHEEPWARS_KILLED_SHEEPS, player)) : " ")),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+						(getType()==GameType.BedWars ? TranslationManager.getText(player, "GAME_HOLOGRAM_BEDWARS", getStats().getInt(StatsKey.BEDWARS_ZERSTOERTE_BEDs, player)) : (getType()==GameType.SheepWars ? TranslationManager.getText(player, "GAME_HOLOGRAM_SHEEP", getStats().getInt(StatsKey.SHEEPWARS_KILLED_SHEEPS, player)) : " ")),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-						Language.getText(player, "GAME_HOLOGRAM_WINS", win),
-						Language.getText(player, "GAME_HOLOGRAM_LOSE", lose),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", win),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", lose),
 					});
 				}
 			});

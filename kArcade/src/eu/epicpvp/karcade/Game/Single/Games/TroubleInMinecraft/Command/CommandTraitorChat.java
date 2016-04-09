@@ -10,7 +10,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 
 public class CommandTraitorChat implements CommandExecutor, Listener{
 	
@@ -27,7 +27,7 @@ public class CommandTraitorChat implements CommandExecutor, Listener{
 		Team t = TTT.getTeam(p);
 		if(t!=Team.TRAITOR)return false;
 		if(args.length==0){
-			p.sendMessage(Language.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+"§c/tc [Nachricht]");
+			p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+"§c/tc [Nachricht]");
 			return false;
 		}else{
 			String msg = "";

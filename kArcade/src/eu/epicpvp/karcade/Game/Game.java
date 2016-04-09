@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,10 +23,10 @@ import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilPlayer;
@@ -71,9 +70,9 @@ public class Game extends kListener{
 		this.money=new StatsManager(manager.getInstance(), manager.getClient(), GameType.Money);
 	}
 	
-	public void unregisterListener(){
-		HandlerList.unregisterAll(this);
-	}
+//	public void unregisterListener(){
+//		HandlerList.unregisterAll(this);
+//	}
 	
 	public String shortMap(String map,String t){
 		if( (map+t).length() > 16 ){
@@ -131,23 +130,23 @@ public class Game extends kListener{
 	}
 	
 	public void broadcastWithPrefix(String name,Object input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefix(String name,Object[] input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefixName(String name){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+Language.getText(player, name));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(player, name));
 	}
 	
 	public void broadcastWithPrefix(String msg){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,"PREFIX_GAME",getType().getTyp())+msg);
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+msg);
 	}
 	
 	public void broadcastName(String name){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player, name));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player, name));
 	}
 	
 	public void broadcast(String msg){
@@ -155,11 +154,11 @@ public class Game extends kListener{
 	}
 	
 	public void broadcast(String name,Object[] input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,name,input));
 	}
 	
 	public void broadcast(String name,Object input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(Language.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,name,input));
 	}
 
 	@EventHandler

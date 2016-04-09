@@ -219,7 +219,7 @@ public class MultiGames extends Game{
 	}
 	
 	@EventHandler
-	public void statusUpdate(ServerStatusUpdateEvent ev){
+	public void MulistatusUpdate(ServerStatusUpdateEvent ev){
 		ev.getPacket().setListed(false);
 	}
 	

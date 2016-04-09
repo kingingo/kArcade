@@ -12,7 +12,7 @@ public class AACListener extends kListener{
 
 	public AACListener(JavaPlugin instance){
 		super(instance,"AACListener");
-		Log("NOW ENABLE");
+		logMessage("NOW ENABLE");
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)

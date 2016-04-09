@@ -25,9 +25,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
+import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -40,9 +40,9 @@ import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Enum.Zeichen;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -226,7 +226,7 @@ public class QuickSurvivalGames extends SoloGame{
 			if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getType()==Material.CHEST){
 				ev.setCancelled(true);
 				if(ev.getPlayer().getItemInHand()!=null&&UtilItem.isWeapon(ev.getPlayer().getItemInHand())){
-					ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "OPEN_CHEST_WITH_WEAPON"));
+					ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+TranslationManager.getText(ev.getPlayer(), "OPEN_CHEST_WITH_WEAPON"));
 					return;
 				}
 				if(!chest.containsKey(ev.getClickedBlock().getLocation()))CreateChest(ev.getClickedBlock().getLocation());
@@ -245,12 +245,12 @@ public class QuickSurvivalGames extends SoloGame{
 		if(getState()!=GameState.StartGame)return;
 		if(getStart()<0)setStart(11);
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText("GAME_START_IN", getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationManager.getText("GAME_START_IN", getStart()));
 		switch(getStart()){
 			case 10:
 			setDamage(false);
 			broadcastWithPrefix("GAME_START_IN", getStart());
-			new Title("",Language.getText("GAME_START_IN", getStart())).broadcast();
+			new Title("",TranslationManager.getText("GAME_START_IN", getStart())).broadcast();
 			break;
 			case 9 : for(Entity e : getWorldData().getWorld().getEntities())if(!(e instanceof Player))e.remove(); 
 			break;
@@ -258,18 +258,18 @@ public class QuickSurvivalGames extends SoloGame{
 			case 4:broadcastWithPrefix("GAME_START_IN", getStart());break;
 			case 3:
 				broadcastWithPrefix("GAME_START_IN", getStart());
-				new Title("",Language.getText("GAME_START_IN", getStart())).broadcast();
+				new Title("",TranslationManager.getText("GAME_START_IN", getStart())).broadcast();
 			break;
 			case 2:
 				broadcastWithPrefix("GAME_START_IN", getStart());
-				new Title("",Language.getText("GAME_START_IN", getStart())).broadcast();
+				new Title("",TranslationManager.getText("GAME_START_IN", getStart())).broadcast();
 			break;
 			case 1:
 				broadcastWithPrefix("GAME_START_IN", getStart());
-				new Title("",Language.getText("GAME_START_IN", getStart())).broadcast();
+				new Title("",TranslationManager.getText("GAME_START_IN", getStart())).broadcast();
 			break;
 			case 0:
-				new Title("",Language.getText("GAME_START_IN", getStart())).broadcast();
+				new Title("",TranslationManager.getText("GAME_START_IN", getStart())).broadcast();
 				setStart(1831);
 				setState(GameState.InGame);
 				broadcastWithPrefixName("GAME_START");
@@ -302,7 +302,7 @@ public class QuickSurvivalGames extends SoloGame{
 			}
 		}
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText(p, "TELEPORT_TO_DEATHMATCH_ARENA",UtilTime.formatSeconds(getStart())));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationManager.getText(p, "TELEPORT_TO_DEATHMATCH_ARENA",UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
 			case 15:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
 			case 10:broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));break;
@@ -318,7 +318,7 @@ public class QuickSurvivalGames extends SoloGame{
 				broadcastWithPrefixName("TELEPORT_TO_DEATHMATCH_ARENA");
 				setStart(6);
 				for(Player p : UtilServer.getPlayers()){
-					title.setSubtitle(Language.getText(p,"TELEPORT_TO_DEATHMATCH_ARENA", getStart()));
+					title.setSubtitle(TranslationManager.getText(p,"TELEPORT_TO_DEATHMATCH_ARENA", getStart()));
 					title.send(p);
 					p.teleport( getWorldData().getLocs(Team.YELLOW).get(0) );
 				}
@@ -334,7 +334,7 @@ public class QuickSurvivalGames extends SoloGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.StartDeathMatch)return;
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText("DEATHMATCH_START_IN", getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationManager.getText("DEATHMATCH_START_IN", getStart()));
 		
 		if(getStart()>1||getStart()<=5){
 			Title title = new Title("","§c§l"+getStart());
@@ -354,7 +354,7 @@ public class QuickSurvivalGames extends SoloGame{
 			Title title = new Title("","");
 			title.setStayTime(2);
 			for(Player p : UtilServer.getPlayers()){
-				title.setSubtitle(Language.getText(p,"GO", getStart()));
+				title.setSubtitle(TranslationManager.getText(p,"GO", getStart()));
 				title.send(p);
 			}
 			broadcastWithPrefixName("DEATHMATCH_START");
@@ -384,7 +384,7 @@ public class QuickSurvivalGames extends SoloGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.DeathMatch)return;
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,Language.getText("DEATHMATCH_END_IN", getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationManager.getText("DEATHMATCH_END_IN", getStart()));
 		switch(getStart()){
 			case 5:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
 			case 4:broadcastWithPrefix("DEATHMATCH_END_IN", getStart());break;
@@ -395,7 +395,7 @@ public class QuickSurvivalGames extends SoloGame{
 				broadcastWithPrefixName("DEATHMATCH_END");
 				Title title = new Title("","");
 				for(Player p : UtilServer.getPlayers()){
-					title.setSubtitle(Language.getText("DEATHMATCH_END"));
+					title.setSubtitle(TranslationManager.getText("DEATHMATCH_END"));
 					title.send(p);
 				}
 				setState(GameState.Restart);
@@ -444,7 +444,7 @@ public class QuickSurvivalGames extends SoloGame{
 			
 			if((!event.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
 				event.setMessage("Ich heul rum!");
-				event.getPlayer().sendMessage(Language.getText(event.getPlayer(), "PREFIX")+Language.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+				event.getPlayer().sendMessage(TranslationManager.getText(event.getPlayer(), "PREFIX")+TranslationManager.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 			}
 			
 			Player p = event.getPlayer();
@@ -478,7 +478,7 @@ public class QuickSurvivalGames extends SoloGame{
 			UtilScoreboard.setScore(getBoard(), p.getName()+" §a"+Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, 0);
 			p.setScoreboard(getBoard());
 			kills.put(p, 0);
-			title.setSubtitle(Language.getText(p, "NO_TEAMS_ALLOWED"));
+			title.setSubtitle(TranslationManager.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
 		}
 		
@@ -515,16 +515,16 @@ public class QuickSurvivalGames extends SoloGame{
 
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 						Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-						Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-						Language.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						Language.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						Language.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-						Language.getText(player, "GAME_HOLOGRAM_WINS", win),
-						Language.getText(player, "GAME_HOLOGRAM_LOSE", lose),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", win),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", lose),
 						});
 				}
 			});

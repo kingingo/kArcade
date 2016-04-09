@@ -31,8 +31,8 @@ import eu.epicpvp.kcore.Enum.GameCage;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Title;
@@ -79,7 +79,6 @@ public class BedWars1vs1 extends MultiTeamGame{
 		this.area.getBypass().add(Material.BROWN_MUSHROOM);
 		this.area.getBypass().add(Material.RED_MUSHROOM);
 		UtilBG.setHub("versus");
-		setUpdateTo("versus");
 		getWorldData().loadSchematic(this, pasteLocation, file);
 		
 		setBlockBreak(true);
@@ -136,7 +135,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 			}
 			
 			for(Player player : getGameList().getPlayers().keySet()){
-				t.setSubtitle(Language.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+				t.setSubtitle(TranslationManager.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
 				t.send(player);
 			}
 		}
@@ -172,7 +171,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 		setTimer(getTimer()-1);
 		if(getTimer()<0)setTimer((60*15)+1);
 		
-		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
+		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(TranslationManager.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
 		
 		switch(getTimer()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -184,7 +183,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 0:
-			broadcastWithPrefix(Language.getText("GAME_END"));
+			broadcastWithPrefix(TranslationManager.getText("GAME_END"));
 			setState(GameState.Restart,GameStateChangeReason.GAME_END);
 			break;
 		}

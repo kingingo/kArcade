@@ -23,7 +23,7 @@ import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.InventorySize;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
@@ -58,7 +58,7 @@ public class AddonVoteTeam implements Listener{
 	@EventHandler
 	public void Join(PlayerJoinEvent ev){
 		if(game.getState()!=GameState.LobbyPhase)return;
-		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.PAPER,1), Language.getText(ev.getPlayer(), "GAME_TEAM_ITEM")));
+		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.PAPER,1), TranslationManager.getText(ev.getPlayer(), "GAME_TEAM_ITEM")));
 	}
 	
 	@EventHandler
@@ -84,12 +84,12 @@ public class AddonVoteTeam implements Listener{
 					p.closeInventory();
 					
 					if(UtilServer.getPlayers().size()<=game.getMin_Players()){
-						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+Language.getText(p, "VOTE_TEAM_MIN_PLAYER",game.getMin_Players()+1));
+						UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME",game.getType().getTyp())+TranslationManager.getText(p, "VOTE_TEAM_MIN_PLAYER",game.getMin_Players()+1));
 						return;
 					}
 					
 					if(vote.containsKey(p)){
-						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+Language.getText(p, "VOTE_TEAM_REMOVE",vote.get(p).Name()));
+						UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME",game.getType().getTyp())+TranslationManager.getText(p, "VOTE_TEAM_REMOVE",vote.get(p).Name()));
 						old = vote.get(p);
 						vote.remove(p);
 						fixItem(old);
@@ -102,10 +102,10 @@ public class AddonVoteTeam implements Listener{
 									vote.put(p, t);
 									fixItem(t);
 									Bukkit.getPluginManager().callEvent(new AddonVoteTeamPlayerChooseEvent(p, t,PlayerState.IN));
-									UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+Language.getText(p, "VOTE_TEAM_ADD",t.getColor()+t.Name()));
+									UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+TranslationManager.getText(p, "VOTE_TEAM_ADD",t.getColor()+t.Name()));
 								}
 							}else{
-								UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+Language.getText(p, "VOTE_TEAM_FULL",t.getColor()+t.Name()));
+								UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME",game.getType().getTyp())+t.getColor()+TranslationManager.getText(p, "VOTE_TEAM_FULL",t.getColor()+t.Name()));
 							}
 							break;
 						}

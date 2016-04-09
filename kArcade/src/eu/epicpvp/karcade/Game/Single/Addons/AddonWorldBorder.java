@@ -20,8 +20,8 @@ public class AddonWorldBorder extends kListener{
 		this.border.setDamageAmount(1.0);
 		this.border.setWarningDistance(20);
 		
-		Log("Radius: "+this.border.getSize());
-		Log("LOCATION: "+UtilLocation.getLocString(center));
+		logMessage("Radius: "+this.border.getSize());
+		logMessage("LOCATION: "+UtilLocation.getLocString(center));
 	}
 	
 	public double getSize(){

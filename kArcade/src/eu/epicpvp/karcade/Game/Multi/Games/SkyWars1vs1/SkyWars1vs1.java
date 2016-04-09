@@ -29,8 +29,8 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Kit.Shop.MultiKitShop;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.InventorySize;
@@ -65,7 +65,6 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		ecke2.setY(0);
 		ecke2.add(-125, 0, -125);
 		UtilBG.setHub("versus");
-		setUpdateTo("versus");
 		this.area=new MultiGameArenaRestore(this, ecke1,ecke2);
 		getWorldData().loadSchematic(this, location, file);
 		
@@ -113,7 +112,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		setTimer(getTimer()-1);
 		if(getTimer()<0)setTimer((60*8)+1);
 		
-		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
+		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(TranslationManager.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
 		
 		switch(getTimer()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -125,7 +124,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 0:
-			broadcastWithPrefix(Language.getText("GAME_END"));
+			broadcastWithPrefix(TranslationManager.getText("GAME_END"));
 			setState(GameState.Restart,GameStateChangeReason.GAME_END);
 			break;
 		}

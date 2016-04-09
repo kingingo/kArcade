@@ -31,7 +31,6 @@ import org.bukkit.potion.PotionEffect;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.ProgressFuture;
-import dev.wolveringer.client.futures.TopTenResponseFuture;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
@@ -522,7 +521,7 @@ public class kArcadeManager extends kListener{
 	
 	@EventHandler 
 	public void Packet(ServerChangeGameTypeEvent ev){		
-		Log("Game Change to "+ev.getType() + " " + ev.getSubType());
+		logMessage("Game Change to "+ev.getType() + " " + ev.getSubType());
 		getInstance().getConfig().set("Config.Server.Game", ev.getType()+(ev.getSubType().equalsIgnoreCase("none") ? "":ev.getSubType()));
 		
 		getInstance().saveConfig();

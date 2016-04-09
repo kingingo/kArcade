@@ -27,8 +27,8 @@ import eu.epicpvp.karcade.Game.Single.SingleWorldData;
 import eu.epicpvp.karcade.Game.Single.Games.SoloGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilDisplay;
@@ -162,7 +162,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	if(getState()!=GameState.InGame)return;
 	setStart(getStart()-1);
 	if(getStart() > 179 && getStart() < 186){
-		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Language.getText(p, "FIGHT_START_IN", getStart()-180) );
+		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "FIGHT_START_IN", getStart()-180) );
 		
 		switch(this.getStart()){
 		case 185:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
@@ -173,7 +173,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		case 180:broadcastWithPrefixName("FIGHT_START"); setProjectileDamage(true);break;
 		}
 	}else{
-		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", getStart()) );
+		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "GAME_END_IN", getStart()) );
 		
 		switch(getStart()){
 		case 5: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;

@@ -70,10 +70,10 @@ public class AddonArea extends kListener{
 			}
 			
 			ecke1=new Location(ecke1.getWorld(),MinMax[X][Max],MinMax[Y][Max],MinMax[Z][Max]);
-			Log(UtilLocation.getLocString(ecke1));
+			logMessage(UtilLocation.getLocString(ecke1));
 			
 			ecke2=new Location(ecke2.getWorld(),MinMax[X][Min],MinMax[Y][Min],MinMax[Z][Min]);
-			Log(UtilLocation.getLocString(ecke2));
+			logMessage(UtilLocation.getLocString(ecke2));
 		}
 		
 		public boolean isInArea(Player player){

@@ -17,7 +17,7 @@ import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.TimeSpan;
@@ -152,17 +152,17 @@ public class Tester implements Listener{
 			
 			if(l!=-1){
 				if(l > System.currentTimeMillis()){
-					UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_TESTER_WAS_USED"));
+					UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_TESTER_WAS_USED"));
 					return;
 				}
 			}
 			
 			if(use){
-				ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_TESTER_USED"));
+				ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_TESTER_USED"));
 			}else{
 				if(last.containsKey(ev.getPlayer())){
 					if(last.get(ev.getPlayer()) > System.currentTimeMillis()){
-						UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_TESTER_TIME"));
+						UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_TESTER_TIME"));
 						return;
 					}
 				}
@@ -172,7 +172,7 @@ public class Tester implements Listener{
 				timer=-1;
 				p=ev.getPlayer();
 				TTT.getStats().addInt(ev.getPlayer(),1, StatsKey.TTT_TESTS);
-				TTT.broadcast(Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_TESTER_JOIN",ev.getPlayer().getName()));
+				TTT.broadcast(TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_TESTER_JOIN",ev.getPlayer().getName()));
 				use=true;
 				ev.getPlayer().teleport(Join);
 			}

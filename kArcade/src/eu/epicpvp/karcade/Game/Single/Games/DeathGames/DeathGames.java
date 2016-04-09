@@ -70,10 +70,10 @@ import eu.epicpvp.kcore.Kit.Perks.PerkSnowballSwitcher;
 import eu.epicpvp.kcore.Kit.Perks.PerkTNT;
 import eu.epicpvp.kcore.Kit.Perks.PerkWalkEffect;
 import eu.epicpvp.kcore.Kit.Shop.SingleKitShop;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Scheduler.kScheduler;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -288,7 +288,7 @@ public class DeathGames extends SoloGame{
 			
 			if((!event.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
 				event.setMessage("Ich heul rum!");
-				event.getPlayer().sendMessage(Language.getText(event.getPlayer(), "PREFIX")+Language.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+				event.getPlayer().sendMessage(TranslationManager.getText(event.getPlayer(), "PREFIX")+TranslationManager.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 			}
 			
 			Player p = event.getPlayer();
@@ -579,7 +579,7 @@ public class DeathGames extends SoloGame{
 		if(getState()!=GameState.SchutzModus)return;
 		setStart(getStart()-1);
 
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "SCHUTZZEIT_END_IN", UtilTime.formatSeconds(getStart())), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(TranslationManager.getText(p, "SCHUTZZEIT_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
 		case 15: broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
 		case 10:broadcastWithPrefix("SCHUTZZEIT_END_IN",UtilTime.formatSeconds(getStart()));break;
@@ -603,7 +603,7 @@ public class DeathGames extends SoloGame{
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(TranslationManager.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
@@ -636,16 +636,16 @@ public class DeathGames extends SoloGame{
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 						Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-						Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-						Language.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						Language.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						Language.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-						Language.getText(player, "GAME_HOLOGRAM_WINS", win),
-						Language.getText(player, "GAME_HOLOGRAM_LOSE", lose),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", win),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", lose),
 						});
 				}
 			});
@@ -677,7 +677,7 @@ public class DeathGames extends SoloGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomDouble(maxX, minX), 200, UtilMath.RandomDouble(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
-			title.setSubtitle(Language.getText(p, "NO_TEAMS_ALLOWED"));
+			title.setSubtitle(TranslationManager.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
 		}
 		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,this);

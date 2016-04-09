@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import lombok.Getter;
@@ -79,9 +79,9 @@ public class Shop implements Listener{
 					if(player_punkte>=pk){
 						TTT.getStats().setInt(p, (player_punkte-pk), getPunkte());
 						s.add(p);
-						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(p, "TTT_SHOP_BUYED"));
+						UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(p, "TTT_SHOP_BUYED"));
 					}else{
-						UtilPlayer.sendMessage(p,Language.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+Language.getText(p, "TTT_SHOP"));
+						UtilPlayer.sendMessage(p,TranslationManager.getText(p, "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(p, "TTT_SHOP"));
 					}
 					break;
 				}

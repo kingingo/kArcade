@@ -28,7 +28,7 @@ import eu.epicpvp.kcore.Arena.ArenaType;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilBG;
@@ -56,14 +56,13 @@ public class Versus extends MultiTeamGame{
 		super(games,"",location);
 		getWorldData().loadSchematic(this, location, file);
 		UtilBG.setHub("versus");
-		setUpdateTo("versus");
 		
 		if(!getWorldData().existLoc(this, Team.SHEEP_RED)||
 				getWorldData().existLoc(this, Team.SHEEP_RED)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
-			Log("Fehler SHEEP_RED NICHT GEFUNDEN");
+			logMessage("Fehler SHEEP_RED NICHT GEFUNDEN");
 		}else if(!getWorldData().existLoc(this, Team.SHEEP_BLUE)||
 				getWorldData().existLoc(this, Team.SHEEP_BLUE)&&getWorldData().getLocs(this, Team.SHEEP_BLUE).isEmpty()){
-			Log("Fehler SHEEP_BLUE NICHT GEFUNDEN");
+			logMessage("Fehler SHEEP_BLUE NICHT GEFUNDEN");
 		}else{
 			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.SHEEP_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.SHEEP_BLUE).get(0));
 		}
@@ -141,7 +140,7 @@ public class Versus extends MultiTeamGame{
 				getGames().getStats().addInt(ev.getEntity().getKiller(), 1, StatsKey.KILLS);
 				getGames().getMoney().addInt(ev.getEntity().getKiller(),4,StatsKey.COINS);
 				broadcastWithPrefix("KILL_BY", new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() });
-				ev.getEntity().sendMessage(Language.getText(ev.getEntity(),"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(ev.getEntity(), "HEART",new String[]{ev.getEntity().getKiller().getName(),((int)UtilPlayer.getHealth(ev.getEntity().getKiller()))+""}));
+				ev.getEntity().sendMessage(TranslationManager.getText(ev.getEntity(),"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(ev.getEntity(), "HEART",new String[]{ev.getEntity().getKiller().getName(),((int)UtilPlayer.getHealth(ev.getEntity().getKiller()))+""}));
 			}else{
 				broadcastWithPrefix("DEATH", new String[]{ ev.getEntity().getName() });
 			}
@@ -159,7 +158,7 @@ public class Versus extends MultiTeamGame{
 				}
 				setTimer(getTimer()-1);
 				for(Player p : getGameList().getPlayers().keySet()){
-					UtilDisplay.displayTextBar(p,Language.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getTimer())));
+					UtilDisplay.displayTextBar(p,TranslationManager.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getTimer())));
 				}
 				
 				if(getTimer()!=0){
@@ -176,7 +175,7 @@ public class Versus extends MultiTeamGame{
 					case 1:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 					}
 				}else{
-					broadcastWithPrefix(Language.getText("GAME_END"));
+					broadcastWithPrefix(TranslationManager.getText("GAME_END"));
 					setState(GameState.Restart,GameStateChangeReason.GAME_END);
 				}
 			}

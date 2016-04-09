@@ -24,6 +24,7 @@ import org.bukkit.util.Vector;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.dataserver.player.LanguageType;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -43,10 +44,9 @@ import eu.epicpvp.kcore.Inventory.Item.Click;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBack;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonOpenInventory;
-import eu.epicpvp.kcore.Language.Language;
-import eu.epicpvp.kcore.Language.LanguageType;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -312,12 +312,12 @@ public class Masterbuilders extends SoloGame{
 		
 		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+			ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+TranslationManager.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+Language.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
+			UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -452,7 +452,7 @@ public class Masterbuilders extends SoloGame{
 			explosion=false;
 			
 			for(Player player : UtilServer.getPlayers()){
-				if(Language.getLanguage(player)==LanguageType.GERMAN){
+				if(TranslationManager.getLanguage(player)==LanguageType.GERMAN){
 					player.getInventory().setContents(this.items_bewertungGER);
 				}else{
 					player.getInventory().setContents(this.items_bewertungENG);
@@ -469,7 +469,7 @@ public class Masterbuilders extends SoloGame{
 			
 			for(Player player : UtilServer.getPlayers()){
 				player.getInventory().clear();
-				if(Language.getLanguage(player)==LanguageType.GERMAN){
+				if(TranslationManager.getLanguage(player)==LanguageType.GERMAN){
 					ger.send(player);
 				}else{
 					en.send(player);
@@ -502,7 +502,7 @@ public class Masterbuilders extends SoloGame{
 				if(ev.getPlayer().getName().equalsIgnoreCase(p))return;
 				if(vote.get(area.get(p)).containsKey(ev.getPlayer())&&vote.get(area.get(p)).get(ev.getPlayer())==ev.getPlayer().getInventory().getHeldItemSlot())return;
 				
-				if(Language.getLanguage(ev.getPlayer())==LanguageType.GERMAN){
+				if(TranslationManager.getLanguage(ev.getPlayer())==LanguageType.GERMAN){
 					ev.getPlayer().getInventory().setContents(this.items_bewertungGER);
 				}else{
 					ev.getPlayer().getInventory().setContents(this.items_bewertungENG);
@@ -530,9 +530,9 @@ public class Masterbuilders extends SoloGame{
 								}
 								
 								if(particles.get(area.get(ev.getPlayer().getName())).size()>=20){
-									ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+Language.getText("MASTERBUILDER_PARTICLE_MAX"));
+									ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationManager.getText("MASTERBUILDER_PARTICLE_MAX"));
 								}else{
-									ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+Language.getText("MASTERBUILDER_PARTICLE_PLACE"));
+									ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationManager.getText("MASTERBUILDER_PARTICLE_PLACE"));
 									particles.get(area.get(ev.getPlayer().getName())).put(ev.getPlayer().getLocation(), particleItem.getParticle());
 								}
 								ev.setCancelled(true);
@@ -581,7 +581,7 @@ public class Masterbuilders extends SoloGame{
 				player.setGameMode(GameMode.ADVENTURE);
 				player.setAllowFlight(true);
 				player.setFlying(true);
-				if(Language.getLanguage(player)==LanguageType.GERMAN){
+				if(TranslationManager.getLanguage(player)==LanguageType.GERMAN){
 					player.getInventory().setContents(this.items_bewertungGER);
 				}else{
 					player.getInventory().setContents(this.items_bewertungENG);
@@ -643,12 +643,12 @@ public class Masterbuilders extends SoloGame{
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-					Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-					Language.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+					TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+					TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
 					" ",
-					Language.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-					Language.getText(player, "GAME_HOLOGRAM_WINS", win),
-					Language.getText(player, "GAME_HOLOGRAM_LOSE", lose),
+					TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
+					TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", win),
+					TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", lose),
 					});
 				}
 			});
@@ -699,7 +699,7 @@ public class Masterbuilders extends SoloGame{
 			player.teleport(getWorldData().getLocs(area.get(player.getName())).get(0).clone().add(0, 5, 0));
 
 			createArea(mtype.getTeam()[i],player);
-			if(Language.getLanguage(player)==LanguageType.GERMAN){
+			if(TranslationManager.getLanguage(player)==LanguageType.GERMAN){
 				player.setScoreboard(scoreGER);
 				new Title("","§a§l"+this.building.getGerman()).send(player);
 			}else{

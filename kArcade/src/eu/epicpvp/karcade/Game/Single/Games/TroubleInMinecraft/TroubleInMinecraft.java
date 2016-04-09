@@ -59,7 +59,6 @@ import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.ItemFake.ItemFake;
 import eu.epicpvp.kcore.ItemFake.ItemFakeManager;
 import eu.epicpvp.kcore.ItemFake.Events.ItemFakePickupEvent;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemManager;
 import eu.epicpvp.kcore.NPC.NPC;
 import eu.epicpvp.kcore.NPC.NPCManager;
@@ -68,6 +67,7 @@ import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangeEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsCreateEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -243,7 +243,7 @@ public class TroubleInMinecraft extends TeamGame{
 		
 		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX")+Language.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+			ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+TranslationManager.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(getState()!=GameState.InGame){
@@ -321,7 +321,7 @@ public class TroubleInMinecraft extends TeamGame{
 //					}
 				}else{
 					if(defi.getTeams().containsKey(npc.getName().toLowerCase())){
-						UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME",getType().getTyp())+Language.getText(ev.getPlayer(), "TTT_NPC_CLICKED", new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
+						UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_NPC_CLICKED", new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
 					}
 				}
 		 	}
@@ -369,8 +369,8 @@ public class TroubleInMinecraft extends TeamGame{
 				int k = getStats().getInt(StatsKey.TTT_KARMA, (Player)ev.getEntity().getKiller());
 				int d=-1;
 				int tr=-1;
-				((Player)ev.getEntity()).sendMessage(Language.getText(((Player)ev.getEntity()), "PREFIX_GAME",getType().getTyp())+Language.getText(((Player)ev.getEntity()), "KILL_BY", new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
-				((Player)ev.getEntity().getKiller()).sendMessage(Language.getText(((Player)ev.getEntity().getKiller()), "PREFIX_GAME",getType().getTyp())+Language.getText(((Player)ev.getEntity().getKiller()), "KILL_BY", new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
+				((Player)ev.getEntity()).sendMessage(TranslationManager.getText(((Player)ev.getEntity()), "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(((Player)ev.getEntity()), "KILL_BY", new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
+				((Player)ev.getEntity().getKiller()).sendMessage(TranslationManager.getText(((Player)ev.getEntity().getKiller()), "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(((Player)ev.getEntity().getKiller()), "KILL_BY", new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
 				if(t1==Team.TRAITOR){
 					if(t==Team.TRAITOR){
 						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, StatsKey.TTT_KARMA);
@@ -660,7 +660,7 @@ public class TroubleInMinecraft extends TeamGame{
 			setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
 		}
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 20: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
@@ -733,20 +733,20 @@ public class TroubleInMinecraft extends TeamGame{
 					
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 						Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-						Language.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-						Language.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMap().getMapName()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMap().getMapName()),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						Language.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						Language.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
-						Language.getText(player, "GAME_HOLOGRAM_KARMA", getStats().getInt(StatsKey.TTT_KARMA, player)),
-						Language.getText(player, "GAME_HOLOGRAM_TESTS", getStats().getInt(StatsKey.TTT_TESTS, player)),
-						Language.getText(player, "GAME_HOLOGRAM_TRAITOR_POINTS", getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, player)),
-						Language.getText(player, "GAME_HOLOGRAM_DETECTIVE_POINTS", getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_KARMA", getStats().getInt(StatsKey.TTT_KARMA, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_TESTS", getStats().getInt(StatsKey.TTT_TESTS, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_TRAITOR_POINTS", getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, player)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_DETECTIVE_POINTS", getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, player)),
 						" ",
-						Language.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-						Language.getText(player, "GAME_HOLOGRAM_WINS", win),
-						Language.getText(player, "GAME_HOLOGRAM_LOSE", lose),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", win),
+						TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", lose),
 						});
 				}
 			});
@@ -758,7 +758,7 @@ public class TroubleInMinecraft extends TeamGame{
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.StartGame)return;
 		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, Language.getText(p, "SCHUTZZEIT_END_IN", getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "SCHUTZZEIT_END_IN", getStart()));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 20: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
@@ -811,7 +811,7 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 				
 				p.setScoreboard(ps);
-				p.sendMessage(Language.getText(p, "PREFIX_GAME",getType().getTyp())+Language.getText(p, "TTT_IS_NOW",Team.DETECTIVE.Name()));
+				p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(p, "TTT_IS_NOW",Team.DETECTIVE.Name()));
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
 			}
@@ -823,8 +823,8 @@ public class TroubleInMinecraft extends TeamGame{
 				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"TraitorBoard");
 				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
 				UtilScoreboard.setScore(ps,Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, p));
-				p.sendMessage(Language.getText(p, "PREFIX_GAME",getType().getTyp())+Language.getText(p, "TTT_IS_NOW",Team.TRAITOR.Name()));
-				p.sendMessage(Language.getText(p, "PREFIX_GAME",getType().getTyp())+Language.getText(p, "TTT_TRAITOR_CHAT"));
+				p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(p, "TTT_IS_NOW",Team.TRAITOR.Name()));
+				p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(p, "TTT_TRAITOR_CHAT"));
 				if(t.size()!=1){
 					UtilScoreboard.setScore(ps,"§7", DisplaySlot.SIDEBAR, -1);
 					UtilScoreboard.setScore(ps,Color.RED+"Traitor:", DisplaySlot.SIDEBAR, -2);
@@ -890,7 +890,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				p.setScoreboard(ps);
-				p.sendMessage(Language.getText(p, "PREFIX_GAME",getType().getTyp())+Language.getText(p, "TTT_IS_NOW",Team.INOCCENT.Name()));
+				p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationManager.getText(p, "TTT_IS_NOW",Team.INOCCENT.Name()));
 			}
 			setDamage(true);
 			setProjectileDamage(true);

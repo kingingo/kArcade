@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
-import lombok.Getter;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
+import lombok.Getter;
 
 public class GameStateChangeEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();

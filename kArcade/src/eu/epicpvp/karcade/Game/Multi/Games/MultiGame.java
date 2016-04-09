@@ -41,10 +41,10 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import eu.epicpvp.kcore.Packets.PacketArenaWinner;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -119,7 +119,7 @@ public class MultiGame extends kListener{
 	private String Map="loading...";
 	@Getter
 	@Setter
-	private String updateTo = "hub";
+	private String updateTo = "versushub1";
 	@Getter
 	@Setter
 	private PlayerKit kit;
@@ -130,10 +130,10 @@ public class MultiGame extends kListener{
 	private int min_team=0;
 	@Getter
 	@Setter 
-	private int max_team=0; // wird von spiel zu spiel ge§ndert!
+	private int max_team=0; // wird von spiel zu spiel geaendert!
 	@Getter
 	@Setter 
-	private int teams=0; // Maximale Team gr§§e
+	private int teams=0; // Maximale Team groesse
 	@Getter
 	@Setter 
 	private int team=0;
@@ -177,7 +177,7 @@ public class MultiGame extends kListener{
 				setTeams(getTeams()+1);
 			}
 		}
-		Log("Max Team: "+getTeams());
+		logMessage("Max Team: "+getTeams());
 	}
 	
 	public void setType(ArenaType type){
@@ -208,27 +208,27 @@ public class MultiGame extends kListener{
 				,min_team
 				,max_team
 				,(kit==null?"null":kit.kit) )  );
-		new PacketArenaStatus(state, 0, teams, team, type, "a"+kArcade.id, arena, apublic, getMap(), min_team, max_team, kit.kit);
 		Bukkit.getPluginManager().callEvent(ev);
 		if(ev.isCancelled())return;
 		updateInfoButton();
+
 		getGames().getManager().getClient().sendPacket(updateTo, ev.getPacket());
 	}
 	
 	public void broadcastWithPrefix1(String name){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(player,name));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(player,name));
 	}
 	
 	public void broadcastWithPrefix(String name,Object input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefix(String name,Object[] input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+Language.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefix(String msg){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+msg);
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+msg);
 	}
 	
 	public void broadcast(String msg){
@@ -236,7 +236,7 @@ public class MultiGame extends kListener{
 	}
 	
 	public void broadcast(String name,Object[] input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,name,input));
 	}
 	
 	public void setTab(Player p,Color enemy, Color friend){
@@ -315,7 +315,7 @@ public class MultiGame extends kListener{
 	}
 	
 	public void broadcast(String name,Object input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(Language.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,name,input));
 	}
 	
 	public boolean isState(GameState gs){
@@ -357,7 +357,7 @@ public class MultiGame extends kListener{
 		if(stateEvent.isCancelled())return;
 		this.state=gs;
 		if(update)updateInfo();
-		Log("GameState wurde zu "+state.string()+"("+reason.name()+") ge§ndert.");
+		logMessage("GameState wurde zu "+state.string()+"("+reason.name()+") ge§ndert.");
 	}
 	
 	public boolean isPlayerState(Player player,PlayerState state){
@@ -408,7 +408,7 @@ public class MultiGame extends kListener{
 				
 				if(last_player!=null){
 					broadcastWithPrefix("GAME_WIN",last_player.getName());
-					t= new Title("",Language.getText("GAME_WIN",last_player.getName()));
+					t= new Title("",TranslationManager.getText("GAME_WIN",last_player.getName()));
 					for(Player player : getGameList().getPlayers().keySet()){
 						t.send(player);
 					}
@@ -468,7 +468,7 @@ public class MultiGame extends kListener{
 				setTimer(getTimer()-1);
 				
 				for(Player p : getGameList().getPlayers().keySet()){
-					UtilDisplay.displayTextBar(p, Language.getText(p, "GAME_START_IN",getTimer()));
+					UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "GAME_START_IN",getTimer()));
 				}
 				
 				if(getTimer()!=0){

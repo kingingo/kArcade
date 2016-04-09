@@ -21,9 +21,9 @@ import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.ItemFake.ItemFake;
 import eu.epicpvp.kcore.ItemFake.Events.ItemFakePickupEvent;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.LaunchItem.LaunchItem;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemEvent;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
@@ -119,7 +119,7 @@ public class Fake_Chest implements Listener,IShop {
 		if(!list.containsKey(ev.getItemfake()))return;
 		if(TTT.getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
-			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+"Dieses Item ist ein Fake-Item.");
+			UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);
 			return;
 		}

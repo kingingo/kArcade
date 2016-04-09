@@ -20,12 +20,12 @@ import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
 import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
 import eu.epicpvp.kcore.Command.Admin.CommandToggle;
 import eu.epicpvp.kcore.Command.Admin.CommandTppos;
-import eu.epicpvp.kcore.Language.Language;
 import eu.epicpvp.kcore.Listener.AntiCrashListener.AntiCrashListener;
 import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Permission.PermissionManager;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilException;
@@ -47,9 +47,9 @@ public class kArcade extends JavaPlugin{
 	public void onEnable(){
 		try{
 			start_time = System.currentTimeMillis();
+			TranslationManager.init(this);
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
-			Language.load(mysql);
 			UtilFile.DeleteFolder(new File("schematics"));
 			UtilFile.DeleteFolder(new File("void"));
 			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKuerzel()));

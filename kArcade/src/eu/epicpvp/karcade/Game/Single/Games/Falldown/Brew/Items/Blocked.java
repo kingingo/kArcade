@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Falldown;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
 import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.Events.PlayerUseBrewItemEvent;
-import eu.epicpvp.kcore.Language.Language;
+import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Util.TimeSpan;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
@@ -27,7 +27,7 @@ public class Blocked extends BrewItem{
 	@EventHandler
 	public void Block(PlayerUseBrewItemEvent ev){
 		if(time!=-1 && time > System.currentTimeMillis()){
-			ev.getPlayer().sendMessage(Language.getText(ev.getPlayer(), "PREFIX_GAME", getFalldown().getType().getTyp())+Language.getText(ev.getPlayer(), "FALLDOWN_BREWITEM_BLOCKED", UtilTime.formatMili(time)));
+			ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", getFalldown().getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "FALLDOWN_BREWITEM_BLOCKED", UtilTime.formatMili(time)));
 			ev.setCancelled(true);
 		}
 	}
