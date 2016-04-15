@@ -1,6 +1,11 @@
 package eu.epicpvp.karcade.Game.Single.Games.Masterbuilders;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import lombok.Getter;
+import lombok.val;
 
 public enum Buildings {
 	
@@ -19,7 +24,7 @@ public enum Buildings {
 	INSECT("Insekt","Insect"),
 	LAPTOP("Laptop","Notebook"),
 	YOUTUBE("YouTube","YouTube"),
-	WINDMILL("Windm§hle","Windmull"),
+	WINDMILL("Windmühle","Windmull"),
 	VOLCANE("Vulkan","Vulcan"),
 	_8_BIT_GAME("8 Bit-Spiel","8 Bit-Game"),
 	PICKAXE("Spitzhacke","Pickaxe"),
@@ -81,4 +86,24 @@ private Buildings(String german,String english){
 	this.german=german;
 	this.english=english;
 }
+
+public static Buildings get(String name){
+	for(Buildings buildings : values()){
+		if(buildings.getGerman().equalsIgnoreCase(name)||buildings.getEnglish().equalsIgnoreCase(name)){
+			return buildings;
+		}
+	}
+	
+	throw new NullPointerException("Building not found!? "+name);
+}
+
+public static Buildings[] rdmArray(int size){
+	ArrayList<Buildings> values = new ArrayList<>();
+	for(Buildings building : values())values.add(building);
+	Collections .shuffle(values);
+	Buildings[] buildings = new Buildings[size];
+	for(int i = 0; i<size; i++)buildings[i]=values.get(i);
+	return buildings;
+}
+
 }

@@ -29,6 +29,7 @@ import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
+import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonArea;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonMainArea;
@@ -63,6 +64,8 @@ import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilString;
 import eu.epicpvp.kcore.Util.UtilTime;
 import eu.epicpvp.kcore.kListen.kSort;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Masterbuilders extends SoloGame{
 	
@@ -70,6 +73,8 @@ public class Masterbuilders extends SoloGame{
 	private HashMap<Team, AddonArea> team_areas;
 	private MasterbuildersType mtype;
 	private AddonMainArea mainArea;
+	@Getter
+	@Setter
 	private Buildings building;
 	private ItemStack[] items_bewertungGER=new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)14), "§4Einfach nur SCHLECHT!"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)1), "§6MEH..."),
@@ -84,7 +89,7 @@ public class Masterbuilders extends SoloGame{
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)3), "§bAmazing"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)2), "§dWOW! EVERYTHING IS AWESOME!")};
 	
-	private InventoryPageBase word_vote;
+	private AddonWordVote wordVote;
 	
 	private Scoreboard scoreENG;
 	private Scoreboard scoreGER;
@@ -262,9 +267,7 @@ public class Masterbuilders extends SoloGame{
 		
 		this.option.getMain().addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
 		this.option.getMain().fill(Material.STAINED_GLASS_PANE, (byte)7);
-		
-		this.word_vote=new InventoryPageBase(InventorySize._9, "§7Vote");
-		
+		this.wordVote = new AddonWordVote(this);
 		setState(GameState.LobbyPhase);
 		getManager().DebugLog(l, this.getClass().getName());
 	}
@@ -641,7 +644,7 @@ public class Masterbuilders extends SoloGame{
 				
 				@Override
 				public void run() {
-					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
+					getManager().getHologram().sendText(player,getManager().getLoc_stats().clone().add(0, -1, 0),new String[]{
 					Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
 					TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
 					TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
@@ -656,63 +659,74 @@ public class Masterbuilders extends SoloGame{
 	}
 	
 	@EventHandler
+	public void changeToInGame(GameStateChangeEvent ev){
+		if(ev.getFrom()==GameState.StartGame && ev.getTo() == GameState.InGame){
+			scoreENG=Bukkit.getScoreboardManager().getNewScoreboard();
+			UtilScoreboard.addBoard(scoreENG, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
+			UtilScoreboard.setScore(scoreENG, " ", DisplaySlot.SIDEBAR, 7);
+			UtilScoreboard.setScore(scoreENG, "§f§lBuild:", DisplaySlot.SIDEBAR, 6);
+			UtilScoreboard.setScore(scoreENG, "§7"+this.building.getEnglish(), DisplaySlot.SIDEBAR, 5);
+			UtilScoreboard.setScore(scoreENG, "  ", DisplaySlot.SIDEBAR, 4);
+			UtilScoreboard.setScore(scoreENG, "§f§lTime: ", DisplaySlot.SIDEBAR, 3);
+			UtilScoreboard.setScore(scoreENG, "§7-", DisplaySlot.SIDEBAR, 2);
+			UtilScoreboard.setScore(scoreENG, "", DisplaySlot.SIDEBAR, 1);
+
+			scoreGER=Bukkit.getScoreboardManager().getNewScoreboard();
+			UtilScoreboard.addBoard(scoreGER, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
+			UtilScoreboard.setScore(scoreGER, " ", DisplaySlot.SIDEBAR, 7);
+			UtilScoreboard.setScore(scoreGER, "§f§lBaue:", DisplaySlot.SIDEBAR, 6);
+			UtilScoreboard.setScore(scoreGER, "§7"+this.building.getGerman(), DisplaySlot.SIDEBAR, 5);
+			UtilScoreboard.setScore(scoreGER, "  ", DisplaySlot.SIDEBAR, 4);
+			UtilScoreboard.setScore(scoreGER, "§f§lZeit: ", DisplaySlot.SIDEBAR, 3);
+			UtilScoreboard.setScore(scoreGER, "§7-", DisplaySlot.SIDEBAR, 2);
+			UtilScoreboard.setScore(scoreGER, "", DisplaySlot.SIDEBAR, 1);
+			
+			UtilScoreboard.setTeams(scoreENG, getManager().getPermManager().getScoreboard().getTeams());
+			UtilScoreboard.setTeams(scoreGER, getManager().getPermManager().getScoreboard().getTeams());
+			
+			ItemStack option = UtilItem.RenameItem(new ItemStack(Material.BOOK), "§bOption");
+			for(Player player : UtilServer.getPlayers()){
+				getManager().Clear(player);
+				player.getInventory().setItem(8, option);
+				if(TranslationHandler.getLanguage(player)==LanguageType.GERMAN){
+					player.setScoreboard(scoreGER);
+					new Title("","§a§l"+this.building.getGerman()).send(player);
+				}else{
+					new Title("","§a§l"+this.building.getEnglish()).send(player);
+					player.setScoreboard(scoreENG);
+				}
+				
+				player.setGameMode(GameMode.CREATIVE);
+			}
+		}
+	}
+	
+	@EventHandler
 	public void start(GameStartEvent ev){
-		setState(GameState.InGame);
 		this.mainArea=new AddonMainArea(getManager().getInstance());
 		this.building=Buildings.values()[UtilMath.r(Buildings.values().length)];
 		
-		scoreENG=Bukkit.getScoreboardManager().getNewScoreboard();
-		UtilScoreboard.addBoard(scoreENG, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
-		UtilScoreboard.setScore(scoreENG, " ", DisplaySlot.SIDEBAR, 7);
-		UtilScoreboard.setScore(scoreENG, "§f§lBuild:", DisplaySlot.SIDEBAR, 6);
-		UtilScoreboard.setScore(scoreENG, "§7"+this.building.getEnglish(), DisplaySlot.SIDEBAR, 5);
-		UtilScoreboard.setScore(scoreENG, "  ", DisplaySlot.SIDEBAR, 4);
-		UtilScoreboard.setScore(scoreENG, "§f§lTime: ", DisplaySlot.SIDEBAR, 3);
-		UtilScoreboard.setScore(scoreENG, "§7-", DisplaySlot.SIDEBAR, 2);
-		UtilScoreboard.setScore(scoreENG, "", DisplaySlot.SIDEBAR, 1);
-
-		scoreGER=Bukkit.getScoreboardManager().getNewScoreboard();
-		UtilScoreboard.addBoard(scoreGER, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
-		UtilScoreboard.setScore(scoreGER, " ", DisplaySlot.SIDEBAR, 7);
-		UtilScoreboard.setScore(scoreGER, "§f§lBaue:", DisplaySlot.SIDEBAR, 6);
-		UtilScoreboard.setScore(scoreGER, "§7"+this.building.getGerman(), DisplaySlot.SIDEBAR, 5);
-		UtilScoreboard.setScore(scoreGER, "  ", DisplaySlot.SIDEBAR, 4);
-		UtilScoreboard.setScore(scoreGER, "§f§lZeit: ", DisplaySlot.SIDEBAR, 3);
-		UtilScoreboard.setScore(scoreGER, "§7-", DisplaySlot.SIDEBAR, 2);
-		UtilScoreboard.setScore(scoreGER, "", DisplaySlot.SIDEBAR, 1);
-		
-		UtilScoreboard.setTeams(scoreENG, getManager().getPermManager().getScoreboard().getTeams());
-		UtilScoreboard.setTeams(scoreGER, getManager().getPermManager().getScoreboard().getTeams());
-		
 		int i=0;
-		ItemStack option = UtilItem.RenameItem(new ItemStack(Material.BOOK), "§bOption");
 		for(Player player : UtilServer.getPlayers()){
 			getManager().Clear(player);
 			if(i>=12){
 				System.err.println("MasterBuilders zu viele Spieler Online ("+UtilServer.getPlayers().size()+")! Der Spieler "+player.getName()+" wird gegickt");
-				player.kickPlayer("To many Players!");
+				player.kickPlayer("Too many Players!");
 				break;
 			}
-			player.getInventory().setItem(8, option);
 			getGameList().addPlayer(player, PlayerState.IN);
 			area.put(player.getName(), mtype.getTeam()[i]);
 			player.teleport(getWorldData().getLocs(area.get(player.getName())).get(0).clone().add(0, 5, 0));
 
 			createArea(mtype.getTeam()[i],player);
-			if(TranslationHandler.getLanguage(player)==LanguageType.GERMAN){
-				player.setScoreboard(scoreGER);
-				new Title("","§a§l"+this.building.getGerman()).send(player);
-			}else{
-				new Title("","§a§l"+this.building.getEnglish()).send(player);
-				player.setScoreboard(scoreENG);
-			}
-			
-			player.setGameMode(GameMode.CREATIVE);
+			player.setGameMode(GameMode.ADVENTURE);
 			i++;
 		}
 		new AddonDay(getManager().getInstance(), getWorldData().getWorld());
 		
-		if(Bukkit.getPluginManager().getPlugin("AAC").isEnabled())new AACListener(getManager().getInstance());
+		setState(GameState.StartGame);
+		this.wordVote.start();
+		if(Bukkit.getPluginManager().getPlugin("AAC")!=null&&Bukkit.getPluginManager().getPlugin("AAC").isEnabled())new AACListener(getManager().getInstance());
 	}
 	
 }
