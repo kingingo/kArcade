@@ -15,7 +15,7 @@ import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 
 public class CommandDetective implements CommandExecutor, Listener{
@@ -31,25 +31,25 @@ public class CommandDetective implements CommandExecutor, Listener{
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		
 		if(TTT.getState()!=GameState.LobbyPhase){
-			UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_LOBBYPHASE"));
+			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_LOBBYPHASE"));
 			return false;
 		}
 		int t_p = TTT.getStats().getInt(StatsKey.TTT_PAESSE, ((Player)cs));
 		if(!(t_p>0)){
-			UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_KEINE","Detective"));
+			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_KEINE","Detective"));
 			return false;
 		}
 		
 		int t = TTT.getDetective();
 		int tt = TTT.isInTeam(Team.DETECTIVE);
 		if(tt>=t){
-			UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_MAX_USED","Detective"));
+			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_MAX_USED","Detective"));
 			return false;
 		}
 		t_p=t_p-1;
 		TTT.getStats().setInt( ((Player)cs) , t_p, StatsKey.TTT_PAESSE);
 		TTT.addTeam(((Player)cs) , Team.DETECTIVE);
-		UtilPlayer.sendMessage(((Player)cs),TranslationManager.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(((Player)cs), "TTT_PASSE_USE",new String[]{"Detective",String.valueOf(t_p)}));
+		UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_USE",new String[]{"Detective",String.valueOf(t_p)}));
 		return false;
 	}
 	

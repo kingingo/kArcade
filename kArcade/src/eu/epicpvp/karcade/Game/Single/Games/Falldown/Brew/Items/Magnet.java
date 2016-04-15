@@ -18,7 +18,7 @@ import eu.epicpvp.kcore.Util.UtilParticle;
 public class Magnet extends BrewItem{
 
 	public Magnet(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.GOLD_NUGGET), new String[]{"§6§§7 Alle Spieler in deiner Umgebung werden ","§7   ruckartig zu dir gezogen!"}, "§e§lMagnet"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.GOLD_NUGGET), new String[]{"§6§7 Alle Spieler in deiner Umgebung werden ","§7   ruckartig zu dir gezogen!"}, "§e§lMagnet"), brewing_items, falldown);
 	}
 
 	@EventHandler

@@ -22,7 +22,7 @@ import eu.epicpvp.kcore.Util.UtilMath;
 public class TntBomb extends BrewItem{
 
 	public TntBomb(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.TNT), new String[]{"§6§§7 Eine tragbare Tnt-Kanone, welche","§7   verherenden Schaden bewirkt."}, "§e§lTNTBomb"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.TNT), new String[]{"§6§7 Eine tragbare Tnt-Kanone, welche","§7   verherenden Schaden bewirkt."}, "§e§lTNTBomb"), brewing_items, falldown);
 	}
 
 	@EventHandler

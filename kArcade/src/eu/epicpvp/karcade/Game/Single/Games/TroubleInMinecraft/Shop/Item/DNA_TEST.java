@@ -12,7 +12,7 @@ import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraf
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilItem;
 import lombok.Getter;
@@ -62,7 +62,7 @@ public class DNA_TEST extends kListener implements IShop{
 			UtilInv.remove(ev.getPlayer(), ev.getPlayer().getItemInHand().getType(), ev.getPlayer().getItemInHand().getData().getData(), 1);
 			System.out.println("LOOK "+ev.getNpc().getName().toLowerCase()+" ");
 			if(!list.containsKey(ev.getNpc().getName().toLowerCase()))return;
-			ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_DNA_TEST", new String[]{"§a"+ev.getNpc().getName(),"§c"+list.get(ev.getNpc().getName().toLowerCase())}));
+			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_DNA_TEST", new String[]{"§a"+ev.getNpc().getName(),"§c"+list.get(ev.getNpc().getName().toLowerCase())}));
 		}
 	}
 	

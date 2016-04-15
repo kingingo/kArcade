@@ -55,6 +55,7 @@ import eu.epicpvp.kcore.Kit.Shop.MultiKitShop;
 import eu.epicpvp.kcore.Packets.PacketArenaSettings;
 import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import eu.epicpvp.kcore.Packets.PacketArenaWinner;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.InventorySize;
@@ -116,103 +117,104 @@ public class MultiGames extends Game{
 			@Override
 			public void handle(Packet packet) {
 				if(packet instanceof PacketArenaSettings){
-					final PacketArenaSettings settings = (PacketArenaSettings)packet;
-					final MultiGame g = games.get(settings.getArena());
-					if(g instanceof Versus){
-						try{
-							if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&
-									settings.getArena().equalsIgnoreCase(g.getArena())&&
-									(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
-									
-									if(UtilPlayer.isOnline(settings.getPlayer())){
-										if(warte_liste.containsKey(settings.getPlayer())){
-											System.out.println("FIND: "+settings.getPlayer());
-											warte_liste.remove(settings.getPlayer());
-										}
-											
-										if(settings.getTeam()==Team.SOLO){
-											settings.setTeam(((MultiTeamGame)g).littleTeam());
-										}
-											
-										((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-										g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-										g.setMax_team(settings.getMax_team());
-										g.setMin_team(settings.getMin_team());
-										
-										if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-											g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(StatsKey.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
-											g.getKit().kit=settings.getKit();
-										}
+					Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable(){
 
-										g.setType(settings.getType());
-										g.setState(GameState.Laden);
-										
-										Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
+						@Override
+						public void run() {
+							final PacketArenaSettings settings = (PacketArenaSettings)packet;
+							final MultiGame g = games.get(settings.getArena());
+							MultiGamePlayerJoinEvent event=null;
+							if(g instanceof Versus){
+								
+								System.out.println("PACKET: "+settings.toString());
+								
+								try{
+									if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&
+											settings.getArena().equalsIgnoreCase(g.getArena())&&
+											(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
 											
-											@Override
-											public void run() {
+											if(UtilPlayer.isOnline(settings.getPlayer())){
+												if(warte_liste.containsKey(settings.getPlayer())){
+													warte_liste.remove(settings.getPlayer());
+												}
+													
+												if(settings.getTeam()==Team.SOLO){
+													settings.setTeam(((MultiTeamGame)g).littleTeam());
+												}
+													
+												((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+												g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+												g.setMax_team(settings.getMax_team());
+												g.setMin_team(settings.getMin_team());
+												
+												if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+													if(!getStats().isLoaded(UtilPlayer.getPlayerId(settings.getPlayer()))){
+														getStats().loadPlayer(settings.getPlayer());
+														logMessage("lOAD PLAYER "+settings.getPlayer()+" FOR KIT!");
+													}
+													g.setKit( getKitManager().getKit(UtilPlayer.getPlayerId(settings.getPlayer()), getStats().getInt(StatsKey.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
+													g.getKit().kit=settings.getKit();
+												}
+
+												g.setType(settings.getType());
+												g.setState(GameState.Laden);
+												
 												event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 												Bukkit.getPluginManager().callEvent(event);
+											}else{
+												warte_liste.put(settings.getPlayer(),settings);
 											}
-										});
-									}else{
-										warte_liste.put(settings.getPlayer(),settings);
 									}
-							}
-						}catch(Exception e){
-							UtilDebug.debug("PacketReceive", e.getMessage());
-							UtilException.catchException(e, "versus"+getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getIp(), getManager().getMysql());
-							
-							if(((Versus)g).getMax_type()==null){
-								UtilDebug.debug("PacketReceive", "PACKET: 1");
-								System.out.println("PACKET: 1");
-							}else if(((Versus)g).getMax_type().getTeam()==null){
-								UtilDebug.debug("PacketReceive", "PACKET: 2");
-								System.out.println("PACKET: 2");
-							}
-							
-							if(settings.getType().getTeam()==null){
-								UtilDebug.debug("PacketReceive", "PACKET: 3");
-								System.out.println("PACKET: 3");
-							}else if(settings.getType()==null){
-								UtilDebug.debug("PacketReceive", "PACKET: 4");
-								System.out.println("PACKET: 4");
-							}
-						}
-					}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
-						if(settings.getArena().equalsIgnoreCase(g.getArena())&&
-								(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
-								
-								if(UtilPlayer.isOnline(settings.getPlayer())){
-									if(warte_liste.containsKey(settings.getPlayer())){
-										System.out.println("FIND: "+settings.getPlayer());
-										warte_liste.remove(settings.getPlayer());
+								}catch(Exception e){
+									UtilDebug.debug("PacketReceive", e.getMessage());
+									UtilException.catchException(e, "versus"+getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getIp(), getManager().getMysql());
+									
+									if(((Versus)g).getMax_type()==null){
+										UtilDebug.debug("PacketReceive", "PACKET: 1");
+										System.out.println("PACKET: 1");
+									}else if(((Versus)g).getMax_type().getTeam()==null){
+										UtilDebug.debug("PacketReceive", "PACKET: 2");
+										System.out.println("PACKET: 2");
 									}
-										
-									if(settings.getTeam()==Team.SOLO){
-										settings.setTeam(((MultiTeamGame)g).littleTeam());
+									
+									if(settings.getType().getTeam()==null){
+										UtilDebug.debug("PacketReceive", "PACKET: 3");
+										System.out.println("PACKET: 3");
+									}else if(settings.getType()==null){
+										UtilDebug.debug("PacketReceive", "PACKET: 4");
+										System.out.println("PACKET: 4");
 									}
+								}
+							}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
+								if(settings.getArena().equalsIgnoreCase(g.getArena())&&
+										(g.getState() == GameState.LobbyPhase|| g.getState() == GameState.Laden) ){
 										
-									((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-									g.setMax_team(settings.getMax_team());
-									g.setMin_team(settings.getMin_team());
-									g.setType(settings.getType());
-									g.setState(GameState.Laden);
-										
-									Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-										
-										@Override
-										public void run() {
+										if(UtilPlayer.isOnline(settings.getPlayer())){
+											if(warte_liste.containsKey(settings.getPlayer())){
+												System.out.println("FIND: "+settings.getPlayer());
+												warte_liste.remove(settings.getPlayer());
+											}
+												
+											if(settings.getTeam()==Team.SOLO){
+												settings.setTeam(((MultiTeamGame)g).littleTeam());
+											}
+												
+											((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+											g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+											g.setMax_team(settings.getMax_team());
+											g.setMin_team(settings.getMin_team());
+											g.setType(settings.getType());
+											g.setState(GameState.Laden);
 											event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 											Bukkit.getPluginManager().callEvent(event);
+										}else{
+											warte_liste.put(settings.getPlayer(),settings);
 										}
-									});
-								}else{
-									warte_liste.put(settings.getPlayer(),settings);
-								}
-						}	
-					}
+								}	
+							}
+						}
+						
+					});
 				}
 			}
 		});
@@ -531,8 +533,8 @@ public class MultiGames extends Game{
 	
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
-		if(getKitManager() != null && getKitManager().getKits().containsKey(UtilPlayer.getRealUUID(ev.getPlayer()))){
-			getKitManager().getKits().remove(UtilPlayer.getRealUUID(ev.getPlayer()));
+		if(getKitManager() != null && getKitManager().getKits().containsKey(UtilPlayer.getPlayerId(ev.getPlayer()))){
+			getKitManager().getKits().remove(UtilPlayer.getPlayerId(ev.getPlayer()));
 		}
 		ev.setQuitMessage(null);
 	}
@@ -545,108 +547,104 @@ public class MultiGames extends Game{
 		}
 	}
 	
-	MultiGamePlayerJoinEvent event;
 	@EventHandler
-	public void Joina(PlayerJoinEvent ev){
+	public void joinM(PlayerJoinEvent ev){
 		getManager().Clear(ev.getPlayer());
-		
 		for(Player p : UtilServer.getPlayers()){
 			p.hidePlayer(ev.getPlayer());
 			ev.getPlayer().hidePlayer(p);
 		}
-
-		try{
-			TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
-			if(warte_liste.containsKey(ev.getPlayer().getName())){
-				PacketArenaSettings settings = (PacketArenaSettings)warte_liste.get(ev.getPlayer().getName());
-				MultiGame g = games.get(settings.getArena());
+		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEPICPVP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.de");
+	}
+	
+	@EventHandler
+	public void Joina(PlayerStatsLoadedEvent ev){
+		if(ev.getManager().getType() == GameType.Money)return;
+		if(UtilPlayer.isOnline(ev.getPlayerId())){
+			Player player = UtilPlayer.searchExact(ev.getPlayerId());
+			
+			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
 				
-				if(g instanceof Versus){
-					if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
-							if(UtilPlayer.isOnline(settings.getPlayer())){
-								if(warte_liste.containsKey(settings.getPlayer())){
-									warte_liste.remove(settings.getPlayer());
-								}
-									
-								if(settings.getTeam()==Team.SOLO){
-									settings.setTeam(((MultiTeamGame)g).littleTeam());
-								}
-								
-								((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-								g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
-									
-								if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
-									g.setKit( getKitManager().getKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(), getStats().getInt(StatsKey.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
-									if(g.getKit()!=null){
-										g.getKit().kit=settings.getKit();
-									}
-									
-//									getStats().getAsyncInt(Stats.KIT_ID, Bukkit.getPlayer(settings.getPlayer()),new Callback() {
-//										
-//										@Override
-//										public void done(Object i) {
-//											if(i instanceof Integer){
-//												getKitManager().loadAsyncKit(Bukkit.getPlayer(settings.getPlayer()).getUniqueId(),((Integer)i) , new Callback() {
-//													
-//													@Override
-//													public void done(Object value) {
-//														if(value instanceof PlayerKit){
-//															g.setKit(((PlayerKit)value));
-//															
-//															if(g.getKit()!=null){
-//																g.getKit().kit=settings.getKit();
-//															}
-//														}
-//													}
-//												});
-//											}
-//										}
-//									});
-								}
-								((Versus)g).setType(settings.getType());
-								g.setState(GameState.Laden);
-									
-								event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
-								Bukkit.getPluginManager().callEvent(event);
-							}
-					}
-				}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
-					if(settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
-						if(UtilPlayer.isOnline(settings.getPlayer())){
-							if(warte_liste.containsKey(settings.getPlayer())){
-								warte_liste.remove(settings.getPlayer());
-							}
-								
-							if(settings.getTeam()==Team.SOLO){
-								settings.setTeam(((MultiTeamGame)g).littleTeam());
-							}
-								
-							((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-							g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+				@Override
+				public void run() {
+					try{
+						MultiGamePlayerJoinEvent event = null;
+						System.out.println("FIRST: "+player.getName()+" "+ev.getManager().getType().name());
+						if(warte_liste.containsKey(player.getName())){
+							System.out.println("FIRST1: "+player.getName()+" "+ev.getManager().getType().name());
+							PacketArenaSettings settings = (PacketArenaSettings)warte_liste.get(player.getName());
+							MultiGame g = games.get(settings.getArena());
 							
-							g.setType(settings.getType());
-							g.setState(GameState.Laden);
-								
-							event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
-							Bukkit.getPluginManager().callEvent(event);
+							if(g instanceof Versus){
+								System.out.println("FIRST2: "+player.getName()+" "+ev.getManager().getType().name());
+								if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
+
+									System.out.println("FIRST3: "+player.getName()+" "+ev.getManager().getType().name());
+									if(UtilPlayer.isOnline(settings.getPlayer())){
+										if(warte_liste.containsKey(settings.getPlayer())){
+											warte_liste.remove(settings.getPlayer());
+										}
+												
+										if(settings.getTeam()==Team.SOLO){
+											settings.setTeam(((MultiTeamGame)g).littleTeam());
+										}
+											
+										((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+										g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+												
+										if(settings.getKit().equalsIgnoreCase(settings.getPlayer())){
+											g.setKit( getKitManager().getKit(UtilPlayer.getPlayerId(settings.getPlayer()), getStats().getInt(StatsKey.KIT_ID, Bukkit.getPlayer(settings.getPlayer()))) );
+											if(g.getKit()!=null){
+												g.getKit().kit=settings.getKit();
+											}
+										}
+										((Versus)g).setType(settings.getType());
+										g.setState(GameState.Laden);
+										
+										event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+										Bukkit.getPluginManager().callEvent(event);
+										System.out.println("CALL: "+player.getName());
+									}
+								}
+							}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
+								if(settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
+									if(UtilPlayer.isOnline(settings.getPlayer())){
+										if(warte_liste.containsKey(settings.getPlayer())){
+											warte_liste.remove(settings.getPlayer());
+										}
+											
+										if(settings.getTeam()==Team.SOLO){
+											settings.setTeam(((MultiTeamGame)g).littleTeam());
+										}
+											
+										((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+										g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+										
+										g.setType(settings.getType());
+										g.setState(GameState.Laden);
+											
+										event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
+										Bukkit.getPluginManager().callEvent(event);
+										System.out.println("CALL: "+player.getName());
+									}
+								}
+							}
 						}
+						
+						//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
+						if(event == null || !event.isCancelled()){
+							//Spieler wird in die Lobby zum warten Teleportiert!
+							System.out.println("WARTELISTE: "+player.getName());
+							getManager().getLobby().getWorld().setStorm(false);
+							getManager().getLobby().getWorld().setTime(4000);
+							player.teleport(getManager().getLobby());
+						}
+					}catch(Exception e){
+						UtilDebug.debug("Joina", e.getMessage());
+						UtilException.catchException(e, "multigame"+getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getIp(), getManager().getMysql());
 					}
 				}
-			}
-			
-			//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
-			if(event==null||!event.isCancelled()){
-				//Spieler wird in die Lobby zum warten Teleportiert!
-				System.out.println("WARTELISTE: "+ev.getPlayer().getName());
-				getManager().getLobby().getWorld().setStorm(false);
-				getManager().getLobby().getWorld().setTime(4000);
-				ev.getPlayer().teleport(getManager().getLobby());
-			}
-			event=null;
-		}catch(Exception e){
-			UtilDebug.debug("Joina", e.getMessage());
-			UtilException.catchException(e, "multigame"+getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getIp(), getManager().getMysql());
-			
+			});
 		}
 	}
 }

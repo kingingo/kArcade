@@ -29,7 +29,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class Supershock extends BrewItem{
 
 	public Supershock(Integer[] brewing_items, Falldown falldown) {
-		super(100,UtilItem.Item(new ItemStack(Material.NETHER_STAR), new String[]{"§6§§7 Du beschw§rst ein Erdbeben."}, "§e§lSupershock"), brewing_items, falldown);
+		super(100,UtilItem.Item(new ItemStack(Material.NETHER_STAR), new String[]{"§6§7 Du beschw§rst ein Erdbeben."}, "§e§lSupershock"), brewing_items, falldown);
 	}
 
 	@SuppressWarnings("deprecation")

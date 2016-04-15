@@ -23,7 +23,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 public class ToxinBottle extends BrewItem{
 
 	public ToxinBottle(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.POTION,1,(byte)8228), new String[]{"§6§§7 In deinem Umkreis werden alle Gegner vergiftet"}, "§e§lToxin Bottle"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.POTION,1,(byte)8228), new String[]{"§6§7 In deinem Umkreis werden alle Gegner vergiftet"}, "§e§lToxin Bottle"), brewing_items, falldown);
 	}
 
 	@EventHandler

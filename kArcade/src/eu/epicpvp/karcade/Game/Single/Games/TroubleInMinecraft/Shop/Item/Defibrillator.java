@@ -20,7 +20,7 @@ import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.NPC.NPC;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilInv;
@@ -119,13 +119,13 @@ public class Defibrillator implements Listener,IShop{
 				UtilInv.remove(p, p.getItemInHand().getType(), p.getItemInHand().getData().getData(), 1);
 				l.add(r);
 				npc.despawn();
-				UtilPlayer.sendMessage(p,TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT", r.getName()));
-				UtilPlayer.sendMessage(r,TranslationManager.getText(r, "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(r, "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT", p.getName()));
+				UtilPlayer.sendMessage(p,TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT", r.getName()));
+				UtilPlayer.sendMessage(r,TranslationHandler.getText(r, "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(r, "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_WIEDERBELEBT", p.getName()));
 			}else{
-				UtilPlayer.sendMessage(p,TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH"));
+				UtilPlayer.sendMessage(p,TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH"));
 			}
 		}else{
-			UtilPlayer.sendMessage(p,TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH"));
+			UtilPlayer.sendMessage(p,TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_DETECTIVE_SHOP_DEFIBRILLATOR_DEATH"));
 		}
 		
 	}

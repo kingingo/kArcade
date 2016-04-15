@@ -13,7 +13,7 @@ import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Kit.Perk;
 import eu.epicpvp.kcore.Kit.Perks.Event.PerkStartEvent;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilInv;
@@ -48,8 +48,8 @@ public class PerkTeleporter extends Perk{
 				Location tele_loc = tele.getLocation();
 				Location p_loc= ev.getPlayer().getLocation();
 				
-				ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", game.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "ENDERGAMES_TELEPORT", tele.getName()));
-				tele.sendMessage(TranslationManager.getText(tele, "PREFIX_GAME", game.getType().getTyp())+TranslationManager.getText(tele, "ENDERGAMES_TELEPORT", ev.getPlayer().getName()));
+				ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", game.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "ENDERGAMES_TELEPORT", tele.getName()));
+				tele.sendMessage(TranslationHandler.getText(tele, "PREFIX_GAME", game.getType().getTyp())+TranslationHandler.getText(tele, "ENDERGAMES_TELEPORT", ev.getPlayer().getName()));
 				
 				tele.teleport(p_loc);
 				ev.getPlayer().teleport(tele_loc);

@@ -36,7 +36,7 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.TimeSpan;
@@ -195,7 +195,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		if(getTimer()<0)setTimer((60*12)+1);
 		
 		for(Player player : getGameList().getPlayers().keySet()){
-			UtilDisplay.displayTextBar(TranslationManager.getText(player, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), player);
+			UtilDisplay.displayTextBar(TranslationHandler.getText(player, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), player);
 			player.setLevel( (int)(((TimeSpan.SECOND*30)-(System.currentTimeMillis() - this.enderchest_time))/1000) );
 		}
 		
@@ -209,7 +209,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 0:
-			broadcastWithPrefix(TranslationManager.getText("GAME_END"));
+			broadcastWithPrefix(TranslationHandler.getText("GAME_END"));
 			setState(GameState.Restart,GameStateChangeReason.GAME_END);
 			break;
 		}

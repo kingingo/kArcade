@@ -20,7 +20,7 @@ import eu.epicpvp.kcore.Util.UtilServer;
 public class Invisibility extends BrewItem{
 
 	public Invisibility(Integer[] brewing_items, Falldown falldown) {
-		super(100,UtilItem.Item(new ItemStack(Material.DIAMOND), new String[]{"§6§§7 Du wirst kurzzeitig unsichtbar."}, "§e§lInvisibility"), brewing_items, falldown);
+		super(100,UtilItem.Item(new ItemStack(Material.DIAMOND), new String[]{"§6§7 Du wirst kurzzeitig unsichtbar."}, "§e§lInvisibility"), brewing_items, falldown);
 	}
 
 	@SuppressWarnings("deprecation")

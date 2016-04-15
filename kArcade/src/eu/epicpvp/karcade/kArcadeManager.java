@@ -56,6 +56,8 @@ import eu.epicpvp.karcade.Game.Single.Games.SkyWars.SkyWars;
 import eu.epicpvp.karcade.Game.Single.Games.SkyWars.SkyWarsType;
 import eu.epicpvp.karcade.Game.Single.Games.SurvivalGames.SurvivalGames;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
+import eu.epicpvp.karcade.Listener.DeathFixListener;
+import eu.epicpvp.karcade.Listener.KickBugListener;
 import eu.epicpvp.karcade.Service.CommandService;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Addons.AddonNight;
@@ -133,7 +135,6 @@ public class kArcadeManager extends kListener{
 		this.hologram=new Hologram(getInstance());
 		this.hologram.RemoveText();
 		this.nickManager=new NickManager(permManager);
-		new ArrowBugListener(plugin);
 		getLoc_stats().getWorld().loadChunk(getLoc_stats().getWorld().getChunkAt(getLoc_stats()));
 		getLoc_raking().getWorld().loadChunk(getLoc_raking().getWorld().getChunkAt(getLoc_raking()));
 		
@@ -164,6 +165,8 @@ public class kArcadeManager extends kListener{
 		
 		if(getGame() instanceof SingleGame)getGame().setState(GameState.LobbyPhase);
 		
+		new KickBugListener(plugin);
+		new DeathFixListener(plugin);
 		new AddonDay(getInstance(), getLobby().getWorld());
 	}
 	

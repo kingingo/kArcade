@@ -30,7 +30,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class WolfArmy extends BrewItem{
 
 	public WolfArmy(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.BONE,1), new String[]{"§6§§7 Deine eigene Wolf-Armee verteidgt dich,","§7   bis auf denn letzten Wolf."}, "§e§lWolfArmy"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.BONE,1), new String[]{"§6§7 Deine eigene Wolf-Armee verteidgt dich,","§7   bis auf denn letzten Wolf."}, "§e§lWolfArmy"), brewing_items, falldown);
 	}
 
 	@EventHandler

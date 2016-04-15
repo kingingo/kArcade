@@ -29,7 +29,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 public class Chainer extends BrewItem{
 
 	public Chainer(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.IRON_INGOT,2), new String[]{"§6§§7 Jede Flucht wird dir gelingen,","§7   denn um dir herum sind alle","§7   aufeinmal viel langsamer!"}, "§e§lChainer"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.IRON_INGOT,2), new String[]{"§6§7 Jede Flucht wird dir gelingen,","§7   denn um dir herum sind alle","§7   aufeinmal viel langsamer!"}, "§e§lChainer"), brewing_items, falldown);
 	}
 
 	@EventHandler

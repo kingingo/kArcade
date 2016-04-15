@@ -40,11 +40,12 @@ import eu.epicpvp.kcore.Arena.ArenaType;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import eu.epicpvp.kcore.Packets.PacketArenaWinner;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -166,7 +167,7 @@ public class MultiGame extends kListener{
 				players+="§d"+player+"§7,";
 			}
 		}
-		button.setItemStack(UtilItem.SetDescriptions(button.getItemStack(), new String[]{"§aMap§7 § §e"+getMap(),"§aStatus§7 §§e "+getState().name(),"§aSpieler §7§§e "+(players.length()>3?players.substring(0, players.length()-3):"")}));
+		button.setItemStack(UtilItem.SetDescriptions(button.getItemStack(), new String[]{"§aMap§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §e"+getMap(),"§aStatus§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §e "+getState().name(),"§aSpieler§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§e "+(players.length()>3?players.substring(0, players.length()-3):"")}));
 		button.refreshItemStack();
 	}
 	
@@ -216,19 +217,19 @@ public class MultiGame extends kListener{
 	}
 	
 	public void broadcastWithPrefix1(String name){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(player,name));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(player,name));
 	}
 	
 	public void broadcastWithPrefix(String name,Object input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefix(String name,Object[] input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefix(String msg){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+msg);
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+msg);
 	}
 	
 	public void broadcast(String msg){
@@ -236,7 +237,7 @@ public class MultiGame extends kListener{
 	}
 	
 	public void broadcast(String name,Object[] input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,name,input));
 	}
 	
 	public void setTab(Player p,Color enemy, Color friend){
@@ -315,7 +316,7 @@ public class MultiGame extends kListener{
 	}
 	
 	public void broadcast(String name,Object input){
-		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationManager.getText(player,name,input));
+		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,name,input));
 	}
 	
 	public boolean isState(GameState gs){
@@ -357,7 +358,7 @@ public class MultiGame extends kListener{
 		if(stateEvent.isCancelled())return;
 		this.state=gs;
 		if(update)updateInfo();
-		logMessage("GameState wurde zu "+state.string()+"("+reason.name()+") ge§ndert.");
+		logMessage("GameState wurde zu "+state.string()+"("+reason.name()+") geändert.");
 	}
 	
 	public boolean isPlayerState(Player player,PlayerState state){
@@ -408,7 +409,7 @@ public class MultiGame extends kListener{
 				
 				if(last_player!=null){
 					broadcastWithPrefix("GAME_WIN",last_player.getName());
-					t= new Title("",TranslationManager.getText("GAME_WIN",last_player.getName()));
+					t= new Title("",TranslationHandler.getText("GAME_WIN",last_player.getName()));
 					for(Player player : getGameList().getPlayers().keySet()){
 						t.send(player);
 					}
@@ -468,7 +469,7 @@ public class MultiGame extends kListener{
 				setTimer(getTimer()-1);
 				
 				for(Player p : getGameList().getPlayers().keySet()){
-					UtilDisplay.displayTextBar(p, TranslationManager.getText(p, "GAME_START_IN",getTimer()));
+					UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_START_IN",getTimer()));
 				}
 				
 				if(getTimer()!=0){

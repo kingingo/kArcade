@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilLocation;
@@ -96,7 +96,7 @@ public class AddonQuadratGrenze implements Listener{
 					if(!isInGrenze(p.getLocation())){
 						p.damage(-1);
 						UtilPlayer.health(p, -1);
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME",game.getType().name())+"§c"+TranslationManager.getText(p, "AU§ERHALB_DER_MAP"));
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",game.getType().name())+"§c"+TranslationHandler.getText(p, "AU§ERHALB_DER_MAP"));
 					}
 				}	
 			}

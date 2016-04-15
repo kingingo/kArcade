@@ -11,7 +11,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,7 +34,7 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Title;
@@ -92,10 +94,12 @@ public class BedWars1vs1 extends MultiTeamGame{
 		UtilBedWars1vs1.getAddonBed(games).addMultiGame(this, new Team[]{Team.RED,Team.BLUE});
 		UtilBedWars1vs1.getAddonDropItems(getGames()).getGames().add(this);
 		
-		red=UtilBedWars1vs1.setVillager(UtilBedWars1vs1.getVillagerSpawn(Team.RED), this, EntityType.VILLAGER);
-		blue=UtilBedWars1vs1.setVillager(UtilBedWars1vs1.getVillagerSpawn(Team.BLUE), this, EntityType.VILLAGER);
+		red=UtilBedWars1vs1.setVillager(games.getManager().getInstance(),null,Team.RED, getWorldData().getLocs(this, UtilBedWars1vs1.getVillagerSpawn(Team.RED)).get(0), EntityType.VILLAGER);
+		blue=UtilBedWars1vs1.setVillager(games.getManager().getInstance(),null,Team.BLUE, getWorldData().getLocs(this, UtilBedWars1vs1.getVillagerSpawn(Team.BLUE)).get(0), EntityType.VILLAGER);
 		
-		for(Location loc : getWorldData().getLocs(this, Team.BLACK))spezial=UtilBedWars1vs1.setSpezialVillager(loc, this, EntityType.VILLAGER);
+		for(Location loc : getWorldData().getLocs(this, Team.BLACK)){
+			spezial=UtilBedWars1vs1.setSpezialVillager(games.getManager().getInstance(),loc, EntityType.VILLAGER);
+		}
 
 		loadMaxTeam();
 	}
@@ -126,6 +130,37 @@ public class BedWars1vs1 extends MultiTeamGame{
 		}
 	}
 	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void replace(BlockPlaceEvent ev){
+		if(getGameList().getPlayers().containsKey( ev.getPlayer() )){
+			if(getState()!=GameState.LobbyPhase){
+				if(ev.getBlock().getType()==Material.STAINED_GLASS||ev.getBlock().getType()==Material.STAINED_CLAY){
+					if(ev.getBlock().getData() != getTeam(ev.getPlayer()).getItem().getData().getData()){
+						if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+							ev.getBlock().setData(getTeam(ev.getPlayer()).getItem().getData().getData());
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void setBlock(PlayerInteractEvent ev){
+		if(getGameList().getPlayers().containsKey( ev.getPlayer() )){
+			if(ev.getPlayer().getItemInHand()!=null){
+				if(ev.getPlayer().getItemInHand().getType()==Material.STAINED_GLASS||ev.getPlayer().getItemInHand().getType()==Material.STAINED_CLAY){
+					if(ev.getPlayer().getItemInHand().getData().getData() != getTeam(ev.getPlayer()).getItem().getData().getData()){
+						if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+							ev.getPlayer().setItemInHand(new ItemStack(ev.getPlayer().getItemInHand().getType(),ev.getPlayer().getItemInHand().getAmount(),getTeam(ev.getPlayer()).getItem().getData().getData()));
+							ev.getPlayer().updateInventory();
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	@EventHandler
 	public void SheepDeath(MultiAddonBedKingDeathEvent ev){
 		if(ev.getGame() == this){
@@ -135,7 +170,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 			}
 			
 			for(Player player : getGameList().getPlayers().keySet()){
-				t.setSubtitle(TranslationManager.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+				t.setSubtitle(TranslationHandler.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
 				t.send(player);
 			}
 		}
@@ -171,7 +206,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 		setTimer(getTimer()-1);
 		if(getTimer()<0)setTimer((60*15)+1);
 		
-		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(TranslationManager.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
+		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
 		
 		switch(getTimer()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -183,7 +218,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 0:
-			broadcastWithPrefix(TranslationManager.getText("GAME_END"));
+			broadcastWithPrefix(TranslationHandler.getText("GAME_END"));
 			setState(GameState.Restart,GameStateChangeReason.GAME_END);
 			break;
 		}

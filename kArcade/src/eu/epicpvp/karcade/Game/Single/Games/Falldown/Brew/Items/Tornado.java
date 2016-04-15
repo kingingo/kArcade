@@ -25,7 +25,7 @@ import eu.epicpvp.kcore.Util.UtilMath;
 public class Tornado extends BrewItem{
 
 	public Tornado(Integer[] brewing_items, Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.STRING,1), new String[]{"§6§§7 Ein verherender Tornado verw§stet die Map ","§7   bringt deine Gegner in eine ","§7   Gef§hrliche Situation!"}, "§e§lTornado"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.STRING,1), new String[]{"§6§7 Ein verherender Tornado verw§stet die Map ","§7   bringt deine Gegner in eine ","§7   Gef§hrliche Situation!"}, "§e§lTornado"), brewing_items, falldown);
 	}
 	
 	public Material Block(Location loc, int radius)

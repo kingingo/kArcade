@@ -178,7 +178,7 @@ public class SheepWars extends CustomWars{
 	@EventHandler
 	public void addShop(VillagerAddShopEvent ev){
 		if(ev.getItemStack().hasItemMeta()&&ev.getItemStack().getItemMeta().hasDisplayName()){
-			if(ev.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase("§cBl§cke")){
+			if(ev.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase("§cBlöcke")){
 				ev.getMerchant().addOffer(new MerchantOffer(Bronze(3), new ItemStack(Material.GLOWSTONE)));
 			}
 		}

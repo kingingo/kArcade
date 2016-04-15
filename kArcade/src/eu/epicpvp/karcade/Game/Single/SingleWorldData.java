@@ -42,7 +42,7 @@ public class SingleWorldData extends WorldData{
 	}
 	
 	public SingleWorldData(kArcadeManager manager,GameType type){
-		this(manager,type.name(),type.getKuerzel());
+		this(manager,type.name(),type.getShortName());
 	}
 	
 	public void addLoc(Team team,Location loc){

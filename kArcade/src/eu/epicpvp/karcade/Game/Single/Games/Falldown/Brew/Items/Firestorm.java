@@ -27,7 +27,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class Firestorm extends BrewItem{
 
 	public Firestorm(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(351,1,(byte)14), new String[]{"§6§§7 Alle Spieler um dich herum fangen an zu brennen"}, "§e§lFirestorm"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(351,1,(byte)14), new String[]{"§6§7 Alle Spieler um dich herum fangen an zu brennen"}, "§e§lFirestorm"), brewing_items, falldown);
 	}
 
 	@SuppressWarnings("deprecation")

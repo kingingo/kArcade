@@ -25,7 +25,6 @@ import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Permission.PermissionManager;
-import eu.epicpvp.kcore.Translation.TranslationManager;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilException;
@@ -47,12 +46,11 @@ public class kArcade extends JavaPlugin{
 	public void onEnable(){
 		try{
 			start_time = System.currentTimeMillis();
-			TranslationManager.init(this);
 			loadConfig();
 			mysql=new MySQL(getConfig().getString("Config.MySQL.User"),getConfig().getString("Config.MySQL.Password"),getConfig().getString("Config.MySQL.Host"),getConfig().getString("Config.MySQL.DB"),this);
 			UtilFile.DeleteFolder(new File("schematics"));
 			UtilFile.DeleteFolder(new File("void"));
-			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKuerzel()));
+			for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getShortName()));
 			UtilFile.DeleteFolder(new File(".0,AIR"));
 			UtilFile.DeleteFolder(new File("world_nether"));
 			deleteOldWorlds();
@@ -78,7 +76,7 @@ public class kArcade extends JavaPlugin{
 			new ListenerCMD(this);
 
 			new AntiCrashListener(UtilServer.getClient(),this.mysql);
-			new BungeeCordFirewallListener(mysql,cmd, "a"+id);
+			new BungeeCordFirewallListener(this,UtilServer.getCommandHandler());
 			if( !getConfig().getBoolean("Config.Server.World-Save") )UtilWorld.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){
@@ -90,7 +88,7 @@ public class kArcade extends JavaPlugin{
 		for(Player p : UtilServer.getPlayers()){
 			UtilBG.sendToServer(p,this);
 		}
-		for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getKuerzel().toLowerCase()));
+		for(GameType type : GameType.values())UtilFile.DeleteFolder(new File(type.getShortName().toLowerCase()));
 		if(manager.getGame() instanceof MultiGames){
 			for(MultiGame game : ((MultiGames)manager.getGame()).getGames().values()){
 				game.setState(GameState.Restart);

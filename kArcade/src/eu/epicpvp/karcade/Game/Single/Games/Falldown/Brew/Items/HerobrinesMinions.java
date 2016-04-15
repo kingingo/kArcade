@@ -29,7 +29,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class HerobrinesMinions extends BrewItem{
 
 	public HerobrinesMinions(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.COAL), new String[]{"§6§§7 Eine fliegende Armee greift","§7   deinen Gegner an."}, "§e§lHerobrine's Minions"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.COAL), new String[]{"§6§7 Eine fliegende Armee greift","§7   deinen Gegner an."}, "§e§lHerobrine's Minions"), brewing_items, falldown);
 	}
 	
 	@EventHandler

@@ -10,7 +10,7 @@ import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Permission.PermissionType;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.Color;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
@@ -43,7 +43,7 @@ public class AddonChat extends kListener{
 		
 		 if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 				ev.setMessage("Ich heul rum!");
-				ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+TranslationManager.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+				ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
 		if(game.getState()==GameState.LobbyPhase){
@@ -64,7 +64,7 @@ public class AddonChat extends kListener{
 							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
-						UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME",team_game.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
+						UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME",team_game.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 					}
 				}
 			}else{
@@ -82,7 +82,7 @@ public class AddonChat extends kListener{
 							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7:§f "+ev.getMessage());
 						}
 					}else{
-						UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME",team_game.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
+						UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME",team_game.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 					}
 				}
 			}

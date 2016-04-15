@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.IShop;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilDirection;
@@ -99,7 +99,7 @@ public class Radar implements Listener,IShop{
 		if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)&&ev.getRightClicked() instanceof Player){
 			Player r = (Player)ev.getRightClicked();
 			list.put(ev.getPlayer(), r);
-			UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "TTT_TRAITOR_SHOP_RADAR_CHANGE", r.getName()));
+			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_TRAITOR_SHOP_RADAR_CHANGE", r.getName()));
 		}
 	}
 	

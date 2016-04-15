@@ -18,7 +18,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class EnergyRod extends BrewItem{
 
 	public EnergyRod(Integer[] brewing_items, Falldown falldown) {
-		super(100,UtilItem.Item(new ItemStack(Material.BLAZE_ROD), new String[]{"§6§§7 Schie§e einen brennenden Meteorit","§7   auf deinen Gegner"}, "§e§lEnergy Rod"),brewing_items, falldown);
+		super(100,UtilItem.Item(new ItemStack(Material.BLAZE_ROD), new String[]{"§6§7 Schie§e einen brennenden Meteorit","§7   auf deinen Gegner"}, "§e§lEnergy Rod"),brewing_items, falldown);
 	}
 	
 	@EventHandler

@@ -1,4 +1,4 @@
-package eu.epicpvp.karcade;
+package eu.epicpvp.karcade.Listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,10 +8,10 @@ import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutSpawnEntity;
 import eu.epicpvp.kcore.PacketAPI.packetlistener.event.PacketListenerSendEvent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
 
-public class ArrowBugListener extends kListener{
+public class KickBugListener extends kListener{
 	
-	public ArrowBugListener(JavaPlugin instance) {
-		super(instance, "ArrowBugListener");
+	public KickBugListener(JavaPlugin instance) {
+		super(instance, "KickBugListener");
 	}
 
 	@EventHandler

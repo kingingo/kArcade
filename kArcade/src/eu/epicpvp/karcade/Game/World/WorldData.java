@@ -43,7 +43,7 @@ public abstract class WorldData {
 	@Getter
 	private kArcadeManager manager;
 	@Getter
-	private String kuerzel;
+	private String shortName;
 	@Getter
 	@Setter
 	private EditSession editSession;
@@ -56,13 +56,13 @@ public abstract class WorldData {
 	private ArrayList<File> loadFiles;
 	
 	public WorldData(kArcadeManager manager,GameType type){
-		this(manager,type.name(),type.getKuerzel());
+		this(manager,type.name(),type.getShortName());
 	}
 	
-	public WorldData(kArcadeManager manager,String gameName,String kuerzel){
+	public WorldData(kArcadeManager manager,String gameName,String shortName){
 		this.manager=manager;
 		this.gameName=gameName;
-		this.kuerzel=kuerzel;
+		this.shortName=shortName;
 		this.cleanroomChunkGenerator=false;
 	}
 	
@@ -232,7 +232,7 @@ public abstract class WorldData {
 	 
 	 public void createWorld(){
 		 Uninitialize();
-		 setMap(new GameMap(Bukkit.createWorld(new WorldCreator(getKuerzel())),new File(getKuerzel()),this));
+		 setMap(new GameMap(Bukkit.createWorld(new WorldCreator(getShortName())),new File(getShortName()),this));
 	 }
 	 
 	 public void setBiome(Location l,Biome biome){

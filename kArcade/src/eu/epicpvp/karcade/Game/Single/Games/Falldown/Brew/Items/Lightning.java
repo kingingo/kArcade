@@ -18,7 +18,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class Lightning extends BrewItem{
 	
 	public Lightning(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.GHAST_TEAR,1), new String[]{"§6§§7 Ein Blitz elektrisiert deinen Gegner."}, "§e§lLightning"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.GHAST_TEAR,1), new String[]{"§6§7 Ein Blitz elektrisiert deinen Gegner."}, "§e§lLightning"), brewing_items, falldown);
 	}
 
 	@EventHandler

@@ -19,7 +19,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 public class Snowbomb extends BrewItem{
 
 	public Snowbomb(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.SNOW_BALL,1), new String[]{"§6§§7 Schmei§e ihn auf deinen Gegner und er ","§7   lernt zu fliegen!"}, "§e§lSnowbomb"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.SNOW_BALL,1), new String[]{"§6§7 Schmei§e ihn auf deinen Gegner und er ","§7   lernt zu fliegen!"}, "§e§lSnowbomb"), brewing_items, falldown);
 	}
 	
 	Player player;

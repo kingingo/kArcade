@@ -28,7 +28,7 @@ import eu.epicpvp.kcore.Arena.ArenaType;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilBG;
@@ -105,7 +105,7 @@ public class Versus extends MultiTeamGame{
 	@EventHandler
 	public void Join(MultiGamePlayerJoinEvent ev){
 		if(ev.getGame()!=this)return;
-		//Pr§ft ob dieser Spieler f§r die Arena angemeldet ist.
+		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
 			
@@ -140,7 +140,7 @@ public class Versus extends MultiTeamGame{
 				getGames().getStats().addInt(ev.getEntity().getKiller(), 1, StatsKey.KILLS);
 				getGames().getMoney().addInt(ev.getEntity().getKiller(),4,StatsKey.COINS);
 				broadcastWithPrefix("KILL_BY", new String[]{ ev.getEntity().getName() , ev.getEntity().getKiller().getName() });
-				ev.getEntity().sendMessage(TranslationManager.getText(ev.getEntity(),"PREFIX_GAME",getGames().getType().getTyp())+TranslationManager.getText(ev.getEntity(), "HEART",new String[]{ev.getEntity().getKiller().getName(),((int)UtilPlayer.getHealth(ev.getEntity().getKiller()))+""}));
+				ev.getEntity().sendMessage(TranslationHandler.getText(ev.getEntity(),"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(ev.getEntity(), "HEART",new String[]{ev.getEntity().getKiller().getName(),UtilPlayer.getHealthBar(ev.getEntity().getKiller())}));
 			}else{
 				broadcastWithPrefix("DEATH", new String[]{ ev.getEntity().getName() });
 			}
@@ -158,7 +158,7 @@ public class Versus extends MultiTeamGame{
 				}
 				setTimer(getTimer()-1);
 				for(Player p : getGameList().getPlayers().keySet()){
-					UtilDisplay.displayTextBar(p,TranslationManager.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getTimer())));
+					UtilDisplay.displayTextBar(p,TranslationHandler.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getTimer())));
 				}
 				
 				if(getTimer()!=0){
@@ -175,7 +175,7 @@ public class Versus extends MultiTeamGame{
 					case 1:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 					}
 				}else{
-					broadcastWithPrefix(TranslationManager.getText("GAME_END"));
+					broadcastWithPrefix(TranslationHandler.getText("GAME_END"));
 					setState(GameState.Restart,GameStateChangeReason.GAME_END);
 				}
 			}

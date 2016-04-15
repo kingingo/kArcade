@@ -57,7 +57,7 @@ import eu.epicpvp.kcore.Kit.Shop.SingleKitShop;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemManager;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -102,9 +102,9 @@ public class SkyWars extends TeamGame{
 		setTyp(GameType.SkyWars);
 		setMax_Players(type.getMax());
 		setMin_Players(type.getMin());
-		setDamage(true);
-		setDamagePvP(true);
-		setDamageSelf(true);
+		setDamage(false);
+		setDamagePvP(false);
+		setDamageSelf(false);
 		setBlockBreak(true);
 		setBlockPlace(true);
 		setCreatureSpawn(false);
@@ -114,7 +114,7 @@ public class SkyWars extends TeamGame{
 		setItemPickup(true);
 		setItemDrop(true);
 		setRespawn(true);
-		setWorldData(new SingleWorldData(manager,getType().getTyp()+type.getTeam().length,getType().getKuerzel()));
+		setWorldData(new SingleWorldData(manager,getType().getTyp()+type.getTeam().length,getType().getShortName()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		
 		if(getWorldData().loadZips().size()<3){
@@ -703,12 +703,12 @@ public class SkyWars extends TeamGame{
 		
 		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+TranslationManager.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
-		
+
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			UtilPlayer.sendMessage(ev.getPlayer(),TranslationManager.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
+			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
@@ -737,7 +737,7 @@ public class SkyWars extends TeamGame{
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
 		format=UtilTime.formatSeconds(getStart());
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(TranslationManager.getText(p, "GAME_END_IN", format), p);
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(TranslationHandler.getText(p, "GAME_END_IN", format), p);
 		updateTime(format);
 		switch(getStart()){
 		case 10*60:
@@ -828,8 +828,11 @@ public class SkyWars extends TeamGame{
 				
 				broadcastWithPrefix("KILL_BY", new String[]{v.getName(),a.getName()});
 				this.hit.remove(a);
+				Title t = new Title("§c§lYOUR ARE DEATH!","§a" + a.getName() + ": " + UtilPlayer.getPlayerLiveString(v));
+				t.send(v);
 				return;
 			}
+			
 			broadcastWithPrefix("DEATH", v.getName());
 			getStats().addInt(v, 1, StatsKey.DEATHS);
 			
@@ -930,8 +933,8 @@ public class SkyWars extends TeamGame{
 	public void statsLOADED(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType() != getType())return;
 		if(getState()!=GameState.LobbyPhase)return;
-		if(UtilPlayer.isOnline(ev.getPlayername())){
-			Player player = Bukkit.getPlayer(ev.getPlayername());
+		if(UtilPlayer.isOnline(ev.getPlayerId())){
+			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int w = getStats().getInt(StatsKey.WIN, player);
 			int l = getStats().getInt(StatsKey.LOSE, player);
 			
@@ -941,16 +944,16 @@ public class SkyWars extends TeamGame{
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 						Color.GREEN+getType().getTyp()+" "+type.name().replaceAll("_", "")+Color.ORANGE+"§l Info",
-						TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap()!=null ? getWorldData().getMapName() : "Loading...")),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap()!=null ? getWorldData().getMapName() : "Loading...")),
 						" ",
-						TranslationManager.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
 						" ",
-						TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (((Integer)w)+((Integer)l))),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", ((Integer)w)),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", ((Integer)l)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_GAMES", (((Integer)w)+((Integer)l))),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_WINS", ((Integer)w)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_LOSE", ((Integer)l)),
 						});
 				}
 			});
@@ -1042,7 +1045,7 @@ public class SkyWars extends TeamGame{
 			UtilScoreboard.setScore(ps, "§e"+kills.get(p.getName()),DisplaySlot.SIDEBAR,5);
 			UtilScoreboard.setScore(ps, "  ", DisplaySlot.SIDEBAR, 4);
 			UtilScoreboard.setScore(ps, "§7Kit: ", DisplaySlot.SIDEBAR, 3);
-			UtilScoreboard.setScore(ps, "§e"+ (kits.containsKey(p) ? kits.get(p) : TranslationManager.getText(p, "NO_KIT")) , DisplaySlot.SIDEBAR,2);
+			UtilScoreboard.setScore(ps, "§e"+ (kits.containsKey(p) ? kits.get(p) : TranslationHandler.getText(p, "NO_KIT")) , DisplaySlot.SIDEBAR,2);
 			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 1);
 			UtilScoreboard.setScore(ps, "§ewww.EpicPvP.me", DisplaySlot.SIDEBAR, 0);
 			UtilScoreboard.addTeam(ps, "friend", Color.GREEN);
@@ -1056,15 +1059,15 @@ public class SkyWars extends TeamGame{
 				}
 			}
 			
-			for(Entity e : getWorldData().getWorld().getEntities()){
-				if(!(e instanceof Player)){
-					e.remove();
-				}
-			}
-			
 			p.setScoreboard(ps);
-			title.setSubtitle(TranslationManager.getText(p, "NO_TEAMS_ALLOWED"));
+			title.setSubtitle(TranslationHandler.getText(p, "NO_TEAMS_ALLOWED"));
 			title.send(p);
+		}
+		
+		for(Entity e : getWorldData().getWorld().getEntities()){
+			if(!(e instanceof Player)){
+				e.remove();
+			}
 		}
 		
 		for(Player player : UtilServer.getPlayers()){
@@ -1095,6 +1098,9 @@ public class SkyWars extends TeamGame{
 			setStart((60*15)+1);
 		}
 		setState(GameState.InGame);
+		setDamage(true);
+		setDamagePvP(true);
+		setDamageSelf(true);
 	}
 	
 	@EventHandler

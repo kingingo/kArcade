@@ -17,7 +17,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 public class Speed extends BrewItem{
 
 	public Speed(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.SUGAR), new String[]{"§6§§7 Du wirst tempor§r schneller,","§7  um Gegner zu entkommen oder sie ","§7  zu verfolgen!"}, "§e§lSpeed"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.SUGAR), new String[]{"§6§7 Du wirst tempor§r schneller,","§7  um Gegner zu entkommen oder sie ","§7  zu verfolgen!"}, "§e§lSpeed"), brewing_items, falldown);
 	}
 
 	@EventHandler

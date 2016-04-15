@@ -39,7 +39,7 @@ public class CreeperArmy extends BrewItem{
 	private HashMap<Creature,Player> list = new HashMap<>();
 
 	public CreeperArmy(Integer[] items,Falldown instance) {
-		super(100, UtilItem.Item(new ItemStack(Material.MONSTER_EGG,1,(byte)50), new String[]{"§6§§7 Gef§hrliche Creeper greifen deine Gegner an!"}, "§e§lCreeperArmy"), items, instance);
+		super(100, UtilItem.Item(new ItemStack(Material.MONSTER_EGG,1,(byte)50), new String[]{"§6§7 Gef§hrliche Creeper greifen deine Gegner an!"}, "§e§lCreeperArmy"), items, instance);
 	}
 	
 	HashMap<Player,Double> l;

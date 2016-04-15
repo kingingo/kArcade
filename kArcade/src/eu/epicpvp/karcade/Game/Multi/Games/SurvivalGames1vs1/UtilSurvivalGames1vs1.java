@@ -21,7 +21,7 @@ import lombok.Getter;
 
 public class UtilSurvivalGames1vs1 {
 	@Getter
-	private static ItemStack enderchest_compass=UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§bCompass §7§§b Enderchest"); //Der Kompass zeigt immer auf die E-Chest
+	private static ItemStack enderchest_compass=UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§bCompass §7§b Enderchest"); //Der Kompass zeigt immer auf die E-Chest
 	
 	public static void loadEnderChest(SurvivalGames1vs1 game){
 		if(game.getEnderchest_loc()!=null){

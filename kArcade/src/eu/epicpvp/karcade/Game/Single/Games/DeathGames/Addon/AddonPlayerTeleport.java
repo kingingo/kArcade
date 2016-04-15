@@ -16,7 +16,7 @@ import eu.epicpvp.karcade.Events.PlayerStateChangeEvent;
 import eu.epicpvp.karcade.Game.Single.Games.DeathGames.DeathGames;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 
@@ -65,8 +65,8 @@ public class AddonPlayerTeleport extends kListener{
 				for (int i = 0; i < max; i++) {
 					p1 = tplist.get(0);
 					p2 = tplist.get(1);
-					p1.sendMessage(TranslationManager.getText(p1, "PREFIX_GAME",instance.getType())+TranslationManager.getText(p1, "ENDERGAMES_TELEPORT",p2.getName()));
-					p2.sendMessage(TranslationManager.getText(p2, "PREFIX_GAME",instance.getType())+TranslationManager.getText(p2, "ENDERGAMES_TELEPORT",p1.getName()));
+					p1.sendMessage(TranslationHandler.getText(p1, "PREFIX_GAME",instance.getType())+TranslationHandler.getText(p1, "ENDERGAMES_TELEPORT",p2.getName()));
+					p2.sendMessage(TranslationHandler.getText(p2, "PREFIX_GAME",instance.getType())+TranslationHandler.getText(p2, "ENDERGAMES_TELEPORT",p1.getName()));
 					loc1 = p1.getLocation();
 					loc2 = p2.getLocation();
 

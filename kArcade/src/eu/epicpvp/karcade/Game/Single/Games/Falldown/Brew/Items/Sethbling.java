@@ -39,7 +39,7 @@ public class Sethbling extends BrewItem{
 	private HashMap<Block,List<Player>> blocke_list = new HashMap<>();
 	
 	public Sethbling(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.DIODE,1), new String[]{"§6§§7 Du wirst geheilt, w§hrend die Gegner um dich","§7   herum Schaden bekommen!"}, "§e§lSethbling"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.DIODE,1), new String[]{"§6§7 Du wirst geheilt, w§hrend die Gegner um dich","§7   herum Schaden bekommen!"}, "§e§lSethbling"), brewing_items, falldown);
 	}
 	
 	@EventHandler

@@ -71,7 +71,7 @@ import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemManager;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -309,8 +309,8 @@ public class Falldown extends SoloGame{
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType() != getType())return;
 		if(getState()!=GameState.LobbyPhase)return;
-		if(UtilPlayer.isOnline(ev.getPlayername())){
-			Player player = Bukkit.getPlayer(ev.getPlayername());
+		if(UtilPlayer.isOnline(ev.getPlayerId())){
+			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int win = getStats().getInt(StatsKey.WIN, player);
 			int lose = getStats().getInt(StatsKey.LOSE, player);
 			
@@ -321,17 +321,17 @@ public class Falldown extends SoloGame{
 
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
 						Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-						TranslationManager.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMapName()),
 						" ",
-						TranslationManager.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_POWER", getStats().getInt(StatsKey.POWER, player)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_POWER", getStats().getInt(StatsKey.POWER, player)),
 						" ",
-						TranslationManager.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_WINS", win),
-						TranslationManager.getText(player, "GAME_HOLOGRAM_LOSE", lose),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_WINS", win),
+						TranslationHandler.getText(player, "GAME_HOLOGRAM_LOSE", lose),
 						});
 				}
 			});
@@ -358,7 +358,7 @@ public class Falldown extends SoloGame{
 		if(getState()!=GameState.SchutzModus)return;
 		setStart( getStart()-1 );
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationManager.getText(p, "SCHUTZZEIT_END_IN", getStart()));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationHandler.getText(p, "SCHUTZZEIT_END_IN", getStart()));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 20: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
@@ -399,7 +399,7 @@ public class Falldown extends SoloGame{
 		int lvl = getLevel(p);
 
 		if(lvl < 30){
-			p.sendMessage(TranslationManager.getText(p, "PREFIX")+TranslationManager.getText(p, "FALLDOWN_NICHT_GENUG_POWER"));
+			p.sendMessage(TranslationHandler.getText(p, "PREFIX")+TranslationHandler.getText(p, "FALLDOWN_NICHT_GENUG_POWER"));
 			return;
 		}else{
 			Bukkit.getWorld(p.getWorld().getName()).playEffect(p.getLocation(),
@@ -426,7 +426,7 @@ public class Falldown extends SoloGame{
 	public void EnchantBow(ItemStack i, Player p) {
 		int lvl = getLevel(p);
 		if(lvl < 30){
-			p.sendMessage(TranslationManager.getText(p, "PREFIX")+TranslationManager.getText(p, "FALLDOWN_NICHT_GENUG_POWER"));
+			p.sendMessage(TranslationHandler.getText(p, "PREFIX")+TranslationHandler.getText(p, "FALLDOWN_NICHT_GENUG_POWER"));
 			return;
 		}else{
 			Bukkit.getWorld(p.getWorld().getName()).playEffect(p.getLocation(),
@@ -468,7 +468,7 @@ public class Falldown extends SoloGame{
 		int lvl = getLevel(p);
 
 		if(lvl < 30){
-			p.sendMessage(TranslationManager.getText(p, "PREFIX")+TranslationManager.getText(p, "FALLDOWN_NICHT_GENUG_POWER"));
+			p.sendMessage(TranslationHandler.getText(p, "PREFIX")+TranslationHandler.getText(p, "FALLDOWN_NICHT_GENUG_POWER"));
 			return;
 		}else{
 			Bukkit.getWorld(p.getWorld().getName()).playEffect(p.getLocation(),
@@ -498,7 +498,7 @@ public class Falldown extends SoloGame{
 			
 			if((!event.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
 				event.setMessage("Ich heul rum!");
-				event.getPlayer().sendMessage(TranslationManager.getText(event.getPlayer(), "PREFIX")+TranslationManager.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+				event.getPlayer().sendMessage(TranslationHandler.getText(event.getPlayer(), "PREFIX")+TranslationHandler.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 			}
 			
 			Player p = event.getPlayer();
@@ -629,7 +629,7 @@ public class Falldown extends SoloGame{
 						},2);
 
 						UtilInv.remove(p, id[1], ev.getPlayer().getItemInHand().getData().getData(), 1);
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt.");
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt.");
 					} else if (id[2] == null) {
 						id[2] = p.getItemInHand().getTypeId();
 						final Location loc = ev.getClickedBlock().getLocation();
@@ -644,10 +644,10 @@ public class Falldown extends SoloGame{
 						},2);
 
 						UtilInv.remove(p, id[2], ev.getPlayer().getItemInHand().getData().getData(), 1);
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt Du kannst Jetzt mit den Magic Stick dir was Brauen.");
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt Du kannst Jetzt mit den Magic Stick dir was Brauen.");
 					} else {
 						final Location loc = ev.getClickedBlock().getLocation();
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())
 								+ "§bBraustand voll!");
 						Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
 
@@ -675,25 +675,25 @@ public class Falldown extends SoloGame{
 						
 					},10);
 					UtilInv.remove(p, id[0], ev.getPlayer().getItemInHand().getData().getData(), 1);
-					p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt.");		
+					p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt.");		
 				}
 				return;
 			} else if (p.getItemInHand().getType() == Material.STICK) {
 				if (playerbrauen.containsKey(p)) {
 					Integer[] id = playerbrauen.get(p);
 					if (id[0] == null) {
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())
 								+ "§cDer Braustand ist leer!");
 					} else if (id[1] == null) {
 						p.getInventory().addItem(
 								new ItemStack(id[0], 1));
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+ "§cEs Fehlen 2 Items min 3");
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§cEs Fehlen 2 Items min 3");
 					} else if (id[2] == null) {
 						p.getInventory().addItem(
 								new ItemStack(id[0], 1));
 						p.getInventory().addItem(
 								new ItemStack(id[1], 1));
-						p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+ "§cEs Fehlt 1 Item min 3");
+						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§cEs Fehlt 1 Item min 3");
 					} else {
 						if(getLevel(p) < 30){
 							p.getInventory().addItem(
@@ -702,7 +702,7 @@ public class Falldown extends SoloGame{
 									new ItemStack(id[1], 1));
 							p.getInventory().addItem(
 									new ItemStack(id[2], 1));
-							p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+"§cDu hast zu wenig Power!");
+							p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+"§cDu hast zu wenig Power!");
 							p.updateInventory();
 							playerbrauen.remove(p);
 							return;
@@ -717,13 +717,13 @@ public class Falldown extends SoloGame{
 									new ItemStack(id[1], 1));
 							p.getInventory().addItem(
 									new ItemStack(id[2], 1));
-							p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())+"§cDie Kombination stimmt nicht!");
+							p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+"§cDie Kombination stimmt nicht!");
 						}
 					}
 					playerbrauen.remove(p);
 					p.updateInventory();
 				} else {
-					p.sendMessage(TranslationManager.getText(p, "PREFIX_GAME", getType().getTyp())
+					p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())
 							+ "§cDer Braustand ist leer!");
 				}
 			}
@@ -866,7 +866,7 @@ public class Falldown extends SoloGame{
 		if(getState()!=GameState.InGame)return;
 		setStart( getStart()-1 );
 		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationManager.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
+		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 20: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;

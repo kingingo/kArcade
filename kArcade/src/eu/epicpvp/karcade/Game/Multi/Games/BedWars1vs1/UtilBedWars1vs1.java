@@ -1,16 +1,19 @@
 package eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1;
 
+import java.util.ArrayList;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonBedTeamKing;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonDropItems;
-import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
+import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWarsItem;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Merchant.Merchant;
 import eu.epicpvp.kcore.Merchant.MerchantOffer;
@@ -53,9 +56,11 @@ public class UtilBedWars1vs1 {
 		return UtilItem.RenameItem(new ItemStack(Material.CLAY_BRICK,i), "§bBronze");
 	}
 	
-	public static VillagerShop setSpezialVillager(Location l,MultiGame game,EntityType e){
-		l.getChunk().load();
-		VillagerShop v = new VillagerShop(game.getGames().getManager().getInstance(),e,"Spezial-Shop",l,InventorySize._27);
+	public static VillagerShop setSpezialVillager(JavaPlugin instance,Location l,EntityType e){
+		VillagerShop v = new VillagerShop(instance,e,"Spezial-Shop",l,InventorySize._27);
+		v.setDamage(false);
+		v.setMove(false);
+//		UtilEnt.setNoAI(v.getVillager(), true);
 		
 		Merchant rustung = new Merchant();
 		ItemStack r1 = UtilItem.RenameItem(new ItemStack(Material.IRON_CHESTPLATE), "Spezial Eisenhemd Lvl 1");
@@ -71,7 +76,7 @@ public class UtilBedWars1vs1 {
 		ItemStack r3 = UtilItem.RenameItem(new ItemStack(Material.DIAMOND_CHESTPLATE), "Diamanthemd");
 		r3.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 		rustung.addOffer(new MerchantOffer(Gold(50),r3));
-		v.addShop(UtilItem.Item(new ItemStack(Material.DIAMOND_CHESTPLATE), new String[]{"§aSpezial Schutz!"}, "§cR§stung"), rustung, 10);
+		v.addShop(UtilItem.Item(new ItemStack(Material.DIAMOND_CHESTPLATE), new String[]{"§aSpezial Schutz!"}, "§cRüstung"), rustung, 10);
 		
 		Merchant schwert = new Merchant();
 		ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.IRON_SWORD), "Spezial Schwert Lvl 1");
@@ -87,14 +92,14 @@ public class UtilBedWars1vs1 {
 		Merchant trank = new Merchant();
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8229), "Heilung II")));
 		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8225), "Regeneration II")));
-		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8233), "St§rke II")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mit mir Drogen nehmen?"}, "§cTr§nke"), trank, 14);
+		trank.addOffer(new MerchantOffer(Gold(10),UtilItem.RenameItem(new ItemStack(Material.POTION,3,(byte)8233), "Stärke II")));
+		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aWillst du mit mir Drogen nehmen?"}, "§cTränke"), trank, 14);
 		
 		Merchant gold = new Merchant();
 		gold.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE), "Goldener Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(25), UtilItem.RenameItem(new ItemStack(Material.GOLDEN_APPLE,1,(byte)1), "Op Apfel")));
 		gold.addOffer(new MerchantOffer(Gold(10), UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL), "Enderpearl")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in gr§§ter Not!"}, "§cSpezial"), gold, 16);
+		v.addShop(UtilItem.Item(new ItemStack(Material.GOLDEN_APPLE), new String[]{"§aRette dich in gröÃŸter Not!"}, "§cSpezial"), gold, 16);
 		
 		v.finish();
 		return v;
@@ -115,18 +120,18 @@ public class UtilBedWars1vs1 {
 		}
 	}
 	
-	public static VillagerShop setVillager(Team t,MultiGame game,EntityType e){
-		Location l=game.getWorldData().getLocs(game, t).get(0);
-		l.getChunk().load();
-		VillagerShop v = new VillagerShop(game.getGames().getManager().getInstance(),e,t.getColor()+"Villager-Shop",l,InventorySize._27);
+	public static VillagerShop setVillager(JavaPlugin instance,ArrayList<CustomWarsItem> items, Team t,Location l,EntityType e){
+		VillagerShop v = new VillagerShop(instance,e,t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
 		
+//		UtilEnt.setNoAI(v.getVillager(), true);
+		
 		Merchant bloecke = new Merchant();
-		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(24,4)));
+		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(Material.STAINED_CLAY,4)));
+		bloecke.addOffer(new MerchantOffer(Bronze(8), new ItemStack(Material.STAINED_GLASS,1)));
 		bloecke.addOffer(new MerchantOffer(Bronze(7),new ItemStack(Material.ENDER_STONE)));
-		bloecke.addOffer(new MerchantOffer(Bronze(10),new ItemStack(Material.GLOWSTONE)));
-		v.addShop(UtilItem.Item(new ItemStack(24), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBl§cke"), bloecke, 9);
+		v.addShop(UtilItem.Item(new ItemStack(Material.STAINED_GLASS), new String[]{"§aHier findest du alles was du zum bauen brauchst"}, "§cBlöcke"), bloecke, 9);
 	
 		Merchant spitzhacken = new Merchant();
 		ItemStack spitzhack1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_PICKAXE), "Holzhacke");
@@ -145,7 +150,7 @@ public class UtilBedWars1vs1 {
 		spitzhack4.addEnchantment(Enchantment.DURABILITY, 1);
 		spitzhack4.addEnchantment(Enchantment.DIG_SPEED, 2);
 		spitzhacken.addOffer(new MerchantOffer(Gold(3), spitzhack4));
-		v.addShop(UtilItem.Item(new ItemStack(274), new String[]{"§aBaue Bl§cke deines Gegners ab!"}, "§cSpitzhacken"), spitzhacken, 10);
+		v.addShop(UtilItem.Item(new ItemStack(274), new String[]{"§aBaue Blöcke deines Gegners ab!"}, "§cSpitzhacken"), spitzhacken, 10);
 		
 		Merchant rustung = new Merchant();
 		ItemStack r1 = UtilItem.RenameItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), c(t.getColor())), t.getColor()+"Lederhelm");
@@ -182,10 +187,10 @@ public class UtilBedWars1vs1 {
 		r8.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 		r8.addEnchantment(Enchantment.PROTECTION_FIRE, 2);
 		rustung.addOffer(new MerchantOffer(Gold(3),r8));
-		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_CHESTPLATE), new String[]{"§aSch§tze dich vor deinen Gegnern!"}, "§cR§stung"), rustung, 11);
+		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_CHESTPLATE), new String[]{"§aSchütze dich vor deinen Gegnern!"}, "§cRüstung"), rustung, 11);
 		
 		Merchant schwerter = new Merchant();
-		ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "Kn§ppel");
+		ItemStack s1 = UtilItem.RenameItem(new ItemStack(Material.WOOD_SWORD), "Knüppel");
 		s1.addEnchantment(Enchantment.KNOCKBACK, 1);
 		schwerter.addOffer(new MerchantOffer(Bronze(8), s1));
 		ItemStack s2 = UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD), "Goldschwert Lvl 1");
@@ -205,7 +210,7 @@ public class UtilBedWars1vs1 {
 		s5.addEnchantment(Enchantment.DAMAGE_ALL, 1);
 		s5.addEnchantment(Enchantment.KNOCKBACK, 1);
 		schwerter.addOffer(new MerchantOffer(Gold(3), s5));
-		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"§aGreife deine Gegner an und t§te sie!"}, "§cSchwerter"), schwerter, 12);
+		v.addShop(UtilItem.Item(new ItemStack(Material.IRON_SWORD), new String[]{"§aGreife deine Gegner an und töte sie!"}, "§cSchwerter"), schwerter, 12);
 		
 		Merchant bogen = new Merchant();
 		ItemStack b0 = UtilItem.RenameItem(new ItemStack(Material.BOW), "§bBogen Lvl 1");
@@ -223,7 +228,7 @@ public class UtilBedWars1vs1 {
 		b3.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
 		bogen.addOffer(new MerchantOffer(Gold(13),b3));
 		bogen.addOffer(new MerchantOffer(Bronze(5),UtilItem.RenameItem(new ItemStack(Material.ARROW), "Pfeil")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.BOW), new String[]{"§aDer fernkampf hat schon einige Kriege entschieden!"}, "§cB§gen"), bogen, 13);
+		v.addShop(UtilItem.Item(new ItemStack(Material.BOW), new String[]{"§aDer fernkampf hat schon einige Kriege entschieden!"}, "§cBögen"), bogen, 13);
 		
 		Merchant nahrung = new Merchant();
 		nahrung.addOffer(new MerchantOffer(Bronze(2), UtilItem.RenameItem(new ItemStack(Material.APPLE), "Apfel")));
@@ -240,12 +245,13 @@ public class UtilBedWars1vs1 {
 		Merchant trank = new Merchant();
 		trank.addOffer(new MerchantOffer(Silber(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8261), "Heilung")));
 		trank.addOffer(new MerchantOffer(Silber(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8194), "Schnelligkeit")));
-		trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8227), "Feuerresit§nz")));
+		trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8227), "Feuerresitänz")));
 		trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8193), "Regeneration")));
-		trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8201), "St§rke")));
-		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aAls Soldat kann man schonmal die eine oder andere Droge gebrauchen!"}, "§cTr§nke"), trank, 16);
+		trank.addOffer(new MerchantOffer(Gold(5), UtilItem.RenameItem(new ItemStack(Material.POTION,1,(byte)8201), "Stärke")));
+		v.addShop(UtilItem.Item(new ItemStack(Material.POTION), new String[]{"§aAls Soldat kann man schonmal die eine oder andere Droge gebrauchen!"}, "§cTränke"), trank, 16);
 		
 		Merchant spezial = new Merchant();
+		if(items!=null)for(CustomWarsItem item : items)spezial.addOffer(new MerchantOffer(item.getBuyItem(), item.getItem()));
 		spezial.addOffer(new MerchantOffer(Silber(3), UtilItem.RenameItem(new ItemStack(Material.TNT), "TNT")));
 		spezial.addOffer(new MerchantOffer(Gold(1), UtilItem.RenameItem(new ItemStack(Material.FLINT_AND_STEEL), "Feuerzeug")));
 		spezial.addOffer(new MerchantOffer(Bronze(5), UtilItem.RenameItem(new ItemStack(Material.LADDER), "Leiter")));

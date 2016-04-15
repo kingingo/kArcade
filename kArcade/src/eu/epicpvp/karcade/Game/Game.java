@@ -26,7 +26,7 @@ import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilPlayer;
@@ -117,36 +117,40 @@ public class Game extends kListener{
 	
 	public boolean setState(GameState gs,GameStateChangeReason reason){
 		if(gs==getState())return false;
-		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs,reason);
+		GameStateChangeEvent stateEvent = new GameStateChangeEvent(state,gs,this,reason);
 		Bukkit.getPluginManager().callEvent(stateEvent);
 		if(stateEvent.isCancelled())return false;
 		state=gs;
-		System.out.println("["+getType().getTyp()+"] GameState wurde zu "+state.string()+" ge§ndert.");
+		System.out.println("["+getType().getTyp()+"] GameState wurde zu "+state.string()+" geändert.");
 		return true;
 	}
 	
 	public void updateInfo(){
-		getManager().getClient().updateServerStats();
+		if(getManager().getClient().getHandle().isConnected()){
+			getManager().getClient().updateServerStats();
+		}else{
+			logMessage("Client ist not connected!?");
+		}
 	}
 	
 	public void broadcastWithPrefix(String name,Object input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefix(String name,Object[] input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(player,name,input));
 	}
 	
 	public void broadcastWithPrefixName(String name){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(player, name));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(player, name));
 	}
 	
 	public void broadcastWithPrefix(String msg){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,"PREFIX_GAME",getType().getTyp())+msg);
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getType().getTyp())+msg);
 	}
 	
 	public void broadcastName(String name){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player, name));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player, name));
 	}
 	
 	public void broadcast(String msg){
@@ -154,11 +158,11 @@ public class Game extends kListener{
 	}
 	
 	public void broadcast(String name,Object[] input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,name,input));
 	}
 	
 	public void broadcast(String name,Object input){
-		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationManager.getText(player,name,input));
+		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,name,input));
 	}
 
 	@EventHandler

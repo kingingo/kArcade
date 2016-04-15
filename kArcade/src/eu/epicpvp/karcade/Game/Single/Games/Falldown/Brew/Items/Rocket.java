@@ -30,7 +30,7 @@ import eu.epicpvp.kcore.Util.UtilItem;
 public class Rocket extends BrewItem{
 
 	public Rocket(Integer[] brewing_items, Falldown falldown) {
-		super(100,UtilItem.Item(new ItemStack(Material.GOLD_HOE), new String[]{"§6§§7 Schie§e eine verauberte Rakete","§7   auf Gegner."}, "§6Rocket"),brewing_items, falldown);
+		super(100,UtilItem.Item(new ItemStack(Material.GOLD_HOE), new String[]{"§6§7 Schie§e eine verauberte Rakete","§7   auf Gegner."}, "§6Rocket"),brewing_items, falldown);
 	}
 	
 	@EventHandler

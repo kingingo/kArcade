@@ -23,7 +23,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 public class Budder extends BrewItem{
 
 	public Budder(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.GOLD_INGOT,2), new String[]{"§6§§7 Du bekommst 20 Sekunden lang","§7   Regeneration."}, "§e§lBudder"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.GOLD_INGOT,2), new String[]{"§6§7 Du bekommst 20 Sekunden lang","§7   Regeneration."}, "§e§lBudder"), brewing_items, falldown);
 	}
 
 	@EventHandler

@@ -22,7 +22,7 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 public class Flashbang extends BrewItem{
 
 	public Flashbang(Integer[] brewing_items,Falldown falldown) {
-		super(100, UtilItem.Item(new ItemStack(Material.SLIME_BALL), new String[]{"§6§§7 Verwirre und blende deine","§7   Gegner im Kampf."}, "§e§lFlashbang"), brewing_items, falldown);
+		super(100, UtilItem.Item(new ItemStack(Material.SLIME_BALL), new String[]{"§6§7 Verwirre und blende deine","§7   Gegner im Kampf."}, "§e§lFlashbang"), brewing_items, falldown);
 	}
 	
 	@EventHandler

@@ -57,7 +57,7 @@ import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Permission.PermissionType;
-import eu.epicpvp.kcore.Translation.TranslationManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
@@ -419,7 +419,7 @@ public class SingleGame extends Game{
 	  @EventHandler(priority=EventPriority.LOWEST)
 	  public void Joinnow(PlayerJoinEvent ev){
 		  ev.setJoinMessage(null);
-		  ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(), "PREFIX")+"§eDu hast eine Map f§r uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
+		  ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+"§eDu hast eine Map f§r uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.me/");
 		  getManager().Clear(ev.getPlayer());
 		  if(isState(GameState.LobbyPhase)){
 			  ev.getPlayer().teleport(getManager().getLobby());
@@ -430,7 +430,7 @@ public class SingleGame extends Game{
 			  }
 		  }
 		  if(getType()!=null){
-			  ev.getPlayer().sendMessage(TranslationManager.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(ev.getPlayer(),"WHEREIS_TEXT",getType().getTyp()+" "+kArcade.id));
+			  ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(ev.getPlayer(),"WHEREIS_TEXT",getType().getTyp()+" "+kArcade.id));
 		  }
 	  }
 	  
@@ -441,21 +441,21 @@ public class SingleGame extends Game{
 				  boolean b = false;
 				  for(Player p : UtilServer.getPlayers()){
 					  if(!getManager().getPermManager().hasPermission(p, PermissionType.JOIN_FULL_SERVER)){
-						  UtilPlayer.sendMessage(p,TranslationManager.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationManager.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
+						  UtilPlayer.sendMessage(p,TranslationHandler.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
 						  UtilBG.sendToServer(p, getManager().getInstance());
 						  b=true;
 						  break;
 					  }
 				  }
 				  if(!b){
-					  ev.disallow(Result.KICK_FULL, TranslationManager.getText(ev.getPlayer(),"SERVER_FULL_WITH_PREMIUM"));
+					  ev.disallow(Result.KICK_FULL, TranslationHandler.getText(ev.getPlayer(),"SERVER_FULL_WITH_PREMIUM"));
 				  }
 			  }else{
-				  ev.disallow(Result.KICK_FULL, TranslationManager.getText(ev.getPlayer(),"SERVER_FULL"));
+				  ev.disallow(Result.KICK_FULL, TranslationHandler.getText(ev.getPlayer(),"SERVER_FULL"));
 			  }
 		  }else  if(!isState(GameState.LobbyPhase)){
 			  if(!getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.SERVER_JOIN_SPECTATE)){
-				  ev.disallow(Result.KICK_OTHER, TranslationManager.getText(ev.getPlayer(),"SERVER_NOT_LOBBYPHASE"));
+				  ev.disallow(Result.KICK_OTHER, TranslationHandler.getText(ev.getPlayer(),"SERVER_NOT_LOBBYPHASE"));
 			  }
 		  }
 	  }
@@ -516,7 +516,7 @@ public class SingleGame extends Game{
 				start=35;
 			}
 			start--;
-			for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationManager.getText("RESTART_IN", start));
+			for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationHandler.getText("RESTART_IN", start));
 			
 			switch(start){
 			case 30:broadcastWithPrefix("RESTART_IN", start);break;
@@ -567,7 +567,7 @@ public class SingleGame extends Game{
 			start--;
 			
 			for(Player p : UtilServer.getPlayers()){
-				UtilDisplay.displayTextBar(p, Color.GRAY+TranslationManager.getText(p,"GAME_START_IN", start));
+				UtilDisplay.displayTextBar(p, Color.GRAY+TranslationHandler.getText(p,"GAME_START_IN", start));
 				p.setLevel(start);
 			}
 			

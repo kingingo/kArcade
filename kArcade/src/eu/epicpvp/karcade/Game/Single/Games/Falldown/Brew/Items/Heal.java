@@ -18,7 +18,7 @@ import eu.epicpvp.kcore.Util.UtilParticle;
 public class Heal extends BrewItem{
 
 	public Heal(Integer[] brewing_items, Falldown falldown) {
-		super(100,UtilItem.Item(new ItemStack(Material.CAKE), new String[]{"§6§§7 Deine Leben werden wieder aufgef§llt"}, "§e§lHeal"), brewing_items, falldown);
+		super(100,UtilItem.Item(new ItemStack(Material.CAKE), new String[]{"§6§7 Deine Leben werden wieder aufgef§llt"}, "§e§lHeal"), brewing_items, falldown);
 	}
 
 	@SuppressWarnings("deprecation")
