@@ -9,7 +9,7 @@ import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import lombok.Getter;
 import lombok.Setter;
 
-public class MultiGameUpdateInfo extends Event implements Cancellable{
+public class MultiGameUpdateInfoEvent extends Event implements Cancellable{
 	private static HandlerList handlers = new HandlerList();
 	private boolean cancel=false;
 	@Getter
@@ -18,7 +18,7 @@ public class MultiGameUpdateInfo extends Event implements Cancellable{
 	@Getter
 	private MultiGame game;
 	
-	public MultiGameUpdateInfo(MultiGame game,PacketArenaStatus packet){
+	public MultiGameUpdateInfoEvent(MultiGame game,PacketArenaStatus packet){
 		this.packet=packet;
 		this.game=game;
 	}

@@ -35,7 +35,7 @@ import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.MultiWorldData;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
-import eu.epicpvp.karcade.Game.Multi.Events.MultiGameUpdateInfo;
+import eu.epicpvp.karcade.Game.Multi.Events.MultiGameUpdateInfoEvent;
 import eu.epicpvp.kcore.Arena.ArenaType;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -196,7 +196,7 @@ public class MultiGame extends kListener{
 	
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
 	public void updateInfo(dev.wolveringer.dataserver.gamestats.GameState state,GameType type,String arena,boolean apublic){	
-		MultiGameUpdateInfo ev = new MultiGameUpdateInfo(this, new PacketArenaStatus( 
+		MultiGameUpdateInfoEvent ev = new MultiGameUpdateInfoEvent(this, new PacketArenaStatus( 
 				(state!=null ? state : getState()) 
 				, getGameList().getPlayers(PlayerState.IN).size()
 				,teams

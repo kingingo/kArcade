@@ -36,6 +36,7 @@ import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonArenaRestore;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonChat;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStartEvent;
+import eu.epicpvp.karcade.Game.Multi.Events.MultiGameUpdateInfoEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiTeamGame;
 import eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
@@ -428,7 +429,7 @@ public class MultiGames extends Game{
 	 * @param ev
 	 */
 	@EventHandler
-	public void updateInfo(UpdateEvent ev){
+	public void updateInfoEv(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SLOW){
 			updateInfo();
 			if(haveToRestart()&&isState(GameState.Restart)){
@@ -465,6 +466,14 @@ public class MultiGames extends Game{
 			
 		}else if(setState( (getGames(GameState.InGame)>=getGames().size() ? GameState.InGame:GameState.LobbyPhase) )){
 			updateInfo();
+		}
+	}
+	
+	@EventHandler
+	public void MultiGameUpdateInfo(MultiGameUpdateInfoEvent ev){
+		if(!getManager().getClient().getHandle().isConnected()){
+			logMessage("Cancel Info Packet from "+ev.getPacket().getArena()+" client is not connected!");
+			ev.setCancelled(true);
 		}
 	}
 	
