@@ -25,6 +25,7 @@ import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Permission.PermissionManager;
+import eu.epicpvp.kcore.Permission.Group.GroupTyp;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilException;
@@ -61,7 +62,7 @@ public class kArcade extends JavaPlugin{
 			updater=new Updater(this);
 			UtilServer.createClient(this,ClientType.ACARDE, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), (id==-1 ? "Test-Server" : "a"+id));
 
-			permissionManager=new PermissionManager(this);
+			permissionManager=new PermissionManager(this,GroupTyp.GAME);
 			cmd=new CommandHandler(this);
 			cmd.register(CommandScan.class, new CommandScan(permissionManager));
 			manager=new kArcadeManager(this,"ArcadeManager",getConfig().getString("Config.Server.Game"),permissionManager,mysql,UtilServer.getClient(),cmd);

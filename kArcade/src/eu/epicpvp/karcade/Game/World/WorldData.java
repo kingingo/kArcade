@@ -163,7 +163,7 @@ public abstract class WorldData {
 	 }
 	 
 	 public World getWorld(){
-		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
+//		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
 		return getMap().getWorld();
 	 }
 	 

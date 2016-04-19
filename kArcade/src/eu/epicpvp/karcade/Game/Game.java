@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -206,6 +207,15 @@ public class Game extends kListener{
 	@EventHandler
 	public void load(WorldDataInitializeEvent ev){
 		new AddonDay(getManager().getInstance(), ev.getWorldData().getWorld());
+	}
+	
+	@EventHandler
+	public void move(PlayerMoveEvent ev){
+		if(getState() == GameState.LobbyPhase && !ev.getPlayer().isOnGround()){
+			if(ev.getPlayer().getLocation().getY()<(getManager().getLobby().getY()-25)){
+				ev.getPlayer().teleport(getManager().getLobby());
+			}
+		}
 	}
 	
 	@EventHandler

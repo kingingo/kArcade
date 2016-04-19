@@ -89,7 +89,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 		setStartCountdown(10);
 		UtilBG.setHub("versus");
 		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
-		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
+		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lClashMC.eu - Board");
 		UtilScoreboard.setScore(scoreboard, " ", DisplaySlot.SIDEBAR, 3);
 		UtilScoreboard.setScore(scoreboard, "§7Time: ", DisplaySlot.SIDEBAR, 2);
 		UtilScoreboard.setScore(scoreboard, "  ", DisplaySlot.SIDEBAR, 0);

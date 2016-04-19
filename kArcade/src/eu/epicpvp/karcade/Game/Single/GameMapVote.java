@@ -89,7 +89,7 @@ public class GameMapVote extends kListener{
 		}
 	}
 	
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void sendPacket(ServerStatusUpdateEvent ev){
 		if(vote){
 			ev.getPacket().setMots("Voting...");
@@ -190,7 +190,7 @@ public class GameMapVote extends kListener{
 	}
 	
 	public void setBoard(Player player){
-		UtilScoreboard.addBoard(player.getScoreboard(), DisplaySlot.SIDEBAR, "§6§LEPICPVP.EU §7- §6§LMAP VOTE");
+		UtilScoreboard.addBoard(player.getScoreboard(), DisplaySlot.SIDEBAR, UtilScoreboard.getScoreboardDisplayname()+" §8- §c§LMAP VOTE");
 		UtilScoreboard.setScore(player.getScoreboard(), " ", DisplaySlot.SIDEBAR, 100);
 		for(GameMap map : worlds){
     		UtilScoreboard.setScore(player.getScoreboard(), map.getItem().getItemMeta().getDisplayName(), DisplaySlot.SIDEBAR, getAmount(((ButtonBase)inventory.getButton(buttons.get(map.getItem().getItemMeta().getDisplayName()))).getItemStack()) );

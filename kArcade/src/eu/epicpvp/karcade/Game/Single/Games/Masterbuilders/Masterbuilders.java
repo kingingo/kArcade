@@ -662,7 +662,7 @@ public class Masterbuilders extends SoloGame{
 	public void changeToInGame(GameStateChangeEvent ev){
 		if(ev.getFrom()==GameState.StartGame && ev.getTo() == GameState.InGame){
 			scoreENG=Bukkit.getScoreboardManager().getNewScoreboard();
-			UtilScoreboard.addBoard(scoreENG, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
+			UtilScoreboard.addBoard(scoreENG, DisplaySlot.SIDEBAR, UtilScoreboard.getScoreboardDisplayname());
 			UtilScoreboard.setScore(scoreENG, " ", DisplaySlot.SIDEBAR, 7);
 			UtilScoreboard.setScore(scoreENG, "§f§lBuild:", DisplaySlot.SIDEBAR, 6);
 			UtilScoreboard.setScore(scoreENG, "§7"+this.building.getEnglish(), DisplaySlot.SIDEBAR, 5);
@@ -672,7 +672,7 @@ public class Masterbuilders extends SoloGame{
 			UtilScoreboard.setScore(scoreENG, "", DisplaySlot.SIDEBAR, 1);
 
 			scoreGER=Bukkit.getScoreboardManager().getNewScoreboard();
-			UtilScoreboard.addBoard(scoreGER, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Board");
+			UtilScoreboard.addBoard(scoreGER, DisplaySlot.SIDEBAR, UtilScoreboard.getScoreboardDisplayname());
 			UtilScoreboard.setScore(scoreGER, " ", DisplaySlot.SIDEBAR, 7);
 			UtilScoreboard.setScore(scoreGER, "§f§lBaue:", DisplaySlot.SIDEBAR, 6);
 			UtilScoreboard.setScore(scoreGER, "§7"+this.building.getGerman(), DisplaySlot.SIDEBAR, 5);

@@ -15,6 +15,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonMove;
@@ -28,6 +29,8 @@ import eu.epicpvp.kcore.Arena.ArenaType;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Packets.PacketArenaSettings;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
@@ -39,6 +42,7 @@ import eu.epicpvp.kcore.Util.UtilLocation;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilTime;
+import eu.epicpvp.kcore.Versus.PlayerKit;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -100,6 +104,34 @@ public class Versus extends MultiTeamGame{
 				}
 			}
 		}
+		
+		setKit(new PlayerKit());
+	}
+	
+	public void setSettings(PacketArenaSettings settings){
+		if(settings.getTeam()==Team.SOLO){
+			settings.setTeam(littleTeam());
+		}
+		
+//		if(UtilPlayer.isOnline(settings.getPlayer())){
+//			getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+//			getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+//			MultiGamePlayerJoinEvent event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),this);
+//			Bukkit.getPluginManager().callEvent(event);
+//		}else{
+			getGames().getWarte_liste().put(settings.getPlayer(), settings);
+//		}
+		
+		setMax_team(settings.getMax_team());
+		setMin_team(settings.getMin_team());
+		
+		if(getKit().kit == null || getKit().kit.equalsIgnoreCase(settings.getKit())){
+			getKit().kit = settings.getKit();
+			getKit().id = -1;
+		}
+		
+		setType(settings.getType());
+		setState(GameState.Laden);
 	}
 	
 	@EventHandler
@@ -188,12 +220,7 @@ public class Versus extends MultiTeamGame{
 		if(ev.getTo()==GameState.LobbyPhase){
 			if(area!=null)area.restore();
 			this.addonMove.setMove(false);
-
-			if(getKit()!=null){
-				UtilScoreboard.resetScore(scoreboard, "§7"+getKit().kit, DisplaySlot.SIDEBAR);
-			}else{
-				UtilScoreboard.resetScore(scoreboard, "§7Default", DisplaySlot.SIDEBAR);
-			}
+			UtilScoreboard.resetScore(scoreboard, 2, DisplaySlot.SIDEBAR);
 			
 			org.bukkit.scoreboard.Team t;
 			for(int i = 0; i<this.scoreboard.getTeams().size(); i++){
@@ -203,6 +230,21 @@ public class Versus extends MultiTeamGame{
 			
 			setDamagePvP(false);
 			setDamage(false);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void loadStats(PlayerStatsLoadedEvent ev){
+		if(ev.getManager().getType()==GameType.Money)return;
+		if(getKit()==null || getKit().kit==null)return;
+
+		if(UtilPlayer.isOnline(ev.getPlayerId())){
+			Player player = UtilPlayer.searchExact(ev.getPlayerId());
+
+			if(player.getName().equalsIgnoreCase(getKit().kit)){
+				setKit( getGames().getKitManager().getKit(ev.getPlayerId(), getGames().getStats().getInt(StatsKey.KIT_ID, player)) );
+				if(getKit()!=null)getKit().kit=player.getName();
+			}
 		}
 	}
 	
@@ -235,6 +277,7 @@ public class Versus extends MultiTeamGame{
 			setTeamTab(scoreboard);
 			setDamagePvP(true);
 			setDamage(true);
+			setKit(new PlayerKit());
 			setState(GameState.InGame);
 	}
 }

@@ -336,8 +336,8 @@ public class SkyPvP extends SoloGame{
 			r=UtilMath.r(locs.size());
 			p.teleport(locs.get(r));
 			board=Bukkit.getScoreboardManager().getNewScoreboard();
-			UtilScoreboard.addBoard(board, DisplaySlot.SIDEBAR,"§6§lEpicPvP.eu");
-			UtilScoreboard.setScore(board, "§bLeben: ", DisplaySlot.SIDEBAR, life.get(p));
+			UtilScoreboard.addBoard(board, DisplaySlot.SIDEBAR,UtilScoreboard.getScoreboardDisplayname());
+			UtilScoreboard.setScore(board, "§eLeben: ", DisplaySlot.SIDEBAR, life.get(p));
 			p.setScoreboard(board);
 			p.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
 			p.getInventory().addItem(new ItemStack(Material.STONE_SWORD));

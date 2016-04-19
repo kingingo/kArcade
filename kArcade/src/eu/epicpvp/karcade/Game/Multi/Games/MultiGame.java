@@ -33,6 +33,7 @@ import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.MultiWorldData;
+import eu.epicpvp.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameUpdateInfoEvent;
@@ -43,6 +44,7 @@ import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Packets.PacketArenaSettings;
 import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import eu.epicpvp.kcore.Packets.PacketArenaWinner;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -55,6 +57,7 @@ import eu.epicpvp.kcore.Util.UtilDisplay;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
+import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Versus.PlayerKit;
@@ -153,6 +156,26 @@ public class MultiGame extends kListener{
 		this.arena="arena"+games.getGames().size();
 		this.min_team=0;
 		this.max_team=0;
+	}
+	
+	public void setSettings(PacketArenaSettings settings){
+		if(settings.getTeam()==Team.SOLO && this instanceof MultiTeamGame){
+			settings.setTeam(((MultiTeamGame)this).littleTeam());
+		}
+		
+//		if(UtilPlayer.isOnline(settings.getPlayer())){
+//			((MultiTeamGame)this).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
+//			getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+//			MultiGamePlayerJoinEvent event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),this);
+//			Bukkit.getPluginManager().callEvent(event);
+//		}else{
+			getGames().getWarte_liste().put(settings.getPlayer(), settings);
+//		}
+		
+		setMax_team(settings.getMax_team());
+		setMin_team(settings.getMin_team());
+		setType(settings.getType());
+		setState(GameState.Laden);
 	}
 	
 	public void updateInfoButton(){
@@ -373,10 +396,6 @@ public class MultiGame extends kListener{
 	public void StateChange(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=ev.getTo()){
-			if(getGames().getStats()!=null){
-				for(Player player : getGameList().getPlayers().keySet())getGames().getStats().SaveAllPlayerData(player);
-			}
-			
 			if(this instanceof MultiTeamGame && (((MultiTeamGame)this).islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM)){
 				for(Player player : getGameList().getPlayers(PlayerState.IN)){
 					
@@ -477,15 +496,15 @@ public class MultiGame extends kListener{
 					case 30:broadcastWithPrefix("GAME_START_IN", getTimer());break;
 					case 15:broadcastWithPrefix("GAME_START_IN", getTimer());break;
 					case 10:broadcastWithPrefix("GAME_START_IN", getTimer());break;
-					case 5:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
-					case 4:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
-					case 3:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
-					case 2:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
-					case 1:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer(),"");break;
+					case 5:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer()," ");break;
+					case 4:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer()," ");break;
+					case 3:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer()," ");break;
+					case 2:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer()," ");break;
+					case 1:broadcastWithPrefix("GAME_START_IN", getTimer()); sendTitle(Color.RED+getTimer()," ");break;
 					}
 				}else{
 					if(startBereit()){
-						sendTitle(Color.GREEN+"LOS!","");
+						sendTitle(Color.GREEN+"LOS!"," ");
 						Bukkit.getPluginManager().callEvent(new MultiGameStartEvent(this));
 						setTimer(-1);
 					}else{
