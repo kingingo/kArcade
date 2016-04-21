@@ -85,9 +85,23 @@ public class SingleWorldData extends WorldData{
 		return randomMaps(loadZips(),map_amount);
 	}
 	
+	public File[] toFiles(){
+		return toFiles(loadZips());
+	}
+	
+	public File[] toFiles(ArrayList<File> files){
+		File[] maps = new File[files.size()];
+		int size = files.size();
+		for(int i = 0; i < size; i++){
+			maps[i]=files.get(UtilMath.r(files.size()));
+			files.remove(maps[i]);
+		}
+		return maps;
+	}
+	
 	public File[] randomMaps(ArrayList<File> files,int map_amount) throws Exception{
 		if(files.isEmpty())return null;
-		if(files.size() < map_amount) throw new Exception("Zu wenig eintr§ge um "+map_amount+">"+files.size()+" zuf§llige Maps auszuw§hlen!");
+		if(files.size() < map_amount) throw new Exception("Zu wenig einträge um "+map_amount+">"+files.size()+" zufüllige Maps auszuwählen!");
 		File[] maps = new File[map_amount];
 		
 		for(int i = 0; i < map_amount; i++){

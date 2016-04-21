@@ -211,7 +211,7 @@ public class Game extends kListener{
 	
 	@EventHandler
 	public void move(PlayerMoveEvent ev){
-		if(getState() == GameState.LobbyPhase && !ev.getPlayer().isOnGround()){
+		if(getState() == GameState.LobbyPhase && ev.getPlayer().getWorld().getUID() == getManager().getLobby().getWorld().getUID() && !ev.getPlayer().isOnGround()){
 			if(ev.getPlayer().getLocation().getY()<(getManager().getLobby().getY()-25)){
 				ev.getPlayer().teleport(getManager().getLobby());
 			}

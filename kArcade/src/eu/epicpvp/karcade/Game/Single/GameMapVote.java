@@ -218,7 +218,7 @@ public class GameMapVote extends kListener{
 		GameMapVote instance = this;
 		File[] files;
 		try {
-			files = getWorldData().randomMaps(map_amount);
+			files = (map_amount == -1 ? getWorldData().toFiles() : getWorldData().randomMaps(map_amount));
 			
 			UtilServer.getServer().getScheduler().runTaskAsynchronously(getWorldData().getManager().getInstance(), new Runnable()
 		    {
@@ -361,6 +361,7 @@ public class GameMapVote extends kListener{
 							inventory.addButton(slot, new ButtonBase(click, gmap.getItem()));
 							buttons.put(gmap.getItem().getItemMeta().getDisplayName(), slot);
 							forceInventory.addButton(slot, new ButtonBase(forceClick, gmap.getItem()));
+							slot++;
 						}
 					}
 

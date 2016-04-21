@@ -60,7 +60,7 @@ public class kArcade extends JavaPlugin{
 			FilePath=getConfig().getString("Config.Server.FilePath");
 			saveConfig();
 			updater=new Updater(this);
-			UtilServer.createClient(this,ClientType.ACARDE, getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), (id==-1 ? "Test-Server" : "a"+id));
+			UtilServer.createClient(this,(id==-1? ClientType.OTHER : ClientType.ACARDE), getConfig().getString("Config.Client.Host"), getConfig().getInt("Config.Client.Port"), (id==-1 ? "Test-Server" : "a"+id));
 
 			permissionManager=new PermissionManager(this,GroupTyp.GAME);
 			cmd=new CommandHandler(this);

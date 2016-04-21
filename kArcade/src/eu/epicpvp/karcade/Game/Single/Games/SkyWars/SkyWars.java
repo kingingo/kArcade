@@ -121,7 +121,7 @@ public class SkyWars extends TeamGame{
 			getWorldData().Initialize();
 		}else{
 			this.gameMapVote=new GameMapVote(getWorldData());
-			this.gameMapVote.Initialize(3);
+			this.gameMapVote.Initialize( (kArcade.id==-1 ? -1 : 3) );
 		}
 		
 		if(type.getTeam_size()!=1){
