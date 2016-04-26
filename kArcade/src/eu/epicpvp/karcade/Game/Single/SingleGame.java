@@ -461,29 +461,32 @@ public class SingleGame extends Game {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void joinnow(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
-		if (isState(GameState.LobbyPhase)&&getStart() <= 2) {
-			setStart(3);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void loadPerm(PlayerLoadPermissionEvent ev) {
-		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")
-				+ "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://ClashMc.eu/");
+		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX") + "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://ClashMc.eu/");
 		getManager().Clear(ev.getPlayer());
-		if (isState(GameState.LobbyPhase)) {
+		
+		if(isState(GameState.LobbyPhase)){
 			ev.getPlayer().teleport(getManager().getLobby());
-			if (getMax_Players() <= UtilServer.getPlayers().size()) {
-				if (getStart() > 16) {
-					setStart(16);
-				}
+			if (getStart() <= 2) {
+				setStart(3);
 			}
 		}
+		
 		if (getType() != null) {
 			ev.getPlayer()
 					.sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())
 							+ TranslationHandler.getText(ev.getPlayer(), "WHEREIS_TEXT",
 									getType().getTyp() + " " + kArcade.id));
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void loadPerm(PlayerLoadPermissionEvent ev) {
+		if (isState(GameState.LobbyPhase)) {
+			if (getMax_Players() <= UtilServer.getPlayers().size()) {
+				if (getStart() > 16) {
+					setStart(16);
+				}
+			}
 		}
 	}
 
