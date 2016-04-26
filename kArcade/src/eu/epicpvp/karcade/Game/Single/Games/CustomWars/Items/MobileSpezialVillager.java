@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1.UtilBedWars1vs1;
+import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.UtilCustomWars1vs1;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWars;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWarsItem;
 import eu.epicpvp.kcore.Util.UtilEnt;
@@ -25,7 +25,7 @@ public class MobileSpezialVillager extends CustomWarsItem{
 			if(equal(ev.getPlayer().getItemInHand())){
 				UtilInv.remove(ev.getPlayer(), ev.getPlayer().getItemInHand().getType(), ev.getPlayer().getItemInHand().getData().getData(), 1);
 				
-				UtilEnt.setNoAI(UtilBedWars1vs1.setSpezialVillager(getInstance().getManager().getInstance(),ev.getPlayer().getLocation(), EntityType.VILLAGER).getVillager(), true);;
+				UtilEnt.setNoAI(UtilCustomWars1vs1.setSpezialVillager(getInstance().getManager().getInstance(),ev.getPlayer().getLocation(), EntityType.VILLAGER).getVillager(), true);;
 			}
 		}
 	}

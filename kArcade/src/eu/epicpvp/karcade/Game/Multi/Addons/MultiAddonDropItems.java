@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
-import eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
+import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.CustomWars1vs1;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Update.UpdateType;
@@ -43,8 +43,8 @@ public class MultiAddonDropItems extends kListener {
 	public void clear(MultiGame game){
 		for(Entity entity : game.getWorldData().getWorld().getEntities()){
 			if(entity instanceof Item){
-				if(game instanceof BedWars1vs1){
-					if(((BedWars1vs1)game).getArea().isInArea(entity.getLocation())){
+				if(game instanceof CustomWars1vs1){
+					if(((CustomWars1vs1)game).getArea().isInArea(entity.getLocation())){
 						entity.remove();
 					}
 				}

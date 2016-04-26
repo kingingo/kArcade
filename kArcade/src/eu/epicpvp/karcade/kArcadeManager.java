@@ -69,7 +69,6 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Events.ServerChangeGameTypeEvent;
 import eu.epicpvp.kcore.Hologram.Hologram;
 import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.LogHandler.Event.LogEvent;
 import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Nick.NickManager;
 import eu.epicpvp.kcore.Permission.PermissionManager;

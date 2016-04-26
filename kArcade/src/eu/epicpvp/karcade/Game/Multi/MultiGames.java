@@ -39,10 +39,11 @@ import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameUpdateInfoEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiTeamGame;
-import eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1.BedWars1vs1;
+import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.CustomWars1vs1;
 import eu.epicpvp.karcade.Game.Multi.Games.SkyWars1vs1.SkyWars1vs1;
 import eu.epicpvp.karcade.Game.Multi.Games.SurvivalGames1vs1.SurvivalGames1vs1;
 import eu.epicpvp.karcade.Game.Multi.Games.Versus.Versus;
+import eu.epicpvp.karcade.Service.Games.ServiceBedWars1vs1;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Addons.AddonSun;
 import eu.epicpvp.kcore.Arena.ArenaType;
@@ -211,13 +212,14 @@ public class MultiGames extends Game{
 			zips.clear();
 			zips=null;
 		}else if(GameType.BedWars1vs1==type){
+			ServiceBedWars1vs1.setMultiGames(this);
 			UtilServer.getLagMeter().getEntitiesBlackList().add(EntityType.VILLAGER);
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);
 			
 			long time;
-			BedWars1vs1 v;
+			CustomWars1vs1 v;
 			File file;
 			int size = zips.size();
 			for(int i = 0; i<(size<=6?size:6); i++){
@@ -232,7 +234,7 @@ public class MultiGames extends Game{
 						file = zips.get(UtilMath.r(zips.size()));
 					}
 					loc=loc.add(0, 0, 5000);
-					v=new BedWars1vs1(this, "Loading ...",loc,file);
+					v=new CustomWars1vs1(this, "Loading ...",loc,file);
 					games.put(v.getArena(), v);
 					zips.remove(file);
 					getManager().DebugLog(time,"PASTE - "+v.getArena() ,MultiGames.class.getName());
@@ -515,7 +517,7 @@ public class MultiGames extends Game{
 									Bukkit.getPluginManager().callEvent(event);
 									System.out.println("CALL: "+player.getName());
 								}
-							}else if(g instanceof SkyWars1vs1||g instanceof BedWars1vs1||g instanceof SurvivalGames1vs1){
+							}else{
 								if(settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
 									if(warte_liste.containsKey(settings.getPlayer())){
 										warte_liste.remove(settings.getPlayer());

@@ -37,7 +37,7 @@ import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Events.TeamDelEvent;
-import eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1.UtilBedWars1vs1;
+import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.UtilCustomWars1vs1;
 import eu.epicpvp.karcade.Game.Single.GameMapVote;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonBedTeamKing;
@@ -561,7 +561,7 @@ public class CustomWars extends TeamGame{
 				s = (LivingEntity)addonEntityTeamKing.getTeams().get(t);
 				s.setCustomName(t.getColor()+getName(EntityType.SHEEP)+" ");
 				if(s instanceof Sheep){
-					((Sheep)s).setColor(UtilBedWars1vs1.cd(t.getColor()));
+					((Sheep)s).setColor(UtilCustomWars1vs1.cd(t.getColor()));
 				}
 			}
 		}else{
@@ -570,7 +570,7 @@ public class CustomWars extends TeamGame{
 		
 		if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
 			for(Location loc : getWorldData().getLocs(Team.BLACK)){
-				UtilBedWars1vs1.setSpezialVillager(getManager().getInstance(),loc,et);
+				UtilCustomWars1vs1.setSpezialVillager(getManager().getInstance(),loc,et);
 			}
 		}
 		
@@ -751,8 +751,8 @@ public class CustomWars extends TeamGame{
 	}
 
 	public void setVillager(Team t,EntityType e){
-		for(Location l : getWorldData().getLocs(UtilBedWars1vs1.getVillagerSpawn(t))){
-			UtilBedWars1vs1.setVillager(getManager().getInstance(),items,t, l,e);
+		for(Location l : getWorldData().getLocs(UtilCustomWars1vs1.getVillagerSpawn(t))){
+			UtilCustomWars1vs1.setVillager(getManager().getInstance(),items,t, l,e);
 		}
 	}
 }

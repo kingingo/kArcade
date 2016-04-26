@@ -9,10 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutSpawnEntity;
-import eu.epicpvp.kcore.PacketAPI.packetlistener.event.PacketListenerSendEvent;
 import eu.epicpvp.kcore.Util.TimeSpan;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
 
 public class DeathFixListener extends kListener{
 	

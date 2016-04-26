@@ -1,4 +1,4 @@
-package eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1;
+package eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import eu.epicpvp.kcore.Enum.GameCage;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
@@ -49,20 +48,19 @@ import eu.epicpvp.kcore.Villager.VillagerShop;
 import eu.epicpvp.kcore.Villager.Event.VillagerShopEvent;
 import lombok.Getter;
 
-public class BedWars1vs1 extends MultiTeamGame{
+public class CustomWars1vs1 extends MultiTeamGame{
 
-	private kPacketPlayOutWorldBorder packet;
 	@Getter
 	private MultiGameArenaRestore area;
 	private VillagerShop red;
 	private VillagerShop blue;
 	private VillagerShop spezial;
 	
-	public BedWars1vs1(MultiGames games, String Map, Location pasteLocation,File file) {
+	public CustomWars1vs1(MultiGames games, String Map, Location pasteLocation,File file) {
 		super(games, Map, pasteLocation);
 		
 		setStartCountdown(11);
-		this.packet=UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10);
+		setWorldBorderPacket(UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10));
 		Location ecke1 = getPasteLocation().clone();
 		ecke1.setY(255);
 		ecke1.add(125, 0, 125);
@@ -91,14 +89,14 @@ public class BedWars1vs1 extends MultiTeamGame{
 		setFoodlevelchange(true);
 		setDamagePvP(false);
 		setDamage(false);
-		UtilBedWars1vs1.getAddonBed(games).addMultiGame(this, new Team[]{Team.RED,Team.BLUE});
-		UtilBedWars1vs1.getAddonDropItems(getGames()).getGames().add(this);
+		UtilCustomWars1vs1.getAddonBed(games).addMultiGame(this, new Team[]{Team.RED,Team.BLUE});
+		UtilCustomWars1vs1.getAddonDropItems(getGames()).getGames().add(this);
 		
-		red=UtilBedWars1vs1.setVillager(games.getManager().getInstance(),null,Team.RED, getWorldData().getLocs(this, UtilBedWars1vs1.getVillagerSpawn(Team.RED)).get(0), EntityType.VILLAGER);
-		blue=UtilBedWars1vs1.setVillager(games.getManager().getInstance(),null,Team.BLUE, getWorldData().getLocs(this, UtilBedWars1vs1.getVillagerSpawn(Team.BLUE)).get(0), EntityType.VILLAGER);
+		red=UtilCustomWars1vs1.setVillager(games.getManager().getInstance(),null,Team.RED, getWorldData().getLocs(this, UtilCustomWars1vs1.getVillagerSpawn(Team.RED)).get(0), EntityType.VILLAGER);
+		blue=UtilCustomWars1vs1.setVillager(games.getManager().getInstance(),null,Team.BLUE, getWorldData().getLocs(this, UtilCustomWars1vs1.getVillagerSpawn(Team.BLUE)).get(0), EntityType.VILLAGER);
 		
 		for(Location loc : getWorldData().getLocs(this, Team.BLACK)){
-			spezial=UtilBedWars1vs1.setSpezialVillager(games.getManager().getInstance(),loc, EntityType.VILLAGER);
+			spezial=UtilCustomWars1vs1.setSpezialVillager(games.getManager().getInstance(),loc, EntityType.VILLAGER);
 		}
 
 		loadMaxTeam();
@@ -232,7 +230,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 			v = (Player)ev.getEntity();
 			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
 			
-			if(!UtilBedWars1vs1.getAddonBed().getGames_boolean().get(this).contains(getTeam(v))){
+			if(!UtilCustomWars1vs1.getAddonBed().getGames_boolean().get(this).contains(getTeam(v))){
 				getGameList().addPlayer(v, PlayerState.OUT);
 				getGames().getStats().addInt(v, 1, StatsKey.LOSE);
 			}
@@ -293,7 +291,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.Restart){
 			if(area!=null)area.restore();
-			UtilBedWars1vs1.getAddonBed().refreshMultiGame(this, new Team[]{Team.RED,Team.BLUE});
+			UtilCustomWars1vs1.getAddonBed().refreshMultiGame(this, new Team[]{Team.RED,Team.BLUE});
 			setDamagePvP(false);
 			setDamage(false);
 		}
@@ -308,7 +306,7 @@ public class BedWars1vs1 extends MultiTeamGame{
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
 				getGames().getManager().Clear(player);
-				UtilPlayer.sendPacket(player, this.packet);
+				UtilPlayer.sendPacket(player, getWorldBorderPacket());
 			}
 
 			red.spawn();

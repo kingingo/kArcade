@@ -57,11 +57,11 @@ import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Permission.Events.PlayerLoadPermissionEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.Color;
-import eu.epicpvp.kcore.Util.TabTitle;
 import eu.epicpvp.kcore.Util.TimeSpan;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilDisplay;
@@ -459,8 +459,15 @@ public class SingleGame extends Game {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void Joinnow(PlayerJoinEvent ev) {
+	public void joinnow(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
+		if (isState(GameState.LobbyPhase)&&getStart() <= 2) {
+			setStart(3);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void loadPerm(PlayerLoadPermissionEvent ev) {
 		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")
 				+ "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://ClashMc.eu/");
 		getManager().Clear(ev.getPlayer());

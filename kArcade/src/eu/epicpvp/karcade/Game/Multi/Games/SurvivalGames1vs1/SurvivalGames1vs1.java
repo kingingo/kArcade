@@ -35,7 +35,6 @@ import eu.epicpvp.karcade.Game.Multi.Games.MultiTeamGame;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
@@ -54,7 +53,6 @@ import lombok.Setter;
 public class SurvivalGames1vs1 extends MultiTeamGame{
 
 	private MultiGameArenaRestore area;
-	private kPacketPlayOutWorldBorder packet;
 	private MultiAddonMove addonMove;
 	@Getter
 	private HashMap<Chest,ArrayList<String>> template;
@@ -108,7 +106,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 			logMessage("Fehler VILLAGE_BLUE NICHT GEFUNDEN");
 		}else{
 			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.VILLAGE_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.VILLAGE_BLUE).get(0));
-			this.packet=UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10);
+			setWorldBorderPacket(UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10));
 		}
 		this.area.setTntDestroy(false);
 		this.area.setOnlyBuild(true);
@@ -298,7 +296,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 				getGames().getManager().Clear(player);
 				player.getInventory().setItem(8, UtilSurvivalGames1vs1.getEnderchest_compass());
 				player.setScoreboard(scoreboard);
-				UtilPlayer.sendPacket(player, this.packet);
+				UtilPlayer.sendPacket(player, getWorldBorderPacket());
 			}
 			
 			setTeamTab(scoreboard);

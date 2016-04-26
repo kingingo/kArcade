@@ -29,7 +29,6 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Kit.Shop.MultiKitShop;
-import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
@@ -49,7 +48,6 @@ import eu.epicpvp.kcore.Util.UtilWorld;
 public class SkyWars1vs1 extends MultiTeamGame{
 
 	private MultiGameArenaRestore area;
-	private kPacketPlayOutWorldBorder packet;
 	private HashMap<Chest,ArrayList<String>> template;
 	private HashMap<String,Integer> template_type;
 	
@@ -57,7 +55,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		super(games,Map, location);
 		
 		setStartCountdown(31);
-		this.packet=UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10);
+		setWorldBorderPacket(UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10));
 		Location ecke1 = getPasteLocation().clone();
 		ecke1.setY(255);
 		ecke1.add(125, 0, 125);
@@ -221,7 +219,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
 				getGames().getManager().Clear(player);
-				UtilPlayer.sendPacket(player, this.packet);
+				UtilPlayer.sendPacket(player, getWorldBorderPacket());
 			}
 			setDropItem(true);
 			setDamagePvP(true);

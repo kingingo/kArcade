@@ -1,4 +1,4 @@
-package eu.epicpvp.karcade.Game.Multi.Games.BedWars1vs1;
+package eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ import eu.epicpvp.kcore.Util.InventorySize;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Villager.VillagerShop;
 
-public class UtilBedWars1vs1 {
+public class UtilCustomWars1vs1 {
 	private static MultiAddonBedTeamKing addonBed;
 	private static MultiAddonDropItems dropitems;
 
@@ -60,7 +60,6 @@ public class UtilBedWars1vs1 {
 		VillagerShop v = new VillagerShop(instance,e,"Spezial-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
-//		UtilEnt.setNoAI(v.getVillager(), true);
 		
 		Merchant rustung = new Merchant();
 		ItemStack r1 = UtilItem.RenameItem(new ItemStack(Material.IRON_CHESTPLATE), "Spezial Eisenhemd Lvl 1");
@@ -124,8 +123,6 @@ public class UtilBedWars1vs1 {
 		VillagerShop v = new VillagerShop(instance,e,t.getColor()+"Villager-Shop",l,InventorySize._27);
 		v.setDamage(false);
 		v.setMove(false);
-		
-//		UtilEnt.setNoAI(v.getVillager(), true);
 		
 		Merchant bloecke = new Merchant();
 		bloecke.addOffer(new MerchantOffer(Bronze(1), new ItemStack(Material.STAINED_CLAY,4)));

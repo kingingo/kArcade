@@ -33,7 +33,6 @@ import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.MultiWorldData;
-import eu.epicpvp.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGameUpdateInfoEvent;
@@ -44,6 +43,7 @@ import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
 import eu.epicpvp.kcore.Packets.PacketArenaSettings;
 import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import eu.epicpvp.kcore.Packets.PacketArenaWinner;
@@ -57,7 +57,6 @@ import eu.epicpvp.kcore.Util.UtilDisplay;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
-import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Versus.PlayerKit;
@@ -146,6 +145,9 @@ public class MultiGame extends kListener{
 	@Getter
 	@Setter 
 	private ButtonBase button;
+	@Getter
+	@Setter 
+	private kPacketPlayOutWorldBorder worldBorderPacket;
 	
 	public MultiGame(MultiGames games,String Map,Location pasteLocation) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());

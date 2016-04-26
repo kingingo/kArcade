@@ -1,11 +1,9 @@
 package eu.epicpvp.karcade.Game.Single.Games.Masterbuilders;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import lombok.Getter;
-import lombok.val;
 
 public enum Buildings {
 	
