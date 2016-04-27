@@ -598,10 +598,17 @@ public class CustomWars extends TeamGame{
 		if(ev.getTo()==GameState.Restart && ev.getReason() != GameStateChangeReason.CHANGE_TYPE){
 			if(game_end()){
 				Team t = lastTeam();
+				int size = getPlayerFrom(t).size();
+				
 				for(Player p : getPlayerFrom(t)){
 					if(getGameList().isPlayerState(p)==PlayerState.IN){
 						getStats().addInt(p,1, StatsKey.WIN);
-						getMoney().add(p, StatsKey.COINS, 10);
+						
+						if(getCustomType() == CustomWarsType._4x32||getCustomType() == CustomWarsType._8x16){
+							getMoney().add(p, StatsKey.GEMS, (2000/size) );
+						}else{
+							getMoney().add(p, StatsKey.COINS, 10);
+						}
 					}
 				}
 				

@@ -40,7 +40,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
@@ -469,6 +468,12 @@ public class SingleGame extends Game {
 			if (getStart() <= 2) {
 				setStart(3);
 			}
+			
+			if (getMax_Players() <= UtilServer.getPlayers().size()) {
+				if (getStart() > 16) {
+					setStart(16);
+				}
+			}
 		}
 		
 		if (getType() != null) {
@@ -481,17 +486,6 @@ public class SingleGame extends Game {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void loadPerm(PlayerLoadPermissionEvent ev) {
-		if (isState(GameState.LobbyPhase)) {
-			if (getMax_Players() <= UtilServer.getPlayers().size()) {
-				if (getStart() > 16) {
-					setStart(16);
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void Login(PlayerLoginEvent ev) {
 		if (UtilServer.getPlayers().size() >= getMax_Players() && isState(GameState.LobbyPhase)) {
 			if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)
 					|| getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)) {
@@ -507,17 +501,21 @@ public class SingleGame extends Game {
 					}
 				}
 				if (!b) {
-					ev.disallow(Result.KICK_FULL,
-							TranslationHandler.getText(ev.getPlayer(), "SERVER_FULL_WITH_PREMIUM"));
+					ev.getPlayer().kickPlayer(TranslationHandler.getText(ev.getPlayer(), "SERVER_FULL_WITH_PREMIUM"));
 				}
 			} else {
-				ev.disallow(Result.KICK_FULL, TranslationHandler.getText(ev.getPlayer(), "SERVER_FULL"));
+				ev.getPlayer().kickPlayer(TranslationHandler.getText(ev.getPlayer(), "SERVER_FULL"));
 			}
 		} else if (!isState(GameState.LobbyPhase)) {
 			if (!getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.SERVER_JOIN_SPECTATE)) {
-				ev.disallow(Result.KICK_OTHER, TranslationHandler.getText(ev.getPlayer(), "SERVER_NOT_LOBBYPHASE"));
+				ev.getPlayer().kickPlayer(TranslationHandler.getText(ev.getPlayer(), "SERVER_NOT_LOBBYPHASE"));
 			}
 		}
+	}
+
+	@EventHandler
+	public void Login(PlayerLoginEvent ev) {
+		
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

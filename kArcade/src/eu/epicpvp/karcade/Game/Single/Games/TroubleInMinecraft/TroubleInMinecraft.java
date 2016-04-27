@@ -64,7 +64,7 @@ import eu.epicpvp.kcore.NPC.NPC;
 import eu.epicpvp.kcore.NPC.NPCManager;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
 import eu.epicpvp.kcore.Permission.PermissionType;
-import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangeEvent;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangedEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsCreateEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -699,7 +699,7 @@ public class TroubleInMinecraft extends TeamGame{
 	}
 	
 	@EventHandler
-	public void StatsChange(PlayerStatsChangeEvent ev){
+	public void StatsChange(PlayerStatsChangedEvent ev){
 		if(ev.getManager().getType()!=getType())return;
 		if(getState()!=GameState.LobbyPhase&&getState()!=GameState.Laden){
 			if(UtilPlayer.isOnline(ev.getPlayerId())){
