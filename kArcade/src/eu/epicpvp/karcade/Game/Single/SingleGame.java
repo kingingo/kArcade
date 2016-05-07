@@ -390,8 +390,7 @@ public class SingleGame extends Game {
 			return;
 		if (getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))
 			ev.setCancelled(true);
-		if (getWorldData().getWorld() == null || (getWorldData().getWorld() != null
-				&& getWorldData().getWorld().getUID() != ev.getBlock().getWorld().getUID()))
+		if (ev.getBlock().getWorld().getUID() == getManager().getLobby().getWorld().getUID())
 			ev.setCancelled(true);
 		if ((isState(GameState.LobbyPhase)) || BlockBreakDeny.contains(ev.getBlock().getType())
 				|| (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))) {
@@ -486,7 +485,7 @@ public class SingleGame extends Game {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void loadPerm(PlayerLoadPermissionEvent ev) {
-		if (UtilServer.getPlayers().size() >= getMax_Players() && isState(GameState.LobbyPhase)) {
+		if (UtilServer.getPlayers().size() > getMax_Players() && isState(GameState.LobbyPhase)) {
 			if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)
 					|| getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)) {
 				boolean b = false;
@@ -511,11 +510,6 @@ public class SingleGame extends Game {
 				ev.getPlayer().kickPlayer(TranslationHandler.getText(ev.getPlayer(), "SERVER_NOT_LOBBYPHASE"));
 			}
 		}
-	}
-
-	@EventHandler
-	public void Login(PlayerLoginEvent ev) {
-		
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

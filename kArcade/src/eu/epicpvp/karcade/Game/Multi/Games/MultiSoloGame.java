@@ -63,7 +63,7 @@ public class MultiSoloGame extends MultiGame{
 	    for(Player p : UtilServer.getPlayers()){
 	    	p.hidePlayer(player);
 	    }
-	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZur§ck zur Lobby"));
+	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
 	    player.setGameMode(GameMode.CREATIVE);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);

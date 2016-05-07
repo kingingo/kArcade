@@ -63,7 +63,7 @@ public class Parachute extends CustomWarsItem{
 					Entity e = ev.getPlayer().getPassenger();
 					Entity e1 = e.getPassenger();
 					e.eject();
-					e1.remove();
+					if(e1!=null)e1.remove();
 					ev.getPlayer().eject();
 					e.remove();
 					

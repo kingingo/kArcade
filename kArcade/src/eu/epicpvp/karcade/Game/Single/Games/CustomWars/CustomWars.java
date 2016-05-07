@@ -605,7 +605,7 @@ public class CustomWars extends TeamGame{
 						getStats().addInt(p,1, StatsKey.WIN);
 						
 						if(getCustomType() == CustomWarsType._4x32||getCustomType() == CustomWarsType._8x16){
-							getMoney().add(p, StatsKey.GEMS, (2000/size) );
+							getMoney().add(p, StatsKey.GEMS, 200);
 						}else{
 							getMoney().add(p, StatsKey.COINS, 10);
 						}
@@ -664,23 +664,6 @@ public class CustomWars extends TeamGame{
 		
 		for(Player player : UtilServer.getPlayers()){
 			t.setSubtitle(TranslationHandler.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
-			t.send(player);
-		}
-	}
-	
-	@EventHandler
-	public void sheepDeath(AddonEntityTeamKingDeathEvent ev){
-		UtilScoreboard.resetScore(getBoard(), "§a§l"+Zeichen.BIG_HERZ.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getBoard(), "§4§l"+Zeichen.MAHLZEICHEN_FETT.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
-		getTeams().remove(ev.getTeam());
-		getTeams().put(ev.getTeam(), false);
-		Title t = new Title("","");
-		if(ev.getKiller()!=null){
-			getStats().addInt(ev.getKiller(),1, StatsKey.SHEEPWARS_KILLED_SHEEPS);
-		}
-		
-		for(Player player : UtilServer.getPlayers()){
-			t.setSubtitle(TranslationHandler.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
 			t.send(player);
 		}
 	}

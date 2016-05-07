@@ -185,7 +185,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 //	Traitor-Shop:
 //	Medipack (1 Punkt): Heil 2,5 Herzen
-//	Radar (1 Punkt): Zeigt auf einen ausgew§hlten Spieler.
+//	Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
 //	Creeper Arrows (2 Punkte): Aus geschossenen Pfeilen spawnen Creeper
 //	Disguiser (3 Punkte): Versteckt den eigenen Name
 //	Tester-Spoofer (4 Punkte): Traitoren werden zu 75% im Tester also Innocent angezeigt.
@@ -198,7 +198,7 @@ public class TroubleInMinecraft extends TeamGame{
 //	SmokeGrenade (7 Punkte): Erzeugt eine gro§e Rauchwolke nach der Explosion.
 	
 //	Detective-Shop:
-//	Radar (1 Punkt): Zeigt auf einen ausgew§hlten Spieler.
+//	Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
 //	DNA-Test (2 Punkte): Untersucht Leichen auf genauere Informationen.
 //	Healing-Station (2 Punkte): Heilt andere Spieler in der n§he der Heal-Station.
 //	Fluffy (3 Punkte): Ein Hund, der in der N§he von Traitoren knurrt.

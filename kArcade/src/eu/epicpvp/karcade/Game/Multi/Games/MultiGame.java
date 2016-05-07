@@ -185,11 +185,11 @@ public class MultiGame extends kListener{
 		String players = "";
 		for(Player player : getGameList().getPlayers().keySet()){
 			if(getGameList().getPlayers().get(player)==PlayerState.IN){
-				players+="§a"+player+"§7,";
+				players+="§a"+player.getName()+"§7,";
 			}else if(getGameList().getPlayers().get(player)==PlayerState.OUT){
-				players+="§c"+player+"§7,";
+				players+="§c"+player.getName()+"§7,";
 			}else if(getGameList().getPlayers().get(player)==PlayerState.BOTH){
-				players+="§d"+player+"§7,";
+				players+="§d"+player.getName()+"§7,";
 			}
 		}
 		button.setItemStack(UtilItem.SetDescriptions(button.getItemStack(), new String[]{"§aMap§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §e"+getMap(),"§aStatus§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §e "+getState().name(),"§aSpieler§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§e "+(players.length()>3?players.substring(0, players.length()-3):"")}));

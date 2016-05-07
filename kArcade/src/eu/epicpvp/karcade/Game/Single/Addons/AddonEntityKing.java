@@ -27,6 +27,7 @@ import org.bukkit.util.Vector;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonEntityKingDeathEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
+import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
@@ -97,7 +98,7 @@ public class AddonEntityKing implements Listener {
 	public void setHealt(Creature e,double h){
 		getHeal().put(e, h);
 		if(!(e instanceof LivingEntity))return;
-		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+"§?§");
+		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+" "+Zeichen.BIG_HERZ.getIcon());
 	}
 	
 	public double getHealt(Entity e){
@@ -182,7 +183,9 @@ public class AddonEntityKing implements Listener {
 	double h;
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
+		
 		if(ev.getEntity() instanceof Creature&&is(ev.getEntity())){
+			
 			ev.setCancelled(false);
 			if(ev.getDamager() instanceof Player){
 				if(game.getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){

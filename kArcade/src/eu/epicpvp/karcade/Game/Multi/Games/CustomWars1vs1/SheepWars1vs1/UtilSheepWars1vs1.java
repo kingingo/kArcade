@@ -51,10 +51,10 @@ public class UtilSheepWars1vs1 {
 					new Kit( "§eHealer",new String[]{"Der Healer heilt schneller."}, new ItemStack(Material.APPLE),PermissionType.SHEEPWARS_KIT_HEALER,KitType.KAUFEN,2000,500,new Perk[]{
 						new PerkHeal(5)
 					}),
-					new Kit( "§eDropper",new String[]{"Der Dropper l§sst seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),PermissionType.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,500,new Perk[]{
+					new Kit( "§eDropper",new String[]{"Der Dropper lässt seine Sachen","beim Tod nicht fallen."}, new ItemStack(Material.DROPPER),PermissionType.SHEEPWARS_KIT_DROPPER,KitType.KAUFEN,2000,500,new Perk[]{
 						new PerkNoDropsByDeath()
 					}),
-					new Kit( "§eAnker",new String[]{"Der Anker bekommt kein R§cksto§."}, new ItemStack(Material.ANVIL),PermissionType.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,500,new Perk[]{
+					new Kit( "§eAnker",new String[]{"Der Anker bekommt kein Rückstoß."}, new ItemStack(Material.ANVIL),PermissionType.SHEEPWARS_KIT_ANKER,KitType.KAUFEN,2000,500,new Perk[]{
 						new PerkNoKnockback(game.getManager().getInstance())
 					}),
 					new Kit( "§ePerker",new String[]{"Der Perker stoppt beim angreiffen","vom Gegner die Perk's"}, new ItemStack(Material.TORCH),PermissionType.SHEEPWARS_KIT_PERKER,KitType.KAUFEN,2000,500,new Perk[]{
@@ -66,7 +66,7 @@ public class UtilSheepWars1vs1 {
 					new Kit( "§eBuffer",new String[]{"Der Buffer bekommt wenn er Respawn","Feuerresistance und Schadenresistance."}, new ItemStack(Material.POTION),PermissionType.SHEEPWARS_KIT_BUFFER,KitType.KAUFEN,2000,500,new Perk[]{
 						new PerkRespawnBuff(new PotionEffect[]{new PotionEffect(PotionEffectType.FIRE_RESISTANCE,20*20,2),new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,20*20,2)})
 					}),
-					new Kit( "§eKnight",new String[]{"Der Knight bekommt beim Sneaken","h§chstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),PermissionType.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,500,new Perk[]{
+					new Kit( "§eKnight",new String[]{"Der Knight bekommt beim Sneaken","höchstens 1 Herz schaden","wenn er angegriffen wird."}, new ItemStack(Material.DIAMOND_CHESTPLATE),PermissionType.SHEEPWARS_KIT_KNIGHT,KitType.KAUFEN,2000,500,new Perk[]{
 						new PerkSneakDamage(3.0)
 					}),
 					new Kit( "§eTheDeath",new String[]{"Der TheDeath drop beim Tod","ein Blindheits Trank."}, new ItemStack(Material.IRON_SWORD),PermissionType.SHEEPWARS_KIT_THEDEATH,KitType.KAUFEN,2000,500,new Perk[]{
@@ -81,7 +81,7 @@ public class UtilSheepWars1vs1 {
 					new Kit("§6Creeper",new String[]{"Der Creeper hat die 10% Chance","das an seiner Todes stelle","ein TNT spawnt."}, new ItemStack(Material.SKULL_ITEM,1,(byte)4), PermissionType.SHEEPWARS_KIT_ULTRA,KitType.ULTRA,0,new Perk[]{
 						new PerkSpawnByDeath(EntityType.PRIMED_TNT,30)
 					}),
-					new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","f§r 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), PermissionType.SHEEPWARS_KIT_LEGEND, KitType.LEGEND,0,new Perk[]{
+					new Kit("§6Zombie",new String[]{"Der Zombie vergiftet seinen Gegner","bei einer Chance von 30%","für 3 sekunden."}, new ItemStack(Material.SKULL_ITEM,1,(byte)2), PermissionType.SHEEPWARS_KIT_LEGEND, KitType.LEGEND,0,new Perk[]{
 						new PerkPoisen(3,30)
 					}),
 					new Kit( "§cOldRush",new String[]{"Der OldRush kriegt kein Fallschaden","15% Chance das seine Pfeile brennen","10% Chance das beim Tod ein TNT Spawn."}, new ItemStack(Material.BED), PermissionType.SHEEPWARS_KIT_OLD_RUSH, KitType.SPEZIAL_KIT, 0,new Perk[]{

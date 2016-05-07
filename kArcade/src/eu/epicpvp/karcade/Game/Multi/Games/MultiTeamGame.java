@@ -110,7 +110,7 @@ public class MultiTeamGame extends MultiGame{
 		return s.substring(0, s.length()-3);
 	}
 	
-	//Gibt das Letze Team zur§ck
+	//Gibt das Letze Team zurück
 		public Team getlastTeam(){
 			Team t=null;
 			for(Player p : TeamList.keySet()){
@@ -237,7 +237,7 @@ public class MultiTeamGame extends MultiGame{
 	    player.setGameMode(GameMode.CREATIVE);
 	    player.setFlying(true);
 	    player.setFlySpeed(0.1F);
-	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZur§ck zur Lobby"));
+	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
 	    for(Player p : UtilServer.getPlayers()){
 	    	p.hidePlayer(player);
 	    }

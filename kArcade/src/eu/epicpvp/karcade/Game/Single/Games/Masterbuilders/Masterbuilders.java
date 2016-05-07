@@ -55,6 +55,7 @@ import eu.epicpvp.kcore.Util.InventorySize;
 import eu.epicpvp.kcore.Util.Title;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilFirework;
+import eu.epicpvp.kcore.Util.UtilInv;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilParticle;
@@ -94,7 +95,7 @@ public class Masterbuilders extends SoloGame{
 	private Scoreboard scoreENG;
 	private Scoreboard scoreGER;
 	
-	private InventoryBase option;
+	private InventoryPageBase option;
 	private InventoryPageBase ground;
 	private InventoryPageBase particle;
 	
@@ -123,12 +124,11 @@ public class Masterbuilders extends SoloGame{
 		setWorldData(new SingleWorldData(getManager(), getType()));
 		getWorldData().Initialize();
 		
-		this.option=new InventoryBase(getManager().getInstance());
-		this.option.setMain(new InventoryPageBase(InventorySize._9, "§bOption"));
+		this.option=new InventoryPageBase(InventorySize._9, "§bOption");
 		
 		this.ground=new InventoryPageBase(InventorySize._45, "§bChange Ground:");
-		this.option.addPage(this.ground);
-		this.ground.addButton(4,new ButtonBack(this.option.getMain(), UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
+		UtilInv.getBase().addPage(this.ground);
+		this.ground.addButton(4,new ButtonBack(this.option, UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
 		ItemStack[] blocks = new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.STONE), "§7Stone Block"),
 				UtilItem.RenameItem(new ItemStack(Material.GRASS), "§7Grass Block"),
 				UtilItem.RenameItem(new ItemStack(Material.DIRT), "§7Dirt Block"),
@@ -203,11 +203,11 @@ public class Masterbuilders extends SoloGame{
 			this.ground.addButton(slot, new ButtonBase(click, i));
 			slot++;
 		}
-		this.option.getMain().addButton(2, new ButtonOpenInventory(ground, UtilItem.RenameItem(new ItemStack(82), "§bChange the Ground")));
+		this.option.addButton(2, new ButtonOpenInventory(ground, UtilItem.RenameItem(new ItemStack(82), "§bChange the Ground")));
 		this.particles=new HashMap<>();
 		this.particle=new InventoryPageBase(InventorySize._45, "§bParticle:");
-		this.option.addPage(this.particle);
-		this.particle.addButton(4,new ButtonBack(this.option.getMain(), UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
+		UtilInv.getBase().addPage(this.particle);
+		this.particle.addButton(4,new ButtonBack(this.option, UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
 		this.particle.addButton(8,new ButtonBase(new Click(){
 
 			@Override
@@ -265,8 +265,8 @@ public class Masterbuilders extends SoloGame{
 			slot++;
 		}
 		
-		this.option.getMain().addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
-		this.option.getMain().fill(Material.STAINED_GLASS_PANE, (byte)7);
+		this.option.addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
+		this.option.fill(Material.STAINED_GLASS_PANE, (byte)7);
 		this.wordVote = new AddonWordVote(this);
 		setState(GameState.LobbyPhase);
 		getManager().DebugLog(l, this.getClass().getName());
@@ -521,7 +521,7 @@ public class Masterbuilders extends SoloGame{
 		}else if(getState()==GameState.InGame&&area.containsKey(ev.getPlayer().getName())){
 			if(ev.getPlayer().getItemInHand()!=null){
 				if(ev.getPlayer().getItemInHand().getType()==Material.BOOK){
-					ev.getPlayer().openInventory(this.option.getMain());
+					ev.getPlayer().openInventory(this.option);
 				}else if(ev.getPlayer().getItemInHand().hasItemMeta()){
 					if(ev.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 						if(ev.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("§b")){

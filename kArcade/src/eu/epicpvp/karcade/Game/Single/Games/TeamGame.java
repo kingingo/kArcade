@@ -192,10 +192,7 @@ public class TeamGame extends SingleGame{
 		return i;
 	}
 	
-	public int r(int i){
-		if(i==1)return 0;
-		return UtilMath.RandomInt(i, 0);
-	}
+	
 	
 	public void TeamTab(Team[] teams){
 	    if(getBoard()==null)setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
@@ -221,6 +218,11 @@ public class TeamGame extends SingleGame{
 	    
 	}
 	
+	public int r(int i){
+		if(i==1)return 0;
+		return UtilMath.RandomInt((i-1), 0);
+	}
+	
 	public void PlayerVerteilung(HashMap<Team,Integer> t,ArrayList<Player> list){
 		int r;
 		Player p;
@@ -235,6 +237,7 @@ public class TeamGame extends SingleGame{
 		for(int c = 1; c <= 2000; c++){
 			if(list.isEmpty())break;
 			r=r(list.size());
+			System.out.println("P: "+list.size()+" "+r+" "+c);
 			p=list.get(r);
 			if(TeamList.containsKey(p))continue;
 			for(Team team : t.keySet()){
@@ -298,7 +301,7 @@ public class TeamGame extends SingleGame{
 	    }
 	    if(getCompass()==null)setCompass(new AddonSpecCompass(this));
 	    player.getInventory().addItem(getCompass().getCompassItem());
-	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZur§ck zur Lobby"));
+	    player.getInventory().setItem(8,UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
 	    
 	    if(islastTeam()&& (getState()==GameState.InGame||getState()==GameState.DeathMatch)){
 			setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);

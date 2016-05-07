@@ -26,14 +26,16 @@ import eu.epicpvp.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Hologram.nametags.NameTagMessage;
+import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AddonEntityTeamKing implements Listener {
+public class AddonEntityTeamKing extends kListener {
 	
 	@Getter
 	HashMap<Team,Entity> teams = new HashMap<>();
@@ -56,6 +58,7 @@ public class AddonEntityTeamKing implements Listener {
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SUGAR), "§bSchaf-Heiler");
 	
 	public AddonEntityTeamKing(Team[] teams,TeamGame team,EntityType type){
+		super(team.getManager().getInstance(),"AddonEntityTeamKing");
 		this.team=team;
 		Entity e;
 		Location loc = null;
@@ -66,7 +69,6 @@ public class AddonEntityTeamKing implements Listener {
 			this.teams.put(t, e);
 			this.Heal.put(e, 100D);
 		}
-		Bukkit.getPluginManager().registerEvents(this, team.getManager().getInstance());
 	}
 	
 	public Team getSheep(Team team){
@@ -87,7 +89,7 @@ public class AddonEntityTeamKing implements Listener {
 	public void setHealt(Entity e,double h){
 		getHeal().put(e, h);
 		if(!(e instanceof LivingEntity))return;
-		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+"§?§");
+		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+" "+Zeichen.BIG_HERZ.getIcon());
 	}
 	
 	public double getHealt(Entity e){
@@ -185,12 +187,28 @@ public class AddonEntityTeamKing implements Listener {
 	double h;
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
+		if(ev.getEntityType()==EntityType.SHEEP){
+			logMessage("D1");
+		}
+		
 		if(!(ev.getDamager() instanceof Player))return;
+		if(ev.getEntityType()==EntityType.SHEEP){
+			logMessage("D2");
+		}
 		if(ev.getEntity() instanceof Entity&&is(ev.getEntity())){
+			if(ev.getEntityType()==EntityType.SHEEP){
+				logMessage("D3");
+			}
 			Team t = get(ev.getEntity());
 			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t || team.getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
+				if(ev.getEntityType()==EntityType.SHEEP){
+					logMessage("D4");
+				}
 				ev.setCancelled(true);
 				return;
+			}
+			if(ev.getEntityType()==EntityType.SHEEP){
+				logMessage("D5");
 			}
 				ev.setCancelled(false);
 				h = getHealt(ev.getEntity());

@@ -14,23 +14,31 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.SheepWars1vs1.UtilSheepWars1vs1;
+import eu.epicpvp.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWars;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.CustomWarsType;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Kit.Kit;
 import eu.epicpvp.kcore.Kit.Perk;
 import eu.epicpvp.kcore.Kit.Shop.SingleKitShop;
 import eu.epicpvp.kcore.Merchant.MerchantOffer;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.InventorySize;
+import eu.epicpvp.kcore.Util.Title;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Villager.Event.VillagerAddShopEvent;
 import lombok.Getter;
 
@@ -44,6 +52,23 @@ public class SheepWars extends CustomWars{
 		super(manager, GameType.SheepWars, customType);
 		
 		kitshop=new SingleKitShop(getManager().getInstance(),getMoney(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, UtilSheepWars1vs1.getKits(this));
+	}
+	
+	@EventHandler
+	public void sheepDeath(AddonEntityTeamKingDeathEvent ev){
+		UtilScoreboard.resetScore(getBoard(), "§a§l"+Zeichen.BIG_HERZ.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getBoard(), "§4§l"+Zeichen.MAHLZEICHEN_FETT.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
+		getTeams().remove(ev.getTeam());
+		getTeams().put(ev.getTeam(), false);
+		Title t = new Title("","");
+		if(ev.getKiller()!=null){
+			getStats().addInt(ev.getKiller(),1, StatsKey.SHEEPWARS_KILLED_SHEEPS);
+		}
+		
+		for(Player player : UtilServer.getPlayers()){
+			t.setSubtitle(TranslationHandler.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+			t.send(player);
+		}
 	}
 	
 	HashMap<Team,ArrayList<Block>> block = new HashMap<>();

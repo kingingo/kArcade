@@ -243,8 +243,8 @@ public class GameMapVote extends kListener{
 		        	
 		        	inventory=new InventoryPageBase(InventorySize.invSize(worlds.size()), "§eMap Vote");
 		        	forceInventory=new InventoryPageBase(InventorySize.invSize(worlds.size()), "§cForce Map");
-		        	UtilInv.getBase(getWorldData().getManager().getInstance()).addPage(inventory);
-		        	UtilInv.getBase(getWorldData().getManager().getInstance()).addPage(forceInventory);
+		        	UtilInv.getBase().addPage(inventory);
+		        	UtilInv.getBase().addPage(forceInventory);
 		        	
 		        	Click forceClick = new Click(){
 

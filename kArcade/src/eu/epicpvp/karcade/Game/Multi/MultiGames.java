@@ -159,7 +159,7 @@ public class MultiGames extends Game{
 			page.addButton(game.getButton());
 		}
 		
-		UtilInv.getBase(getManager().getInstance()).addPage(page);
+		UtilInv.getBase().addPage(page);
 	}
 	
 	public boolean haveToRestart(){

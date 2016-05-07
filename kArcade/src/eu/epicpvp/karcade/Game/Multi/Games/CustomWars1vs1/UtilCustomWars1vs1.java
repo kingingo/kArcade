@@ -261,7 +261,7 @@ public class UtilCustomWars1vs1 {
 	public static DyeColor cd(String s){
 		if(s.equalsIgnoreCase(Color.RED.toString()))return DyeColor.RED;
 		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return DyeColor.YELLOW;
-		if(s.equalsIgnoreCase(Color.BLUE.toString()))return DyeColor.BLUE;
+		if(s.equalsIgnoreCase("§9"))return DyeColor.BLUE;
 		if(s.equalsIgnoreCase(Color.GREEN.toString()))return DyeColor.GREEN;
 		if(s.equalsIgnoreCase(Color.GRAY.toString()))return DyeColor.GRAY;
 		if(s.equalsIgnoreCase(Color.WHITE.toString()))return DyeColor.WHITE;
@@ -273,7 +273,7 @@ public class UtilCustomWars1vs1 {
 	public static org.bukkit.Color c(String s){
 		if(s.equalsIgnoreCase(Color.RED.toString()))return org.bukkit.Color.RED;
 		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return org.bukkit.Color.YELLOW;
-		if(s.equalsIgnoreCase(Color.BLUE.toString()))return org.bukkit.Color.BLUE;
+		if(s.equalsIgnoreCase("§9"))return org.bukkit.Color.BLUE;
 		if(s.equalsIgnoreCase(Color.GREEN.toString()))return org.bukkit.Color.GREEN;
 		if(s.equalsIgnoreCase(Color.GRAY.toString()))return org.bukkit.Color.GRAY;
 		if(s.equalsIgnoreCase(Color.WHITE.toString()))return org.bukkit.Color.WHITE;
