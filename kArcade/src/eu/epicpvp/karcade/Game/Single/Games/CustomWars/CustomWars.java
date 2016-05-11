@@ -46,7 +46,6 @@ import eu.epicpvp.karcade.Game.Single.Addons.AddonEntityTeamKing;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonPlaceBlockCanBreak;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonVoteTeam;
 import eu.epicpvp.karcade.Game.Single.Events.AddonBedKingDeathEvent;
-import eu.epicpvp.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.Items.AlarmSystem;
 import eu.epicpvp.karcade.Game.Single.Games.CustomWars.Items.C4;

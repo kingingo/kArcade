@@ -486,7 +486,7 @@ public class MultiGames extends Game{
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Joina(PlayerStatsLoadedEvent ev){
-		if(ev.getManager().getType() == GameType.Money)return;
+		if(ev.getManager().getType() != GameType.Money)return;
 		if(UtilPlayer.isOnline(ev.getPlayerId())){
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			
@@ -515,7 +515,7 @@ public class MultiGames extends Game{
 									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 									event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 									Bukkit.getPluginManager().callEvent(event);
-									System.out.println("CALL: "+player.getName());
+									System.out.println("CALL: "+player.getName()+" "+(event==null));
 								}
 							}else{
 								if(settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
@@ -531,7 +531,7 @@ public class MultiGames extends Game{
 								}
 							}
 						}
-						
+
 						//Spieler ist noch keiner Arena zugewiesen deswegen auf die Warte Liste
 						if(event == null || !event.isCancelled()){
 							//Spieler wird in die Lobby zum warten Teleportiert!

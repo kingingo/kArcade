@@ -39,7 +39,6 @@ import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Enum.ParticleItem;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Inventory.InventoryBase;
 import eu.epicpvp.kcore.Inventory.InventoryPageBase;
 import eu.epicpvp.kcore.Inventory.Item.Click;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBack;
@@ -267,6 +266,7 @@ public class Masterbuilders extends SoloGame{
 		
 		this.option.addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
 		this.option.fill(Material.STAINED_GLASS_PANE, (byte)7);
+		UtilInv.getBase().addAnother(this.option);
 		this.wordVote = new AddonWordVote(this);
 		setState(GameState.LobbyPhase);
 		getManager().DebugLog(l, this.getClass().getName());

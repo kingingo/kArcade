@@ -13,8 +13,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
+import dev.wolveringer.booster.BoosterType;
+import dev.wolveringer.booster.NetworkBooster;
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.event.EventListener;
+import dev.wolveringer.events.Event;
+import dev.wolveringer.events.EventConditions;
+import dev.wolveringer.events.EventType;
+import dev.wolveringer.events.booster.BoosterStatusChangeEvent;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -27,9 +36,11 @@ import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import eu.epicpvp.kcore.StatsManager.StatsManager;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsAddEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
+import eu.epicpvp.kcore.Util.UtilNumber;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
@@ -64,16 +75,45 @@ public class Game extends kListener{
 	@Getter
 	@Setter
 	private boolean set_default_scoreboard=true;
+	@Getter
+	@Setter
+	private NetworkBooster booster;
 	
 	public Game(kArcadeManager manager) {
 		super(manager.getInstance(),"Game");
 		this.manager=manager;
 		this.money=new StatsManager(manager.getInstance(), manager.getClient(), GameType.Money);
+		checkNetworkBooster();
+		
+		UtilServer.getClient().getHandle().getEventManager().getEventManager(EventType.BOOSTER_SWITCH).setConditionEnables(EventConditions.BOOSTER_TYPE, true);
+		UtilServer.getClient().getHandle().getEventManager().registerListener(new EventListener() {
+			
+			@Override
+			public void fireEvent(Event e) {
+				if(e instanceof BoosterStatusChangeEvent){
+					BoosterStatusChangeEvent ev = (BoosterStatusChangeEvent)e;
+					
+					if(ev.getBoosterType() == BoosterType.ARCADE){
+						checkNetworkBooster();
+					}
+				}
+			}
+		});
 	}
 	
-//	public void unregisterListener(){
-//		HandlerList.unregisterAll(this);
-//	}
+	public void checkNetworkBooster(){
+		if(booster!=null && !booster.isActive()){
+			UtilServer.getClient().getNetworkBooster(BoosterType.ARCADE).getAsync(new Callback<NetworkBooster>() {
+				
+				@Override
+				public void call(NetworkBooster b) {
+					if(b!=null && b.isActive()){
+						booster=b;
+					}
+				}
+			});
+		}
+	}
 	
 	public String shortMap(String map,String t){
 		if( (map+t).length() > 16 ){
@@ -164,6 +204,19 @@ public class Game extends kListener{
 	
 	public void broadcast(String name,Object input){
 		for(Player player : UtilServer.getPlayers())player.sendMessage(TranslationHandler.getText(player,name,input));
+	}
+	
+	@EventHandler
+	public void booster(PlayerStatsAddEvent ev){
+		if(booster!=null && booster.isActive() && ev.getStats() == StatsKey.COINS){
+			if(ev.getValue() instanceof Integer){
+				int coins = UtilNumber.toInt(ev.getValue());
+				
+				if(coins > 0){
+					ev.setValue(coins*2);
+				}
+			}
+		}
 	}
 
 	@EventHandler

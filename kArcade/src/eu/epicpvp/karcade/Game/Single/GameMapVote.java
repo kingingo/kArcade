@@ -25,6 +25,7 @@ import eu.epicpvp.kcore.Inventory.InventoryPageBase;
 import eu.epicpvp.kcore.Inventory.Item.Click;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Permission.Events.PlayerLoadPermissionEvent;
 import eu.epicpvp.kcore.Scoreboard.Events.PlayerSetScoreboardEvent;
 import eu.epicpvp.kcore.Util.InventorySize;
@@ -290,7 +291,14 @@ public class GameMapVote extends kListener{
 									button = ((ButtonBase)inventory.getButton(votes.get(player)));
 									
 									a = getAmount(button.getItemStack());
-									a--;
+									
+									if(player.hasPermission(PermissionType.MAP_TRIBLE_VOTE.getPermissionToString())){
+										a-=3;
+									}else if(player.hasPermission(PermissionType.MAP_DOUBLE_VOTE.getPermissionToString())){
+										a-=2;
+									}else{
+										a--;
+									}
 									
 									if(a<0)a=0;
 									button.setItemStack(setAmount(button.getItemStack(), a));
@@ -302,9 +310,16 @@ public class GameMapVote extends kListener{
 								button = ((ButtonBase)inventory.getButton(buttons.get( ((ItemStack)o).getItemMeta().getDisplayName() )));
 								
 								a = getAmount(button.getItemStack());
-								a++;
-								button.setItemStack(setAmount(button.getItemStack(), a));
 								
+								if(player.hasPermission(PermissionType.MAP_TRIBLE_VOTE.getPermissionToString())){
+									a+=3;
+								}else if(player.hasPermission(PermissionType.MAP_DOUBLE_VOTE.getPermissionToString())){
+									a+=2;
+								}else{
+									a++;
+								}
+								
+								button.setItemStack(setAmount(button.getItemStack(), a));
 								button.refreshItemStack();
 								updateBoard(button);
 								votes.put(player, button.getSlot());

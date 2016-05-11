@@ -140,7 +140,7 @@ public class Versus extends MultiTeamGame{
 		//Prüft ob dieser Spieler für die Arena angemeldet ist.
 		if(getTeamList().containsKey(ev.getPlayer())){
 			//Spieler wird zu der Location des Teams teleportiert
-			
+			logMessage("TELEPORT: "+ev.getPlayer().getName());
 			ev.getPlayer().teleport( getGames().getWorldData().getLocs(this, getTeamList().get(ev.getPlayer())).get(0).clone().add(0, 1, 0) );
 			setTimer(-1);
 			ev.setCancelled(true);

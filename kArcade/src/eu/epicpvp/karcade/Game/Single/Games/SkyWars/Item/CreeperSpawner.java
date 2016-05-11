@@ -1,8 +1,6 @@
 package eu.epicpvp.karcade.Game.Single.Games.SkyWars.Item;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeMap;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
