@@ -315,7 +315,7 @@ public class QuickSurvivalGames extends SoloGame{
 				setDamage(false);
 				move.setMove(false);
 				Title title = new Title("","");
-				broadcastWithPrefixName("TELEPORT_TO_DEATHMATCH_ARENA");
+				broadcastWithPrefix("TELEPORT_TO_DEATHMATCH_ARENA", UtilTime.formatSeconds(getStart()));
 				setStart(6);
 				for(Player p : UtilServer.getPlayers()){
 					title.setSubtitle(TranslationHandler.getText(p,"TELEPORT_TO_DEATHMATCH_ARENA", getStart()));

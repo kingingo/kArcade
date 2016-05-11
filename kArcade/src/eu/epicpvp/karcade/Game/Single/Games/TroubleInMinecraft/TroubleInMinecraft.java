@@ -762,6 +762,14 @@ public class TroubleInMinecraft extends TeamGame{
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "SCHUTZZEIT_END_IN", getStart()));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+		case 25:
+			for(Player player1 : getGameList().getPlayers(PlayerState.IN)){
+				for(Player player2 : getGameList().getPlayers(PlayerState.IN)){
+					player1.showPlayer(player2);
+					player2.showPlayer(player1);
+				}
+			}
+			break;
 		case 20: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 15: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 10: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
