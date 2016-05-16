@@ -326,6 +326,8 @@ public class kArcadeManager extends kListener {
 	}
 
 	public Game Game(String game) {
+		if(game.equalsIgnoreCase("Master Builders"))game=GameType.Masterbuilders.getTyp();
+		
 		if (GameType.OneInTheChamber.getTyp().equalsIgnoreCase(game)) {
 			return new OneInTheChamber(this);
 		} else if (GameType.SurvivalGames1vs1.getTyp().equalsIgnoreCase(game)) {
