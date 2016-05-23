@@ -164,11 +164,16 @@ public class CustomWars extends TeamGame{
 		setWorldData(new SingleWorldData(manager,getType().getTyp()+getCustomType().getTeam().length,getType().getShortName()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		
-		if(getWorldData().loadZips().size()<3){
-			getWorldData().Initialize();
-		}else{
+		if(kArcade.id==-1){
 			this.gameMapVote=new GameMapVote(getWorldData());
-			this.gameMapVote.Initialize(3);
+			this.gameMapVote.Initialize(-1);
+		}else{
+			if(getWorldData().loadZips().size()<3){
+				getWorldData().Initialize();
+			}else{
+				this.gameMapVote=new GameMapVote(getWorldData());
+				this.gameMapVote.Initialize(3);
+			}
 		}
 		
 		manager.DebugLog(t, this.getClass().getName());

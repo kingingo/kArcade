@@ -802,6 +802,7 @@ public class SkyWars extends TeamGame{
 			Player v = (Player)ev.getEntity();
 			
 			getStats().addInt(v, 1, StatsKey.LOSE);
+			getStats().addInt(v, 1, StatsKey.DEATHS);
 			getGameList().addPlayer(v, PlayerState.OUT);
 			
 			if(ev.getEntity().getKiller() instanceof Player || this.hit.containsKey( ((Player)ev.getEntity()) )){
@@ -834,8 +835,6 @@ public class SkyWars extends TeamGame{
 			}
 			
 			broadcastWithPrefix("DEATH", v.getName());
-			getStats().addInt(v, 1, StatsKey.DEATHS);
-			
 			if(type.getTeam_size()>1){
 				Player p = TeamPartner(v);
 				if(p==null)return;
