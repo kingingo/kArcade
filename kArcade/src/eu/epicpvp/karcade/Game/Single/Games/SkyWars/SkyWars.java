@@ -829,7 +829,7 @@ public class SkyWars extends TeamGame{
 				
 				broadcastWithPrefix("KILL_BY", new String[]{v.getName(),a.getName()});
 				this.hit.remove(a);
-				Title t = new Title("§c§lYOUR ARE DEATH!","§a" + a.getName() + ": " + UtilPlayer.getPlayerLiveString(v));
+				Title t = new Title("§c§lYOUR ARE DEATH!","§a" + a.getName() + ": " + UtilPlayer.getPlayerLiveString(a));
 				t.send(v);
 				return;
 			}
@@ -1072,7 +1072,7 @@ public class SkyWars extends TeamGame{
 		for(Player player : UtilServer.getPlayers()){
 			if(player.getWorld().getName().equalsIgnoreCase("world")){
 				System.out.println("WORLD: "+player.getName());
-				getManager().getMysql().asyncUpdate("INSERT INTO list_exception (server,ip,time,exceptiontype,message) VALUES ('a"+kArcade.id+"','null','"+UtilTime.now()+"','SkyWars Spieler Verteilung','Spieler: "+player.getName()+" ANZAHL:"+UtilServer.getPlayers().size()+" VER:"+getERR(type.getTeam(),type.getTeam_size())+"');");
+				getManager().getMysql().asyncUpdate("INSERT INTO list_exception (server,ip,exceptiontype,message) VALUES ('a"+kArcade.id+"','null','SkyWars Spieler Verteilung','Spieler: "+player.getName()+" ANZAHL:"+UtilServer.getPlayers().size()+" VER:"+getERR(type.getTeam(),type.getTeam_size())+"');");
 				UtilBG.sendToServer(player, getManager().getInstance());
 			}
 		}

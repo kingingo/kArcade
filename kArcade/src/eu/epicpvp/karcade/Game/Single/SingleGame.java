@@ -485,16 +485,15 @@ public class SingleGame extends Game {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void loadPerm(PlayerLoadPermissionEvent ev) {
 		if (UtilServer.getPlayers().size() > getMax_Players() && isState(GameState.LobbyPhase)) {
-			if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)
-					|| getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)) {
+			if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)) {
+				logMessage("Ein Premium Spieler ist gejoint "+ev.getPlayer().getName());
 				boolean b = false;
 				for (Player p : UtilServer.getPlayers()) {
 					if (!getManager().getPermManager().hasPermission(p, PermissionType.JOIN_FULL_SERVER)) {
-						UtilPlayer.sendMessage(p,
-								TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())
-										+ TranslationHandler.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
+						UtilPlayer.sendMessage(p,TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
 						UtilBG.sendToServer(p, getManager().getInstance());
 						b = true;
+						logMessage("Der Spieler "+p.getName()+" wird für "+ev.getPlayer().getName()+" gekickt!");
 						break;
 					}
 				}

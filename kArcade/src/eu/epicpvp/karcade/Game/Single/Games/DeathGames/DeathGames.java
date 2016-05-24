@@ -222,7 +222,7 @@ public class DeathGames extends SoloGame{
 				new PerkPotionEffect(PotionEffectType.JUMP, 16*60, 3)
 			}),
 			new Kit( "§aRunner",new String[]{"Der Runner kann schneller","rennen und das ","durchgehend"}, new ItemStack(Material.LEATHER_BOOTS),PermissionType.DEATHGAMES_KIT_RUNNER,KitType.KAUFEN,2000,500,new Perk[]{
-				new PerkRunner(0.35F)
+				new PerkRunner()
 			}),
 			new Kit( "§aHai",new String[]{"Der Hai erh§lt","im Wasser Regeneration"}, new ItemStack(Material.CLAY_BALL),PermissionType.DEATHGAMES_KIT_HAI,KitType.KAUFEN,2000,500,new Perk[]{
 				new PerkPotionInWater(PotionEffectType.REGENERATION, 5, 1)
