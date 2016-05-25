@@ -77,7 +77,7 @@ public class kArcade extends JavaPlugin{
 			new ListenerCMD(this);
 
 			new AntiCrashListener(UtilServer.getClient(),this.mysql);
-			new BungeeCordFirewallListener(this,UtilServer.getCommandHandler());
+			new BungeeCordFirewallListener(UtilServer.getCommandHandler());
 			if( !getConfig().getBoolean("Config.Server.World-Save") )UtilWorld.setSave(false);
 			manager.DebugLog(start_time, this.getClass().getName());
 		}catch(Exception e){

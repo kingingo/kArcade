@@ -2,6 +2,7 @@ package eu.epicpvp.karcade.Game.Single.Games;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +30,8 @@ import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Kit.Shop.Events.KitShopPlayerDeleteEvent;
+import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
@@ -223,27 +226,28 @@ public class TeamGame extends SingleGame{
 		return UtilMath.RandomInt((i-1), 0);
 	}
 	
-	public void PlayerVerteilung(HashMap<Team,Integer> t,ArrayList<Player> list){
-		int r;
-		Player p;
-		
+	public void PlayerVerteilung(HashMap<Team,Integer> teamVerteilung,ArrayList<Player> list){
 		if(getVoteTeam()!=null){
-			for(Player p1 : getVoteTeam().getVote().keySet()){
-				TeamList.put(p1, getVoteTeam().getVote().get(p1));
-				list.remove(p1);
+			for(Player player : getVoteTeam().getVote().keySet()){
+				if(list.contains(player)){
+					getTeamList().put(player, getVoteTeam().getVote().get(player));
+					list.remove(player);
+				}
 			}
 		}
 		
-		for(int c = 1; c <= 2000; c++){
+		Collections.shuffle(list);
+		Player player;
+		for(int i = 0; i < list.size(); i++){
 			if(list.isEmpty())break;
-			r=r(list.size());
-			System.out.println("P: "+list.size()+" "+r+" "+c);
-			p=list.get(r);
-			if(TeamList.containsKey(p))continue;
-			for(Team team : t.keySet()){
-				if(isInTeam(team)>=t.get(team))continue;
-				addTeam(p, team);
-				list.remove(r);
+			player = list.get(i);
+			logMessage("List-Size: "+list.size()+" Player:"+player.getName()+" (Index:"+i+")");
+			
+			if(getTeamList().containsKey(player))continue;
+			for(Team team : teamVerteilung.keySet()){
+				if(isInTeam(team)>=teamVerteilung.get(team))continue;
+				addTeam(player, team);
+				list.remove(player);
 				break;
 			}
 		}
@@ -255,7 +259,7 @@ public class TeamGame extends SingleGame{
 			delTeam(ev.getPlayer());
 		}
 		if(isState(GameState.Restart)||isState(GameState.LobbyPhase))return;
-		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
+			getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
 		if(islastTeam()&&(getState()==GameState.InGame||getState()==GameState.DeathMatch)){
 			setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
 		}else if(getGameList().getPlayers(PlayerState.IN).size()<=1){

@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.kcore.Enum.Team;
 
 public class SideHandler {

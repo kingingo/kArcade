@@ -64,6 +64,7 @@ import eu.epicpvp.kcore.Util.TimeSpan;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilDisplay;
 import eu.epicpvp.kcore.Util.UtilEvent;
+import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
@@ -306,8 +307,28 @@ public class SingleGame extends Game {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void StartGameGame(GameStartEvent ev) {
+		if(UtilServer.getPlayers().size() > getMax_Players()){
+			ArrayList<Player> all = new ArrayList<>(UtilServer.getPlayers());
+			ArrayList<Player> kickable = new ArrayList<>(all);
+			kickable.removeIf(player -> player.hasPermission(PermissionType.JOIN_FULL_SERVER.getPermissionToString()));
+
+			Player player;
+			for(int i = 0; i < (all.size()-getMax_Players()); i++){
+				if(kickable.isEmpty()){
+					player=all.get(UtilMath.r(all.size()));
+				}else{
+					player=kickable.get(UtilMath.r(kickable.size()));
+				}
+				
+				all.remove(player);
+				kickable.remove(player);
+				
+				player.kickPlayer(TranslationHandler.getText(player, (player.hasPermission(PermissionType.JOIN_FULL_SERVER.getPermissionToString()) ? "SERVER_FULL_WITH_PREMIUM" : "SERVER_FULL")));
+			}
+		}
+		
 		if (getWorldData() != null) {
 			if (getWorldData().getWorld() != null) {
 				getWorldData().getWorld().setStorm(false);

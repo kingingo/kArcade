@@ -1071,7 +1071,7 @@ public class SkyWars extends TeamGame{
 		
 		for(Player player : UtilServer.getPlayers()){
 			if(player.getWorld().getName().equalsIgnoreCase("world")){
-				System.out.println("WORLD: "+player.getName());
+				logMessage("Spieler "+player.getName()+" ist zu viel.");
 				getManager().getMysql().asyncUpdate("INSERT INTO list_exception (server,ip,exceptiontype,message) VALUES ('a"+kArcade.id+"','null','SkyWars Spieler Verteilung','Spieler: "+player.getName()+" ANZAHL:"+UtilServer.getPlayers().size()+" VER:"+getERR(type.getTeam(),type.getTeam_size())+"');");
 				UtilBG.sendToServer(player, getManager().getInstance());
 			}

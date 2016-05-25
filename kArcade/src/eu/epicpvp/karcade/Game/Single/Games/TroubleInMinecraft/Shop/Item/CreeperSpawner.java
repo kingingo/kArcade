@@ -1,7 +1,6 @@
 package eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item;
 
 import java.util.HashMap;
-import java.util.TreeMap;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;

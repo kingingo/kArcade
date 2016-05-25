@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Util.UtilDirection;
 import lombok.Getter;
 
 public class Side {
