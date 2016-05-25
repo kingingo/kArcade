@@ -326,6 +326,7 @@ public class SingleGame extends Game {
 				kickable.remove(player);
 				
 				player.kickPlayer(TranslationHandler.getText(player, (player.hasPermission(PermissionType.JOIN_FULL_SERVER.getPermissionToString()) ? "SERVER_FULL_WITH_PREMIUM" : "SERVER_FULL")));
+				logMessage("Der Spieler "+player.getName()+" wurde gekickt, weil zu viel Online sind. ("+i+")");
 			}
 		}
 		
