@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.material.Bed;
 
 import eu.epicpvp.karcade.kArcadeManager;
@@ -80,6 +81,13 @@ public class AddonBedTeamKing implements Listener {
 	
 	public boolean haveBed(Team team){
 		return teams.containsKey(team);
+	}
+	
+	@EventHandler
+	public void drop(ItemSpawnEvent ev){
+		if(ev.getEntity().getItemStack().getType() == Material.BED){
+			ev.getEntity().remove();
+		}
 	}
 	
 	Team t;
