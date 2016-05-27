@@ -18,13 +18,13 @@ import dev.wolveringer.dataserver.player.LanguageType;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Listener.kListener;
+import eu.epicpvp.kcore.Lists.kSort;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
 import eu.epicpvp.kcore.Update.Event.UpdateEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
-import eu.epicpvp.kcore.kListen.kSort;
 import lombok.Getter;
 
 public class AddonWordVote extends kListener{

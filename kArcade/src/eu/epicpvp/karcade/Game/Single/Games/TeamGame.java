@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -97,13 +99,22 @@ public class TeamGame extends SingleGame{
 		}
 	}
 	
-	public Team littleTeam(){
-		Team t = null;
-		ArrayList<Team> all = new ArrayList<>();
-		
-		for(Player p : TeamList.keySet()){
-			if(!all.contains(TeamList.get(p)))all.add(TeamList.get(p));
+	public int getTeamCount(Team team){
+		int i = 0;
+		for(Team t : TeamList.values()){
+			if(t==team)i++;
 		}
+		return i;
+	}
+
+	public Team littleTeam(){
+		return littleTeam(true);
+	}
+	
+	public Team littleTeam(boolean returnNullBySame){
+		Team t = null;
+		Set<Team> all = new HashSet();
+		all.addAll(TeamList.values());
 		
 		for(Team team : all){
 			t=team;
@@ -117,11 +128,7 @@ public class TeamGame extends SingleGame{
 				break;
 			}
 		}
-		
-		if(t==null){
-			t=Team.RED;
-		}
-		
+		if(t==null && !returnNullBySame)t=Team.RED;
 		return t;
 	}
 
@@ -195,8 +202,6 @@ public class TeamGame extends SingleGame{
 		return i;
 	}
 	
-	
-	
 	public void TeamTab(Team[] teams){
 	    if(getBoard()==null)setBoard(Bukkit.getScoreboardManager().getNewScoreboard());
 	    for (Team team : teams) {
@@ -224,6 +229,48 @@ public class TeamGame extends SingleGame{
 	public int r(int i){
 		if(i==1)return 0;
 		return UtilMath.RandomInt((i-1), 0);
+	}
+	
+	public void PlayerVerteilung(Team[] teams, ArrayList<Player> list){
+		if(getVoteTeam()!=null){
+			for(Player player : getVoteTeam().getVote().keySet()){
+				if(list.contains(player)){
+					getTeamList().put(player, getVoteTeam().getVote().get(player));
+					list.remove(player);
+				}
+			}
+		}
+		
+		Collections.shuffle(list);
+		Player player;
+		for(int i = 0; i < list.size(); i++){
+			if(list.isEmpty())break;
+			player = list.get(i);
+			logMessage("List-Size: "+list.size()+" Player:"+player.getName()+" (Index:"+i+")");
+			if(getTeamList().containsKey(player))continue;
+			
+			Team team = littleTeam(false);
+			if(team!=null){
+				getTeamList().put(player, team);
+			}else{
+				getTeamList().put(player, teams[0]);
+			}
+		}
+	}
+	
+	public boolean TeamAmountSame(){
+		Set<Team> teams = new HashSet();
+		teams.addAll(getTeamList().values());
+		
+		for(Team team1 : teams){
+			for(Team team2 : teams){
+				if(isInTeam(team1) != isInTeam(team2)){
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	public void PlayerVerteilung(HashMap<Team,Integer> teamVerteilung,ArrayList<Player> list){

@@ -65,6 +65,7 @@ import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
+import eu.epicpvp.kcore.Lists.kSort;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -85,7 +86,6 @@ import eu.epicpvp.kcore.Util.UtilString;
 import eu.epicpvp.kcore.Util.UtilTime;
 import eu.epicpvp.kcore.Util.UtilWorldEdit;
 import eu.epicpvp.kcore.Villager.Event.VillagerShopEvent;
-import eu.epicpvp.kcore.kListen.kSort;
 import lombok.Getter;
 
 public class CustomWars extends TeamGame{
@@ -503,7 +503,8 @@ public class CustomWars extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			plist.add(p);
 		}
-		PlayerVerteilung(verteilung(getCustomType().getTeam()), plist);
+//		PlayerVerteilung(verteilung(getCustomType().getTeam()), plist);
+		PlayerVerteilung(getCustomType().getTeam(),plist);
 		
 		Team[] teams = getCustomType().getTeam();
 		ArrayList<Location> list;

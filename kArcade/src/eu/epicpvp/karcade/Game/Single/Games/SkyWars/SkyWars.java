@@ -55,6 +55,7 @@ import eu.epicpvp.kcore.Kit.Kit;
 import eu.epicpvp.kcore.Kit.Perk;
 import eu.epicpvp.kcore.Kit.Shop.SingleKitShop;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemManager;
+import eu.epicpvp.kcore.Lists.kSort;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -76,7 +77,6 @@ import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilString;
 import eu.epicpvp.kcore.Util.UtilTime;
 import eu.epicpvp.kcore.Util.UtilWorldEdit;
-import eu.epicpvp.kcore.kListen.kSort;
 import lombok.Getter;
 
 public class SkyWars extends TeamGame{
