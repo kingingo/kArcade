@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
+import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.kArcadeManager;
 import eu.epicpvp.karcade.Game.Events.TeamAddEvent;
@@ -246,8 +248,17 @@ public class TeamGame extends SingleGame{
 		for(int i = 0; i < list.size(); i++){
 			if(list.isEmpty())break;
 			player = list.get(i);
-			logMessage("List-Size: "+list.size()+" Player:"+player.getName()+" (Index:"+i+")");
 			if(getTeamList().containsKey(player))continue;
+			
+			if(!isSetTeam(teams)){
+				for(Team t : teams){
+					if(!isSetTeam(t)){
+						getTeamList().put(player, t);
+						break;
+					}
+				}
+				continue;
+			}
 			
 			Team team = littleTeam(false);
 			if(team!=null){
@@ -256,6 +267,17 @@ public class TeamGame extends SingleGame{
 				getTeamList().put(player, teams[0]);
 			}
 		}
+	}
+	
+	public boolean isSetTeam(Team[] teams){
+		for(Team t : teams){
+			if(!isSetTeam(t))return false;
+		}
+		return true;
+	}
+	
+	public boolean isSetTeam(Team team){
+		return getTeamList().values().contains(team);
 	}
 	
 	public boolean TeamAmountSame(){
@@ -288,13 +310,11 @@ public class TeamGame extends SingleGame{
 		for(int i = 0; i < list.size(); i++){
 			if(list.isEmpty())break;
 			player = list.get(i);
-			logMessage("List-Size: "+list.size()+" Player:"+player.getName()+" (Index:"+i+")");
 			
 			if(getTeamList().containsKey(player))continue;
 			for(Team team : teamVerteilung.keySet()){
 				if(isInTeam(team)>=teamVerteilung.get(team))continue;
 				addTeam(player, team);
-				list.remove(player);
 				break;
 			}
 		}

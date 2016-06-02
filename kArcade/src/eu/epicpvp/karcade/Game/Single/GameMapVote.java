@@ -130,9 +130,7 @@ public class GameMapVote extends kListener{
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void start(GameStartEvent ev){
 		if(vote){
-			((SingleGame)getWorldData().getManager().getGame()).setStart(10);
-			((SingleGame)getWorldData().getManager().getGame()).setState(GameState.LobbyPhase);
-			ev.setCancelled(true);
+			close();
 		}
 	}
 	
@@ -176,6 +174,7 @@ public class GameMapVote extends kListener{
 			UtilInv.remove(player.getInventory(), Material.EMPTY_MAP, (byte)0, 1);
 			UtilInv.remove(player.getInventory(), Material.GLOWSTONE_DUST, (byte)0, 1);
 		}
+		logMessage("The Map "+getWorldData().getMap().getMapName()+" used..");
 		return map;
 	}
 	

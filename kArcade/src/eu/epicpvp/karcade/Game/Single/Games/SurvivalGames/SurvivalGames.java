@@ -497,7 +497,8 @@ public class SurvivalGames extends TeamGame{
 			getGameList().addPlayer(p,PlayerState.IN);
 			plist.add(p);
 		}
-		PlayerVerteilung(verteilung(),plist);
+		PlayerVerteilung(new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
+				,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},plist);
 		Team t;
 		Scoreboard ps;
 		for(Player p : getTeamList().keySet()){

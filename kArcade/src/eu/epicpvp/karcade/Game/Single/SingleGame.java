@@ -330,7 +330,7 @@ public class SingleGame extends Game {
 			}
 		}
 		
-		if (getWorldData() != null) {
+		if (getWorldData() != null && getWorldData().getMap()!=null) {
 			if (getWorldData().getWorld() != null) {
 				getWorldData().getWorld().setStorm(false);
 			}

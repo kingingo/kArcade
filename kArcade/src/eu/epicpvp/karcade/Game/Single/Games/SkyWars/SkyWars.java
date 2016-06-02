@@ -1006,7 +1006,7 @@ public class SkyWars extends TeamGame{
 				p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			}
 		}
-		PlayerVerteilung(verteilung(type.getTeam(),type.getTeam_size()), plist);
+		PlayerVerteilung(type.getTeam(), plist);
 		
 		for(Player player : getTeamList().keySet()){
 			if(player.getWorld().getUID()!=getWorldData().getWorld().getUID()){
