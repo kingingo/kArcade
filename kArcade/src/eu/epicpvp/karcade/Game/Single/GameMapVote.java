@@ -149,6 +149,7 @@ public class GameMapVote extends kListener{
 		
 		for(GameMap map : worlds){
 			auswertung.add(new kSort(map.getMapName(), getAmount(((ButtonBase)inventory.getButton(buttons.get(map.getItem().getItemMeta().getDisplayName()))).getItemStack()) ));
+			logMessage("Map: "+map.getMapName()+" Votes: " + getAmount(((ButtonBase)inventory.getButton(buttons.get(map.getItem().getItemMeta().getDisplayName()))).getItemStack()));
 		}
 		Collections.sort(auswertung,kSort.DESCENDING);
 		GameMap map = null;

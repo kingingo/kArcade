@@ -290,7 +290,7 @@ public class kArcadeManager extends kListener {
 
 			response.getAsync(new Callback<PacketOutTopTen>() {
 				@Override
-				public void call(PacketOutTopTen packet) {
+				public void call(PacketOutTopTen packet, Throwable exception) {
 					if(packet.getRanks()!=null){
 						setString_ranking(new String[11]);
 						getString_ranking()[0] = Color.GREEN + getGame().getType().getTyp() + Color.ORANGE + "§l Ranking";

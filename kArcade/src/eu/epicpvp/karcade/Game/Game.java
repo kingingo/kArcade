@@ -106,7 +106,7 @@ public class Game extends kListener{
 			UtilServer.getClient().getNetworkBooster(BoosterType.ARCADE).getAsync(new Callback<NetworkBooster>() {
 				
 				@Override
-				public void call(NetworkBooster b) {
+				public void call(NetworkBooster b, Throwable exception) {
 					if(b!=null && b.isActive()){
 						booster=b;
 					}
