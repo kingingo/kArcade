@@ -279,8 +279,10 @@ public class kArcadeManager extends kListener {
 	}
 
 	public PetManager getPetManager() {
-		if (pet == null)
+		if (pet == null){
 			pet = new PetManager(getInstance());
+			pet.setEntityDamageEvent(false);
+		}
 		return pet;
 	}
 

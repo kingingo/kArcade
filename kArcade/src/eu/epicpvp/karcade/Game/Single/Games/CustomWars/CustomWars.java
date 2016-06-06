@@ -603,7 +603,7 @@ public class CustomWars extends TeamGame{
 		if(ev.getTo()==GameState.Restart && ev.getReason() != GameStateChangeReason.CHANGE_TYPE){
 			if(game_end()){
 				Team t = lastTeam();
-				int size = getPlayerFrom(t).size();
+//				int size = getPlayerFrom(t).size();
 				
 				for(Player p : getPlayerFrom(t)){
 					if(getGameList().isPlayerState(p)==PlayerState.IN){

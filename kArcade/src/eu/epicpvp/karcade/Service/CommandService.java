@@ -31,8 +31,7 @@ public class CommandService implements CommandExecutor{
 		if(!manager.hasPermission(p, PermissionType.ADMIN_SERVICE)||!p.isOp())return false;
 		if(args.length==0){
 			p.sendMessage("§e=---§7 Service§e---=");
-			p.sendMessage("§e/Service Damage §7|§e Damage Nachrichten wo Cancelled wird");
-			p.sendMessage("§e/Service BlockPlace §7|§e BlockPlace Nachrichten wo Cancelled wird");
+			p.sendMessage("§e/Service debug");
 			return true;
 		}
 		

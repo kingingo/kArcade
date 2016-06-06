@@ -35,206 +35,216 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class AddonEntityTeamKing extends kListener {
-	
+
 	@Getter
-	HashMap<Team,Entity> teams = new HashMap<>();
-	@Getter
-	@Setter
-	boolean move=false;
+	HashMap<Team, Entity> teams = new HashMap<>();
 	@Getter
 	@Setter
-	boolean Damage=false;
+	boolean move = false;
 	@Getter
 	@Setter
-	boolean ProjectileDamage=false;
+	boolean Damage = false;
 	@Getter
-	HashMap<Entity,Double> Heal = new HashMap<>();
+	@Setter
+	boolean ProjectileDamage = false;
+	@Getter
+	HashMap<Entity, Double> Heal = new HashMap<>();
 	@Getter
 	HashMap<Entity, NameTagMessage> NameTagMessage = new HashMap<>();
 	@Getter
 	TeamGame team;
 	@Getter
 	ItemStack item = UtilItem.RenameItem(new ItemStack(Material.SUGAR), "§bSchaf-Heiler");
-	
-	public AddonEntityTeamKing(Team[] teams,TeamGame team,EntityType type){
-		super(team.getManager().getInstance(),"AddonEntityTeamKing");
-		this.team=team;
+
+	public AddonEntityTeamKing(Team[] teams, TeamGame team, EntityType type) {
+		super(team.getManager().getInstance(), "AddonEntityTeamKing");
+		this.team = team;
 		Entity e;
 		Location loc = null;
-		for(Team t : teams){
-			loc=team.getWorldData().getLocs(getSheep(t)).get(0);
+		for (Team t : teams) {
+			loc = team.getWorldData().getLocs(getSheep(t)).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
-			e=team.getManager().getPetManager().AddPetWithOutOwner(t.getColor()+"Schaf",true, type, loc);
+			e = team.getManager().getPetManager().AddPetWithOutOwner(t.getColor() + "Schaf", true, type, loc);
 			this.teams.put(t, e);
 			this.Heal.put(e, 100D);
 		}
 	}
-	
-	public Team getSheep(Team team){
-		switch(team){
-		case RED:return Team.SHEEP_RED;
-		case BLUE:return Team.SHEEP_BLUE;
-		case YELLOW:return Team.SHEEP_YELLOW;
-		case GREEN:return Team.SHEEP_GREEN;
-		case PINK:return Team.SHEEP_PINK;
-		case GRAY:return Team.SHEEP_GRAY;
-		case ORANGE:return Team.SHEEP_ORANGE;
-		case PURPLE:return Team.SHEEP_PURPLE;
+
+	public Team getSheep(Team team) {
+		switch (team) {
+		case RED:
+			return Team.SHEEP_RED;
+		case BLUE:
+			return Team.SHEEP_BLUE;
+		case YELLOW:
+			return Team.SHEEP_YELLOW;
+		case GREEN:
+			return Team.SHEEP_GREEN;
+		case PINK:
+			return Team.SHEEP_PINK;
+		case GRAY:
+			return Team.SHEEP_GRAY;
+		case ORANGE:
+			return Team.SHEEP_ORANGE;
+		case PURPLE:
+			return Team.SHEEP_PURPLE;
 		default:
-		return Team.SHEEP_RED;
+			return Team.SHEEP_RED;
 		}
 	}
-	
-	public void setHealt(Entity e,double h){
+
+	public void setHealt(Entity e, double h) {
 		getHeal().put(e, h);
-		if(!(e instanceof LivingEntity))return;
-		((LivingEntity)e).setCustomName(((LivingEntity)e).getCustomName().split(" ")[0]+" §c"+h+" "+Zeichen.BIG_HERZ.getIcon());
+		if (!(e instanceof LivingEntity))
+			return;
+		((LivingEntity) e).setCustomName(
+				((LivingEntity) e).getCustomName().split(" ")[0] + " §c" + h + " " + Zeichen.BIG_HERZ.getIcon());
 	}
-	
-	public double getHealt(Entity e){
+
+	public double getHealt(Entity e) {
 		return getHeal().get(e);
 	}
-	
-	public Entity getEntity(Team t){
+
+	public Entity getEntity(Team t) {
 		return teams.get(t);
 	}
-	
-	public Team get(Entity e){
-		for(Team team : getTeams().keySet()){
-			if(getTeams().get(team).getEntityId()==e.getEntityId())return team;
+
+	public Team get(Entity e) {
+		for (Team team : getTeams().keySet()) {
+			if (getTeams().get(team).getEntityId() == e.getEntityId())
+				return team;
 		}
 		return null;
 	}
-	
-	public boolean is(Entity e){
-		for(Entity entity : getTeams().values()){
-			if(entity.getEntityId()==e.getEntityId()){
+
+	public boolean is(Entity e) {
+		for (Entity entity : getTeams().values()) {
+			if (entity.getEntityId() == e.getEntityId()) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	ArrayList<Team> list = new ArrayList<>();
-	@EventHandler
-	public void Testeer(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.MIN_005)return;
 
-		for(Team t : teams.keySet()){
-			try{
-				if(teams.get(t).isDead()){
-					AddonEntityTeamKingDeathEvent e = new AddonEntityTeamKingDeathEvent(t,teams.get(t),null);
+	ArrayList<Team> list = new ArrayList<>();
+
+	@EventHandler
+	public void Testeer(UpdateEvent ev) {
+		if (ev.getType() != UpdateType.MIN_005)
+			return;
+
+		for (Team t : teams.keySet()) {
+			try {
+				if (teams.get(t).isDead()) {
+					AddonEntityTeamKingDeathEvent e = new AddonEntityTeamKingDeathEvent(t, teams.get(t), null);
 					Bukkit.getPluginManager().callEvent(e);
 					list.add(t);
 				}
-			}catch(NullPointerException e){
+			} catch (NullPointerException e) {
 				System.err.println("[AddonEntityKing] Fehler: Testeer NullPointerException!");
 			}
 		}
-		
-		for(Team t : list)teams.remove(t);
+
+		for (Team t : list)
+			teams.remove(t);
 		list.clear();
 	}
-	
+
 	@EventHandler
-	public void Death(EntityDeathEvent ev){
-		if(is(ev.getEntity())){
+	public void Death(EntityDeathEvent ev) {
+		if (is(ev.getEntity())) {
 			Team t = Team.BLACK;
-			for(Team tt : getTeams().keySet()){
-				if(getTeams().get(tt).getEntityId()==ev.getEntity().getEntityId()){
-					t=tt;
+			for (Team tt : getTeams().keySet()) {
+				if (getTeams().get(tt).getEntityId() == ev.getEntity().getEntityId()) {
+					t = tt;
 					break;
 				}
 			}
 			teams.remove(t);
-			AddonEntityTeamKingDeathEvent e = new AddonEntityTeamKingDeathEvent(t,ev.getEntity(),ev.getEntity().getKiller());
+			AddonEntityTeamKingDeathEvent e = new AddonEntityTeamKingDeathEvent(t, ev.getEntity(),
+					ev.getEntity().getKiller());
 			Bukkit.getPluginManager().callEvent(e);
 		}
 	}
-	
+
 	@EventHandler
-	public void Target(EntityTargetEvent ev){
-		if(is(ev.getEntity())){
-			if(!move)ev.setCancelled(true);
+	public void Target(EntityTargetEvent ev) {
+		if (is(ev.getEntity())) {
+			if (!move)
+				ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
-	public void Click(PlayerInteractEntityEvent ev){
-		if(ev.getRightClicked() instanceof Entity&&is(ev.getRightClicked())){
-			if(UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())){
+	public void Click(PlayerInteractEntityEvent ev) {
+		if (ev.getRightClicked() instanceof Entity && is(ev.getRightClicked())) {
+			if (UtilItem.ItemNameEquals(item, ev.getPlayer().getItemInHand())) {
 				ev.getPlayer().getInventory().remove(ev.getPlayer().getItemInHand());
-				setHealt(((Entity)ev.getRightClicked()),getHealt(((Entity)ev.getRightClicked()))+20);
+				setHealt(((Entity) ev.getRightClicked()), getHealt(((Entity) ev.getRightClicked())) + 20);
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void TargetLivingEntity(EntityTargetLivingEntityEvent ev){
-		if(is(ev.getEntity())){
-			if(!move)ev.setCancelled(true);
+	public void TargetLivingEntity(EntityTargetLivingEntityEvent ev) {
+		if (is(ev.getEntity())) {
+			if (!move)
+				ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
-	public void Damage(EntityDamageEvent ev){
-		if(!Damage&&is(ev.getEntity())){
+	public void Damage(EntityDamageEvent ev) {
+		if (!Damage && is(ev.getEntity())) {
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	double h;
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev){
-		if(ev.getEntityType()==EntityType.SHEEP){
-			logMessage("D1");
-		}
-		
-		if(!(ev.getDamager() instanceof Player))return;
-		if(ev.getEntityType()==EntityType.SHEEP){
-			logMessage("D2");
-		}
-		if(ev.getEntity() instanceof Entity&&is(ev.getEntity())){
-			if(ev.getEntityType()==EntityType.SHEEP){
-				logMessage("D3");
-			}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void EntityDamageByEntity(final EntityDamageByEntityEvent ev) {
+		if (!(ev.getDamager() instanceof Player))
+			return;
+		if (ev.getEntity() instanceof Entity && is(ev.getEntity())) {
 			Team t = get(ev.getEntity());
-			if(t==null||getTeam().getTeam( ((Player)ev.getDamager()) )==t || team.getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
-				if(ev.getEntityType()==EntityType.SHEEP){
-					logMessage("D4");
-				}
+			if (t == null || getTeam().getTeam(((Player) ev.getDamager())) == t
+					|| team.getGameList().isPlayerState(((Player) ev.getDamager())) != PlayerState.IN) {
 				ev.setCancelled(true);
 				return;
 			}
-			if(ev.getEntityType()==EntityType.SHEEP){
-				logMessage("D5");
+			ev.setCancelled(false);
+
+			h = getHealt(ev.getEntity());
+			h = h - getD(((Player) ev.getDamager()).getItemInHand());
+			if (h <= 0) {
+				ev.setDamage(50);
+			} else {
+				ev.setDamage(0);
 			}
-				ev.setCancelled(false);
-				h = getHealt(ev.getEntity());
-				h=h-getD( ((Player)ev.getDamager()).getItemInHand() );
-				if(h<=0){
-					ev.setDamage(50);
-				}else{
-					ev.setDamage(0);
+			
+			setHealt(((Entity) ev.getEntity()), h);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(team.getManager().getInstance(), new Runnable() {
+				public void run() {
+					ev.getEntity().setVelocity(new Vector());
 				}
-				setHealt(((Entity)ev.getEntity()), h);
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(team.getManager().getInstance(), new Runnable() {
-                    public void run() {
-                        ev.getEntity().setVelocity(new Vector());
-                    }
-                }, 1L);
+			}, 1L);
 		}
 	}
-	
-	public int getD(ItemStack i){
-		switch(i.getType()){
-		case WOOD_SWORD:return 5;
-		case IRON_SWORD:return 6;
-		case DIAMOND_SWORD:return 7;
-		case GOLD_SWORD:return 5;
+
+	public int getD(ItemStack i) {
+		switch (i.getType()) {
+		case WOOD_SWORD:
+			return 5;
+		case IRON_SWORD:
+			return 6;
+		case DIAMOND_SWORD:
+			return 7;
+		case GOLD_SWORD:
+			return 5;
 		default:
 			return 4;
 		}
 	}
-	
+
 }
