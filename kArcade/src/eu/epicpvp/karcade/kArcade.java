@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
@@ -25,7 +26,6 @@ import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Permission.PermissionManager;
-import eu.epicpvp.kcore.Permission.Group.GroupTyp;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilException;
@@ -73,7 +73,7 @@ public class kArcade extends JavaPlugin{
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			cmd.register(CommandTppos.class, new CommandTppos());
 			UtilServer.createLagListener(cmd);
-			new AACHack("A"+id,mysql, UtilServer.getClient());
+			new AACHack("A"+id);
 			new ListenerCMD(this);
 
 			new AntiCrashListener(UtilServer.getClient(),this.mysql);
