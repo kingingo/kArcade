@@ -94,7 +94,6 @@ public class CustomWars extends TeamGame{
 	private CustomWarsType customType;
 	@Getter
 	private HashMap<Team,Boolean> teams = new HashMap<>();
-	private GameMapVote gameMapVote;
 	private AddonBedTeamKing addonBedTeamKing;
 	private AddonEntityTeamKing addonEntityTeamKing;
 	private AddonDropItems addonDropItems;
@@ -103,7 +102,7 @@ public class CustomWars extends TeamGame{
 	@Getter
 	private ArrayList<CustomWarsItem> items;
 	private HashMap<String,Integer> kills =  new HashMap<>();
-	private ArrayList<kSort> ranking;
+	private ArrayList<kSort<String>> ranking;
 	
 	public CustomWars(kArcadeManager manager,GameType type,CustomWarsType customType) {
 		super(manager);
@@ -165,14 +164,12 @@ public class CustomWars extends TeamGame{
 		getWorldData().setCleanroomChunkGenerator(true);
 		
 		if(kArcade.id==-1){
-			this.gameMapVote=new GameMapVote(getWorldData());
-			this.gameMapVote.Initialize(-1);
+			getVoteHandler().add(new GameMapVote(getWorldData(), -1));
 		}else{
 			if(getWorldData().loadZips().size()<3){
 				getWorldData().Initialize();
 			}else{
-				this.gameMapVote=new GameMapVote(getWorldData());
-				this.gameMapVote.Initialize(3);
+				getVoteHandler().add(new GameMapVote(getWorldData(), 3));
 			}
 		}
 		
@@ -618,7 +615,7 @@ public class CustomWars extends TeamGame{
 				}
 				
 				for(String name : this.kills.keySet()){
-					this.ranking.add(new kSort(name,this.kills.get(name)));
+					this.ranking.add(new kSort<String>(name,this.kills.get(name)));
 				}
 				Collections.sort(ranking,kSort.DESCENDING);
 
@@ -629,13 +626,13 @@ public class CustomWars extends TeamGame{
 				}
 				
 				if(!this.ranking.isEmpty()&&this.ranking.size()>=1){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("1st Killer - "+this.ranking.get(0).getName()+" - "+this.ranking.get(0).getObj()).length())+"§e1st Killer - §7"+this.ranking.get(0).getName()+" - "+this.ranking.get(0).getObj());
+					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("1st Killer - "+this.ranking.get(0).getObject()+" - "+this.ranking.get(0).getValue()).length())+"§e1st Killer - §7"+this.ranking.get(0).getObject()+" - "+this.ranking.get(0).getValue());
 				}
 				if(!this.ranking.isEmpty()&&this.ranking.size()>=2){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("2st Killer - "+this.ranking.get(1).getName()+" - "+this.ranking.get(1).getObj()).length())+"§62st Killer - §7"+this.ranking.get(1).getName()+" - "+this.ranking.get(1).getObj());
+					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("2st Killer - "+this.ranking.get(1).getObject()+" - "+this.ranking.get(1).getValue()).length())+"§62st Killer - §7"+this.ranking.get(1).getObject()+" - "+this.ranking.get(1).getValue());
 				}
 				if(!this.ranking.isEmpty()&&this.ranking.size()>=3){
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("3st Killer - "+this.ranking.get(2).getName()+" - "+this.ranking.get(2).getObj()).length())+"§c3st Killer - §7"+this.ranking.get(2).getName()+" - "+this.ranking.get(2).getObj());
+					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(),("3st Killer - "+this.ranking.get(2).getObject()+" - "+this.ranking.get(2).getValue()).length())+"§c3st Killer - §7"+this.ranking.get(2).getObject()+" - "+this.ranking.get(2).getValue());
 				}
 				Bukkit.broadcastMessage("§a§l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 			}

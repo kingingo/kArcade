@@ -24,6 +24,7 @@ import eu.epicpvp.karcade.Events.WorldLoadEvent;
 import eu.epicpvp.karcade.Game.World.GameMap;
 import eu.epicpvp.karcade.Game.World.WorldData;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
+import eu.epicpvp.karcade.Game.World.Event.WorldDataLoadConfigEvent;
 import eu.epicpvp.karcade.Game.World.Parser.WorldParser;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Enum.Team;
@@ -287,7 +288,7 @@ public class SingleWorldData extends WorldData{
 		LoadWorldConfig(getMap());
 	}
 	
-	public void LoadWorldConfig(GameMap map){
+	public GameMap LoadWorldConfig(GameMap map){
 		log("Map: "+map.getFile().getName());
 		String line=null;
 		try {
@@ -298,6 +299,10 @@ public class SingleWorldData extends WorldData{
 		    while((line=br.readLine()) != null){
 		    	String[] tokens = line.split(":");
 		    	if (tokens.length >= 2){
+		    		WorldDataLoadConfigEvent ev = new WorldDataLoadConfigEvent(this, map, tokens);
+		    		Bukkit.getPluginManager().callEvent(ev);
+		    		if(ev.isCancelled())continue;
+		    		
 		    		if(tokens[0].equalsIgnoreCase("MAP_NAME")){
 		    			map.setMapName(tokens[1]);
 		    		}else if(tokens[0].equalsIgnoreCase("ITEM")){
@@ -543,7 +548,7 @@ public class SingleWorldData extends WorldData{
 		    		}else if(tokens[0].equalsIgnoreCase(Team.TEAM_32.Name())){
 		    			map.getLocations().put(Team.TEAM_32, WorldParser.StringListTOLocList(tokens[1],map.getWorld()));
 		    		}else{
-		    			logErr("LOAD TEAM NOT FIND -> "+tokens[0]);
+		    			logErr("LOAD TEAM NOT FIND -> "+tokens[0]+" "+tokens[1]);
 		    		}
 		    		
 		        }
@@ -564,5 +569,7 @@ public class SingleWorldData extends WorldData{
 		log("Map Name: "+map.getMapName());
 		log("ITEM: "+map.getItem().getType().name());
 		for(Team team : map.getLocations().keySet())log("TEAM:"+team.Name()+" LOC:"+map.getLocations().get(team).size());
+		
+		return map;
 	}
 }

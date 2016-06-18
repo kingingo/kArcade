@@ -81,7 +81,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		UtilSkyWars1vs1.loadWorld(this, template, template_type);
 		
 		if(games.getKitshop() == null){
-			games.setKitshop(new MultiKitShop(games,games.getMoney(), "Kit-Shop", InventorySize._9, UtilSkyWars1vs1.getKits(games, null)));
+			games.setKitshop(new MultiKitShop(games,games.getMoney(), "Kit-Shop", InventorySize._9, UtilSkyWars1vs1.getKits(games)));
 		}
 		
 		loadMaxTeam();

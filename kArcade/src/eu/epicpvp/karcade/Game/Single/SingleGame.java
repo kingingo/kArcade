@@ -52,6 +52,7 @@ import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
+import eu.epicpvp.karcade.Game.Single.Addons.VoteHandler.AddonVoteHandler;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Events.ServerStatusUpdateEvent;
 import eu.epicpvp.kcore.Permission.PermissionType;
@@ -203,12 +204,18 @@ public class SingleGame extends Game {
 	@Setter
 	@Getter
 	private SingleWorldData worldData;
+	private AddonVoteHandler voteHandler;
 
 	public SingleGame(kArcadeManager manager) {
 		super(manager);
 		this.gameList = new GameList(getManager());
 	}
 
+	public AddonVoteHandler getVoteHandler(){
+		if(this.voteHandler==null)this.voteHandler=new AddonVoteHandler(this);
+		return this.voteHandler;
+	}
+	
 	@EventHandler
 	public void soilChangeEntity(EntityInteractEvent event) {
 		if (!isSoilChange() && (event.getEntityType() != EntityType.PLAYER)

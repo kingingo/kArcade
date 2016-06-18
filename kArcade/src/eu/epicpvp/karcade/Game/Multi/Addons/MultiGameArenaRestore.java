@@ -30,11 +30,6 @@ public class MultiGameArenaRestore extends kListener{
 		private MultiGame game;
 		@Getter
 		private HashMap<Location,BlockState> blocks;
-		public int X = 0;
-		public int Y = 1;
-		public int Z = 2;
-		public int Min = 0;
-		public int Max = 1;
 		public int MinMax[][];
 		private World world;
 		@Getter
@@ -58,34 +53,12 @@ public class MultiGameArenaRestore extends kListener{
 			this.blocks=new HashMap<>();
 			this.game=game;
 			this.world=ecke1.getWorld();
-			this.MinMax=new int[3][2];
+			this.MinMax=UtilLocation.getMinMax(ecke1, ecke2);
 			
-			if (ecke1.getBlockX() > ecke2.getBlockX()) {
-				MinMax[X][Min] = ecke2.getBlockX();
-				MinMax[X][Max] = ecke1.getBlockX();
-			} else {
-				MinMax[X][Max] = ecke2.getBlockX();
-				MinMax[X][Min] = ecke1.getBlockX();
-			}
-			if (ecke1.getBlockY() > ecke2.getBlockY()) {
-				MinMax[Y][Min] = ecke2.getBlockY();
-				MinMax[Y][Max] = ecke1.getBlockY();
-			} else {
-				MinMax[Y][Max] = ecke2.getBlockY();
-				MinMax[Y][Min] = ecke1.getBlockY();
-			}
-			if (ecke1.getBlockZ() > ecke2.getBlockZ()) {
-				MinMax[Z][Min] = ecke2.getBlockZ();
-				MinMax[Z][Max] = ecke1.getBlockZ();
-			} else {
-				MinMax[Z][Max] = ecke2.getBlockZ();
-				MinMax[Z][Min] = ecke1.getBlockZ();
-			}
-			
-			ecke1=new Location(ecke1.getWorld(),MinMax[X][Max],MinMax[Y][Max],MinMax[Z][Max]);
+			ecke1=new Location(ecke1.getWorld(),MinMax[UtilLocation.X][UtilLocation.Max],MinMax[UtilLocation.Y][UtilLocation.Max],MinMax[UtilLocation.Z][UtilLocation.Max]);
 			logMessage(UtilLocation.getLocString(ecke1));
 			
-			ecke2=new Location(ecke2.getWorld(),MinMax[X][Min],MinMax[Y][Min],MinMax[Z][Min]);
+			ecke2=new Location(ecke2.getWorld(),MinMax[UtilLocation.X][UtilLocation.Min],MinMax[UtilLocation.Y][UtilLocation.Min],MinMax[UtilLocation.Z][UtilLocation.Min]);
 			logMessage(UtilLocation.getLocString(ecke2));
 		}
 		
@@ -94,21 +67,7 @@ public class MultiGameArenaRestore extends kListener{
 		}
 		
 		public boolean isInArea(Location loc){
-			if(loc.getY()<=MinMax[Y][Max]){
-				if(loc.getY()>=MinMax[Y][Min]){
-					if(loc.getZ()<=MinMax[Z][Max]){
-						if(loc.getZ()>=MinMax[Z][Min]){
-							if(loc.getX()<=MinMax[X][Max]){
-								if(loc.getX()>=MinMax[X][Min]){
-									return true;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			return false;
+			return UtilLocation.isInMinMax(MinMax, loc);
 		}
 		
 		public void restore(){

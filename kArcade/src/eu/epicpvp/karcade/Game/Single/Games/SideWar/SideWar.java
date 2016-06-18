@@ -16,8 +16,6 @@ import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Util.UtilMath;
 
 public class SideWar extends TeamGame{
-	
-	private GameMapVote gameMapVote;
 
 	public SideWar(kArcadeManager manager) {
 		super(manager);
@@ -53,14 +51,12 @@ public class SideWar extends TeamGame{
 		getWorldData().setCleanroomChunkGenerator(true);
 		
 		if(kArcade.id==-1){
-			this.gameMapVote=new GameMapVote(getWorldData());
-			this.gameMapVote.Initialize(-1);
+			getVoteHandler().add(new GameMapVote(getWorldData(), -1));
 		}else{
 			if(getWorldData().loadZips().size()<3){
 				getWorldData().Initialize();
 			}else{
-				this.gameMapVote=new GameMapVote(getWorldData());
-				this.gameMapVote.Initialize(3);
+				getVoteHandler().add(new GameMapVote(getWorldData(), 3));
 			}
 		}
 		

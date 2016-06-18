@@ -266,7 +266,7 @@ public class Masterbuilders extends SoloGame{
 		
 		this.option.addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
 		this.option.fill(Material.STAINED_GLASS_PANE, (byte)7);
-		UtilInv.getBase().addAnother(this.option);
+		UtilInv.getBase().addPage(this.option);
 		this.wordVote = new AddonWordVote(this);
 		setState(GameState.LobbyPhase);
 		getManager().DebugLog(l, this.getClass().getName());
@@ -327,7 +327,7 @@ public class Masterbuilders extends SoloGame{
 	}
 
 	HashMap<Team,HashMap<Player,Integer>> vote = new HashMap<>();
-	ArrayList<kSort> ranking;
+	ArrayList<kSort<String>> ranking;
 	@EventHandler
 	public void win(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
@@ -336,13 +336,13 @@ public class Masterbuilders extends SoloGame{
 				Collections.sort(ranking,kSort.DESCENDING);
 				
 				if(!ranking.isEmpty()){
-					if(UtilPlayer.isOnline(ranking.get(0).getName())){
-						getMoney().addInt(Bukkit.getPlayer(ranking.get(0).getName()), 15, StatsKey.COINS);
-						getStats().addInt(Bukkit.getPlayer(ranking.get(0).getName()), 1, StatsKey.WIN);
+					if(UtilPlayer.isOnline(ranking.get(0).getObject())){
+						getMoney().addInt(Bukkit.getPlayer(ranking.get(0).getObject()), 15, StatsKey.COINS);
+						getStats().addInt(Bukkit.getPlayer(ranking.get(0).getObject()), 1, StatsKey.WIN);
 					}
 
 					for(Player player : getGameList().getPlayers().keySet()){
-						if(!ranking.get(0).getName().equalsIgnoreCase(player.getName())){
+						if(!ranking.get(0).getObject().equalsIgnoreCase(player.getName())){
 							if(player.isOnline()){
 								getStats().addInt(player, 1, StatsKey.LOSE);
 							}
@@ -352,31 +352,31 @@ public class Masterbuilders extends SoloGame{
 					UtilScoreboard.resetScore(scoreGER, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreGER, "§a§lGewinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreGER, 5, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(scoreGER, "§7"+ranking.get(0).getName(), DisplaySlot.SIDEBAR, 5);
+					UtilScoreboard.setScore(scoreGER, "§7"+ranking.get(0).getObject(), DisplaySlot.SIDEBAR, 5);
 
 					UtilScoreboard.resetScore(scoreENG, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreENG, "§a§lWinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreENG, 5, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(scoreENG, "§7"+ranking.get(0).getName(), DisplaySlot.SIDEBAR, 5);
+					UtilScoreboard.setScore(scoreENG, "§7"+ranking.get(0).getObject(), DisplaySlot.SIDEBAR, 5);
 					
-					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§e§l1",ranking.get(0).getName()});
-					setWinner( ranking.get(0).getName() );
+					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§e§l1",ranking.get(0).getObject()});
+					setWinner( ranking.get(0).getObject() );
 					
-					if(area.containsKey(ranking.get(0).getName())){
-						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getLocs( area.get(ranking.get(0).getName()) ).get(0).clone().add(0, 5, 0) );
+					if(area.containsKey(ranking.get(0).getObject())){
+						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getLocs( area.get(ranking.get(0).getObject()) ).get(0).clone().add(0, 5, 0) );
 					}
 				}
 				if(ranking.size()>=2){
-					if(UtilPlayer.isOnline(ranking.get(1).getName())){
-						getMoney().addInt(Bukkit.getPlayer(ranking.get(1).getName()), 10, StatsKey.COINS);
+					if(UtilPlayer.isOnline(ranking.get(1).getObject())){
+						getMoney().addInt(Bukkit.getPlayer(ranking.get(1).getObject()), 10, StatsKey.COINS);
 					}
-					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§6§l2",ranking.get(1).getName()});
+					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§6§l2",ranking.get(1).getObject()});
 				}
 				if(ranking.size()>=3){
-					if(UtilPlayer.isOnline(ranking.get(2).getName())){
-						getMoney().addInt(Bukkit.getPlayer(ranking.get(2).getName()), 5, StatsKey.COINS);
+					if(UtilPlayer.isOnline(ranking.get(2).getObject())){
+						getMoney().addInt(Bukkit.getPlayer(ranking.get(2).getObject()), 5, StatsKey.COINS);
 					}
-					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§c§l3",ranking.get(2).getName()});
+					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§c§l3",ranking.get(2).getObject()});
 				}
 			}else if(getStart()==0){
 				setState(GameState.Restart);	
@@ -384,7 +384,7 @@ public class Masterbuilders extends SoloGame{
 			
 			if(ranking!=null){
 				for(int i = 0 ; i<10; i++){
-					UtilFirework.start(getWorldData().getLocs( area.get(ranking.get(0).getName()) ).get(0).clone().add(UtilMath.RandomInt(15, -15), UtilMath.RandomInt(19, 13), UtilMath.RandomInt(15, -15)), Color.rdmColor(), Type.BALL);
+					UtilFirework.start(getWorldData().getLocs( area.get(ranking.get(0).getObject()) ).get(0).clone().add(UtilMath.RandomInt(15, -15), UtilMath.RandomInt(19, 13), UtilMath.RandomInt(15, -15)), Color.rdmColor(), Type.BALL);
 				}
 			}
 			
@@ -414,7 +414,7 @@ public class Masterbuilders extends SoloGame{
 				for(Player p1 : vote.get(area.get(p)).keySet()){
 					i+=vote.get(area.get(p)).get(p1);
 				}
-				ranking.add(new kSort(p, i));
+				ranking.add(new kSort<String>(p, i));
 					
 				if(i<(vote.get(area.get(p)).size())){
 					if(this.team_areas.containsKey(area.get(p))&&!this.team_areas.get(area.get(p)).getBlocks().isEmpty()){

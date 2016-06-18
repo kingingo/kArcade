@@ -87,13 +87,13 @@ public class AddonWordVote extends kListener{
 		if(ev.getType()==UpdateType.SEC && isVote()){
 			if(votetime<0){
 				if(!votes.isEmpty()){
-					ArrayList<kSort> sort = new ArrayList<>();
+					ArrayList<kSort<String>> sort = new ArrayList<>();
 					for(Buildings b : buildings){
-						sort.add(new kSort(b.getEnglish(), getVotes(b)));
+						sort.add(new kSort<String>(b.getEnglish(), getVotes(b)));
 					}
 
 					Collections.sort(sort,kSort.DESCENDING);
-					getMasterbuilders().setBuilding(Buildings.get(sort.get(0).getName()));
+					getMasterbuilders().setBuilding(Buildings.get(sort.get(0).getObject()));
 				}else{
 					getMasterbuilders().setBuilding(buildings[UtilMath.r(buildings.length)]);
 				}

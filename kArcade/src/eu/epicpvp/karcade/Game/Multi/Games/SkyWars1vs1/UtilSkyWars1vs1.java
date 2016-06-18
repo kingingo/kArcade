@@ -19,7 +19,6 @@ import org.bukkit.potion.PotionType;
 
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
-import eu.epicpvp.karcade.Game.Single.Games.SkyWars.Item.CreeperSpawner;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Kit.Kit;
 import eu.epicpvp.kcore.Kit.KitType;
@@ -98,7 +97,7 @@ public class UtilSkyWars1vs1 {
 		}
 	}
 	
-	public static Kit[] getKits(Game game, CreeperSpawner creeper){
+	public static Kit[] getKits(Game game){
 		return new Kit[]{
 				new Kit("§aStarter-Kit",new String[]{"§8x1§7 Leder Ruestung","§8x1§7 Holzschwert mit Sch§rfe 1"},new ItemStack(Material.LEATHER_HELMET),PermissionType.SKYWARS_KIT_STARTERKIT,KitType.STARTER,0,0,new Perk[]{
 					new PerkEquipment(new ItemStack[]{UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 1),new ItemStack(Material.LEATHER_BOOTS),new ItemStack(Material.LEATHER_LEGGINGS),new ItemStack(Material.LEATHER_CHESTPLATE),new ItemStack(Material.LEATHER_HELMET)})
@@ -146,7 +145,6 @@ public class UtilSkyWars1vs1 {
 							UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_LEGGINGS), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
 							UtilItem.EnchantItem(new ItemStack(Material.IRON_CHESTPLATE), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
 							UtilItem.EnchantItem(UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.GREEN), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
-//							new ItemStack(Material.POTION,1,(byte)16393)
 							})
 				}),
 				new Kit("§eSuperMario",new String[]{"§8x1§7 Roter Lederbrustpanzer","§8x1§7 Blaue Lederhose","§8x1§7 Sprungkraft 1 Trank"},UtilItem.LSetColor(new ItemStack(Material.LEATHER_HELMET), DyeColor.RED),PermissionType.SKYWARS_KIT_MARIO,KitType.KAUFEN,2000,500,new Perk[]{
@@ -163,8 +161,8 @@ public class UtilSkyWars1vs1 {
 				new Kit( "§eKoch",new String[]{"§8x1§7 Holzschwert Schärfe 2","§8x8§7 Steaks","§8x1§7 Kuchen","§8x3§7 Goldenäpfel"}, new ItemStack(Material.CAKE),PermissionType.SKYWARS_KIT_KOCH,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment(new ItemStack[]{UtilItem.RenameItem(UtilItem.EnchantItem(new ItemStack(Material.WOOD_SWORD),Enchantment.DAMAGE_ALL,2), "§7Gabel"),new ItemStack(Material.COOKED_BEEF,8),new ItemStack(Material.CAKE,1),new ItemStack(Material.GOLDEN_APPLE,3)})
 				}),
-				new Kit( "§eSprengmeister",new String[]{"§8x4§7 Creeper Spawner","§8x10§7 TnT","§8x1§7 Feuerzeug"}, new ItemStack(Material.TNT),PermissionType.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
-					new PerkEquipment((creeper == null ? new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL)} : new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL),creeper.getItem(4)}))
+				new Kit( "§eSprengmeister",new String[]{"§8x10§7 TnT","§8x1§7 Feuerzeug"}, new ItemStack(Material.TNT),PermissionType.SKYWARS_KIT_SPRENGMEISTER,KitType.KAUFEN,2000,500,new Perk[]{
+					new PerkEquipment(new ItemStack[]{new ItemStack(Material.TNT,10),new ItemStack(Material.FLINT_AND_STEEL)})
 				}),
 				new Kit( "§eJaeger",new String[]{"§8x1§7 Bogen","§8x10 §7Pfeile"}, new ItemStack(Material.ARROW),PermissionType.SKYWARS_KIT_JAEGER,KitType.KAUFEN,2000,500,new Perk[]{
 					new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,10)})

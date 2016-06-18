@@ -42,6 +42,7 @@ public class CommandForceStart implements CommandExecutor{
 				        	((SingleGame)Manager.getGame()).setStart(i);
 				        	UtilPlayer.sendMessage(p,TranslationHandler.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationHandler.getText(p, "GAME_TIME_CHANGE",i));
 				        }catch(NumberFormatException e){
+				        	((SingleGame)Manager.getGame()).setStart(16);
 				        	UtilPlayer.sendMessage(p,TranslationHandler.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationHandler.getText(p, "NO_INTEGER"));
 				        }
 					}
