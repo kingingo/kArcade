@@ -111,6 +111,7 @@ public class Votes {
 			Vote v = players.get(player);
 			ButtonBase button = ((ButtonBase)page.getButton(v.getSlot()));
 			button.setItemStack(setAmount(button.getItemStack(), v.remove()));
+			players.remove(player);
 			return v;
 		}
 		return null;

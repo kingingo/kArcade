@@ -16,6 +16,7 @@ public class LuckyThrowItem extends LuckyItemListener{
 	@Setter
 	private LaunchItemEventHandler launch;
 	private int seconds;
+	private int anzahl=1;
 
 	public LuckyThrowItem(ItemStack item, int seconds,double chance) {
 		this(item,seconds,null,chance);

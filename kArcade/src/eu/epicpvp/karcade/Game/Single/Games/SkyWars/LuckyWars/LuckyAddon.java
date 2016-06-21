@@ -5,16 +5,19 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import com.google.common.collect.Lists;
 
-import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
 import eu.epicpvp.karcade.Game.Single.Games.SkyWars.SkyWars;
 import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyItem;
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyItemListener;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataLoadConfigEvent;
 import eu.epicpvp.kcore.Enum.Team;
@@ -23,6 +26,7 @@ import eu.epicpvp.kcore.Util.UtilBlock;
 import eu.epicpvp.kcore.Util.UtilLocation;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilNumber;
+import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 
 public class LuckyAddon extends kListener {
@@ -42,6 +46,7 @@ public class LuckyAddon extends kListener {
 		this.instance = instance;
 		this.ignore = new ArrayList<>();
 		this.ignore.add(new ItemStack(Material.CHEST));
+		this.ignore.add(new ItemStack(Material.CARPET));
 		this.items = Lists.newArrayList(items);
 
 		for (LuckyItem item : items){
@@ -50,9 +55,18 @@ public class LuckyAddon extends kListener {
 		}
 		
 	}
-
-	public void fillLuckyBlock(Block block) {
-//		block.getDrops().add(randomItem().getItem());
+	
+	@EventHandler
+	public void bbreak(BlockBreakEvent ev){
+		if(ev.getBlock().getType()==Material.SPONGE){
+			ev.getBlock().setType(Material.AIR);
+			LuckyItem luckyitem = randomItem();
+			Location center = UtilBlock.getBlockCenterUP(ev.getBlock().getLocation());
+			for(ItemStack i : luckyitem.getItems()){
+				Item item = ev.getBlock().getWorld().dropItemNaturally(center, i);
+				item.setVelocity(new Vector(0.0D, 0.25D, 0.0D));
+			}
+		}
 	}
 
 	public LuckyItem randomItem() {
@@ -110,22 +124,29 @@ public class LuckyAddon extends kListener {
 
 	public void init() {
 		long time = System.currentTimeMillis();
-		
 		setNormalIsland();
 
-		for (Team playerTeam : instance.getSkyWarsType().getTeam()) {
-			setPlayerIsland(playerTeam);
-		}
+		for (Team playerTeam : instance.getSkyWarsType().getTeam()) setPlayerIsland(playerTeam);
+		
+		for(LuckyItem item : items)
+			if(item instanceof LuckyItemListener)
+				((LuckyItemListener)item).register();
+			
+		for(Player player : UtilServer.getPlayers())player.setResourcePack("http://luckywars.clashmc.de/LuckyWars.zip");
 		logMessage("Zeit " + (System.currentTimeMillis() - time) + "ms");
 	}
 
 	public void setNormalIsland() {
 		SingleWorldData worldData = instance.getWorldData();
 
-		Location loc1 = worldData.getLocs(Team.DIAMOND).get(0);
-		Location loc2 = worldData.getLocs(Team.DIAMOND).get(1);
+		if(worldData.getMap().getLocations().containsKey(Team.DIAMOND)){
+			Location loc1 = worldData.getLocs(Team.DIAMOND).get(0);
+			Location loc2 = worldData.getLocs(Team.DIAMOND).get(1);
 
-		setIsland(Team.DIAMOND, this.normalAmount, this.normalDistance, loc1, loc2);
+			setIsland(Team.DIAMOND, this.normalAmount, this.normalDistance, loc1, loc2);
+		}else{
+			logMessage("Team DIAMOND is EMPTY! Cannot place normal LuckyBlocks");
+		}
 	}
 
 	public void setPlayerIsland(Team playerTeam) {
@@ -174,7 +195,6 @@ public class LuckyAddon extends kListener {
 			ground.remove(location);
 			placed.add(location);
 			location.getBlock().setType(Material.SPONGE);
-			fillLuckyBlock(location.getBlock());
 			logMessage(" DIS:" + distances.size() + " I:" + i + " G:" + ground.size());
 		}
 		logMessage("A:" + amount + " D:" + distance + " G:" + ground.size() + " P:" + placed.size() + " T:" + t.Name());

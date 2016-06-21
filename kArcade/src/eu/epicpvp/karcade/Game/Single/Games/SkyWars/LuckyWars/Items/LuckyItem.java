@@ -10,16 +10,33 @@ public class LuckyItem{
 	@Getter
 	@Setter
 	private LuckyAddon addon;
-	private ItemStack item;
+	@Setter
+	private ItemStack[] items;
 	@Getter
 	private double chance;
-
+	
 	public LuckyItem(ItemStack item,double chance) {
-		this.item=item;
+		this(new ItemStack[]{item},chance);
+	}
+
+	public LuckyItem(ItemStack[] items,double chance) {
+		this.items=items;
 		this.chance=chance;
 	}
 	
+	public LuckyItem(double chance) {
+		this(new ItemStack[]{},chance);
+	}
+	
+	public void setItem(ItemStack item){
+		this.items=new ItemStack[]{item};
+	}
+	
 	public ItemStack getItem(){
-		return item.clone();
+		return items[0];
+	}
+	
+	public ItemStack[] getItems(){
+		return items.clone();
 	}
 }

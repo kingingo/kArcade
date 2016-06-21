@@ -37,8 +37,8 @@ public class LuckyCreeper extends LuckyThrowItem {
 
 						Player player = null;
 
-						HashMap<Player, Double> l = UtilPlayer
-								.getInRadius(ev.getItem().getDroppedItem()[0].getLocation(), 9);
+						HashMap<Player, Double> l = UtilPlayer.getInRadius(ev.getItem().getDroppedItem()[0].getLocation(), 9);
+						l.remove(ev.getItem().getPlayer());
 						if (!l.isEmpty()) {
 							player = (Player) l.keySet().toArray()[UtilMath.r(l.size())];
 							c.setTarget(player);

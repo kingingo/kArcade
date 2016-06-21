@@ -20,9 +20,15 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.Potion.Tier;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -41,7 +47,12 @@ import eu.epicpvp.karcade.Game.Single.Addons.AddonTargetNextPlayer;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonVoteTeam;
 import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyCow;
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyCreeper;
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyHeart;
 import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyItem;
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyPotion;
+import eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items.LuckyWolf;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Addons.AddonNight;
@@ -117,7 +128,43 @@ public class SkyWars extends TeamGame{
 		setWorldData(new SingleWorldData(manager,getType().getTyp()+skyWarsType.getTeam().length,getType().getShortName()));
 		getWorldData().setCleanroomChunkGenerator(true);
 		
-		getVoteHandler().add(new SkyWarsTypeVote(this, new LuckyItem[]{}));
+		if(getSkyWarsType().isLuckywars())getVoteHandler().add(new SkyWarsTypeVote(this, new LuckyItem[]{
+				new LuckyCow(40),
+				new LuckyCreeper(30),
+				new LuckyWolf(25),
+				new LuckyHeart(30),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_SWORD), "§6Lucky Sword")
+						, new String[]{Enchantment.FIRE_ASPECT.getName()+":1",Enchantment.DAMAGE_ALL.getName()+":2"}) , 16),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.BOW), "§6Lucky Bow")
+						, new String[]{Enchantment.ARROW_FIRE.getName()+":1",Enchantment.ARROW_DAMAGE.getName()+":3"}) , 16),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_HELMET), "§6Lucky Helm")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 40),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_CHESTPLATE), "§6Lucky Chestplate")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.THORNS.getName()+":1"}) , 16),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_LEGGINGS), "§6Lucky Leggings")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 30),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_BOOTS), "§6Lucky Boots")
+						, new String[]{Enchantment.PROTECTION_FALL.getName()+":4"}) , 25),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_SPADE), "§6Lucky Shovel")
+						, new String[]{Enchantment.DIG_SPEED.getName()+":2"}) , 35),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.MILK_BUCKET), "§6Milk Bucket") , 45),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.ARROW, 10), "§6Arrow") , 65),
+				new LuckyItem( new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.CAKE,2), "§6Lucky Food"),UtilItem.RenameItem(new ItemStack(Material.COOKIE,8), "§6Lucky Food")}, 60),
+				new LuckyItem( new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.LAVA_BUCKET,1), "§6Lucky Lava"),UtilItem.RenameItem(new ItemStack(Material.WATER_BUCKET,1), "§6Lucky Water")}, 40),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.FISHING_ROD), "§6Lucky Fishing Rod"), 40),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.EXP_BOTTLE,16), "§6Lucky XP"), 30),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL,1), "§6Lucky Pearl"), 35),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL,3), "§6Lucky Pearl"), 5),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.BRICK,64), "§6Lucky Brick"), 40),
+				new LuckyItem( new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.TNT,3), "§6Lucky TNT"),UtilItem.RenameItem(new ItemStack(Material.FIREBALL,2), "§6Lucky Fireball")}, 40),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.SNOW_BALL,5), "§6Lucky Snowball"), 50),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.EGG,5), "§6Lucky Egg"), 50),
+				new LuckyPotion(PotionType.POISON, true, 8, 1, 1, 50),
+				new LuckyPotion(PotionType.SPEED, true, 45, 1, 1, 40),
+				new LuckyPotion(PotionType.STRENGTH, true, 20, 1, 1, 40),
+				new LuckyPotion(PotionType.REGEN, true, 30, 1, 1, 40),
+			}));
+		
 		if(getWorldData().loadZips().size()<3){
 			getWorldData().Initialize();
 		}else{
@@ -691,6 +738,14 @@ public class SkyWars extends TeamGame{
 		if(ev.getInventory() instanceof EnchantingInventory){
 			EnchantingInventory inv = (EnchantingInventory)ev.getInventory();
 			inv.setSecondary(new ItemStack(351,16 ,(short)4));
+		}
+	}
+	
+	@EventHandler
+	public void drop(PlayerPickupItemEvent ev){
+		if(ev.getItem().getItemStack().getTypeId()==351){
+			ev.getItem().remove();
+			ev.setCancelled(true);
 		}
 	}
 	

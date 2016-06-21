@@ -7,12 +7,12 @@ import eu.epicpvp.kcore.Util.UtilMath;
 import lombok.Getter;
 
 public enum SkyWarsType {
-_32x4(0,4,64,128,new Team[]{Team.TEAM_1,Team.TEAM_2,Team.TEAM_3,Team.TEAM_4,Team.TEAM_5,Team.TEAM_6,Team.TEAM_7,Team.TEAM_8,Team.TEAM_9,Team.TEAM_10,Team.TEAM_11,Team.TEAM_12,Team.TEAM_13,Team.TEAM_14,Team.TEAM_15,Team.TEAM_16,Team.TEAM_17,Team.TEAM_18,Team.TEAM_19,Team.TEAM_20,Team.TEAM_21,Team.TEAM_22,Team.TEAM_23,Team.TEAM_24,Team.TEAM_25,Team.TEAM_26,Team.TEAM_27,Team.TEAM_28,Team.TEAM_29,Team.TEAM_30,Team.TEAM_31,Team.TEAM_32}),
-_8x1(50,1,4,8,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
-_8x2(50,2,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
-_12x1(50,1,6,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN}),
-_16x1(50,1,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN,Team.LIGHT_GRAY,Team.BROWN,Team.MAGENTA,Team.LIME}),
-_12x2(50,2,12,24,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN});
+_32x4(false,0,4,64,128,new Team[]{Team.TEAM_1,Team.TEAM_2,Team.TEAM_3,Team.TEAM_4,Team.TEAM_5,Team.TEAM_6,Team.TEAM_7,Team.TEAM_8,Team.TEAM_9,Team.TEAM_10,Team.TEAM_11,Team.TEAM_12,Team.TEAM_13,Team.TEAM_14,Team.TEAM_15,Team.TEAM_16,Team.TEAM_17,Team.TEAM_18,Team.TEAM_19,Team.TEAM_20,Team.TEAM_21,Team.TEAM_22,Team.TEAM_23,Team.TEAM_24,Team.TEAM_25,Team.TEAM_26,Team.TEAM_27,Team.TEAM_28,Team.TEAM_29,Team.TEAM_30,Team.TEAM_31,Team.TEAM_32}),
+_8x1(true,50,1,4,8,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
+_8x2(true,50,2,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
+_12x1(false,50,1,6,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN}),
+_16x1(true,50,1,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN,Team.LIGHT_GRAY,Team.BROWN,Team.MAGENTA,Team.LIME}),
+_12x2(false,50,2,12,24,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN});
 
 @Getter
 private Team[] team;
@@ -24,13 +24,16 @@ private int max;
 private int team_size;
 @Getter
 private int h;
+@Getter
+private boolean luckywars;
 
-private SkyWarsType(int h,int team_size,int min,int max,Team[] team){
+private SkyWarsType(boolean luckywars,int h,int team_size,int min,int max,Team[] team){
 	this.max=max;
 	this.min=min;
 	this.team=team;
 	this.team_size=team_size;
 	this.h=h;
+	this.luckywars=luckywars;
 }
 
 public static SkyWarsType getSkyWarsTypeWithSize(int size){

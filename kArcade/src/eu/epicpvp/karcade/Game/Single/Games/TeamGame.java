@@ -333,7 +333,9 @@ public class TeamGame extends SingleGame{
 	@EventHandler
 	public void SpectaterAndRespawn(PlayerRespawnEvent ev){
 		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT){
-			ev.setRespawnLocation(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+			if(!getGameList().getPlayers(PlayerState.IN).isEmpty()){
+				ev.setRespawnLocation(getGameList().getPlayers(PlayerState.IN).get(0).getLocation());
+			}
 			SetSpectator(ev,ev.getPlayer());
 		}
 	}
