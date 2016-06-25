@@ -129,14 +129,54 @@ public class SkyWars extends TeamGame{
 		getWorldData().setCleanroomChunkGenerator(true);
 		
 		if(getSkyWarsType().isLuckywars())getVoteHandler().add(new SkyWarsTypeVote(this, new LuckyItem[]{
-				new LuckyCow(40),
-				new LuckyCreeper(30),
-				new LuckyWolf(25),
-				new LuckyHeart(30),
+				new LuckyCow(45),
+				new LuckyCreeper(35),
+				new LuckyWolf(40),
+				new LuckyHeart(35),
 				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_SWORD), "§6Lucky Sword")
 						, new String[]{Enchantment.FIRE_ASPECT.getName()+":1",Enchantment.DAMAGE_ALL.getName()+":2"}) , 16),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_SWORD), "§6Lucky Sword")
+						, new String[]{Enchantment.DAMAGE_ALL.getName()+":3"}) , 12),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_SWORD), "§6Lucky Sword")
+						, new String[]{Enchantment.KNOCKBACK.getName()+":2",Enchantment.DAMAGE_ALL.getName()+":2"}) , 10),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_SWORD), "§6Lucky Sword")
+						, new String[]{Enchantment.KNOCKBACK.getName()+":1",Enchantment.DAMAGE_ALL.getName()+":3"}) , 10),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_SWORD), "§6Lucky Sword")
+						, new String[]{Enchantment.FIRE_ASPECT.getName()+":1"}) , 16),
 				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.BOW), "§6Lucky Bow")
 						, new String[]{Enchantment.ARROW_FIRE.getName()+":1",Enchantment.ARROW_DAMAGE.getName()+":3"}) , 16),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.BOW), "§6Lucky Bow")
+						, new String[]{Enchantment.ARROW_KNOCKBACK.getName()+":1",Enchantment.ARROW_DAMAGE.getName()+":3"}) , 16),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.BOW), "§6Lucky Bow")
+						, new String[]{Enchantment.ARROW_INFINITE.getName()+":1",Enchantment.ARROW_DAMAGE.getName()+":2"}) , 16),
+				
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_HELMET), "§6Lucky Helm")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 25),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_CHESTPLATE), "§6Lucky Chestplate")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":3",Enchantment.THORNS.getName()+":1"}) , 12),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_LEGGINGS), "§6Lucky Leggings")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 20),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_BOOTS), "§6Lucky Boots")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.PROTECTION_FALL.getName()+":4"}) , 15),
+				
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_HELMET), "§6Lucky Helm")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 35),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_CHESTPLATE), "§6Lucky Chestplate")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.THORNS.getName()+":1"}) , 15),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_LEGGINGS), "§6Lucky Leggings")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 25),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.DIAMOND_BOOTS), "§6Lucky Boots")
+						, new String[]{Enchantment.PROTECTION_FALL.getName()+":4"}) , 20),
+				
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_HELMET), "§6Lucky Helm")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 35),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_CHESTPLATE), "§6Lucky Chestplate")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":3",Enchantment.THORNS.getName()+":1"}) , 15),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_LEGGINGS), "§6Lucky Leggings")
+						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":2",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 30),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_BOOTS), "§6Lucky Boots")
+						, new String[]{Enchantment.PROTECTION_FALL.getName()+":4"}) , 25),
+				
 				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_HELMET), "§6Lucky Helm")
 						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 40),
 				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_CHESTPLATE), "§6Lucky Chestplate")
@@ -145,10 +185,13 @@ public class SkyWars extends TeamGame{
 						, new String[]{Enchantment.PROTECTION_ENVIRONMENTAL.getName()+":1",Enchantment.PROTECTION_FIRE.getName()+":1",Enchantment.PROTECTION_EXPLOSIONS.getName()+":1"}) , 30),
 				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_BOOTS), "§6Lucky Boots")
 						, new String[]{Enchantment.PROTECTION_FALL.getName()+":4"}) , 25),
+				
 				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_SPADE), "§6Lucky Shovel")
 						, new String[]{Enchantment.DIG_SPEED.getName()+":2"}) , 35),
+				new LuckyItem( UtilItem.EnchantItem(UtilItem.RenameItem(new ItemStack(Material.GOLD_SPADE), "§6Lucky Shovel")
+						, new String[]{Enchantment.DIG_SPEED.getName()+":1"}) , 30),
 				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.MILK_BUCKET), "§6Milk Bucket") , 45),
-				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.ARROW, 10), "§6Arrow") , 65),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.ARROW), "§6Arrow"),10,25 , 65),
 				new LuckyItem( new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.CAKE,2), "§6Lucky Food"),UtilItem.RenameItem(new ItemStack(Material.COOKIE,8), "§6Lucky Food")}, 60),
 				new LuckyItem( new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.LAVA_BUCKET,1), "§6Lucky Lava"),UtilItem.RenameItem(new ItemStack(Material.WATER_BUCKET,1), "§6Lucky Water")}, 40),
 				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.FISHING_ROD), "§6Lucky Fishing Rod"), 40),
@@ -157,12 +200,13 @@ public class SkyWars extends TeamGame{
 				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.ENDER_PEARL,3), "§6Lucky Pearl"), 5),
 				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.BRICK,64), "§6Lucky Brick"), 40),
 				new LuckyItem( new ItemStack[]{UtilItem.RenameItem(new ItemStack(Material.TNT,3), "§6Lucky TNT"),UtilItem.RenameItem(new ItemStack(Material.FIREBALL,2), "§6Lucky Fireball")}, 40),
-				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.SNOW_BALL,5), "§6Lucky Snowball"), 50),
-				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.EGG,5), "§6Lucky Egg"), 50),
-				new LuckyPotion(PotionType.POISON, true, 8, 1, 1, 50),
-				new LuckyPotion(PotionType.SPEED, true, 45, 1, 1, 40),
-				new LuckyPotion(PotionType.STRENGTH, true, 20, 1, 1, 40),
-				new LuckyPotion(PotionType.REGEN, true, 30, 1, 1, 40),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.SNOW_BALL), "§6Lucky Snowball"),5,15, 50),
+				new LuckyItem( UtilItem.RenameItem(new ItemStack(Material.EGG), "§6Lucky Egg"),5,15, 50),
+				new LuckyPotion(PotionType.POISON, true, 8, 1, 1,2, 50),
+				new LuckyPotion(PotionType.SPEED, true, 45, 1, 1,2, 40),
+				new LuckyPotion(PotionType.STRENGTH, true, 20, 1, 1,2, 40),
+				new LuckyPotion(PotionType.REGEN, true, 30, 1, 1,2, 40),
+				new LuckyItem( new ItemStack(373,1,(short)16421),2,4, 55),
 			}));
 		
 		if(getWorldData().loadZips().size()<3){

@@ -11,7 +11,7 @@ _32x4(false,0,4,64,128,new Team[]{Team.TEAM_1,Team.TEAM_2,Team.TEAM_3,Team.TEAM_
 _8x1(true,50,1,4,8,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
 _8x2(true,50,2,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.WHITE,Team.PURPLE,Team.GRAY}),
 _12x1(false,50,1,6,12,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN}),
-_16x1(true,50,1,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN,Team.LIGHT_GRAY,Team.BROWN,Team.MAGENTA,Team.LIME}),
+_16x1(false,50,1,8,16,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN,Team.LIGHT_GRAY,Team.BROWN,Team.MAGENTA,Team.LIME}),
 _12x2(false,50,2,12,24,new Team[]{Team.RED,Team.BLUE,Team.GREEN,Team.ORANGE,Team.YELLOW,Team.PINK,Team.PURPLE,Team.GRAY,Team.WHITE,Team.BLACK,Team.AQUA,Team.CYAN});
 
 @Getter
