@@ -58,16 +58,12 @@
 			<id>my-local-repo</id>
 			<url>file://C:\Dev\minecraftServer\</url>
 		</repository>
-		<repository>
-			<id>sk89q-repo</id>
-			<url>http://maven.sk89q.com/repo/</url>
-		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>server</artifactId>
-			<version>8.8</version>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>

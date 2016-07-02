@@ -104,21 +104,21 @@ public class CustomWars extends TeamGame{
 	private HashMap<String,Integer> kills =  new HashMap<>();
 	private ArrayList<kSort<String>> ranking;
 	
-	public CustomWars(kArcadeManager manager,GameType type,CustomWarsType customType) {
+	public CustomWars(kArcadeManager manager, GameType type, CustomWarsType customType) {
 		super(manager);
 		long t = System.currentTimeMillis();
-		this.customType=customType;
-		this.ranking=new ArrayList<>();
+		this.customType = customType;
+		this.ranking = new ArrayList<>();
 		setTyp(type);
-		
-		items=new ArrayList<>();
+
+		items = new ArrayList<>();
 		items.add(new AlarmSystem(this));
 		items.add(new C4(this));
 		items.add(new Parachute(this));
 		items.add(new MobileVillager(this));
 		items.add(new RescuePlattform(this));
 		items.add(new MobileSpezialVillager(this));
-		
+
 		setDamage(false);
 		setItemDrop(true);
 		setItemPickup(true);
@@ -148,31 +148,33 @@ public class CustomWars extends TeamGame{
 		setBlockPlace(true);
 		setMin_Players(customType.getMin());
 		setMax_Players(customType.getMax());
-		
+
 		getInventoryTypDisallow().add(InventoryType.WORKBENCH);
 		getInventoryTypDisallow().add(InventoryType.DISPENSER);
 		getInventoryTypDisallow().add(InventoryType.BEACON);
-		
+
 		getItemPickupDeny().add(Material.CACTUS.getId());
-		
+
 		getInteractDeny().add(Material.getMaterial(43));
 		getInteractDeny().add(Material.ENDER_STONE);
-		
-		if(getCustomType().getTeam_size()!=1)setVoteTeam(new AddonVoteTeam(this,getCustomType().getTeam(),InventorySize._9,getCustomType().getTeam_size()));
-		
-		setWorldData(new SingleWorldData(manager,getType().getTyp()+getCustomType().getTeam().length,getType().getShortName()));
+
+		if (getCustomType().getTeam_size() != 1)
+			setVoteTeam(new AddonVoteTeam(this, getCustomType().getTeam(), InventorySize._9, getCustomType().getTeam_size()));
+
+		setWorldData(new SingleWorldData(manager, getType().getTyp() + getCustomType().getTeam().length, getType().getShortName()));
 		getWorldData().setCleanroomChunkGenerator(true);
-		
-		if(kArcade.id==-1){
+
+		if (kArcade.id == -1) {
+			Bukkit.getConsoleSender().sendMessage("§cEvent-Server!");
 			getVoteHandler().add(new GameMapVote(getWorldData(), -1));
-		}else{
-			if(getWorldData().loadZips().size()<3){
+		} else {
+			if (getWorldData().loadZips().size() < 3) {
 				getWorldData().Initialize();
-			}else{
+			} else {
 				getVoteHandler().add(new GameMapVote(getWorldData(), 3));
 			}
 		}
-		
+
 		manager.DebugLog(t, this.getClass().getName());
 		setState(GameState.LobbyPhase);
 	}
