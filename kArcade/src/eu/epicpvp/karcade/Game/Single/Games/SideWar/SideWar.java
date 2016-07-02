@@ -71,8 +71,8 @@ public class SideWar extends TeamGame{
 	
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
-		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
-			 ev.setRespawnLocation( getWorldData().getLocs(getTeam(ev.getPlayer())).get(UtilMath.r(getWorldData().getLocs(getTeam(ev.getPlayer())).size())) );
+		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
+			 ev.setRespawnLocation( getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).get(UtilMath.r(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).size())) );
 		 }
 	}
 

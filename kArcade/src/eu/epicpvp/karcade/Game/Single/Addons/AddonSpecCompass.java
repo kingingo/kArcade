@@ -44,7 +44,7 @@ public class AddonSpecCompass implements Listener{
 	public void Interact(PlayerInteractEvent ev){
 		if(game==null||!this.game.isCompassAddon()||game.getState()==GameState.LobbyPhase)return;
 		if(ev.getPlayer().getItemInHand()==null)return;
-		if(UtilEvent.isAction(ev, ActionType.R)&&ev.getPlayer().getItemInHand().getType()==Material.COMPASS&&game.getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)&&ev.getPlayer().getItemInHand().getType()==Material.COMPASS&&game.getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.getPlayer().openInventory(getCompassInv());
 			ev.setCancelled(true);
 		}
@@ -69,9 +69,9 @@ public class AddonSpecCompass implements Listener{
 		if(ev.getInventory().getName().equalsIgnoreCase("§lTeleporter")){
 			Player p = (Player)ev.getWhoClicked();
 			if(UtilGear.isMat(p.getItemInHand(), Material.COMPASS)){
-				if(game.getGameList().isPlayerState(p)==PlayerState.OUT){
+				if(game.getGameList().isPlayerState(p)==PlayerState.SPECTATOR){
 					if(UtilGear.isMat(ev.getCurrentItem(), Material.SKULL_ITEM)){
-						for(Player player : game.getGameList().getPlayers(PlayerState.IN)){
+						for(Player player : game.getGameList().getPlayers(PlayerState.INGAME)){
 							if(player.getName().equalsIgnoreCase(ev.getCurrentItem().getItemMeta().getDisplayName())){
 								p.teleport(player.getLocation().add(0,4,0));
 								break;
@@ -88,7 +88,7 @@ public class AddonSpecCompass implements Listener{
 		inv.clear();
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 		ItemMeta meta;
-		for(Player p : game.getGameList().getPlayers(PlayerState.IN)){
+		for(Player p : game.getGameList().getPlayers(PlayerState.INGAME)){
 			meta=skull.getItemMeta();
 			meta.setDisplayName(p.getName());
 			skull.setItemMeta(meta);

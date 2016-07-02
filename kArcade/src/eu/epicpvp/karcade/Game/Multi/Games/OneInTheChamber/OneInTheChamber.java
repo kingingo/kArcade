@@ -76,7 +76,7 @@ public class OneInTheChamber extends MultiSoloGame{
 			v = ev.getEntity();
 			Life.put(v,(Life.get(v)-1));
 			if(Life.get(v)<=0){
-				getGameList().addPlayer(v, PlayerState.OUT);
+				getGameList().addPlayer(v, PlayerState.SPECTATOR);
 				getGames().getStats().addInt(v, 1, StatsKey.LOSE);
 				broadcastWithPrefix("GAME_EXCLUSION", v.getName());
 			}
@@ -106,7 +106,7 @@ public class OneInTheChamber extends MultiSoloGame{
 	    	attack = (Player)ev.getDamager();
 	    	
 	    	if(getGameList().getPlayers().containsKey( defend )&&getGameList().getPlayers().containsKey( attack )){
-	    		if(getGameList().isPlayerState(defend)==PlayerState.IN&&getGameList().isPlayerState(attack)==PlayerState.IN){
+	    		if(getGameList().isPlayerState(defend)==PlayerState.INGAME&&getGameList().isPlayerState(attack)==PlayerState.INGAME){
 	    			return;
 	    		}
 	    	}
@@ -117,7 +117,7 @@ public class OneInTheChamber extends MultiSoloGame{
 	    	  if(getGameList().getPlayers().containsKey(((Player)ar.getShooter()))
 	    			  &&getGameList().getPlayers().containsKey(((Player)ev.getEntity()))){
 	  	    	
-	    		  if(getGameList().isPlayerState(defend)==PlayerState.IN&&getGameList().isPlayerState(attack)==PlayerState.IN){
+	    		  if(getGameList().isPlayerState(defend)==PlayerState.INGAME&&getGameList().isPlayerState(attack)==PlayerState.INGAME){
 
 		    		  ev.setDamage(((CraftPlayer)ev.getEntity()).getMaxHealth());
 	    		  }

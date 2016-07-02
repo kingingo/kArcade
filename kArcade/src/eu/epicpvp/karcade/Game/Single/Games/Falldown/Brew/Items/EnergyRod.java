@@ -23,7 +23,7 @@ public class EnergyRod extends BrewItem{
 	
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(getRealItem().getItemMeta().getDisplayName())){
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){

@@ -33,7 +33,7 @@ public class Firestorm extends BrewItem{
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(getRealItem().getItemMeta().getDisplayName())){
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
@@ -58,7 +58,7 @@ public class Firestorm extends BrewItem{
 
 						                for (Entity entity : player.getNearbyEntities(8.0D, 8.0D, 8.0D)) {
 						                  if ((entity != null) && ((entity instanceof LivingEntity)) && (!entity.equals(player)) && (
-						                    (!(entity instanceof Player)) || ( getFalldown().getGameList().isPlayerState(((Player)entity))==PlayerState.IN )))
+						                    (!(entity instanceof Player)) || ( getFalldown().getGameList().isPlayerState(((Player)entity))==PlayerState.INGAME )))
 						                  {
 						                    long distance1 = Math.round(entity.getLocation().distance(firePixel));
 						                    long distance2 = Math.round(entity.getLocation().distance(firePixel.clone().add(0.0D, 1.0D, 0.0D)));

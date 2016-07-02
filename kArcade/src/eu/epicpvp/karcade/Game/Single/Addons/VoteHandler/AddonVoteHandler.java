@@ -104,7 +104,7 @@ public class AddonVoteHandler extends kListener{
 	
 	@EventHandler
 	public void interact(PlayerInteractEvent ev){
-		if(active && game.getState() == GameState.LobbyPhase && ev.getPlayer().getItemInHand()!=null && UtilEvent.isAction(ev, ActionType.R)){
+		if(active && game.getState() == GameState.LobbyPhase && ev.getPlayer().getItemInHand()!=null && UtilEvent.isAction(ev, ActionType.RIGHT)){
 			for(kSort<Votes> s : votes){
 				if(UtilItem.ItemNameEquals(s.getObject().getVoteItem(), ev.getPlayer().getItemInHand())){
 					s.getObject().open(ev.getPlayer());

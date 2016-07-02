@@ -30,14 +30,14 @@ public class AddonBagPack implements Listener {
 	public ItemStack getNewBagPack(){
 		i++;
 		ItemStack item = UtilItem.RenameItem(new ItemStack(Material.NAME_TAG,1,(byte)i), "BagPack");
-		UtilItem.SetDescriptions(item, new String[]{String.valueOf(i)});
+		UtilItem.setLore(item, new String[]{String.valueOf(i)});
 		bagpacks.put(i, Bukkit.createInventory(null, 9,"BagPack"));
 		return item;
 	}
 	
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(ev.getPlayer().getItemInHand()!=null){
 				if(ev.getPlayer().getItemInHand().getType()==Material.NAME_TAG){
 					ev.getPlayer().openInventory(bagpacks.get(Integer.valueOf(ev.getPlayer().getItemInHand().getItemMeta().getLore().get(0))));

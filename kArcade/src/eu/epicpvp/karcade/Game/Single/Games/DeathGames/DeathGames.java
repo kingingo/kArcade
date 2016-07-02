@@ -275,7 +275,7 @@ public class DeathGames extends SoloGame{
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
 				ev.getPlayer().openInventory(kitShop.getInventory());
 			}
@@ -419,7 +419,7 @@ public class DeathGames extends SoloGame{
 			UtilParticle.DRIP_WATER.display(0.5F, 0.9F, 0.5F, 3, 65, v.getLocation(), 30);
 			getStats().addInt(v, 1, StatsKey.LOSE);
 			getStats().addInt(v, 1, StatsKey.DEATHS);
-			getGameList().addPlayer(v, PlayerState.OUT);
+			getGameList().addPlayer(v, PlayerState.SPECTATOR);
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().addInt(a, 1, StatsKey.KILLS);
@@ -439,10 +439,10 @@ public class DeathGames extends SoloGame{
 	public void Schild(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SLOW)return;
 		if(getState()!=GameState.InGame)return;
-		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.IN).size()*10)){
+		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.INGAME).size()*10)){
 			getGrenze().setRadius(getGrenze().getRadius()-1);
 			
-			chest_anzahl=getGameList().getPlayers(PlayerState.IN).size()*10;
+			chest_anzahl=getGameList().getPlayers(PlayerState.INGAME).size()*10;
 			if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
 				for(int i = 0; i < chest.size(); i++){
 					loc=(Location)chest.keySet().toArray()[i];
@@ -543,8 +543,8 @@ public class DeathGames extends SoloGame{
 	@EventHandler
 	public void Open(PlayerInteractEvent ev){
 		if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
-			if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
-			if(UtilEvent.isAction(ev, ActionType.R_BLOCK)){
+			if(getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()))return;
+			if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)){
 				if(ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST){
 					
 					if(chest.containsKey(ev.getClickedBlock().getLocation())){
@@ -564,8 +564,8 @@ public class DeathGames extends SoloGame{
 	@EventHandler
 	public void GameStateChange(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
-			if(getGameList().getPlayers(PlayerState.IN).size()==1){
-				Player p = getGameList().getPlayers(PlayerState.IN).get(0);
+			if(getGameList().getPlayers(PlayerState.INGAME).size()==1){
+				Player p = getGameList().getPlayers(PlayerState.INGAME).get(0);
 				getStats().addInt(p, 1, StatsKey.WIN);
 				getMoney().addInt(p, 10, StatsKey.COINS);
 				broadcastWithPrefix("GAME_WIN",p.getName());
@@ -674,7 +674,7 @@ public class DeathGames extends SoloGame{
 		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
-			getGameList().addPlayer(p,PlayerState.IN);
+			getGameList().addPlayer(p,PlayerState.INGAME);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomDouble(maxX, minX), 200, UtilMath.RandomDouble(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			title.setSubtitle(TranslationHandler.getText(p, "NO_TEAMS_ALLOWED"));
@@ -691,7 +691,7 @@ public class DeathGames extends SoloGame{
 					
 					@Override
 					public void onRun(kScheduler s) {
-						for(Player p : getGameList().getPlayers(PlayerState.IN))UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, p.getLocation(), 15);
+						for(Player p : getGameList().getPlayers(PlayerState.INGAME))UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, p.getLocation(), 15);
 					}
 					
 				},UpdateType.FAST);

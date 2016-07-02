@@ -137,7 +137,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
 			
 			getGames().getStats().addInt(v,1, StatsKey.LOSE);
-			getGameList().addPlayer(v, PlayerState.OUT);
+			getGameList().addPlayer(v, PlayerState.SPECTATOR);
 			
 			if(ev.getEntity().getKiller() instanceof Player){
 				a = (Player)ev.getEntity().getKiller();
@@ -165,7 +165,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	@EventHandler
 	public void MultiGameStateChangeSkyWars1vs1(MultiGameStateChangeEvent ev){
 		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
-			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.INGAME);
 			if(list.size()==1){
 				Player p = list.get(0);
 				getGames().getStats().addInt(p, 1, StatsKey.WIN);
@@ -188,7 +188,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
-		if(getState()==GameState.LobbyPhase&&getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.R)){
+		if(getState()==GameState.LobbyPhase&&getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
 				ev.getPlayer().openInventory(getGames().getKitshop().getInventory());
 			}

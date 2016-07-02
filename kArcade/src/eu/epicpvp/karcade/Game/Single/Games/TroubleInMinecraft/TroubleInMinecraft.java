@@ -213,7 +213,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void Chest(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
+		if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)&&ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
 	}
 	
 //	@EventHandler
@@ -250,25 +250,25 @@ public class TroubleInMinecraft extends TeamGame{
 		if(getState()!=GameState.InGame){
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}else{
-				if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+				if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
 					Team t = getTeam(ev.getPlayer());
 					if(t==null){
 						UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 					}else{
-						for(Player p : getGameList().getPlayers(PlayerState.IN)){
+						for(Player p : getGameList().getPlayers(PlayerState.INGAME)){
 							if(t==Team.TRAITOR){
 								if(getTeam(p)==t){
-									p.sendMessage(t.getColor()+t.Name()+" §8| "+t.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+									p.sendMessage(t.getColor()+t.getDisplayName()+" §8| "+t.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 								}else{
-									p.sendMessage(Team.INOCCENT.getColor()+Team.INOCCENT.Name()+" §8| "+Team.INOCCENT.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+									p.sendMessage(Team.INOCCENT.getColor()+Team.INOCCENT.getDisplayName()+" §8| "+Team.INOCCENT.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 								}
 							}else{
-								p.sendMessage(t.getColor()+t.Name()+" §8| "+t.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+								p.sendMessage(t.getColor()+t.getDisplayName()+" §8| "+t.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 							}
 						}
 					}
 				}else{
-					for(Player p : getGameList().getPlayers(PlayerState.OUT)){
+					for(Player p : getGameList().getPlayers(PlayerState.SPECTATOR)){
 						p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 					}
 				}
@@ -288,7 +288,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Aufdecken(PlayerInteractNPCEvent ev){
-		 	if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+		 	if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
 		 		NPC npc = ev.getNpc();
 				if(npclist.containsKey(npc.getEntityID())){
 					String name = npclist.get(npc.getEntityID());
@@ -297,7 +297,7 @@ public class TroubleInMinecraft extends TeamGame{
 					npc.despawn();
 					Team t = defi.getTeams().get(name.toLowerCase());
 					
-					if(t!=null)broadcastWithPrefix("TTT_LEICHE_IDENTIFIZIERT", new String[]{t.getColor()+name,t.getColor()+t.Name()});
+					if(t!=null)broadcastWithPrefix("TTT_LEICHE_IDENTIFIZIERT", new String[]{t.getColor()+name,t.getColor()+t.getDisplayName()});
 //					if(t==Team.TRAITOR){
 //						for(Player p : getGameList().getPlayers(PlayerState.IN)){
 //							if(getTeam(p)==t){
@@ -330,10 +330,10 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void DeathTTT(PlayerDeathEvent ev){
-		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.IN).contains( ((Player)ev.getEntity()) )){
+		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.INGAME).contains( ((Player)ev.getEntity()) )){
 			getStats().setInt(((Player)ev.getEntity()),getStats().getInt(StatsKey.DEATHS, ((Player)ev.getEntity()))+1, StatsKey.DEATHS);
 			getStats().setInt(((Player)ev.getEntity()),getStats().getInt(StatsKey.LOSE, ((Player)ev.getEntity()))+1, StatsKey.LOSE);
-			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.OUT);
+			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.SPECTATOR);
 			boolean b = false;
 			for(ItemStack item : ev.getDrops()){
 				for(TTT_Item ii : TTT_Item.values()){
@@ -470,7 +470,7 @@ public class TroubleInMinecraft extends TeamGame{
 	@EventHandler
 	public void PickupItemFake(ItemFakePickupEvent ev){
 		if(ev.isCancelled())return;
-		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
+		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR)return;
 		TTT_Item t = getItemFake(ev.getItem());
 		if(t==null){
 			ev.getItemfake().remove();
@@ -635,7 +635,7 @@ public class TroubleInMinecraft extends TeamGame{
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
 		if(isInTeam(Team.INOCCENT)==0&&isInTeam(Team.DETECTIVE)==0){
-			broadcastWithPrefix("TTT_WIN", Team.TRAITOR.Name());
+			broadcastWithPrefix("TTT_WIN", Team.TRAITOR.getDisplayName());
 			
 			System.out.println("[TTT] TRAITOR HABEN GEWONNEN");
 			for(Player p : getTeamList().keySet()){
@@ -648,7 +648,7 @@ public class TroubleInMinecraft extends TeamGame{
 			
 			setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);	
 		}else if(isInTeam(Team.TRAITOR)==0){
-			broadcastWithPrefix("TTT_WIN", Team.INOCCENT.Name());
+			broadcastWithPrefix("TTT_WIN", Team.INOCCENT.getDisplayName());
 			System.out.println("[TTT] INNOCENT HABEN GEWONNEN");
 			for(Player p : getTeamList().keySet()){
 				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
@@ -674,7 +674,7 @@ public class TroubleInMinecraft extends TeamGame{
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 0: 
 			Team t = getHaveWinTeam();
-			broadcastWithPrefix("TTT_WIN", t.Name());
+			broadcastWithPrefix("TTT_WIN", t.getDisplayName());
 		
 			for(Player p : getTeamList().keySet()){
 				if(t==Team.TRAITOR){
@@ -763,8 +763,8 @@ public class TroubleInMinecraft extends TeamGame{
 		switch(getStart()){
 		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 25:
-			for(Player player1 : getGameList().getPlayers(PlayerState.IN)){
-				for(Player player2 : getGameList().getPlayers(PlayerState.IN)){
+			for(Player player1 : getGameList().getPlayers(PlayerState.INGAME)){
+				for(Player player2 : getGameList().getPlayers(PlayerState.INGAME)){
 					player1.showPlayer(player2);
 					player2.showPlayer(player1);
 				}
@@ -781,11 +781,11 @@ public class TroubleInMinecraft extends TeamGame{
 		case 0: 
 			setStart(60*20);
 			ArrayList<Player> plist = new ArrayList<>();
-			for(Player p : getGameList().getPlayers(PlayerState.IN)){
+			for(Player p : getGameList().getPlayers(PlayerState.INGAME)){
 				plist.add(p);
 			}
 			PlayerVerteilung(verteilung(),plist);
-			ArrayList<Player> d = (ArrayList<Player>)getPlayerFrom(Team.DETECTIVE);
+			ArrayList<Player> d = (ArrayList<Player>)getPlayersFromTeam(Team.DETECTIVE);
 			Scoreboard ps;
 			for(Player p : d){
 				ps = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -803,7 +803,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				
-				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.Name());
+				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
 				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.TRAITOR||getTeamList().get(p1)==Team.INOCCENT){
@@ -811,7 +811,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				
-				s = ps.registerNewTeam(Team.DETECTIVE.Name());
+				s = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
 				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.DETECTIVE){
@@ -820,11 +820,11 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 				
 				p.setScoreboard(ps);
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.DETECTIVE.Name()));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.DETECTIVE.getDisplayName()));
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
 			}
-			ArrayList<Player> t = (ArrayList<Player>)getPlayerFrom(Team.TRAITOR);
+			ArrayList<Player> t = (ArrayList<Player>)getPlayersFromTeam(Team.TRAITOR);
 			for(Player p : t){
 				traitor.add(p);
 				p.getInventory().addItem(traitor_shop.getShop_item());
@@ -832,7 +832,7 @@ public class TroubleInMinecraft extends TeamGame{
 				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"TraitorBoard");
 				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
 				UtilScoreboard.setScore(ps,Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, p));
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.TRAITOR.Name()));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.TRAITOR.getDisplayName()));
 				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_TRAITOR_CHAT"));
 				if(t.size()!=1){
 					UtilScoreboard.setScore(ps,"§7", DisplaySlot.SIDEBAR, -1);
@@ -845,7 +845,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				
-				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.Name());
+				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
 				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.INOCCENT){
@@ -853,7 +853,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				
-				s = ps.registerNewTeam(Team.TRAITOR.Name());
+				s = ps.registerNewTeam(Team.TRAITOR.getDisplayName());
 				s.setPrefix(Team.TRAITOR.getColor()+"[T] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.TRAITOR){
@@ -861,7 +861,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				
-				s = ps.registerNewTeam(Team.DETECTIVE.Name());
+				s = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
 				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.DETECTIVE){
@@ -877,13 +877,13 @@ public class TroubleInMinecraft extends TeamGame{
 				}
 			}
 			
-			ArrayList<Player> i = (ArrayList<Player>) getPlayerFrom(Team.INOCCENT);
+			ArrayList<Player> i = (ArrayList<Player>) getPlayersFromTeam(Team.INOCCENT);
 			
 			for(Player p:i){
 				ps=Bukkit.getScoreboardManager().getNewScoreboard();
 				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"InnocentBoard");
 				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
-				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.Name());
+				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
 				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.TRAITOR||getTeamList().get(p1)==Team.INOCCENT){
@@ -891,7 +891,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				
-				s = ps.registerNewTeam(Team.DETECTIVE.Name());
+				s = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
 				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
 				for(Player p1 : getTeamList().keySet()){
 					if(getTeamList().get(p1)==Team.DETECTIVE){
@@ -899,7 +899,7 @@ public class TroubleInMinecraft extends TeamGame{
 					}
 				}
 				p.setScoreboard(ps);
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.INOCCENT.Name()));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.INOCCENT.getDisplayName()));
 			}
 			setDamage(true);
 			setProjectileDamage(true);
@@ -927,7 +927,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void World(WorldLoadEvent ev){
-		this.tester = new Tester(this, getWorldData().getLocs(Team.BLUE).get(0),getWorldData().getLocs(Team.GREEN).get(0), getWorldData().getLocs(Team.SOLO), getWorldData().getLocs(Team.GRAY));
+		this.tester = new Tester(this, getWorldData().getSpawnLocations(Team.BLUE).get(0),getWorldData().getSpawnLocations(Team.GREEN).get(0), getWorldData().getSpawnLocations(Team.SOLO), getWorldData().getSpawnLocations(Team.GRAY));
 	}
 	
 	@EventHandler
@@ -946,7 +946,7 @@ public class TroubleInMinecraft extends TeamGame{
 	
 	@EventHandler
 	public void Start(GameStartEvent ev){
-		ArrayList<Location> list = getWorldData().getLocs(Team.RED);
+		ArrayList<Location> list = getWorldData().getSpawnLocations(Team.RED);
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
@@ -955,10 +955,10 @@ public class TroubleInMinecraft extends TeamGame{
 			r=UtilMath.r(list.size());
 			p.teleport(list.get(r));
 			p.getInventory().addItem(magnet.getStab());
-			getGameList().addPlayer(p,PlayerState.IN);
+			getGameList().addPlayer(p,PlayerState.INGAME);
 		}
 		ifm=new ItemFakeManager(getManager().getInstance(),getManager().getHologram());
-		setItemFake(getWorldData().getLocs(Team.YELLOW));
+		setItemFake(getWorldData().getSpawnLocations(Team.YELLOW));
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		setDamage(false);
 		setStart(31);

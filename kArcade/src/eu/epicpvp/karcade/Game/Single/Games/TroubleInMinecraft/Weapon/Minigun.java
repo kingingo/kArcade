@@ -38,7 +38,7 @@ public class Minigun implements Listener {
 	Arrow a;
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Bow(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(),item)&&UtilInv.contains(ev.getPlayer(), Material.ARROW, (byte) 0, 1)){
 				UtilInv.remove(ev.getPlayer(), Material.ARROW, (byte) 0, 1);
 				p=ev.getPlayer();

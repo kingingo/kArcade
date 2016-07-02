@@ -92,15 +92,15 @@ public class Versus extends MultiTeamGame{
 		
 		if(getMax_type()==null){
 			String s="";
-			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
+			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.getDisplayName();
 			UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
 			UtilDebug.debug("MaxType", new String[]{"SIZE:"+getWorldData().getTeams(this).size(),s});
 		}else{
 			String s="";
-			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.Name();
+			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.getDisplayName();
 			for(Team t : getMax_type().getTeam()){
 				if(!getWorldData().getTeams(this).containsKey(t)){
-					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.Name()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
+					UtilException.catchException("a"+getGames().getManager().getInstance().getConfig().getString("Config.Server.ID"), Bukkit.getServer().getIp(), getGames().getManager().getMysql(),"FEHLT        L:"+getMax_type().getTeam().length+"   "+"TEAM"+t.getDisplayName()+"   LOC:"+UtilLocation.getLocString(location)+"  MAP:"+getMap()+"SIZE:"+getWorldData().getTeams(this).size()+" "+s);
 				}
 			}
 		}
@@ -163,7 +163,7 @@ public class Versus extends MultiTeamGame{
 		if(getTeamList().containsKey(ev.getEntity())){
 			UtilPlayer.RespawnNow(ev.getEntity(), getGames().getManager().getInstance());
 			getGameList().getPlayers().remove(ev.getEntity());
-			getGameList().getPlayers().put(ev.getEntity(), PlayerState.OUT);
+			getGameList().getPlayers().put(ev.getEntity(), PlayerState.SPECTATOR);
 			getGames().getStats().addInt(ev.getEntity(), 1, StatsKey.DEATHS);
 			getGames().getStats().addInt(ev.getEntity(), 1, StatsKey.LOSE);
 			

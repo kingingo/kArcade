@@ -53,7 +53,7 @@ public class Sniper implements Listener {
 	
 	@EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true)
 	public void Interact(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(),item)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(),item)){
 			if(!isZoom(ev.getPlayer())){
 				Zoom(ev.getPlayer());
 				l.add(ev.getPlayer());

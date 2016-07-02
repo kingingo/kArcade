@@ -29,6 +29,7 @@ import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
+import eu.epicpvp.karcade.Game.Single.Addons.AddonLobbyJump;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
@@ -58,7 +59,7 @@ public class Game extends kListener {
 	private StatsManager money;
 	@Getter
 	@Setter
-	private Scoreboard board;
+	private Scoreboard scoreboard;
 	@Getter
 	private StatsManager stats;
 	private GameType typ = GameType.NONE;
@@ -79,12 +80,11 @@ public class Game extends kListener {
 	@Getter
 	@Setter
 	private NetworkBooster booster;
-
+	
 	public Game(kArcadeManager manager) {
 		super(manager.getInstance(), "Game");
 		this.manager = manager;
 		this.money = StatsManagerRepository.createStatsManager(GameType.Money);
-
 		UtilServer.getClient().getHandle().getEventManager().getEventManager(EventType.BOOSTER_SWITCH).setConditionEnables(EventConditions.BOOSTER_TYPE, true);
 		UtilServer.getClient().getHandle().getEventManager().registerListener(new EventListener() {
 
@@ -237,7 +237,7 @@ public class Game extends kListener {
 	@EventHandler
 	public void OpenChest(PlayerInteractEvent ev) {
 		if (getState() == GameState.LobbyPhase && ev.getPlayer().getWorld().getUID() == getManager().getLobby().getWorld().getUID()) {
-			if (UtilEvent.isAction(ev, ActionType.R_BLOCK)) {
+			if (UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)) {
 				if (ev.getClickedBlock().getType() == Material.BREWING_STAND || ev.getClickedBlock().getType() == Material.DROPPER || ev.getClickedBlock().getType() == Material.DISPENSER || ev.getClickedBlock().getType() == Material.ANVIL || ev.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE || ev.getClickedBlock().getType() == Material.TRAP_DOOR || ev.getClickedBlock().getType() == Material.WORKBENCH || ev.getClickedBlock().getType() == Material.FURNACE
 						|| ev.getClickedBlock().getType() == Material.ENDER_CHEST || ev.getClickedBlock().getType() == Material.CHEST)
 					ev.setCancelled(true);

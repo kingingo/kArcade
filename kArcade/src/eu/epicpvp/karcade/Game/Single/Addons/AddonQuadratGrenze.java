@@ -92,7 +92,7 @@ public class AddonQuadratGrenze implements Listener{
 			}
 		}else if(ev.getType()!=UpdateType.SEC_2){
 			if(game.getState()==GameState.InGame||game.getState()==GameState.SchutzModus){
-				for(Player p : game.getGameList().getPlayers(PlayerState.IN)){
+				for(Player p : game.getGameList().getPlayers(PlayerState.INGAME)){
 					if(!isInGrenze(p.getLocation())){
 						p.damage(-1);
 						UtilPlayer.health(p, -1);

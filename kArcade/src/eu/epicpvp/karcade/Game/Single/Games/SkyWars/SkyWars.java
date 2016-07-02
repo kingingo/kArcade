@@ -238,10 +238,10 @@ public class SkyWars extends TeamGame{
 	@EventHandler
 	public void WorldData(WorldDataInitializeEvent ev){
 		if(Calendar.holiday==CalendarType.WEIHNACHTEN){
-			if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getLocs(Team.BLACK).isEmpty()){
-				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.BLACK).get(0), 150);
+			if(getWorldData().existLoc(Team.BLACK)&&!getWorldData().getSpawnLocations(Team.BLACK).isEmpty()){
+				UtilWorldEdit.simulateSnow(getWorldData().getSpawnLocations(Team.BLACK).get(0), 150);
 			}else{
-				UtilWorldEdit.simulateSnow(getWorldData().getLocs(Team.RED).get(0), 150);
+				UtilWorldEdit.simulateSnow(getWorldData().getSpawnLocations(Team.RED).get(0), 150);
 			}
 		}
 	}
@@ -251,9 +251,9 @@ public class SkyWars extends TeamGame{
 		int i=0;
 		Chest[] chests;
 		for(Team t : skyWarsType.getTeam()){
-			chests=new Chest[getWorldData().getLocs(getChestSpawn(t)).size()];
+			chests=new Chest[getWorldData().getSpawnLocations(getChestSpawn(t)).size()];
 			
-			for(Location loc : getWorldData().getLocs(getChestSpawn(t))){
+			for(Location loc : getWorldData().getSpawnLocations(getChestSpawn(t))){
 				loc.getBlock().setType(Material.CHEST);
 				chests[i]=((Chest)loc.getBlock().getState());
 				i++;
@@ -263,9 +263,9 @@ public class SkyWars extends TeamGame{
 			fillIslandChests(t,chests);
 		}
 		
-		if(getWorldData().existLoc(Team.GOLD)&&!getWorldData().getLocs(Team.GOLD).isEmpty()){
+		if(getWorldData().existLoc(Team.GOLD)&&!getWorldData().getSpawnLocations(Team.GOLD).isEmpty()){
 			Chest chest;
-			for(Location loc : getWorldData().getLocs(Team.GOLD)){
+			for(Location loc : getWorldData().getSpawnLocations(Team.GOLD)){
 				loc.getBlock().setType(Material.CHEST);
 				if(loc.getBlock().getState() instanceof Chest){
 					chest=(Chest)loc.getBlock().getState();
@@ -282,7 +282,7 @@ public class SkyWars extends TeamGame{
 			for(Team t : skyWarsType.getTeam()){
 				if(getWorldData().existLoc(t)){
 					color=UtilMath.r(15);
-					UtilMap.makeQuadrat(null,getWorldData().getLocs(t).get(0).clone().add(0, 10, 0), 2, 5,gcase.getGround((byte)color),gcase.getWall((byte)color));
+					UtilMap.makeQuadrat(null,getWorldData().getSpawnLocations(t).get(0).clone().add(0, 10, 0), 2, 5,gcase.getGround((byte)color),gcase.getWall((byte)color));
 				}
 			}
 		}
@@ -803,7 +803,7 @@ public class SkyWars extends TeamGame{
 			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 
-		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
@@ -840,7 +840,7 @@ public class SkyWars extends TeamGame{
 		case 10*60:
 			Chest chest;
 			for(Team t : skyWarsType.getTeam()){
-				for(Location loc : getWorldData().getLocs(getChestSpawn(t))){
+				for(Location loc : getWorldData().getSpawnLocations(getChestSpawn(t))){
 					if(loc.getBlock().getState() instanceof Chest){
 						chest=(Chest)loc.getBlock().getState();
 						for (int nur = 0; nur < UtilMath.RandomInt(6,3); nur++) {
@@ -850,7 +850,7 @@ public class SkyWars extends TeamGame{
 				}
 			}
 			
-			for(Location loc : getWorldData().getLocs(Team.GOLD)){
+			for(Location loc : getWorldData().getSpawnLocations(Team.GOLD)){
 				loc.getBlock().setType(Material.CHEST);
 				if(loc.getBlock().getState() instanceof Chest){
 					chest=(Chest)loc.getBlock().getState();
@@ -885,7 +885,7 @@ public class SkyWars extends TeamGame{
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(getState()!=GameState.LobbyPhase)return;
 			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
 				ev.getPlayer().openInventory(kitshop.getInventory());
@@ -900,7 +900,7 @@ public class SkyWars extends TeamGame{
 			
 			getStats().addInt(v, 1, StatsKey.LOSE);
 			getStats().addInt(v, 1, StatsKey.DEATHS);
-			getGameList().addPlayer(v, PlayerState.OUT);
+			getGameList().addPlayer(v, PlayerState.SPECTATOR);
 			
 			if(ev.getEntity().getKiller() instanceof Player || this.hit.containsKey( ((Player)ev.getEntity()) )){
 				Player a;
@@ -950,8 +950,8 @@ public class SkyWars extends TeamGame{
 	@EventHandler
 	public void teamuse(AddonVoteTeamPlayerChooseEvent ev){
 		if(skyWarsType==SkyWarsType._32x4){
-			if(ev.getState()==PlayerState.IN){
-				ev.getPlayer().teleport(getWorldData().getLocs(ev.getTeam()).get(0).clone().add(0, 12,0));
+			if(ev.getState()==PlayerState.INGAME){
+				ev.getPlayer().teleport(getWorldData().getSpawnLocations(ev.getTeam()).get(0).clone().add(0, 12,0));
 			}else{
 				ev.getPlayer().teleport(getManager().getLobby());
 			}
@@ -959,7 +959,7 @@ public class SkyWars extends TeamGame{
 	}
 	
 	public Player TeamPartner(Player p){
-		for(Player p1 : getPlayerFrom(getTeam(p))){
+		for(Player p1 : getPlayersFromTeam(getTeam(p))){
 			if(p1==p)continue;
 			return p1;
 		}
@@ -970,7 +970,7 @@ public class SkyWars extends TeamGame{
 	public void GameStateChangeSkyWars(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
 			String winner="";
-			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.INGAME);
 			if(list.size()==1){
 				Player p = list.get(0);
 				getStats().addInt(p, 1, StatsKey.WIN);
@@ -1072,7 +1072,7 @@ public class SkyWars extends TeamGame{
 			
 			for(Team t : skyWarsType.getTeam()){
 				if(getWorldData().existLoc(t)){
-					UtilMap.makeQuadrat(null,getWorldData().getLocs(t).get(0).clone().add(0, 10, 0), 2, 5,new ItemStack(Material.AIR),null);
+					UtilMap.makeQuadrat(null,getWorldData().getSpawnLocations(t).get(0).clone().add(0, 10, 0), 2, 5,new ItemStack(Material.AIR),null);
 				}
 			}
 		}
@@ -1091,7 +1091,7 @@ public class SkyWars extends TeamGame{
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
 			
-			getGameList().addPlayer(p,PlayerState.IN);
+			getGameList().addPlayer(p,PlayerState.INGAME);
 			kills.put(p.getName(), 0);
 			plist.add(p);
 			for(Player player : UtilServer.getPlayers()){
@@ -1103,11 +1103,11 @@ public class SkyWars extends TeamGame{
 				p.getInventory().addItem(new ItemStack(Material.COMPASS));
 			}
 		}
-		PlayerVerteilung(skyWarsType.getTeam(), plist);
+		distributePlayers(skyWarsType.getTeam(), plist);
 		
 		for(Player player : getTeamList().keySet()){
 			if(player.getWorld().getUID()!=getWorldData().getWorld().getUID()){
-				player.teleport(getWorldData().getLocs(getTeamList().get(player)).get(0));
+				player.teleport(getWorldData().getSpawnLocations(getTeamList().get(player)).get(0));
 			}
 		}
 

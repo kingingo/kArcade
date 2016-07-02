@@ -61,7 +61,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	
 	@EventHandler
 	public void Respawn(PlayerRespawnEvent ev){
-		if((!isState(GameState.InGame)) || getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
+		if((!isState(GameState.InGame)) || getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR)return;
 		ev.setRespawnLocation(list.get(UtilMath.RandomInt(list.size(), 0)));
 		getSpawnInventory(ev.getPlayer());
 	}
@@ -70,7 +70,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	public void Start(GameStartEvent ev){
 		setStart(187);
 		setState(GameState.InGame);
-		list = getWorldData().getLocs(Team.SOLO);
+		list = getWorldData().getSpawnLocations(Team.SOLO);
 		long time = System.currentTimeMillis();
 		int r=0;
 		
@@ -78,7 +78,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			getManager().Clear(p);
 			Life.put(p, 6);
 			kills.put(p, 0);
-			getGameList().addPlayer(p,PlayerState.IN);
+			getGameList().addPlayer(p,PlayerState.INGAME);
 			
 			getSpawnInventory(p);
 			if(list.size()==1){
@@ -89,7 +89,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			p.teleport(list.get(r));
 			list.remove(r);
 		}
-		list = getWorldData().getLocs(Team.SOLO);
+		list = getWorldData().getSpawnLocations(Team.SOLO);
 		getManager().DebugLog(time, this.getClass().getName());
 	}
 	
@@ -109,7 +109,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			broadcastWithPrefix("KILL_BY", new String[]{victim.getName(),killer.getName()});
 			killer.getInventory().addItem(new ItemStack(Material.ARROW));
 			if(Life.get(victim)<=0){
-				getGameList().addPlayer(victim, PlayerState.OUT);
+				getGameList().addPlayer(victim, PlayerState.SPECTATOR);
 				broadcastWithPrefix("GAME_EXCLUSION", victim.getName());
 			}
 		}
@@ -123,7 +123,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	    if (((defender instanceof Player)) && ((attacker instanceof Player))) {
 	      Player defend = (Player)defender;
 	      Player attack = (Player)attacker;
-	      if(getGameList().getPlayers(PlayerState.OUT).contains(defend)||getGameList().getPlayers(PlayerState.OUT).contains(attack))ev.setCancelled(true);
+	      if(getGameList().getPlayers(PlayerState.SPECTATOR).contains(defend)||getGameList().getPlayers(PlayerState.SPECTATOR).contains(attack))ev.setCancelled(true);
 	    }else if (ev.getDamager() instanceof Arrow){
 	      Projectile ar = (Projectile)ev.getDamager();
 	      if ((ar.getShooter() instanceof Player)) {

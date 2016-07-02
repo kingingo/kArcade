@@ -318,7 +318,7 @@ public class Masterbuilders extends SoloGame{
 			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
-		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
@@ -363,7 +363,7 @@ public class Masterbuilders extends SoloGame{
 					setWinner( ranking.get(0).getObject() );
 					
 					if(area.containsKey(ranking.get(0).getObject())){
-						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getLocs( area.get(ranking.get(0).getObject()) ).get(0).clone().add(0, 5, 0) );
+						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getSpawnLocations( area.get(ranking.get(0).getObject()) ).get(0).clone().add(0, 5, 0) );
 					}
 				}
 				if(ranking.size()>=2){
@@ -384,7 +384,7 @@ public class Masterbuilders extends SoloGame{
 			
 			if(ranking!=null){
 				for(int i = 0 ; i<10; i++){
-					UtilFirework.start(getWorldData().getLocs( area.get(ranking.get(0).getObject()) ).get(0).clone().add(UtilMath.RandomInt(15, -15), UtilMath.RandomInt(19, 13), UtilMath.RandomInt(15, -15)), Color.rdmColor(), Type.BALL);
+					UtilFirework.start(getWorldData().getSpawnLocations( area.get(ranking.get(0).getObject()) ).get(0).clone().add(UtilMath.RandomInt(15, -15), UtilMath.RandomInt(19, 13), UtilMath.RandomInt(15, -15)), Color.rdmColor(), Type.BALL);
 				}
 			}
 			
@@ -402,7 +402,7 @@ public class Masterbuilders extends SoloGame{
 		if(getState()!=GameState.SchutzModus)return;
 		if(list==null){
 			list=new ArrayList<>();
-			for(Player player : getGameList().getPlayers(PlayerState.IN))list.add(player.getName());
+			for(Player player : getGameList().getPlayers(PlayerState.INGAME))list.add(player.getName());
 		}
 		if(getStart()<-5){
 			setStart(21);
@@ -460,7 +460,7 @@ public class Masterbuilders extends SoloGame{
 				}else{
 					player.getInventory().setContents(this.items_bewertungENG);
 				}
-				player.teleport(getWorldData().getLocs(area.get(p)).get(0).clone().add(0, 5, 0));	
+				player.teleport(getWorldData().getSpawnLocations(area.get(p)).get(0).clone().add(0, 5, 0));	
 			}
 		}
 		
@@ -603,7 +603,7 @@ public class Masterbuilders extends SoloGame{
 	}
 	
 	public void createArea(Team team,Player player){
-		Location ecke1 = getWorldData().getLocs(getArea(team)).get(0).clone();
+		Location ecke1 = getWorldData().getSpawnLocations(getArea(team)).get(0).clone();
 		ecke1.getChunk().load();
 		for(int y = ecke1.getBlockY(); y > 0 ; y--){
 			if(ecke1.getWorld().getBlockAt(ecke1.getBlockX(), y, ecke1.getBlockZ()).getType()==Material.COAL_BLOCK){
@@ -612,7 +612,7 @@ public class Masterbuilders extends SoloGame{
 			}
 		}
 		
-		Location ecke2 = getWorldData().getLocs(getArea(team)).get(1).clone();
+		Location ecke2 = getWorldData().getSpawnLocations(getArea(team)).get(1).clone();
 		ecke2.getChunk().load();
 		for(int y = ecke1.getBlockY(); y < 255 ; y++){
 			if(ecke2.getWorld().getBlockAt(ecke2.getBlockX(), y, ecke2.getBlockZ()).getType()==Material.BARRIER){
@@ -714,9 +714,9 @@ public class Masterbuilders extends SoloGame{
 				player.kickPlayer("Too many Players!");
 				break;
 			}
-			getGameList().addPlayer(player, PlayerState.IN);
+			getGameList().addPlayer(player, PlayerState.INGAME);
 			area.put(player.getName(), mtype.getTeam()[i]);
-			player.teleport(getWorldData().getLocs(area.get(player.getName())).get(0).clone().add(0, 5, 0));
+			player.teleport(getWorldData().getSpawnLocations(area.get(player.getName())).get(0).clone().add(0, 5, 0));
 
 			createArea(mtype.getTeam()[i],player);
 			player.setGameMode(GameMode.ADVENTURE);

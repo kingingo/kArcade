@@ -51,6 +51,7 @@ import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
+import eu.epicpvp.karcade.Game.Single.Addons.AddonLobbyJump;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
 import eu.epicpvp.karcade.Game.Single.Addons.VoteHandler.AddonVoteHandler;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -209,6 +210,7 @@ public class SingleGame extends Game {
 	public SingleGame(kArcadeManager manager) {
 		super(manager);
 		this.gameList = new GameList(getManager());
+		new AddonLobbyJump(this);
 	}
 
 	public AddonVoteHandler getVoteHandler(){
@@ -246,8 +248,8 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void InterBack(PlayerInteractEvent ev) {
-		if (UtilEvent.isAction(ev, ActionType.R) && getGameList().getPlayers().containsKey(ev.getPlayer())
-				&& getGameList().getPlayers().get(ev.getPlayer()) == PlayerState.OUT) {
+		if (UtilEvent.isAction(ev, ActionType.RIGHT) && getGameList().getPlayers().containsKey(ev.getPlayer())
+				&& getGameList().getPlayers().get(ev.getPlayer()) == PlayerState.SPECTATOR) {
 			if (ev.getPlayer().getItemInHand() == null)
 				return;
 			if (ev.getPlayer().getItemInHand().getTypeId() != 385)
@@ -268,7 +270,7 @@ public class SingleGame extends Game {
 	@EventHandler
 	public void Damage(EntityDamageEvent ev) {
 		if (ev.getEntity() instanceof Player
-				&& getGameList().getPlayers(PlayerState.OUT).contains((Player) ev.getEntity()))
+				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getEntity()))
 			ev.setCancelled(true);
 		if (isState(GameState.LobbyPhase))
 			ev.setCancelled(true);
@@ -282,7 +284,7 @@ public class SingleGame extends Game {
 	@EventHandler
 	public void Food(FoodLevelChangeEvent ev) {
 		if (ev.getEntity() instanceof Player
-				&& getGameList().getPlayers(PlayerState.OUT).contains((Player) ev.getEntity()))
+				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getEntity()))
 			ev.setCancelled(true);
 		if ((isState(GameState.LobbyPhase)) || !FoodChange) {
 			ev.setCancelled(true);
@@ -347,7 +349,7 @@ public class SingleGame extends Game {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev) {
 		if ((ev.getDamager() instanceof Player
-				&& getGameList().getPlayers(PlayerState.OUT).contains((Player) ev.getDamager())) || !Damage
+				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getDamager())) || !Damage
 				|| isState(GameState.LobbyPhase)) {
 			if (getManager().getService().isDebug())
 				System.err.println("[Game] Cancelled TRUE bei Damage");
@@ -380,7 +382,7 @@ public class SingleGame extends Game {
 		if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.ALL_PERMISSION)
 				|| ev.getPlayer().isOp())
 			return;
-		if (getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())) {
+		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
 			ev.setCancelled(true);
 			if (getManager().getService().isDebug())
 				System.err.println("[Game] Cancelled TRUE bei BLOCKPLACE");
@@ -416,7 +418,7 @@ public class SingleGame extends Game {
 		if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.ALL_PERMISSION)
 				|| ev.getPlayer().isOp())
 			return;
-		if (getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))
+		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()))
 			ev.setCancelled(true);
 		if (ev.getBlock().getWorld().getUID() == getManager().getLobby().getWorld().getUID())
 			ev.setCancelled(true);
@@ -433,14 +435,14 @@ public class SingleGame extends Game {
 				|| (ItemPickupDeny.contains(ev.getItem().getItemStack().getTypeId()))) {
 			ev.setCancelled(true);
 		} else if (getState() != GameState.LobbyPhase
-				&& getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())) {
+				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
 			ev.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void Drop(PlayerDropItemEvent ev) {
-		if (getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()) || (isState(GameState.LobbyPhase))
+		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()) || (isState(GameState.LobbyPhase))
 				|| ItemDropDeny.contains(ev.getItemDrop().getItemStack().getTypeId())
 				|| (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop().getItemStack().getTypeId()))) {
 			ev.setCancelled(true);
@@ -462,7 +464,7 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void In(PlayerInteractEvent ev) {
-		if (getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))
+		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()))
 			ev.setCancelled(true);
 	}
 

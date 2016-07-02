@@ -59,7 +59,7 @@ public class Tester_Spoofer implements Listener,IShop{
 	
 	public ItemStack getShopItem(){
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.IRON_BLOCK), "§cTester-Spoofer §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Traitoren werden zu 75%",
 				"§7im Tester also Innocent angezeigt."
 		});

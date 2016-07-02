@@ -36,7 +36,7 @@ public class Knife implements Listener,IShop{
 	@Override
 	public ItemStack getShopItem() {
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SHEARS,1), "§eKnife §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Erm§glicht einmalig das ",
 				"§7sofortige t§ten eines Spieler's."
 		});

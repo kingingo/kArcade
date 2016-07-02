@@ -38,10 +38,10 @@ public class PerkTeleporter extends Perk{
 	
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)){
 				UtilInv.remove(ev.getPlayer(), item.getType(), (byte)0, 1);
-				ArrayList<Player> l = (ArrayList<Player>)game.getGameList().getPlayers(PlayerState.IN).clone();
+				ArrayList<Player> l = (ArrayList<Player>)game.getGameList().getPlayers(PlayerState.INGAME).clone();
 				l.remove(ev.getPlayer());
 				Player tele = l.get(UtilMath.r(l.size()));
 				

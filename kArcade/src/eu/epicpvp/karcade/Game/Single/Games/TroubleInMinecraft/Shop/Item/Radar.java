@@ -45,7 +45,7 @@ public class Radar implements Listener,IShop{
 	
 	public ItemStack getShopItem(){
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§cRadar §7("+getPunkte()+" Punkt)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Zeigt auf einen ausgewählten Spieler."
 		});
 		return i;

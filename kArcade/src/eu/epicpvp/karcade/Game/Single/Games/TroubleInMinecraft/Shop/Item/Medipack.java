@@ -33,7 +33,7 @@ public class Medipack implements Listener,IShop{
 	
 	public ItemStack getShopItem(){
 		ItemStack i = UtilItem.RenameItem(new ItemStack(351,1,(byte)1), "§cMedipack §7("+getPunkte()+" Punkt)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Heilt 2,5 Herzen."
 		});
 		return i;
@@ -41,7 +41,7 @@ public class Medipack implements Listener,IShop{
 	
 	@EventHandler
 	public void Use(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(ev.getPlayer().getItemInHand()!=null){
 				if(UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), item)){
 					UtilInv.remove(ev.getPlayer(),ev.getPlayer().getItemInHand().getType(),ev.getPlayer().getItemInHand().getData().getData(), 1);

@@ -206,7 +206,7 @@ public class Falldown extends SoloGame{
 	public ArrayList<Entity> getNearPlayers(int r, Location loc, boolean onlyPlayer) {
 		ArrayList<Entity> ps = new ArrayList<Entity>();
 
-		for (Player p : getGameList().getPlayers(PlayerState.IN)) {
+		for (Player p : getGameList().getPlayers(PlayerState.INGAME)) {
 			if (p.getWorld().getUID() == loc.getWorld().getUID() && loc.distance(p.getLocation()) <= r) {
 				if(!ps.contains(p)){
 					ps.add(p);
@@ -231,7 +231,7 @@ public class Falldown extends SoloGame{
 	public ArrayList<kDistance> getNearDistance(int r, Location loc, boolean onlyPlayer, Player player) {
 		ArrayList<kDistance> ps = new ArrayList<kDistance>();
 
-		for (Player p : getGameList().getPlayers(PlayerState.IN)) {
+		for (Player p : getGameList().getPlayers(PlayerState.INGAME)) {
 			if(p.getUniqueId() == player.getUniqueId())continue;
 			if (p.getWorld().getUID() == loc.getWorld().getUID()) {
 				if(loc.distance(p.getLocation()) <= r){
@@ -505,11 +505,11 @@ public class Falldown extends SoloGame{
 			String msg = event.getMessage();
 			if(getManager().getPermManager().hasPermission(p, PermissionType.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
 			
-			if(getGameList().isPlayerState(p) == PlayerState.IN){
+			if(getGameList().isPlayerState(p) == PlayerState.INGAME){
 				event.setFormat(getManager().getPermManager().getPrefix(p) + p.getName() + "§7:§7 "+ msg);
 			}else{
 				event.setCancelled(true);
-				for(Player player : getGameList().getPlayers(PlayerState.OUT)){
+				for(Player player : getGameList().getPlayers(PlayerState.SPECTATOR)){
 					player.sendMessage("§c[Spectator-Chat] " + p.getName() + ":§7 "+ msg);
 				}
 			}
@@ -603,7 +603,7 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void Brew(PlayerInteractEvent ev){
-		if (UtilEvent.isAction(ev, ActionType.R_BLOCK) && ev.getClickedBlock().getType() == Material.BREWING_STAND) {
+		if (UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK) && ev.getClickedBlock().getType() == Material.BREWING_STAND) {
 			final Player p = ev.getPlayer();
 			ev.setCancelled(true);
 
@@ -745,7 +745,7 @@ public class Falldown extends SoloGame{
 				player_ebene.remove(p);
 			}else if(p.getLocation().getY()<=0&&!player_up.contains(p)){
 				if(player_amount.containsKey(p)&&player_amount.get(p)>=5){
-					p.teleport(getWorldData().getLocs(Team.RED).get(0).clone().add(UtilMath.r(20),40,UtilMath.r(20)));
+					p.teleport(getWorldData().getSpawnLocations(Team.RED).get(0).clone().add(UtilMath.r(20),40,UtilMath.r(20)));
 					e = (Chicken)p.getWorld().spawnEntity(p.getLocation(), EntityType.CHICKEN);
 					e.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,600*20,1),true);
 					e.setPassenger(p.getWorld().spawnEntity(p.getLocation(), EntityType.CHICKEN));
@@ -801,7 +801,7 @@ public class Falldown extends SoloGame{
 				}
 			}
 			
-			if(!p.isOnGround()&&getGameList().isPlayerState(p)==PlayerState.IN){
+			if(!p.isOnGround()&&getGameList().isPlayerState(p)==PlayerState.INGAME){
 				for (Entity e : p.getLocation().getChunk().getEntities()) {
 					if (e instanceof EnderCrystal) {
 						if ((p.getLocation().distanceSquared(e.getLocation()) <= 4)) {
@@ -847,7 +847,7 @@ public class Falldown extends SoloGame{
 	String t;
 	@EventHandler
 	public void Enchant(PlayerInteractEvent ev){
-		if (UtilEvent.isAction(ev, ActionType.R_BLOCK )&& ev.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE) {
+		if (UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK )&& ev.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE) {
 			t = is(ev.getPlayer().getItemInHand());
 			ev.setCancelled(true);
 			if (t.equalsIgnoreCase("SWORD")) {
@@ -889,7 +889,7 @@ public class Falldown extends SoloGame{
 	@EventHandler
 	public void GameStateChangeFD(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
-			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.INGAME);
 			if(list.size()==1){
 				Player p = list.get(0);
 				getStats().addInt(p, 1, StatsKey.WIN);
@@ -918,7 +918,7 @@ public class Falldown extends SoloGame{
 			Player v = (Player)ev.getEntity();
 			
 			getStats().addInt(v, 1, StatsKey.LOSE);
-			getGameList().addPlayer(v, PlayerState.OUT);
+			getGameList().addPlayer(v, PlayerState.SPECTATOR);
 			
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
@@ -950,7 +950,7 @@ public class Falldown extends SoloGame{
 			player.teleport(spawn);
 			getManager().Clear(player);
 			player.setLevel( getStats().getInt(StatsKey.POWER, player) );
-			getGameList().addPlayer(player,PlayerState.IN);
+			getGameList().addPlayer(player,PlayerState.INGAME);
 			player.getInventory().addItem(UtilItem.addEnchantmentGlow(UtilItem.RenameItem(new ItemStack(Material.STICK), "§cMagic Stick")));
 			player.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§cRadar"));
 		}

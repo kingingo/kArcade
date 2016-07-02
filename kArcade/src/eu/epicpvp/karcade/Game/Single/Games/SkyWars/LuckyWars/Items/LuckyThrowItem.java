@@ -30,7 +30,7 @@ public class LuckyThrowItem extends LuckyItemListener{
 	
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(UtilItem.ItemNameEquals(event.getPlayer().getItemInHand(), getItem())){
 				event.setCancelled(true);
 				LaunchItem item = new LaunchItem(event.getPlayer(),seconds, launch);

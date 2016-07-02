@@ -29,7 +29,7 @@ public class MultiSoloGame extends MultiGame{
 	
 	@EventHandler
 	public void SpectaterAndRespawn(PlayerRespawnEvent ev){
-		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT){
+		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR){
 			SetSpectator(ev,ev.getPlayer());
 		}
 	}
@@ -37,15 +37,15 @@ public class MultiSoloGame extends MultiGame{
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		if(isState(GameState.Restart)||isState(GameState.LobbyPhase))return;
-		getGameList().addPlayer(ev.getPlayer(), PlayerState.OUT);
-		if(getGameList().getPlayers(PlayerState.IN).size()<=1){
+		getGameList().addPlayer(ev.getPlayer(), PlayerState.SPECTATOR);
+		if(getGameList().getPlayers(PlayerState.INGAME).size()<=1){
 			setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
 	}
 	
 	public void SetSpectator(PlayerRespawnEvent ev,Player player){
 	    getGames().getManager().Clear(player);
-	    List<Player> l = getGameList().getPlayers(PlayerState.IN);
+	    List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 	    if(l.size()>1){
 	    	if(ev==null){
 		    	player.teleport(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));

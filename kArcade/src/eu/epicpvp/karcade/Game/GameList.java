@@ -35,7 +35,7 @@ public class GameList implements Listener{
     @EventHandler
     public void Quit(PlayerQuitEvent ev){
     	if(players.containsKey(ev.getPlayer())){
-    		players.put(ev.getPlayer(), PlayerState.OUT);
+    		players.put(ev.getPlayer(), PlayerState.SPECTATOR);
     	}
     }
     
@@ -74,7 +74,7 @@ public class GameList implements Listener{
 	
 	public void RemovePlayer(Player player) {
 		players.remove(player);
-		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,PlayerState.OUT));
+		Bukkit.getPluginManager().callEvent(new PlayerStateChangeEvent(player,PlayerState.SPECTATOR));
     }
 	
 	public void teleport(Player player,Location loc){

@@ -37,7 +37,7 @@ public class DNA_TEST extends kListener implements IShop{
 	@Override
 	public ItemStack getShopItem() {
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.BLAZE_ROD,1), "§aDNA-TESTER §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Untersucht Leichen auf genauere Informationen."
 		});
 		return i;

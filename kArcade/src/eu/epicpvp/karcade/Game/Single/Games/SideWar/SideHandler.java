@@ -406,8 +406,8 @@ public class SideHandler {
 	}
 	
 	public void XorZ() {
-		Spawns[Blau] = instance.getWorldData().getLocs(Team.BLUE).get(0);
-		Spawns[Rot] = instance.getWorldData().getLocs(Team.RED).get(0);
+		Spawns[Blau] = instance.getWorldData().getSpawnLocations(Team.BLUE).get(0);
+		Spawns[Rot] = instance.getWorldData().getSpawnLocations(Team.RED).get(0);
 		if (Spawns[Blau].getBlockX() == Spawns[Rot].getBlockX()) {
 			achse = 'Z';
 			BLAUkleiner = Spawns[Blau].getBlockZ() < Spawns[Rot]

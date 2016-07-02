@@ -30,8 +30,8 @@ public class ServiceTroubleInMinecraft {
 				npc.sleep();
 				p.sendMessage("§aschlafender NPC gespawnt");
 			}else if(args[1].equalsIgnoreCase("invisble")){
-				for(Player player : ttt.getGameList().getPlayers(PlayerState.IN)){
-					for(Player player1 : ttt.getGameList().getPlayers(PlayerState.IN)){
+				for(Player player : ttt.getGameList().getPlayers(PlayerState.INGAME)){
+					for(Player player1 : ttt.getGameList().getPlayers(PlayerState.INGAME)){
 						player.showPlayer(player1);
 						player1.showPlayer(player);
 					}

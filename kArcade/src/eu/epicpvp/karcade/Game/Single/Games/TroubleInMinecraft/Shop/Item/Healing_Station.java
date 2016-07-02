@@ -42,7 +42,7 @@ public class Healing_Station implements Listener,IShop {
 	@Override
 	public ItemStack getShopItem() {
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.BEACON,1,(byte)3), "§dHealing Station §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Heilt andere Spieler in der n§he der Heal-Station."
 		});
 		return i;
@@ -76,7 +76,7 @@ public class Healing_Station implements Listener,IShop {
 				b.getLocation().getWorld().playEffect(b.getLocation().add(UtilMath.r(4),UtilMath.r(3),UtilMath.r(4)), Effect.HEART, -10);
 			}
 			
-			for(Player p : TTT.getGameList().getPlayers(PlayerState.IN)){
+			for(Player p : TTT.getGameList().getPlayers(PlayerState.INGAME)){
 				if(b.getLocation().distance(p.getLocation()) < 3&&UtilPlayer.getHealth(p)!=UtilPlayer.getMaxHealth(p)){
 					d=d-0.4;
 					if(UtilPlayer.getHealth(p)+0.4>UtilPlayer.getMaxHealth(p)){

@@ -49,81 +49,81 @@ public class MultiWorldData extends WorldData{
 		    	if (tokens.length >= 2){
 		    		if(tokens[0].equalsIgnoreCase("MAP_NAME")){
 		    			game.setMap(tokens[1]);
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SOLO.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SOLO.getDisplayName())){
 		    			locs.get(game).put(Team.SOLO, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SILBER.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SILBER.getDisplayName())){
 		    			locs.get(game).put(Team.SILBER, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.GOLD.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.GOLD.getDisplayName())){
 		    			locs.get(game).put(Team.GOLD, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.DIAMOND.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.DIAMOND.getDisplayName())){
 		    			locs.get(game).put(Team.DIAMOND, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.BRONZE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.BRONZE.getDisplayName())){
 		    			locs.get(game).put(Team.BRONZE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.ORANGE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.ORANGE.getDisplayName())){
 		    			locs.get(game).put(Team.ORANGE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.PURPLE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.PURPLE.getDisplayName())){
 		    			locs.get(game).put(Team.PURPLE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.GRAY.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.GRAY.getDisplayName())){
 		    			locs.get(game).put(Team.GRAY, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.BLUE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.BLUE.getDisplayName())){
 		    			locs.get(game).put(Team.BLUE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.RED.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.RED.getDisplayName())){
 		    			locs.get(game).put(Team.RED, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.YELLOW.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.YELLOW.getDisplayName())){
 		    			locs.get(game).put(Team.YELLOW, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.GREEN.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.GREEN.getDisplayName())){
 		    			locs.get(game).put(Team.GREEN, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.CYAN.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.CYAN.getDisplayName())){
 		    			locs.get(game).put(Team.CYAN, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.AQUA.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.AQUA.getDisplayName())){
 		    			locs.get(game).put(Team.AQUA, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.BLACK.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.BLACK.getDisplayName())){
 		    			locs.get(game).put(Team.BLACK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.WHITE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.WHITE.getDisplayName())){
 		    			locs.get(game).put(Team.WHITE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_BLUE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_BLUE.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_BLUE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_RED.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_RED.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_RED, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_YELLOW.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_YELLOW.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_YELLOW, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_BLACK.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_BLACK.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_BLACK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_GREEN.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_GREEN.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_GREEN, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_BLUE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_BLUE.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_BLUE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_RED.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_RED.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_RED, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_YELLOW.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_YELLOW.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_YELLOW, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_GREEN.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_GREEN.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_GREEN, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.PINK.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.PINK.getDisplayName())){
 		    			locs.get(game).put(Team.PINK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_GRAY.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_GRAY.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_GRAY, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_PINK.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_PINK.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_PINK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_PURPLE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_PURPLE.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_PURPLE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_ORANGE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.VILLAGE_ORANGE.getDisplayName())){
 		    			locs.get(game).put(Team.VILLAGE_ORANGE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_GRAY.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_GRAY.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_GRAY, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_ORANGE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_ORANGE.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_ORANGE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_PURPLE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_PURPLE.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_PURPLE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_PINK.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_PINK.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_PINK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_CYAN.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_CYAN.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_CYAN, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_AQUA.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_AQUA.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_AQUA, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_BLACK.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_BLACK.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_BLACK, SchematicParser.StringListTOVectorList(paste,tokens[1]));
-		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_WHITE.Name())){
+		    		}else if(tokens[0].equalsIgnoreCase(Team.SHEEP_WHITE.getDisplayName())){
 		    			locs.get(game).put(Team.SHEEP_WHITE, SchematicParser.StringListTOVectorList(paste,tokens[1]));
 		    		}
 		        }
@@ -140,7 +140,7 @@ public class MultiWorldData extends WorldData{
 		log("Load Config:");
 		log("MultiGame Arena: "+game.getArena());
 		log("MultiGame Map: "+game.getMap());
-		for(Team team : locs.get(game).keySet())log("TEAM:"+team.Name()+" LOC:"+locs.get(game).get(team).size());
+		for(Team team : locs.get(game).keySet())log("TEAM:"+team.getDisplayName()+" LOC:"+locs.get(game).get(team).size());
 	}
 	
 	public void addMultiGame(MultiGame game,Team team){
@@ -166,7 +166,7 @@ public class MultiWorldData extends WorldData{
 	public ArrayList<Location> getLocs(MultiGame game,Team team){
 		addMultiGame(game,team);
 		if(!locs.get(game).containsKey(team)){
-			logErr("Team NOT Found! "+team.Name());
+			logErr("Team NOT Found! "+team.getDisplayName());
 			return null;
 		}else{
 			return locs.get(game).get(team);

@@ -42,7 +42,7 @@ public class Chainer extends BrewItem{
 	
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(UtilItem.ItemNameEquals(getRealItem(), event.getPlayer().getItemInHand())){
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
@@ -54,7 +54,7 @@ public class Chainer extends BrewItem{
 					        location.getWorld().playEffect(location, Effect.POTION_BREAK, 16394);
 
 					        for (final Entity entity : getFalldown().getNearPlayers(8, location, true))
-					        	 if(((Player)entity).getUniqueId() != event.getPlayer().getUniqueId() && getFalldown().getGameList().isPlayerState( ((Player)entity) ) == PlayerState.IN ){
+					        	 if(((Player)entity).getUniqueId() != event.getPlayer().getUniqueId() && getFalldown().getGameList().isPlayerState( ((Player)entity) ) == PlayerState.INGAME ){
 					            UtilPlayer.addPotionEffect(((Player)entity), PotionEffectType.SLOW, 10, 3);
 
 					            new kScheduler(getFalldown().getManager().getInstance(), new kScheduler.kSchedulerHandler() {

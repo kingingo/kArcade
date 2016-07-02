@@ -188,7 +188,7 @@ public class AddonEntityKing implements Listener {
 			
 			ev.setCancelled(false);
 			if(ev.getDamager() instanceof Player){
-				if(game.getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.IN){
+				if(game.getGameList().isPlayerState( ((Player)ev.getDamager()) )!=PlayerState.INGAME){
 					ev.setCancelled(true);
 					return;
 				}

@@ -56,8 +56,8 @@ public class SheepWars extends CustomWars{
 	
 	@EventHandler
 	public void sheepDeath(AddonEntityTeamKingDeathEvent ev){
-		UtilScoreboard.resetScore(getBoard(), "§a§l"+Zeichen.BIG_HERZ.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getBoard(), "§4§l"+Zeichen.MAHLZEICHEN_FETT.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().Name(), DisplaySlot.SIDEBAR, getPlayerFrom(ev.getTeam()).size());
+		UtilScoreboard.resetScore(getScoreboard(), "§a§l"+Zeichen.BIG_HERZ.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getScoreboard(), "§4§l"+Zeichen.MAHLZEICHEN_FETT.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR, getPlayersFromTeam(ev.getTeam()).size());
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		Title t = new Title("","");
@@ -66,7 +66,7 @@ public class SheepWars extends CustomWars{
 		}
 		
 		for(Player player : UtilServer.getPlayers()){
-			t.setSubtitle(TranslationHandler.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+			t.setSubtitle(TranslationHandler.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().getDisplayName()));
 			t.send(player);
 		}
 	}
@@ -147,7 +147,7 @@ public class SheepWars extends CustomWars{
 	
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(getState()!=GameState.LobbyPhase)return;
 			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
 				ev.getPlayer().openInventory(kitshop.getInventory());

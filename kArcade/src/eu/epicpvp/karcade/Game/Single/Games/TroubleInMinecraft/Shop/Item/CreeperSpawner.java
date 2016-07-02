@@ -46,7 +46,7 @@ public class CreeperSpawner extends kListener implements IShop{
 	@Override
 	public ItemStack getShopItem() {
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)4), "§aCreeper Spawner§7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Man bekommt 3 Creeper Spawner womit man §aCreeper§7 Spawnen kann."
 		});
 		return i;
@@ -87,7 +87,7 @@ public class CreeperSpawner extends kListener implements IShop{
 	
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase("§aCreeper Spawner")){
 				event.setCancelled(true);
 				LaunchItem item = new LaunchItem(event.getPlayer(),4,new LaunchItem.LaunchItemEventHandler(){

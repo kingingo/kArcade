@@ -50,17 +50,17 @@ public class AddonChat extends kListener{
 			UtilServer.broadcast(game.getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 		}else{
 			if(team_game!=null){
-				if(team_game.getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+				if(team_game.getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
 					if(spectator){
-						for(Player p : team_game.getGameList().getPlayers(PlayerState.IN)){
+						for(Player p : team_game.getGameList().getPlayers(PlayerState.INGAME)){
 							p.sendMessage(Color.GRAY+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
-						UtilServer.broadcast(team_game.getTeam(ev.getPlayer()).getColor()+team_game.getTeam(ev.getPlayer()).Name()+" "+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
+						UtilServer.broadcast(team_game.getTeam(ev.getPlayer()).getColor()+team_game.getTeam(ev.getPlayer()).getDisplayName()+" "+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 					}
 				}else{
 					if(spectator){
-						for(Player p : team_game.getGameList().getPlayers(PlayerState.OUT)){
+						for(Player p : team_game.getGameList().getPlayers(PlayerState.SPECTATOR)){
 							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
@@ -68,9 +68,9 @@ public class AddonChat extends kListener{
 					}
 				}
 			}else{
-				if(game.getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+				if(game.getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
 					if(spectator){
-						for(Player p : game.getGameList().getPlayers(PlayerState.IN)){
+						for(Player p : game.getGameList().getPlayers(PlayerState.INGAME)){
 							p.sendMessage(Color.GRAY+ev.getPlayer().getDisplayName()+"§7:§f "+ev.getMessage());
 						}
 					}else{
@@ -78,7 +78,7 @@ public class AddonChat extends kListener{
 					}
 				}else{
 					if(spectator){
-						for(Player p : game.getGameList().getPlayers(PlayerState.OUT)){
+						for(Player p : game.getGameList().getPlayers(PlayerState.SPECTATOR)){
 							p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7:§f "+ev.getMessage());
 						}
 					}else{

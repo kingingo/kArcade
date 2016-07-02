@@ -512,7 +512,7 @@ public class MultiGames extends Game{
 									}
 
 									((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.INGAME);
 									event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 									Bukkit.getPluginManager().callEvent(event);
 									System.out.println("CALL: "+player.getName()+" "+(event==null));
@@ -524,7 +524,7 @@ public class MultiGames extends Game{
 									}
 										
 									((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
-									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
+									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.INGAME);
 									event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
 									Bukkit.getPluginManager().callEvent(event);
 									System.out.println("CALL: "+player.getName());

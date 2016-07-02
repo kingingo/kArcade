@@ -257,7 +257,7 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
 		if(getState()!=GameState.InGame)return;
-		if(getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer()))return;
+		if(getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()))return;
 		if(UtilEvent.isAction(ev, ActionType.BLOCK) && ev.getClickedBlock().getTypeId() == 33){
 			if(!chest.containsKey(ev.getClickedBlock().getLocation()))CreateChest(ev.getClickedBlock().getLocation());
 			ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
@@ -317,7 +317,7 @@ public class SurvivalGames extends TeamGame{
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
 		
-		if(getGameList().getPlayers(PlayerState.IN).size()<=4&&getState()==GameState.InGame){
+		if(getGameList().getPlayers(PlayerState.INGAME).size()<=4&&getState()==GameState.InGame){
 			if(getStart()>15){
 				setStart(15);
 			}
@@ -336,7 +336,7 @@ public class SurvivalGames extends TeamGame{
 				broadcastWithPrefixName("GAME_END");
 				setStart((3*60)+1);
 				
-				ArrayList<Location> list = getWorldData().getLocs(Team.RED);
+				ArrayList<Location> list = getWorldData().getSpawnLocations(Team.RED);
 				Location r=null;
 				for(Player p : UtilServer.getPlayers()){
 					r=list.get(0);
@@ -354,7 +354,7 @@ public class SurvivalGames extends TeamGame{
 	
 	@EventHandler
 	public void Block(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R) && ev.getPlayer().getItemInHand()!=null){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT) && ev.getPlayer().getItemInHand()!=null){
 			if(ev.getPlayer().getItemInHand().getType()==Material.WORKBENCH){
 				ev.getPlayer().getItemInHand().setTypeId(0);
 				ev.getPlayer().openWorkbench(ev.getPlayer().getLocation(), true);
@@ -375,7 +375,7 @@ public class SurvivalGames extends TeamGame{
 			case 180:
 				broadcastWithPrefix("DEATHMATCH_START_IN", getStart()-170);
 				AddonSphereGrenze sg = new AddonSphereGrenze(getManager(),getWorldData().getWorld());
-				sg.loadGrenzen(getWorldData().getLocs(Team.YELLOW).get(0), ( (int)getWorldData().getLocs(Team.YELLOW).get(0).distance(getWorldData().getLocs(Team.RED).get(0))+5 ) );
+				sg.loadGrenzen(getWorldData().getSpawnLocations(Team.YELLOW).get(0), ( (int)getWorldData().getSpawnLocations(Team.YELLOW).get(0).distance(getWorldData().getSpawnLocations(Team.RED).get(0))+5 ) );
 				sg.start();
 				break;
 			case 179:broadcastWithPrefix("DEATHMATCH_START_IN", getStart());break;
@@ -414,7 +414,7 @@ public class SurvivalGames extends TeamGame{
 			getStats().addInt(victim,1, StatsKey.DEATHS);
 			getStats().addInt(victim,1, StatsKey.LOSE);
 			broadcastWithPrefix("KILL_BY",new String[]{victim.getName(),killer.getName()});
-			getGameList().addPlayer(victim, PlayerState.OUT);
+			getGameList().addPlayer(victim, PlayerState.SPECTATOR);
 			
 			Player t = TeamPartner(victim);
 			if(t!=null){
@@ -430,7 +430,7 @@ public class SurvivalGames extends TeamGame{
 			getStats().addInt(victim, 1, StatsKey.DEATHS);
 			getStats().addInt(victim, 1, StatsKey.LOSE);
 			broadcastWithPrefix("DEATH",new String[]{victim.getName()});
-			getGameList().addPlayer(victim, PlayerState.OUT);
+			getGameList().addPlayer(victim, PlayerState.SPECTATOR);
 			
 			Player t = TeamPartner(victim);
 			if(t!=null){
@@ -441,7 +441,7 @@ public class SurvivalGames extends TeamGame{
 	}
 	
 	public Player TeamPartner(Player p){
-		for(Player p1 : getPlayerFrom(getTeam(p))){
+		for(Player p1 : getPlayersFromTeam(getTeam(p))){
 			if(p1==p)continue;
 			return p1;
 		}
@@ -459,10 +459,10 @@ public class SurvivalGames extends TeamGame{
 		}
 		
 		if(!isState(GameState.LobbyPhase)&&getTeamList().containsKey(ev.getPlayer())){
-			for(Player player : getGameList().getPlayers(PlayerState.IN))player.sendMessage("§7[§c"+getTeam(ev.getPlayer()).Name()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
-		}else if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+			for(Player player : getGameList().getPlayers(PlayerState.INGAME))player.sendMessage("§7[§c"+getTeam(ev.getPlayer()).getDisplayName()+"§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+		}else if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.setCancelled(true);
-			for(Player player : getGameList().getPlayers(PlayerState.OUT))player.sendMessage("§7[§6Spectator§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
+			for(Player player : getGameList().getPlayers(PlayerState.SPECTATOR))player.sendMessage("§7[§6Spectator§7] "+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
 			//UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		}else{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
@@ -489,15 +489,15 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
-		ArrayList<Location> list = getWorldData().getLocs(Team.RED);
+		ArrayList<Location> list = getWorldData().getSpawnLocations(Team.RED);
 		ArrayList<Player> plist = new ArrayList<>();
 		int r=0;
 		for(Player p : UtilServer.getPlayers()){
 			getManager().Clear(p);
-			getGameList().addPlayer(p,PlayerState.IN);
+			getGameList().addPlayer(p,PlayerState.INGAME);
 			plist.add(p);
 		}
-		PlayerVerteilung(new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
+		distributePlayers(new Team[]{Team.DISTRICT_1,Team.DISTRICT_2,Team.DISTRICT_3,Team.DISTRICT_4,Team.DISTRICT_5
 				,Team.DISTRICT_6,Team.DISTRICT_7,Team.DISTRICT_8,Team.DISTRICT_9,Team.DISTRICT_10,Team.DISTRICT_11,Team.DISTRICT_12},plist);
 		Team t;
 		Scoreboard ps;
@@ -506,10 +506,10 @@ public class SurvivalGames extends TeamGame{
 			r=UtilMath.r(list.size());
 			t = getTeamList().get(p);
 			ps=Bukkit.getScoreboardManager().getNewScoreboard();
-			UtilScoreboard.addBoard(ps, DisplaySlot.BELOW_NAME, Color.GRAY+t.Name().split(" ")[0]);
+			UtilScoreboard.addBoard(ps, DisplaySlot.BELOW_NAME, Color.GRAY+t.getDisplayName().split(" ")[0]);
 			for(Player p1 : UtilServer.getPlayers()){
 				if(!getTeamList().containsKey(p1))continue;
-				UtilScoreboard.setScore(ps, p1.getName(), DisplaySlot.BELOW_NAME, Integer.valueOf( getTeamList().get(p1).Name().split(" ")[1] ));
+				UtilScoreboard.setScore(ps, p1.getName(), DisplaySlot.BELOW_NAME, Integer.valueOf( getTeamList().get(p1).getDisplayName().split(" ")[1] ));
 			}
 			
 			
@@ -518,7 +518,7 @@ public class SurvivalGames extends TeamGame{
 			UtilScoreboard.setScore(ps, "§aPartner:", DisplaySlot.SIDEBAR, 9);
 			
 			
-			for(Player p1 : getPlayerFrom(getTeam(p))){
+			for(Player p1 : getPlayersFromTeam(getTeam(p))){
 				if(p==p1)continue;
 				if(p1.getName().length()>13){
 					UtilScoreboard.setScore(ps, "§a"+p1.getName().substring(13), DisplaySlot.SIDEBAR, 8);
@@ -583,7 +583,7 @@ public class SurvivalGames extends TeamGame{
 	@EventHandler
 	public void ChangeState(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
-			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.INGAME);
 			if(list.size()==1){
 				Player p = list.get(0);
 				getStats().setInt(p,1, StatsKey.WIN);
@@ -594,7 +594,7 @@ public class SurvivalGames extends TeamGame{
 				Player p1 = list.get(1);
 				getStats().setInt(p,1, StatsKey.WIN);
 				getStats().setInt(p1,1, StatsKey.WIN);
-				broadcastWithPrefix("SURVIVAL_GAMES_DISTRICT_WIN", new String[]{t.Name(),p.getName(),p1.getName()});
+				broadcastWithPrefix("SURVIVAL_GAMES_DISTRICT_WIN", new String[]{t.getDisplayName(),p.getName(),p1.getName()});
 			}
 		}
 	}

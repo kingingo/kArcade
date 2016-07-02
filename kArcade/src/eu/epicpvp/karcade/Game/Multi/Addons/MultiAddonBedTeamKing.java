@@ -106,7 +106,7 @@ public class MultiAddonBedTeamKing extends kListener {
 				}
 			}
 
-			if(t==null ||  ev.getGame().getGameList().isPlayerState( ev.getPlayer() )!=PlayerState.IN 
+			if(t==null ||  ev.getGame().getGameList().isPlayerState( ev.getPlayer() )!=PlayerState.INGAME 
 					|| (ev.getGame() instanceof MultiTeamGame && ((MultiTeamGame)ev.getGame()).getTeamList().get(ev.getPlayer())==t)){
 				ev.setBuild(false);
 				ev.setCancelled(true);

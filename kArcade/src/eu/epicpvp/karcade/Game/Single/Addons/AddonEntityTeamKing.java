@@ -62,7 +62,7 @@ public class AddonEntityTeamKing extends kListener {
 		Entity e;
 		Location loc = null;
 		for (Team t : teams) {
-			loc = team.getWorldData().getLocs(getSheep(t)).get(0);
+			loc = team.getWorldData().getSpawnLocations(getSheep(t)).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 			e = team.getManager().getPetManager().AddPetWithOutOwner(t.getColor() + "Schaf", true, type, loc);
 			this.teams.put(t, e);
@@ -209,7 +209,7 @@ public class AddonEntityTeamKing extends kListener {
 		if (ev.getEntity() instanceof Entity && is(ev.getEntity())) {
 			Team t = get(ev.getEntity());
 			if (t == null || getTeam().getTeam(((Player) ev.getDamager())) == t
-					|| team.getGameList().isPlayerState(((Player) ev.getDamager())) != PlayerState.IN) {
+					|| team.getGameList().isPlayerState(((Player) ev.getDamager())) != PlayerState.INGAME) {
 				ev.setCancelled(true);
 				return;
 			}

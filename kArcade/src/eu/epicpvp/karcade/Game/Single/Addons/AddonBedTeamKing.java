@@ -37,7 +37,7 @@ public class AddonBedTeamKing implements Listener {
 		BlockFace face = null;
 		Location loc = null;
 		for(Team t : teams){
-			loc=((SingleGame)manager.getGame()).getWorldData().getLocs(getBlockTeam(t)).get(0);
+			loc=((SingleGame)manager.getGame()).getWorldData().getSpawnLocations(getBlockTeam(t)).get(0);
 			loc.getWorld().loadChunk(loc.getWorld().getChunkAt(loc));
 		
 			for(BlockFace f : BlockFace.values()){
@@ -104,7 +104,7 @@ public class AddonBedTeamKing implements Listener {
 				}
 			}
 			
-			if(t==null||getTeam().getTeam( ev.getPlayer() )==t ||  team.getGameList().isPlayerState( ev.getPlayer() )!=PlayerState.IN){
+			if(t==null||getTeam().getTeam( ev.getPlayer() )==t ||  team.getGameList().isPlayerState( ev.getPlayer() )!=PlayerState.INGAME){
 				ev.setCancelled(true);
 				return;
 			}

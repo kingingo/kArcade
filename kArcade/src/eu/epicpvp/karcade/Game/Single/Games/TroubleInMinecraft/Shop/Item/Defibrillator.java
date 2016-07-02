@@ -50,7 +50,7 @@ public class Defibrillator implements Listener,IShop{
 	@Override
 	public ItemStack getShopItem() {
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.REDSTONE,1), "§cDefibrillator §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Belebt einen Toten Spielerwieder."
 		});
 		return i;
@@ -86,15 +86,15 @@ public class Defibrillator implements Listener,IShop{
 			for(Player a : UtilServer.getPlayers()){
 				a.showPlayer(r);
 			}
-			for(Player a1 : TTT.getGameList().getPlayers(PlayerState.IN)){
+			for(Player a1 : TTT.getGameList().getPlayers(PlayerState.INGAME)){
 				r.showPlayer(a1);
 			}
-			for(Player a1 : TTT.getGameList().getPlayers(PlayerState.OUT)){
+			for(Player a1 : TTT.getGameList().getPlayers(PlayerState.SPECTATOR)){
 				r.hidePlayer(a1);
 			}
 			Team t = teams.get(r.getName().toLowerCase());
 			TTT.addTeam(r, t);
-			TTT.getGameList().addPlayer(r, PlayerState.IN);
+			TTT.getGameList().addPlayer(r, PlayerState.INGAME);
 		}
 		
 	}
@@ -108,7 +108,7 @@ public class Defibrillator implements Listener,IShop{
 		if(!TTT.getNpclist().containsKey(npc.getEntityID())){
 			String name = npc.getName();
 			Player r=null;
-			for(Player p1 : TTT.getGameList().getPlayers(PlayerState.OUT)){
+			for(Player p1 : TTT.getGameList().getPlayers(PlayerState.SPECTATOR)){
 				if(p1.getName().equalsIgnoreCase(name)){
 					r=p1;
 					continue;

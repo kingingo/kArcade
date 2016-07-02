@@ -165,7 +165,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 			if(getState()==GameState.InGame){
 				if(ev.getClickedBlock()!=null){
 					if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
-						if(getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+						if(getGameList().getPlayers().get(ev.getPlayer())==PlayerState.INGAME){
 							ev.setCancelled(true);
 							ev.getPlayer().openInventory(enderchest_inv);
 							return;
@@ -222,7 +222,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
 			
 			getGames().getStats().setInt(v, 1, StatsKey.LOSE);
-			getGameList().addPlayer(v, PlayerState.OUT);
+			getGameList().addPlayer(v, PlayerState.SPECTATOR);
 			
 			if(ev.getEntity().getKiller() instanceof Player){
 				a = (Player)ev.getEntity().getKiller();
@@ -250,7 +250,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 	@EventHandler
 	public void MultiGameStateChangeSG1vs1(MultiGameStateChangeEvent ev){
 		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
-			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.INGAME);
 			if(list.size()==1){
 				Player p = list.get(0);
 				getGames().getStats().addInt(p, 1, StatsKey.WIN);

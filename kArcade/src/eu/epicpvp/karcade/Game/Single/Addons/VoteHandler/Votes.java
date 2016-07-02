@@ -118,6 +118,6 @@ public class Votes {
 	}
 	
 	protected ItemStack setAmount(ItemStack item,int amount){
-		return UtilItem.SetDescriptions(item, new String[]{"§cVotes: "+amount});
+		return UtilItem.setLore(item, new String[]{"§cVotes: "+amount});
 	}
 }

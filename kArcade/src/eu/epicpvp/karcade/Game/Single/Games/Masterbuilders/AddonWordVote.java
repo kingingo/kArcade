@@ -68,7 +68,7 @@ public class AddonWordVote extends kListener{
 		UtilScoreboard.setScore(scoreENG, "§e"+buildings[2].getEnglish(), DisplaySlot.SIDEBAR, 0);
 		UtilScoreboard.setScore(scoreENG, "", DisplaySlot.SIDEBAR, -1);
 		
-		for(Player player : getMasterbuilders().getGameList().getPlayers(PlayerState.IN)){
+		for(Player player : getMasterbuilders().getGameList().getPlayers(PlayerState.INGAME)){
 			player.getInventory().clear();
 			player.getInventory().setItem(2,UtilItem.RenameItem(new ItemStack(Material.PAPER), "§a"+(TranslationHandler.getLanguage(player) == LanguageType.GERMAN ? buildings[0].getGerman() : buildings[0].getEnglish())));
 			player.getInventory().setItem(4,UtilItem.RenameItem(new ItemStack(Material.PAPER), "§a"+(TranslationHandler.getLanguage(player) == LanguageType.GERMAN ? buildings[1].getGerman() : buildings[1].getEnglish())));
@@ -98,7 +98,7 @@ public class AddonWordVote extends kListener{
 					getMasterbuilders().setBuilding(buildings[UtilMath.r(buildings.length)]);
 				}
 				
-				for(Player player : getMasterbuilders().getGameList().getPlayers(PlayerState.IN))player.getInventory().clear();
+				for(Player player : getMasterbuilders().getGameList().getPlayers(PlayerState.INGAME))player.getInventory().clear();
 				vote=false;
 				getMasterbuilders().setState(GameState.InGame,GameStateChangeReason.CUSTOM);
 			}else{

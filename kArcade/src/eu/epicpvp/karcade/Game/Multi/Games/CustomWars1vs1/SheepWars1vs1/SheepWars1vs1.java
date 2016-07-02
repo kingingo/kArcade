@@ -32,7 +32,7 @@ public class SheepWars1vs1 extends CustomWars1vs1{
 
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
-		if(getState()==GameState.LobbyPhase&&getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.R)){
+		if(getState()==GameState.LobbyPhase&&getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(ev.getPlayer().getItemInHand()!=null&&UtilItem.ItemNameEquals(ev.getPlayer().getItemInHand(), UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"))){
 				ev.getPlayer().openInventory(getGames().getKitshop().getInventory());
 			}

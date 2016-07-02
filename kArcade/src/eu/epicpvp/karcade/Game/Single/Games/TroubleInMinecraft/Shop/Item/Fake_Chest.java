@@ -49,7 +49,7 @@ public class Fake_Chest implements Listener,IShop {
 	
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase("Fake-Chest")){
 				event.setCancelled(true);
 				LaunchItem item = new LaunchItem(event.getPlayer(),4,new LaunchItem.LaunchItemEventHandler(){
@@ -117,7 +117,7 @@ public class Fake_Chest implements Listener,IShop {
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void PickupItemFake(ItemFakePickupEvent ev){
 		if(!list.containsKey(ev.getItemfake()))return;
-		if(TTT.getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT)return;
+		if(TTT.getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR)return;
 		if(TTT.getTeam(ev.getPlayer())==Team.TRAITOR){
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+"Dieses Item ist ein Fake-Item.");
 			ev.setCancelled(true);
@@ -165,7 +165,7 @@ public class Fake_Chest implements Listener,IShop {
 	
 	public ItemStack getShopItem(){
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.SKULL_ITEM,1,(byte)3), "§cFake-Chest §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Wenn man dieses Fake-Item",
 				"§7aufnimmt stirbt man sofort."
 		});

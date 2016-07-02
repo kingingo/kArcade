@@ -134,7 +134,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 			if(getState()!=GameState.LobbyPhase){
 				if(ev.getBlock().getType()==Material.STAINED_GLASS||ev.getBlock().getType()==Material.STAINED_CLAY){
 					if(ev.getBlock().getData() != getTeam(ev.getPlayer()).getItem().getData().getData()){
-						if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+						if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer())==PlayerState.INGAME){
 							ev.getBlock().setData(getTeam(ev.getPlayer()).getItem().getData().getData());
 						}
 					}
@@ -149,7 +149,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 			if(ev.getPlayer().getItemInHand()!=null){
 				if(ev.getPlayer().getItemInHand().getType()==Material.STAINED_GLASS||ev.getPlayer().getItemInHand().getType()==Material.STAINED_CLAY){
 					if(ev.getPlayer().getItemInHand().getData().getData() != getTeam(ev.getPlayer()).getItem().getData().getData()){
-						if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer())==PlayerState.IN){
+						if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer())==PlayerState.INGAME){
 							ev.getPlayer().setItemInHand(new ItemStack(ev.getPlayer().getItemInHand().getType(),ev.getPlayer().getItemInHand().getAmount(),getTeam(ev.getPlayer()).getItem().getData().getData()));
 							ev.getPlayer().updateInventory();
 						}
@@ -168,7 +168,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 			}
 			
 			for(Player player : getGameList().getPlayers().keySet()){
-				t.setSubtitle(TranslationHandler.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().Name()));
+				t.setSubtitle(TranslationHandler.getText(player,"BEDWARS_BED_BROKE", ev.getTeam().getColor()+"§l"+ev.getTeam().getDisplayName()));
 				t.send(player);
 			}
 		}
@@ -176,7 +176,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 	
 	@EventHandler
 	public void VillagerShop(VillagerShopEvent ev){
-		if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().isPlayerState(ev.getPlayer())==PlayerState.OUT){
+		if(getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR){
 			ev.setCancelled(true);
 		}
 	}
@@ -231,7 +231,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
 			
 			if(!UtilCustomWars1vs1.getAddonBed().getGames_boolean().get(this).contains(getTeam(v))){
-				getGameList().addPlayer(v, PlayerState.OUT);
+				getGameList().addPlayer(v, PlayerState.SPECTATOR);
 				getGames().getStats().addInt(v, 1, StatsKey.LOSE);
 			}
 			
@@ -248,7 +248,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 	
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
-		 if(getGameList().getPlayers().containsKey(ev.getPlayer())&&getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+		 if(getGameList().getPlayers().containsKey(ev.getPlayer())&&getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
 			 ev.setRespawnLocation( getWorldData().getLocs(this,getTeam(ev.getPlayer())).get(0) );
 		 }
 	}
@@ -266,7 +266,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 	@EventHandler
 	public void MultiGameStateChangeBedWars(MultiGameStateChangeEvent ev){
 		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
-			ArrayList<Player> list = getGameList().getPlayers(PlayerState.IN);
+			ArrayList<Player> list = getGameList().getPlayers(PlayerState.INGAME);
 			if(list.size()==1){
 				Player p = list.get(0);
 				getGames().getMoney().addInt(p, 12, StatsKey.COINS);

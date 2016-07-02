@@ -26,19 +26,19 @@ public class Invisibility extends BrewItem{
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(getRealItem().getItemMeta().getDisplayName())){
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
 					UtilInv.remove(event.getPlayer(),event.getPlayer().getItemInHand().getType(),event.getPlayer().getItemInHand().getData().getData(), 1);
 					
-					for(Player player : getFalldown().getGameList().getPlayers(PlayerState.IN))player.hidePlayer(event.getPlayer());
+					for(Player player : getFalldown().getGameList().getPlayers(PlayerState.INGAME))player.hidePlayer(event.getPlayer());
 					
 					Bukkit.getScheduler().scheduleSyncDelayedTask(getFalldown().getManager().getInstance(), new BukkitRunnable() {
 						
 						@Override
 						public void run() {
-							if(getFalldown().getGameList().isPlayerState(event.getPlayer()) == PlayerState.IN){
+							if(getFalldown().getGameList().isPlayerState(event.getPlayer()) == PlayerState.INGAME){
 								for(Player player : UtilServer.getPlayers())player.showPlayer(event.getPlayer());
 								event.getPlayer().getWorld().strikeLightningEffect(event.getPlayer().getLocation());
 							}

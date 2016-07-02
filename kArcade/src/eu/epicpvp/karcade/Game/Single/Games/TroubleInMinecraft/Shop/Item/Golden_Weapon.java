@@ -37,7 +37,7 @@ public class Golden_Weapon implements Listener,IShop{
 	@Override
 	public ItemStack getShopItem() {
 		ItemStack i = UtilItem.RenameItem(new ItemStack(Material.GOLD_SWORD,1), "§eGolden Weapon §7("+getPunkte()+" Punkte)");
-		UtilItem.SetDescriptions(i, new String[]{
+		UtilItem.setLore(i, new String[]{
 				"§7Ein Goldschwert, welches einmalig ",
 				"§7einen Traitor mit einem Schlag t§tet. ",
 				"§7Bei Innocents zerbricht es sofort."

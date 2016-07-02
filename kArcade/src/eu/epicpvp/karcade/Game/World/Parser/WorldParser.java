@@ -33,10 +33,10 @@ public class WorldParser {
 		        	block = caller.getWorld().getBlockAt(caller.getBlockX() + x, y, caller.getBlockZ() + z);
 		        	
 		        	if(block.getType()==Material.MELON_BLOCK&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
-		        		if(!list.containsKey(Team.SOLO.Name())){
-		        			list.put(Team.SOLO.Name(), new ArrayList<Location>());
+		        		if(!list.containsKey(Team.SOLO.getDisplayName())){
+		        			list.put(Team.SOLO.getDisplayName(), new ArrayList<Location>());
 		        		}
-		        		((ArrayList)list.get(Team.SOLO.Name())).add(block.getLocation());
+		        		((ArrayList)list.get(Team.SOLO.getDisplayName())).add(block.getLocation());
 		        		block.setTypeId(0);
 		        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK
@@ -81,10 +81,10 @@ public class WorldParser {
 			        				}
 			        				
 			        				if(team!=null){
-			        					if(!list.containsKey(team.Name())){
-						        			list.put(team.Name(), new ArrayList<Location>());
+			        					if(!list.containsKey(team.getDisplayName())){
+						        			list.put(team.getDisplayName(), new ArrayList<Location>());
 						        		}
-						        		((ArrayList)list.get(team.Name())).add(block.getLocation());
+						        		((ArrayList)list.get(team.getDisplayName())).add(block.getLocation());
 			        				}
 		        				}else if(block.getData()==5){
 			        				
@@ -124,10 +124,10 @@ public class WorldParser {
 			        				}
 			        				
 			        				if(team!=null){
-			        					if(!list.containsKey(team.Name())){
-						        			list.put(team.Name(), new ArrayList<Location>());
+			        					if(!list.containsKey(team.getDisplayName())){
+						        			list.put(team.getDisplayName(), new ArrayList<Location>());
 						        		}
-						        		((ArrayList)list.get(team.Name())).add(block.getLocation());
+						        		((ArrayList)list.get(team.getDisplayName())).add(block.getLocation());
 			        				}
 		        				}
 		        				
@@ -137,373 +137,373 @@ public class WorldParser {
 				        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.REDSTONE_BLOCK){
 		        		if(block.getData()==14){
-		        			if(!list.containsKey(Team.RED.Name())){
-			        			list.put(Team.RED.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.RED.getDisplayName())){
+			        			list.put(Team.RED.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.RED.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.RED.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==11){
-		        			if(!list.containsKey(Team.BLUE.Name())){
-			        			list.put(Team.BLUE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.BLUE.getDisplayName())){
+			        			list.put(Team.BLUE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.BLUE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.BLUE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==2||block.getData()==6){
-		        			if(!list.containsKey(Team.PINK.Name())){
-			        			list.put(Team.PINK.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.PINK.getDisplayName())){
+			        			list.put(Team.PINK.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.PINK.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.PINK.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==7){
-		        			if(!list.containsKey(Team.GRAY.Name())){
-			        			list.put(Team.GRAY.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.GRAY.getDisplayName())){
+			        			list.put(Team.GRAY.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.GRAY.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.GRAY.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==15){
-		        			if(!list.containsKey(Team.BLACK.Name())){
-			        			list.put(Team.BLACK.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.BLACK.getDisplayName())){
+			        			list.put(Team.BLACK.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.BLACK.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.BLACK.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==8){
-		        			if(!list.containsKey(Team.LIGHT_GRAY.Name())){
-			        			list.put(Team.LIGHT_GRAY.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.LIGHT_GRAY.getDisplayName())){
+			        			list.put(Team.LIGHT_GRAY.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.LIGHT_GRAY.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.LIGHT_GRAY.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==12){
-		        			if(!list.containsKey(Team.BROWN.Name())){
-			        			list.put(Team.BROWN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.BROWN.getDisplayName())){
+			        			list.put(Team.BROWN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.BROWN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.BROWN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==2){
-		        			if(!list.containsKey(Team.MAGENTA.Name())){
-			        			list.put(Team.MAGENTA.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.MAGENTA.getDisplayName())){
+			        			list.put(Team.MAGENTA.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.MAGENTA.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.MAGENTA.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==5){
-		        			if(!list.containsKey(Team.LIME.Name())){
-			        			list.put(Team.LIME.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.LIME.getDisplayName())){
+			        			list.put(Team.LIME.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.LIME.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.LIME.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==13){
-		        			if(!list.containsKey(Team.GREEN.Name())){
-			        			list.put(Team.GREEN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.GREEN.getDisplayName())){
+			        			list.put(Team.GREEN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.GREEN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.GREEN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==4){
-		        			if(!list.containsKey(Team.YELLOW.Name())){
-			        			list.put(Team.YELLOW.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.YELLOW.getDisplayName())){
+			        			list.put(Team.YELLOW.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.YELLOW.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.YELLOW.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==10){
-		        			if(!list.containsKey(Team.PURPLE.Name())){
-			        			list.put(Team.PURPLE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.PURPLE.getDisplayName())){
+			        			list.put(Team.PURPLE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.PURPLE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.PURPLE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==1){
-		        			if(!list.containsKey(Team.ORANGE.Name())){
-			        			list.put(Team.ORANGE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.ORANGE.getDisplayName())){
+			        			list.put(Team.ORANGE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.ORANGE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.ORANGE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==0){
-		        			if(!list.containsKey(Team.WHITE.Name())){
-			        			list.put(Team.WHITE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.WHITE.getDisplayName())){
+			        			list.put(Team.WHITE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.WHITE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.WHITE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==9){
-		        			if(!list.containsKey(Team.CYAN.Name())){
-			        			list.put(Team.CYAN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.CYAN.getDisplayName())){
+			        			list.put(Team.CYAN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.CYAN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.CYAN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==3){
-		        			if(!list.containsKey(Team.AQUA.Name())){
-			        			list.put(Team.AQUA.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.AQUA.getDisplayName())){
+			        			list.put(Team.AQUA.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.AQUA.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.AQUA.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.EMERALD_BLOCK){ 
 		        		if(block.getData()==14){
-		        			if(!list.containsKey(Team.VILLAGE_RED.Name())){
-			        			list.put(Team.VILLAGE_RED.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_RED.getDisplayName())){
+			        			list.put(Team.VILLAGE_RED.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_RED.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_RED.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==8){
-		        			if(!list.containsKey(Team.VILLAGE_LIGHT_GRAY.Name())){
-			        			list.put(Team.VILLAGE_LIGHT_GRAY.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_LIGHT_GRAY.getDisplayName())){
+			        			list.put(Team.VILLAGE_LIGHT_GRAY.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_LIGHT_GRAY.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_LIGHT_GRAY.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==12){
-		        			if(!list.containsKey(Team.VILLAGE_BROWN.Name())){
-			        			list.put(Team.VILLAGE_BROWN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_BROWN.getDisplayName())){
+			        			list.put(Team.VILLAGE_BROWN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_BROWN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_BROWN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==2){
-		        			if(!list.containsKey(Team.VILLAGE_MAGENTA.Name())){
-			        			list.put(Team.VILLAGE_MAGENTA.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_MAGENTA.getDisplayName())){
+			        			list.put(Team.VILLAGE_MAGENTA.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_MAGENTA.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_MAGENTA.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==5){
-		        			if(!list.containsKey(Team.VILLAGE_LIME.Name())){
-			        			list.put(Team.VILLAGE_LIME.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_LIME.getDisplayName())){
+			        			list.put(Team.VILLAGE_LIME.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_LIME.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_LIME.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==11){
-		        			if(!list.containsKey(Team.VILLAGE_BLUE.Name())){
-			        			list.put(Team.VILLAGE_BLUE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_BLUE.getDisplayName())){
+			        			list.put(Team.VILLAGE_BLUE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_BLUE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_BLUE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==13){
-		        			if(!list.containsKey(Team.VILLAGE_GREEN.Name())){
-			        			list.put(Team.VILLAGE_GREEN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_GREEN.getDisplayName())){
+			        			list.put(Team.VILLAGE_GREEN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_GREEN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_GREEN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==4){
-		        			if(!list.containsKey(Team.VILLAGE_YELLOW.Name())){
-			        			list.put(Team.VILLAGE_YELLOW.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_YELLOW.getDisplayName())){
+			        			list.put(Team.VILLAGE_YELLOW.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_YELLOW.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_YELLOW.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==10){
-		        			if(!list.containsKey(Team.VILLAGE_PURPLE.Name())){
-			        			list.put(Team.VILLAGE_PURPLE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_PURPLE.getDisplayName())){
+			        			list.put(Team.VILLAGE_PURPLE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_PURPLE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_PURPLE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==2||block.getData()==6){
-		        			if(!list.containsKey(Team.VILLAGE_PINK.Name())){
-			        			list.put(Team.VILLAGE_PINK.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_PINK.getDisplayName())){
+			        			list.put(Team.VILLAGE_PINK.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_PINK.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_PINK.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==7){
-		        			if(!list.containsKey(Team.VILLAGE_GRAY.Name())){
-			        			list.put(Team.VILLAGE_GRAY.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_GRAY.getDisplayName())){
+			        			list.put(Team.VILLAGE_GRAY.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_GRAY.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_GRAY.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==1){
-		        			if(!list.containsKey(Team.VILLAGE_ORANGE.Name())){
-			        			list.put(Team.VILLAGE_ORANGE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_ORANGE.getDisplayName())){
+			        			list.put(Team.VILLAGE_ORANGE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_ORANGE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_ORANGE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==9){
-		        			if(!list.containsKey(Team.VILLAGE_CYAN.Name())){
-			        			list.put(Team.VILLAGE_CYAN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_CYAN.getDisplayName())){
+			        			list.put(Team.VILLAGE_CYAN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_CYAN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_CYAN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==3){
-		        			if(!list.containsKey(Team.VILLAGE_AQUA.Name())){
-			        			list.put(Team.VILLAGE_AQUA.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_AQUA.getDisplayName())){
+			        			list.put(Team.VILLAGE_AQUA.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_AQUA.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_AQUA.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==15){
-		        			if(!list.containsKey(Team.VILLAGE_BLACK.Name())){
-			        			list.put(Team.VILLAGE_BLACK.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_BLACK.getDisplayName())){
+			        			list.put(Team.VILLAGE_BLACK.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_BLACK.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_BLACK.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==0){
-		        			if(!list.containsKey(Team.VILLAGE_WHITE.Name())){
-			        			list.put(Team.VILLAGE_WHITE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.VILLAGE_WHITE.getDisplayName())){
+			        			list.put(Team.VILLAGE_WHITE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.VILLAGE_WHITE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.VILLAGE_WHITE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
 		        	}else if(block.getType()==Material.WOOL&&block.getRelative(BlockFace.UP).getType()==Material.BEDROCK){
 		        		if(block.getData()==14){
-		        			if(!list.containsKey(Team.SHEEP_RED.Name())){
-			        			list.put(Team.SHEEP_RED.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_RED.getDisplayName())){
+			        			list.put(Team.SHEEP_RED.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_RED.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_RED.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==8){
-		        			if(!list.containsKey(Team.SHEEP_LIGHT_GRAY.Name())){
-			        			list.put(Team.SHEEP_LIGHT_GRAY.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_LIGHT_GRAY.getDisplayName())){
+			        			list.put(Team.SHEEP_LIGHT_GRAY.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_LIGHT_GRAY.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_LIGHT_GRAY.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==12){
-		        			if(!list.containsKey(Team.SHEEP_BROWN.Name())){
-			        			list.put(Team.SHEEP_BROWN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_BROWN.getDisplayName())){
+			        			list.put(Team.SHEEP_BROWN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_BROWN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_BROWN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==2){
-		        			if(!list.containsKey(Team.SHEEP_MAGENTA.Name())){
-			        			list.put(Team.SHEEP_MAGENTA.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_MAGENTA.getDisplayName())){
+			        			list.put(Team.SHEEP_MAGENTA.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_MAGENTA.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_MAGENTA.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==5){
-		        			if(!list.containsKey(Team.SHEEP_LIME.Name())){
-			        			list.put(Team.SHEEP_LIME.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_LIME.getDisplayName())){
+			        			list.put(Team.SHEEP_LIME.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_LIME.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_LIME.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==11){
-		        			if(!list.containsKey(Team.SHEEP_BLUE.Name())){
-			        			list.put(Team.SHEEP_BLUE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_BLUE.getDisplayName())){
+			        			list.put(Team.SHEEP_BLUE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_BLUE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_BLUE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==13){
-		        			if(!list.containsKey(Team.SHEEP_GREEN.Name())){
-			        			list.put(Team.SHEEP_GREEN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_GREEN.getDisplayName())){
+			        			list.put(Team.SHEEP_GREEN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_GREEN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_GREEN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==4){
-		        			if(!list.containsKey(Team.SHEEP_YELLOW.Name())){
-			        			list.put(Team.SHEEP_YELLOW.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_YELLOW.getDisplayName())){
+			        			list.put(Team.SHEEP_YELLOW.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_YELLOW.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_YELLOW.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==1){
-		        			if(!list.containsKey(Team.SHEEP_ORANGE.Name())){
-			        			list.put(Team.SHEEP_ORANGE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_ORANGE.getDisplayName())){
+			        			list.put(Team.SHEEP_ORANGE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_ORANGE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_ORANGE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==10){
-		        			if(!list.containsKey(Team.SHEEP_PURPLE.Name())){
-			        			list.put(Team.SHEEP_PURPLE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_PURPLE.getDisplayName())){
+			        			list.put(Team.SHEEP_PURPLE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_PURPLE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_PURPLE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==2||block.getData()==6){
-		        			if(!list.containsKey(Team.SHEEP_PINK.Name())){
-			        			list.put(Team.SHEEP_PINK.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_PINK.getDisplayName())){
+			        			list.put(Team.SHEEP_PINK.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_PINK.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_PINK.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==7){
-		        			if(!list.containsKey(Team.SHEEP_GRAY.Name())){
-			        			list.put(Team.SHEEP_GRAY.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_GRAY.getDisplayName())){
+			        			list.put(Team.SHEEP_GRAY.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_GRAY.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_GRAY.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==0){
-		        			if(!list.containsKey(Team.SHEEP_WHITE.Name())){
-			        			list.put(Team.SHEEP_WHITE.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_WHITE.getDisplayName())){
+			        			list.put(Team.SHEEP_WHITE.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_WHITE.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_WHITE.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==9){
-		        			if(!list.containsKey(Team.SHEEP_CYAN.Name())){
-			        			list.put(Team.SHEEP_CYAN.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_CYAN.getDisplayName())){
+			        			list.put(Team.SHEEP_CYAN.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_CYAN.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_CYAN.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==3){
-		        			if(!list.containsKey(Team.SHEEP_AQUA.Name())){
-			        			list.put(Team.SHEEP_AQUA.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_AQUA.getDisplayName())){
+			        			list.put(Team.SHEEP_AQUA.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_AQUA.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_AQUA.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}else if(block.getData()==15){
-		        			if(!list.containsKey(Team.SHEEP_BLACK.Name())){
-			        			list.put(Team.SHEEP_BLACK.Name(), new ArrayList<Location>());
+		        			if(!list.containsKey(Team.SHEEP_BLACK.getDisplayName())){
+			        			list.put(Team.SHEEP_BLACK.getDisplayName(), new ArrayList<Location>());
 			        		}
-			        		((ArrayList)list.get(Team.SHEEP_BLACK.Name())).add(block.getLocation());
+			        		((ArrayList)list.get(Team.SHEEP_BLACK.getDisplayName())).add(block.getLocation());
 			        		block.setTypeId(0);
 			        		block.getRelative(BlockFace.UP).setTypeId(0);
 		        		}
 		        	}else if(block.getRelative(BlockFace.UP).getType()==Material.DIAMOND_BLOCK){
 		        			if(block.getType()==Material.GOLD_BLOCK){
-			        			if(!list.containsKey(Team.GOLD.Name())){
-				        			list.put(Team.GOLD.Name(), new ArrayList<Location>());
+			        			if(!list.containsKey(Team.GOLD.getDisplayName())){
+				        			list.put(Team.GOLD.getDisplayName(), new ArrayList<Location>());
 				        		}
-				        		((ArrayList)list.get(Team.GOLD.Name())).add(block.getLocation());
+				        		((ArrayList)list.get(Team.GOLD.getDisplayName())).add(block.getLocation());
 				        		block.setTypeId(0);
 				        		block.getRelative(BlockFace.UP).setTypeId(0);	
 		        			}else if(block.getType()==Material.DIAMOND_BLOCK){
-			        			if(!list.containsKey(Team.DIAMOND.Name())){
-				        			list.put(Team.DIAMOND.Name(), new ArrayList<Location>());
+			        			if(!list.containsKey(Team.DIAMOND.getDisplayName())){
+				        			list.put(Team.DIAMOND.getDisplayName(), new ArrayList<Location>());
 				        		}
-				        		((ArrayList)list.get(Team.DIAMOND.Name())).add(block.getLocation());
+				        		((ArrayList)list.get(Team.DIAMOND.getDisplayName())).add(block.getLocation());
 				        		block.setTypeId(0);
 				        		block.getRelative(BlockFace.UP).setTypeId(0);	
 		        			}else if(block.getType()==Material.IRON_BLOCK){
-			        			if(!list.containsKey(Team.SILBER.Name())){
-				        			list.put(Team.SILBER.Name(), new ArrayList<Location>());
+			        			if(!list.containsKey(Team.SILBER.getDisplayName())){
+				        			list.put(Team.SILBER.getDisplayName(), new ArrayList<Location>());
 				        		}
-				        		((ArrayList)list.get(Team.SILBER.Name())).add(block.getLocation());
+				        		((ArrayList)list.get(Team.SILBER.getDisplayName())).add(block.getLocation());
 				        		block.setTypeId(0);
 				        		block.getRelative(BlockFace.UP).setTypeId(0);	
 		        			}else if(block.getType()==Material.COAL_BLOCK){
-			        			if(!list.containsKey(Team.BRONZE.Name())){
-				        			list.put(Team.BRONZE.Name(), new ArrayList<Location>());
+			        			if(!list.containsKey(Team.BRONZE.getDisplayName())){
+				        			list.put(Team.BRONZE.getDisplayName(), new ArrayList<Location>());
 				        		}
-				        		((ArrayList)list.get(Team.BRONZE.Name())).add(block.getLocation());
+				        		((ArrayList)list.get(Team.BRONZE.getDisplayName())).add(block.getLocation());
 				        		block.setTypeId(0);
 				        		block.getRelative(BlockFace.UP).setTypeId(0);	
 		        			}
@@ -528,472 +528,472 @@ public class WorldParser {
 			
 			out.write("MAP_NAME:"+MapName);
 			out.write("\n");
-			if(list.containsKey(Team.SOLO.Name())){
-				out.write("SOLO:"+LocListTOStringList(list.get(Team.SOLO.Name())));
+			if(list.containsKey(Team.SOLO.getDisplayName())){
+				out.write("SOLO:"+LocListTOStringList(list.get(Team.SOLO.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.MAGENTA.Name())){
-				out.write("MAGENTA:"+LocListTOStringList(list.get(Team.MAGENTA.Name())));
+			if(list.containsKey(Team.MAGENTA.getDisplayName())){
+				out.write("MAGENTA:"+LocListTOStringList(list.get(Team.MAGENTA.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.LIME.Name())){
-				out.write("LIME:"+LocListTOStringList(list.get(Team.LIME.Name())));
+			if(list.containsKey(Team.LIME.getDisplayName())){
+				out.write("LIME:"+LocListTOStringList(list.get(Team.LIME.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.LIGHT_GRAY.Name())){
-				out.write("LIGHT_GRAY:"+LocListTOStringList(list.get(Team.LIGHT_GRAY.Name())));
+			if(list.containsKey(Team.LIGHT_GRAY.getDisplayName())){
+				out.write("LIGHT_GRAY:"+LocListTOStringList(list.get(Team.LIGHT_GRAY.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.BROWN.Name())){
-				out.write("BROWN:"+LocListTOStringList(list.get(Team.BROWN.Name())));
+			if(list.containsKey(Team.BROWN.getDisplayName())){
+				out.write("BROWN:"+LocListTOStringList(list.get(Team.BROWN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.RED.Name())){
-				out.write("RED:"+LocListTOStringList(list.get(Team.RED.Name())));
+			if(list.containsKey(Team.RED.getDisplayName())){
+				out.write("RED:"+LocListTOStringList(list.get(Team.RED.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.WHITE.Name())){
-				out.write("WHITE:"+LocListTOStringList(list.get(Team.WHITE.Name())));
+			if(list.containsKey(Team.WHITE.getDisplayName())){
+				out.write("WHITE:"+LocListTOStringList(list.get(Team.WHITE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.PINK.Name())){
-				out.write("PINK:"+LocListTOStringList(list.get(Team.PINK.Name())));
+			if(list.containsKey(Team.PINK.getDisplayName())){
+				out.write("PINK:"+LocListTOStringList(list.get(Team.PINK.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.PURPLE.Name())){
-				out.write("PURPLE:"+LocListTOStringList(list.get(Team.PURPLE.Name())));
+			if(list.containsKey(Team.PURPLE.getDisplayName())){
+				out.write("PURPLE:"+LocListTOStringList(list.get(Team.PURPLE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.ORANGE.Name())){
-				out.write("ORANGE:"+LocListTOStringList(list.get(Team.ORANGE.Name())));
+			if(list.containsKey(Team.ORANGE.getDisplayName())){
+				out.write("ORANGE:"+LocListTOStringList(list.get(Team.ORANGE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.BLACK.Name())){
-				out.write("BLACK:"+LocListTOStringList(list.get(Team.BLACK.Name())));
+			if(list.containsKey(Team.BLACK.getDisplayName())){
+				out.write("BLACK:"+LocListTOStringList(list.get(Team.BLACK.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.GREEN.Name())){
-				out.write("GREEN:"+LocListTOStringList(list.get(Team.GREEN.Name())));
+			if(list.containsKey(Team.GREEN.getDisplayName())){
+				out.write("GREEN:"+LocListTOStringList(list.get(Team.GREEN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.GRAY.Name())){
-				out.write("GRAY:"+LocListTOStringList(list.get(Team.GRAY.Name())));
+			if(list.containsKey(Team.GRAY.getDisplayName())){
+				out.write("GRAY:"+LocListTOStringList(list.get(Team.GRAY.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.YELLOW.Name())){
-				out.write("YELLOW:"+LocListTOStringList(list.get(Team.YELLOW.Name())));
+			if(list.containsKey(Team.YELLOW.getDisplayName())){
+				out.write("YELLOW:"+LocListTOStringList(list.get(Team.YELLOW.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.BLUE.Name())){
-				out.write("BLUE:"+LocListTOStringList(list.get(Team.BLUE.Name())));
+			if(list.containsKey(Team.BLUE.getDisplayName())){
+				out.write("BLUE:"+LocListTOStringList(list.get(Team.BLUE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.CYAN.Name())){
-				out.write("CYAN:"+LocListTOStringList(list.get(Team.CYAN.Name())));
+			if(list.containsKey(Team.CYAN.getDisplayName())){
+				out.write("CYAN:"+LocListTOStringList(list.get(Team.CYAN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.AQUA.Name())){
-				out.write("AQUA:"+LocListTOStringList(list.get(Team.AQUA.Name())));
+			if(list.containsKey(Team.AQUA.getDisplayName())){
+				out.write("AQUA:"+LocListTOStringList(list.get(Team.AQUA.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.BRONZE.Name())){
-				out.write("BRONZE:"+LocListTOStringList(list.get(Team.BRONZE.Name())));
+			if(list.containsKey(Team.BRONZE.getDisplayName())){
+				out.write("BRONZE:"+LocListTOStringList(list.get(Team.BRONZE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SILBER.Name())){
-				out.write("SILBER:"+LocListTOStringList(list.get(Team.SILBER.Name())));
+			if(list.containsKey(Team.SILBER.getDisplayName())){
+				out.write("SILBER:"+LocListTOStringList(list.get(Team.SILBER.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.DIAMOND.Name())){
-				out.write("DIAMOND:"+LocListTOStringList(list.get(Team.GOLD.Name())));
+			if(list.containsKey(Team.DIAMOND.getDisplayName())){
+				out.write("DIAMOND:"+LocListTOStringList(list.get(Team.GOLD.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.GOLD.Name())){
-				out.write("GOLD:"+LocListTOStringList(list.get(Team.GOLD.Name())));
+			if(list.containsKey(Team.GOLD.getDisplayName())){
+				out.write("GOLD:"+LocListTOStringList(list.get(Team.GOLD.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_MAGENTA.Name())){
-				out.write("VILLAGE_MAGENTA:"+LocListTOStringList(list.get(Team.VILLAGE_MAGENTA.Name())));
+			if(list.containsKey(Team.VILLAGE_MAGENTA.getDisplayName())){
+				out.write("VILLAGE_MAGENTA:"+LocListTOStringList(list.get(Team.VILLAGE_MAGENTA.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_LIME.Name())){
-				out.write("VILLAGE_LIME:"+LocListTOStringList(list.get(Team.VILLAGE_LIME.Name())));
+			if(list.containsKey(Team.VILLAGE_LIME.getDisplayName())){
+				out.write("VILLAGE_LIME:"+LocListTOStringList(list.get(Team.VILLAGE_LIME.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_LIGHT_GRAY.Name())){
-				out.write("VILLAGE_LIGHT_GRAY:"+LocListTOStringList(list.get(Team.VILLAGE_LIGHT_GRAY.Name())));
+			if(list.containsKey(Team.VILLAGE_LIGHT_GRAY.getDisplayName())){
+				out.write("VILLAGE_LIGHT_GRAY:"+LocListTOStringList(list.get(Team.VILLAGE_LIGHT_GRAY.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_BROWN.Name())){
-				out.write("VILLAGE_BROWN:"+LocListTOStringList(list.get(Team.VILLAGE_BROWN.Name())));
+			if(list.containsKey(Team.VILLAGE_BROWN.getDisplayName())){
+				out.write("VILLAGE_BROWN:"+LocListTOStringList(list.get(Team.VILLAGE_BROWN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_BLUE.Name())){
-				out.write("VILLAGE_BLUE:"+LocListTOStringList(list.get(Team.VILLAGE_BLUE.Name())));
+			if(list.containsKey(Team.VILLAGE_BLUE.getDisplayName())){
+				out.write("VILLAGE_BLUE:"+LocListTOStringList(list.get(Team.VILLAGE_BLUE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_GREEN.Name())){
-				out.write("VILLAGE_GREEN:"+LocListTOStringList(list.get(Team.VILLAGE_GREEN.Name())));
+			if(list.containsKey(Team.VILLAGE_GREEN.getDisplayName())){
+				out.write("VILLAGE_GREEN:"+LocListTOStringList(list.get(Team.VILLAGE_GREEN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_RED.Name())){
-				out.write("VILLAGE_RED:"+LocListTOStringList(list.get(Team.VILLAGE_RED.Name())));
+			if(list.containsKey(Team.VILLAGE_RED.getDisplayName())){
+				out.write("VILLAGE_RED:"+LocListTOStringList(list.get(Team.VILLAGE_RED.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_YELLOW.Name())){
-				out.write("VILLAGE_YELLOW:"+LocListTOStringList(list.get(Team.VILLAGE_YELLOW.Name())));
+			if(list.containsKey(Team.VILLAGE_YELLOW.getDisplayName())){
+				out.write("VILLAGE_YELLOW:"+LocListTOStringList(list.get(Team.VILLAGE_YELLOW.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_ORANGE.Name())){
-				out.write("VILLAGE_ORANGE:"+LocListTOStringList(list.get(Team.VILLAGE_ORANGE.Name())));
+			if(list.containsKey(Team.VILLAGE_ORANGE.getDisplayName())){
+				out.write("VILLAGE_ORANGE:"+LocListTOStringList(list.get(Team.VILLAGE_ORANGE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_PINK.Name())){
-				out.write("VILLAGE_PINK:"+LocListTOStringList(list.get(Team.VILLAGE_PINK.Name())));
+			if(list.containsKey(Team.VILLAGE_PINK.getDisplayName())){
+				out.write("VILLAGE_PINK:"+LocListTOStringList(list.get(Team.VILLAGE_PINK.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_PURPLE.Name())){
-				out.write("VILLAGE_PURPLE:"+LocListTOStringList(list.get(Team.VILLAGE_PURPLE.Name())));
+			if(list.containsKey(Team.VILLAGE_PURPLE.getDisplayName())){
+				out.write("VILLAGE_PURPLE:"+LocListTOStringList(list.get(Team.VILLAGE_PURPLE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_GRAY.Name())){
-				out.write("VILLAGE_GRAY:"+LocListTOStringList(list.get(Team.VILLAGE_GRAY.Name())));
+			if(list.containsKey(Team.VILLAGE_GRAY.getDisplayName())){
+				out.write("VILLAGE_GRAY:"+LocListTOStringList(list.get(Team.VILLAGE_GRAY.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_BLACK.Name())){
-				out.write("VILLAGE_BLACK:"+LocListTOStringList(list.get(Team.VILLAGE_BLACK.Name())));
+			if(list.containsKey(Team.VILLAGE_BLACK.getDisplayName())){
+				out.write("VILLAGE_BLACK:"+LocListTOStringList(list.get(Team.VILLAGE_BLACK.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_AQUA.Name())){
-				out.write("VILLAGE_AQUA:"+LocListTOStringList(list.get(Team.VILLAGE_AQUA.Name())));
+			if(list.containsKey(Team.VILLAGE_AQUA.getDisplayName())){
+				out.write("VILLAGE_AQUA:"+LocListTOStringList(list.get(Team.VILLAGE_AQUA.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_CYAN.Name())){
-				out.write("VILLAGE_CYAN:"+LocListTOStringList(list.get(Team.VILLAGE_CYAN.Name())));
+			if(list.containsKey(Team.VILLAGE_CYAN.getDisplayName())){
+				out.write("VILLAGE_CYAN:"+LocListTOStringList(list.get(Team.VILLAGE_CYAN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.VILLAGE_WHITE.Name())){
-				out.write("VILLAGE_WHITE:"+LocListTOStringList(list.get(Team.VILLAGE_WHITE.Name())));
+			if(list.containsKey(Team.VILLAGE_WHITE.getDisplayName())){
+				out.write("VILLAGE_WHITE:"+LocListTOStringList(list.get(Team.VILLAGE_WHITE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_MAGENTA.Name())){
-				out.write("SHEEP_MAGENTA:"+LocListTOStringList(list.get(Team.SHEEP_MAGENTA.Name())));
+			if(list.containsKey(Team.SHEEP_MAGENTA.getDisplayName())){
+				out.write("SHEEP_MAGENTA:"+LocListTOStringList(list.get(Team.SHEEP_MAGENTA.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_LIME.Name())){
-				out.write("SHEEP_LIME:"+LocListTOStringList(list.get(Team.SHEEP_LIME.Name())));
+			if(list.containsKey(Team.SHEEP_LIME.getDisplayName())){
+				out.write("SHEEP_LIME:"+LocListTOStringList(list.get(Team.SHEEP_LIME.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_LIGHT_GRAY.Name())){
-				out.write("SHEEP_LIGHT_GRAY:"+LocListTOStringList(list.get(Team.SHEEP_LIGHT_GRAY.Name())));
+			if(list.containsKey(Team.SHEEP_LIGHT_GRAY.getDisplayName())){
+				out.write("SHEEP_LIGHT_GRAY:"+LocListTOStringList(list.get(Team.SHEEP_LIGHT_GRAY.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_BROWN.Name())){
-				out.write("SHEEP_BROWN:"+LocListTOStringList(list.get(Team.SHEEP_BROWN.Name())));
+			if(list.containsKey(Team.SHEEP_BROWN.getDisplayName())){
+				out.write("SHEEP_BROWN:"+LocListTOStringList(list.get(Team.SHEEP_BROWN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_BLUE.Name())){
-				out.write("SHEEP_BLUE:"+LocListTOStringList(list.get(Team.SHEEP_BLUE.Name())));
+			if(list.containsKey(Team.SHEEP_BLUE.getDisplayName())){
+				out.write("SHEEP_BLUE:"+LocListTOStringList(list.get(Team.SHEEP_BLUE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_GREEN.Name())){
-				out.write("SHEEP_GREEN:"+LocListTOStringList(list.get(Team.SHEEP_GREEN.Name())));
+			if(list.containsKey(Team.SHEEP_GREEN.getDisplayName())){
+				out.write("SHEEP_GREEN:"+LocListTOStringList(list.get(Team.SHEEP_GREEN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_RED.Name())){
-				out.write("SHEEP_RED:"+LocListTOStringList(list.get(Team.SHEEP_RED.Name())));
+			if(list.containsKey(Team.SHEEP_RED.getDisplayName())){
+				out.write("SHEEP_RED:"+LocListTOStringList(list.get(Team.SHEEP_RED.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_YELLOW.Name())){
-				out.write("SHEEP_YELLOW:"+LocListTOStringList(list.get(Team.SHEEP_YELLOW.Name())));
+			if(list.containsKey(Team.SHEEP_YELLOW.getDisplayName())){
+				out.write("SHEEP_YELLOW:"+LocListTOStringList(list.get(Team.SHEEP_YELLOW.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_ORANGE.Name())){
-				out.write("SHEEP_ORANGE:"+LocListTOStringList(list.get(Team.SHEEP_ORANGE.Name())));
+			if(list.containsKey(Team.SHEEP_ORANGE.getDisplayName())){
+				out.write("SHEEP_ORANGE:"+LocListTOStringList(list.get(Team.SHEEP_ORANGE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_PINK.Name())){
-				out.write("SHEEP_PINK:"+LocListTOStringList(list.get(Team.SHEEP_PINK.Name())));
+			if(list.containsKey(Team.SHEEP_PINK.getDisplayName())){
+				out.write("SHEEP_PINK:"+LocListTOStringList(list.get(Team.SHEEP_PINK.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_PURPLE.Name())){
-				out.write("SHEEP_PURPLE:"+LocListTOStringList(list.get(Team.SHEEP_PURPLE.Name())));
+			if(list.containsKey(Team.SHEEP_PURPLE.getDisplayName())){
+				out.write("SHEEP_PURPLE:"+LocListTOStringList(list.get(Team.SHEEP_PURPLE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_GRAY.Name())){
-				out.write("SHEEP_GRAY:"+LocListTOStringList(list.get(Team.SHEEP_GRAY.Name())));
+			if(list.containsKey(Team.SHEEP_GRAY.getDisplayName())){
+				out.write("SHEEP_GRAY:"+LocListTOStringList(list.get(Team.SHEEP_GRAY.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_CYAN.Name())){
-				out.write("SHEEP_CYAN:"+LocListTOStringList(list.get(Team.SHEEP_CYAN.Name())));
+			if(list.containsKey(Team.SHEEP_CYAN.getDisplayName())){
+				out.write("SHEEP_CYAN:"+LocListTOStringList(list.get(Team.SHEEP_CYAN.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_AQUA.Name())){
-				out.write("SHEEP_AQUA:"+LocListTOStringList(list.get(Team.SHEEP_AQUA.Name())));
+			if(list.containsKey(Team.SHEEP_AQUA.getDisplayName())){
+				out.write("SHEEP_AQUA:"+LocListTOStringList(list.get(Team.SHEEP_AQUA.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_WHITE.Name())){
-				out.write("SHEEP_WHITE:"+LocListTOStringList(list.get(Team.SHEEP_WHITE.Name())));
+			if(list.containsKey(Team.SHEEP_WHITE.getDisplayName())){
+				out.write("SHEEP_WHITE:"+LocListTOStringList(list.get(Team.SHEEP_WHITE.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.SHEEP_BLACK.Name())){
-				out.write("SHEEP_BLACK:"+LocListTOStringList(list.get(Team.SHEEP_BLACK.Name())));
+			if(list.containsKey(Team.SHEEP_BLACK.getDisplayName())){
+				out.write("SHEEP_BLACK:"+LocListTOStringList(list.get(Team.SHEEP_BLACK.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_1.Name())){
-				out.write("TEAM_1:"+LocListTOStringList(list.get(Team.TEAM_1.Name())));
+			if(list.containsKey(Team.TEAM_1.getDisplayName())){
+				out.write("TEAM_1:"+LocListTOStringList(list.get(Team.TEAM_1.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_2.Name())){
-				out.write("TEAM_2:"+LocListTOStringList(list.get(Team.TEAM_2.Name())));
+			if(list.containsKey(Team.TEAM_2.getDisplayName())){
+				out.write("TEAM_2:"+LocListTOStringList(list.get(Team.TEAM_2.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_3.Name())){
-				out.write("TEAM_3:"+LocListTOStringList(list.get(Team.TEAM_3.Name())));
+			if(list.containsKey(Team.TEAM_3.getDisplayName())){
+				out.write("TEAM_3:"+LocListTOStringList(list.get(Team.TEAM_3.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_4.Name())){
-				out.write("TEAM_4:"+LocListTOStringList(list.get(Team.TEAM_4.Name())));
+			if(list.containsKey(Team.TEAM_4.getDisplayName())){
+				out.write("TEAM_4:"+LocListTOStringList(list.get(Team.TEAM_4.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_5.Name())){
-				out.write("TEAM_5:"+LocListTOStringList(list.get(Team.TEAM_5.Name())));
+			if(list.containsKey(Team.TEAM_5.getDisplayName())){
+				out.write("TEAM_5:"+LocListTOStringList(list.get(Team.TEAM_5.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_6.Name())){
-				out.write("TEAM_6:"+LocListTOStringList(list.get(Team.TEAM_6.Name())));
+			if(list.containsKey(Team.TEAM_6.getDisplayName())){
+				out.write("TEAM_6:"+LocListTOStringList(list.get(Team.TEAM_6.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_7.Name())){
-				out.write("TEAM_7:"+LocListTOStringList(list.get(Team.TEAM_7.Name())));
+			if(list.containsKey(Team.TEAM_7.getDisplayName())){
+				out.write("TEAM_7:"+LocListTOStringList(list.get(Team.TEAM_7.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_8.Name())){
-				out.write("TEAM_8:"+LocListTOStringList(list.get(Team.TEAM_8.Name())));
+			if(list.containsKey(Team.TEAM_8.getDisplayName())){
+				out.write("TEAM_8:"+LocListTOStringList(list.get(Team.TEAM_8.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_9.Name())){
-				out.write("TEAM_9:"+LocListTOStringList(list.get(Team.TEAM_9.Name())));
+			if(list.containsKey(Team.TEAM_9.getDisplayName())){
+				out.write("TEAM_9:"+LocListTOStringList(list.get(Team.TEAM_9.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_10.Name())){
-				out.write("TEAM_10:"+LocListTOStringList(list.get(Team.TEAM_10.Name())));
+			if(list.containsKey(Team.TEAM_10.getDisplayName())){
+				out.write("TEAM_10:"+LocListTOStringList(list.get(Team.TEAM_10.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_11.Name())){
-				out.write("TEAM_11:"+LocListTOStringList(list.get(Team.TEAM_11.Name())));
+			if(list.containsKey(Team.TEAM_11.getDisplayName())){
+				out.write("TEAM_11:"+LocListTOStringList(list.get(Team.TEAM_11.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_12.Name())){
-				out.write("TEAM_12:"+LocListTOStringList(list.get(Team.TEAM_12.Name())));
+			if(list.containsKey(Team.TEAM_12.getDisplayName())){
+				out.write("TEAM_12:"+LocListTOStringList(list.get(Team.TEAM_12.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_13.Name())){
-				out.write("TEAM_13:"+LocListTOStringList(list.get(Team.TEAM_13.Name())));
+			if(list.containsKey(Team.TEAM_13.getDisplayName())){
+				out.write("TEAM_13:"+LocListTOStringList(list.get(Team.TEAM_13.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_14.Name())){
-				out.write("TEAM_14:"+LocListTOStringList(list.get(Team.TEAM_14.Name())));
+			if(list.containsKey(Team.TEAM_14.getDisplayName())){
+				out.write("TEAM_14:"+LocListTOStringList(list.get(Team.TEAM_14.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_15.Name())){
-				out.write("TEAM_15:"+LocListTOStringList(list.get(Team.TEAM_15.Name())));
+			if(list.containsKey(Team.TEAM_15.getDisplayName())){
+				out.write("TEAM_15:"+LocListTOStringList(list.get(Team.TEAM_15.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_16.Name())){
-				out.write("TEAM_16:"+LocListTOStringList(list.get(Team.TEAM_16.Name())));
+			if(list.containsKey(Team.TEAM_16.getDisplayName())){
+				out.write("TEAM_16:"+LocListTOStringList(list.get(Team.TEAM_16.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_17.Name())){
-				out.write("TEAM_17:"+LocListTOStringList(list.get(Team.TEAM_17.Name())));
+			if(list.containsKey(Team.TEAM_17.getDisplayName())){
+				out.write("TEAM_17:"+LocListTOStringList(list.get(Team.TEAM_17.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_18.Name())){
-				out.write("TEAM_18:"+LocListTOStringList(list.get(Team.TEAM_18.Name())));
+			if(list.containsKey(Team.TEAM_18.getDisplayName())){
+				out.write("TEAM_18:"+LocListTOStringList(list.get(Team.TEAM_18.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_19.Name())){
-				out.write("TEAM_19:"+LocListTOStringList(list.get(Team.TEAM_19.Name())));
+			if(list.containsKey(Team.TEAM_19.getDisplayName())){
+				out.write("TEAM_19:"+LocListTOStringList(list.get(Team.TEAM_19.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_20.Name())){
-				out.write("TEAM_20:"+LocListTOStringList(list.get(Team.TEAM_20.Name())));
+			if(list.containsKey(Team.TEAM_20.getDisplayName())){
+				out.write("TEAM_20:"+LocListTOStringList(list.get(Team.TEAM_20.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_21.Name())){
-				out.write("TEAM_21:"+LocListTOStringList(list.get(Team.TEAM_21.Name())));
+			if(list.containsKey(Team.TEAM_21.getDisplayName())){
+				out.write("TEAM_21:"+LocListTOStringList(list.get(Team.TEAM_21.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_22.Name())){
-				out.write("TEAM_22:"+LocListTOStringList(list.get(Team.TEAM_22.Name())));
+			if(list.containsKey(Team.TEAM_22.getDisplayName())){
+				out.write("TEAM_22:"+LocListTOStringList(list.get(Team.TEAM_22.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_23.Name())){
-				out.write("TEAM_23:"+LocListTOStringList(list.get(Team.TEAM_23.Name())));
+			if(list.containsKey(Team.TEAM_23.getDisplayName())){
+				out.write("TEAM_23:"+LocListTOStringList(list.get(Team.TEAM_23.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_24.Name())){
-				out.write("TEAM_24:"+LocListTOStringList(list.get(Team.TEAM_24.Name())));
+			if(list.containsKey(Team.TEAM_24.getDisplayName())){
+				out.write("TEAM_24:"+LocListTOStringList(list.get(Team.TEAM_24.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_25.Name())){
-				out.write("TEAM_25:"+LocListTOStringList(list.get(Team.TEAM_25.Name())));
+			if(list.containsKey(Team.TEAM_25.getDisplayName())){
+				out.write("TEAM_25:"+LocListTOStringList(list.get(Team.TEAM_25.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_26.Name())){
-				out.write("TEAM_26:"+LocListTOStringList(list.get(Team.TEAM_26.Name())));
+			if(list.containsKey(Team.TEAM_26.getDisplayName())){
+				out.write("TEAM_26:"+LocListTOStringList(list.get(Team.TEAM_26.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_27.Name())){
-				out.write("TEAM_27:"+LocListTOStringList(list.get(Team.TEAM_27.Name())));
+			if(list.containsKey(Team.TEAM_27.getDisplayName())){
+				out.write("TEAM_27:"+LocListTOStringList(list.get(Team.TEAM_27.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_28.Name())){
-				out.write("TEAM_28:"+LocListTOStringList(list.get(Team.TEAM_28.Name())));
+			if(list.containsKey(Team.TEAM_28.getDisplayName())){
+				out.write("TEAM_28:"+LocListTOStringList(list.get(Team.TEAM_28.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_29.Name())){
-				out.write("TEAM_29:"+LocListTOStringList(list.get(Team.TEAM_29.Name())));
+			if(list.containsKey(Team.TEAM_29.getDisplayName())){
+				out.write("TEAM_29:"+LocListTOStringList(list.get(Team.TEAM_29.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_30.Name())){
-				out.write("TEAM_30:"+LocListTOStringList(list.get(Team.TEAM_30.Name())));
+			if(list.containsKey(Team.TEAM_30.getDisplayName())){
+				out.write("TEAM_30:"+LocListTOStringList(list.get(Team.TEAM_30.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_31.Name())){
-				out.write("TEAM_31:"+LocListTOStringList(list.get(Team.TEAM_31.Name())));
+			if(list.containsKey(Team.TEAM_31.getDisplayName())){
+				out.write("TEAM_31:"+LocListTOStringList(list.get(Team.TEAM_31.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_32.Name())){
-				out.write("TEAM_32:"+LocListTOStringList(list.get(Team.TEAM_32.Name())));
+			if(list.containsKey(Team.TEAM_32.getDisplayName())){
+				out.write("TEAM_32:"+LocListTOStringList(list.get(Team.TEAM_32.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_1.Name())){
-				out.write("TEAM_POINT_1:"+LocListTOStringList(list.get(Team.TEAM_POINT_1.Name())));
+			if(list.containsKey(Team.TEAM_POINT_1.getDisplayName())){
+				out.write("TEAM_POINT_1:"+LocListTOStringList(list.get(Team.TEAM_POINT_1.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_2.Name())){
-				out.write("TEAM_POINT_2:"+LocListTOStringList(list.get(Team.TEAM_POINT_2.Name())));
+			if(list.containsKey(Team.TEAM_POINT_2.getDisplayName())){
+				out.write("TEAM_POINT_2:"+LocListTOStringList(list.get(Team.TEAM_POINT_2.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_3.Name())){
-				out.write("TEAM_POINT_3:"+LocListTOStringList(list.get(Team.TEAM_POINT_3.Name())));
+			if(list.containsKey(Team.TEAM_POINT_3.getDisplayName())){
+				out.write("TEAM_POINT_3:"+LocListTOStringList(list.get(Team.TEAM_POINT_3.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_4.Name())){
-				out.write("TEAM_POINT_4:"+LocListTOStringList(list.get(Team.TEAM_POINT_4.Name())));
+			if(list.containsKey(Team.TEAM_POINT_4.getDisplayName())){
+				out.write("TEAM_POINT_4:"+LocListTOStringList(list.get(Team.TEAM_POINT_4.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_5.Name())){
-				out.write("TEAM_POINT_5:"+LocListTOStringList(list.get(Team.TEAM_POINT_5.Name())));
+			if(list.containsKey(Team.TEAM_POINT_5.getDisplayName())){
+				out.write("TEAM_POINT_5:"+LocListTOStringList(list.get(Team.TEAM_POINT_5.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_6.Name())){
-				out.write("TEAM_POINT_6:"+LocListTOStringList(list.get(Team.TEAM_POINT_6.Name())));
+			if(list.containsKey(Team.TEAM_POINT_6.getDisplayName())){
+				out.write("TEAM_POINT_6:"+LocListTOStringList(list.get(Team.TEAM_POINT_6.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_7.Name())){
-				out.write("TEAM_POINT_7:"+LocListTOStringList(list.get(Team.TEAM_POINT_7.Name())));
+			if(list.containsKey(Team.TEAM_POINT_7.getDisplayName())){
+				out.write("TEAM_POINT_7:"+LocListTOStringList(list.get(Team.TEAM_POINT_7.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_8.Name())){
-				out.write("TEAM_POINT_8:"+LocListTOStringList(list.get(Team.TEAM_POINT_8.Name())));
+			if(list.containsKey(Team.TEAM_POINT_8.getDisplayName())){
+				out.write("TEAM_POINT_8:"+LocListTOStringList(list.get(Team.TEAM_POINT_8.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_9.Name())){
-				out.write("TEAM_POINT_9:"+LocListTOStringList(list.get(Team.TEAM_POINT_9.Name())));
+			if(list.containsKey(Team.TEAM_POINT_9.getDisplayName())){
+				out.write("TEAM_POINT_9:"+LocListTOStringList(list.get(Team.TEAM_POINT_9.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_10.Name())){
-				out.write("TEAM_POINT_10:"+LocListTOStringList(list.get(Team.TEAM_POINT_10.Name())));
+			if(list.containsKey(Team.TEAM_POINT_10.getDisplayName())){
+				out.write("TEAM_POINT_10:"+LocListTOStringList(list.get(Team.TEAM_POINT_10.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_11.Name())){
-				out.write("TEAM_POINT_11:"+LocListTOStringList(list.get(Team.TEAM_POINT_11.Name())));
+			if(list.containsKey(Team.TEAM_POINT_11.getDisplayName())){
+				out.write("TEAM_POINT_11:"+LocListTOStringList(list.get(Team.TEAM_POINT_11.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_12.Name())){
-				out.write("TEAM_POINT_12:"+LocListTOStringList(list.get(Team.TEAM_POINT_12.Name())));
+			if(list.containsKey(Team.TEAM_POINT_12.getDisplayName())){
+				out.write("TEAM_POINT_12:"+LocListTOStringList(list.get(Team.TEAM_POINT_12.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_13.Name())){
-				out.write("TEAM_POINT_13:"+LocListTOStringList(list.get(Team.TEAM_POINT_13.Name())));
+			if(list.containsKey(Team.TEAM_POINT_13.getDisplayName())){
+				out.write("TEAM_POINT_13:"+LocListTOStringList(list.get(Team.TEAM_POINT_13.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_14.Name())){
-				out.write("TEAM_POINT_14:"+LocListTOStringList(list.get(Team.TEAM_POINT_14.Name())));
+			if(list.containsKey(Team.TEAM_POINT_14.getDisplayName())){
+				out.write("TEAM_POINT_14:"+LocListTOStringList(list.get(Team.TEAM_POINT_14.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_15.Name())){
-				out.write("TEAM_POINT_15:"+LocListTOStringList(list.get(Team.TEAM_POINT_15.Name())));
+			if(list.containsKey(Team.TEAM_POINT_15.getDisplayName())){
+				out.write("TEAM_POINT_15:"+LocListTOStringList(list.get(Team.TEAM_POINT_15.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_16.Name())){
-				out.write("TEAM_POINT_16:"+LocListTOStringList(list.get(Team.TEAM_POINT_16.Name())));
+			if(list.containsKey(Team.TEAM_POINT_16.getDisplayName())){
+				out.write("TEAM_POINT_16:"+LocListTOStringList(list.get(Team.TEAM_POINT_16.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_17.Name())){
-				out.write("TEAM_POINT_17:"+LocListTOStringList(list.get(Team.TEAM_POINT_17.Name())));
+			if(list.containsKey(Team.TEAM_POINT_17.getDisplayName())){
+				out.write("TEAM_POINT_17:"+LocListTOStringList(list.get(Team.TEAM_POINT_17.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_18.Name())){
-				out.write("TEAM_POINT_18:"+LocListTOStringList(list.get(Team.TEAM_POINT_18.Name())));
+			if(list.containsKey(Team.TEAM_POINT_18.getDisplayName())){
+				out.write("TEAM_POINT_18:"+LocListTOStringList(list.get(Team.TEAM_POINT_18.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_19.Name())){
-				out.write("TEAM_POINT_19"+LocListTOStringList(list.get(Team.TEAM_POINT_19.Name())));
+			if(list.containsKey(Team.TEAM_POINT_19.getDisplayName())){
+				out.write("TEAM_POINT_19"+LocListTOStringList(list.get(Team.TEAM_POINT_19.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_20.Name())){
-				out.write("TEAM_POINT_20:"+LocListTOStringList(list.get(Team.TEAM_POINT_20.Name())));
+			if(list.containsKey(Team.TEAM_POINT_20.getDisplayName())){
+				out.write("TEAM_POINT_20:"+LocListTOStringList(list.get(Team.TEAM_POINT_20.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_21.Name())){
-				out.write("TEAM_POINT_21:"+LocListTOStringList(list.get(Team.TEAM_POINT_21.Name())));
+			if(list.containsKey(Team.TEAM_POINT_21.getDisplayName())){
+				out.write("TEAM_POINT_21:"+LocListTOStringList(list.get(Team.TEAM_POINT_21.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_22.Name())){
-				out.write("TEAM_POINT_22:"+LocListTOStringList(list.get(Team.TEAM_POINT_22.Name())));
+			if(list.containsKey(Team.TEAM_POINT_22.getDisplayName())){
+				out.write("TEAM_POINT_22:"+LocListTOStringList(list.get(Team.TEAM_POINT_22.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_23.Name())){
-				out.write("TEAM_POINT_23:"+LocListTOStringList(list.get(Team.TEAM_POINT_23.Name())));
+			if(list.containsKey(Team.TEAM_POINT_23.getDisplayName())){
+				out.write("TEAM_POINT_23:"+LocListTOStringList(list.get(Team.TEAM_POINT_23.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_24.Name())){
-				out.write("TEAM_POINT_24:"+LocListTOStringList(list.get(Team.TEAM_POINT_24.Name())));
+			if(list.containsKey(Team.TEAM_POINT_24.getDisplayName())){
+				out.write("TEAM_POINT_24:"+LocListTOStringList(list.get(Team.TEAM_POINT_24.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_25.Name())){
-				out.write("TEAM_POINT_25:"+LocListTOStringList(list.get(Team.TEAM_POINT_25.Name())));
+			if(list.containsKey(Team.TEAM_POINT_25.getDisplayName())){
+				out.write("TEAM_POINT_25:"+LocListTOStringList(list.get(Team.TEAM_POINT_25.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_26.Name())){
-				out.write("TEAM_POINT_26:"+LocListTOStringList(list.get(Team.TEAM_POINT_26.Name())));
+			if(list.containsKey(Team.TEAM_POINT_26.getDisplayName())){
+				out.write("TEAM_POINT_26:"+LocListTOStringList(list.get(Team.TEAM_POINT_26.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_27.Name())){
-				out.write("TEAM_POINT_27:"+LocListTOStringList(list.get(Team.TEAM_POINT_27.Name())));
+			if(list.containsKey(Team.TEAM_POINT_27.getDisplayName())){
+				out.write("TEAM_POINT_27:"+LocListTOStringList(list.get(Team.TEAM_POINT_27.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_28.Name())){
-				out.write("TEAM_POINT_28:"+LocListTOStringList(list.get(Team.TEAM_POINT_28.Name())));
+			if(list.containsKey(Team.TEAM_POINT_28.getDisplayName())){
+				out.write("TEAM_POINT_28:"+LocListTOStringList(list.get(Team.TEAM_POINT_28.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_29.Name())){
-				out.write("TEAM_POINT_29:"+LocListTOStringList(list.get(Team.TEAM_POINT_29.Name())));
+			if(list.containsKey(Team.TEAM_POINT_29.getDisplayName())){
+				out.write("TEAM_POINT_29:"+LocListTOStringList(list.get(Team.TEAM_POINT_29.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_30.Name())){
-				out.write("TEAM_POINT_30:"+LocListTOStringList(list.get(Team.TEAM_POINT_30.Name())));
+			if(list.containsKey(Team.TEAM_POINT_30.getDisplayName())){
+				out.write("TEAM_POINT_30:"+LocListTOStringList(list.get(Team.TEAM_POINT_30.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_31.Name())){
-				out.write("TEAM_POINT_31:"+LocListTOStringList(list.get(Team.TEAM_POINT_31.Name())));
+			if(list.containsKey(Team.TEAM_POINT_31.getDisplayName())){
+				out.write("TEAM_POINT_31:"+LocListTOStringList(list.get(Team.TEAM_POINT_31.getDisplayName())));
 				out.write("\n");
 			}
-			if(list.containsKey(Team.TEAM_POINT_32.Name())){
-				out.write("TEAM_POINT_32:"+LocListTOStringList(list.get(Team.TEAM_POINT_32.Name())));
+			if(list.containsKey(Team.TEAM_POINT_32.getDisplayName())){
+				out.write("TEAM_POINT_32:"+LocListTOStringList(list.get(Team.TEAM_POINT_32.getDisplayName())));
 				out.write("\n");
 			}
 			out.close();

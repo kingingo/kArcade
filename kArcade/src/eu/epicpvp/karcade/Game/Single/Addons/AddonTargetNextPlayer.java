@@ -63,7 +63,7 @@ public class AddonTargetNextPlayer implements Listener {
 	public void Update(UpdateEvent ev){
 		if(UpdateType.FAST!=ev.getType())return;
 		if(isAktiv()==false)return;
-		list=game.getGameList().getPlayers(PlayerState.IN);
+		list=game.getGameList().getPlayers(PlayerState.INGAME);
 		for(Player p : list){
 			target=null;
 			dis=-1;

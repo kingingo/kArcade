@@ -36,7 +36,7 @@ public class AddonRandomItemInventory implements Listener{
 	
 	@EventHandler
 	public void InteractEvent(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R)){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
 			if(ev.getPlayer().getItemInHand().getType()==this.m){
 				ev.getPlayer().setItemInHand(null);
 				Inventory inv = Bukkit.createInventory(null, 9,"Random Inventory:");

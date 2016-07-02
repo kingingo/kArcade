@@ -42,8 +42,8 @@ public class AddonPlayerTeleport extends kListener{
 	
 	@EventHandler
 	public void State(PlayerStateChangeEvent ev){
-		if(ev.getPlayerState()==PlayerState.IN)tplist.add(ev.getPlayer());
-		if(ev.getPlayerState()==PlayerState.OUT)tplist.remove(ev.getPlayer());
+		if(ev.getPlayerState()==PlayerState.INGAME)tplist.add(ev.getPlayer());
+		if(ev.getPlayerState()==PlayerState.SPECTATOR)tplist.remove(ev.getPlayer());
 	}
 	
 	@EventHandler

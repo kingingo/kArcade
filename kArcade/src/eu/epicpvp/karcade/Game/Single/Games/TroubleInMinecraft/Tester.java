@@ -145,8 +145,8 @@ public class Tester implements Listener{
 	
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&ev.getClickedBlock().getType() == Material.STONE_BUTTON){
-			if(TTT.getState()!=GameState.InGame||!TTT.getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer()))return;
+		if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)&&ev.getClickedBlock().getType() == Material.STONE_BUTTON){
+			if(TTT.getState()!=GameState.InGame||!TTT.getGameList().getPlayers(PlayerState.INGAME).contains(ev.getPlayer()))return;
 			if(Button.getBlockY()!=ev.getClickedBlock().getLocation().getBlockY()||Button.getBlockX()!=ev.getClickedBlock().getLocation().getBlockX()||Button.getBlockZ()!=ev.getClickedBlock().getLocation().getBlockZ())return;
 			ev.setCancelled(true);
 			

@@ -130,7 +130,7 @@ public class SkyPvP extends SoloGame{
 	
 		Chest chest;
 		Block b;
-		for(Location loc : getWorldData().getLocs(Team.RED)){
+		for(Location loc : getWorldData().getSpawnLocations(Team.RED)){
 			b=UtilLocation.searchBlock(Material.CHEST, 15, loc);
 			if(b!=null&&b.getState() instanceof Chest){
 				chest=(Chest)b.getState();
@@ -167,7 +167,7 @@ public class SkyPvP extends SoloGame{
 	
 	@EventHandler
 	public void Enderchest(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.R_BLOCK)&&getGameList().getPlayers(PlayerState.IN).contains(ev.getPlayer())){
+		if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)&&getGameList().getPlayers(PlayerState.INGAME).contains(ev.getPlayer())){
 			if(ev.getClickedBlock().getType()==Material.ENDER_CHEST){
 				if(enderchests.containsKey(ev.getClickedBlock().getLocation())){
 					ev.setCancelled(true);
@@ -198,7 +198,7 @@ public class SkyPvP extends SoloGame{
 			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
 		
-		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
@@ -210,7 +210,7 @@ public class SkyPvP extends SoloGame{
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		if(island.containsKey(ev.getPlayer())){
 			ev.setRespawnLocation(island.get(ev.getPlayer()));
-			if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.IN){
+			if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
 				ev.getPlayer().getInventory().addItem(new ItemStack(Material.COMPASS));
 			}
 		}
@@ -247,7 +247,7 @@ public class SkyPvP extends SoloGame{
 			i--;
 			if(i<=0){
 				getStats().addInt(v,1, StatsKey.LOSE);
-				getGameList().addPlayer(v, PlayerState.OUT);
+				getGameList().addPlayer(v, PlayerState.SPECTATOR);
 				b=true;
 			}else{
 				life.remove(v);
@@ -274,8 +274,8 @@ public class SkyPvP extends SoloGame{
 	@EventHandler
 	public void GameStateChangeSkyPvP(GameStateChangeEvent ev){
 		if(ev.getFrom()==GameState.InGame&&ev.getTo()==GameState.Restart){
-			if(getGameList().getPlayers(PlayerState.IN).size()==1){
-				Player win = getGameList().getPlayers(PlayerState.IN).get(0);
+			if(getGameList().getPlayers(PlayerState.INGAME).size()==1){
+				Player win = getGameList().getPlayers(PlayerState.INGAME).get(0);
 				getStats().addInt(win,1, StatsKey.WIN);
 				getMoney().add(win, StatsKey.COINS, 25);
 				broadcastWithPrefix("GAME_WIN", win.getName());
@@ -317,7 +317,7 @@ public class SkyPvP extends SoloGame{
 	@EventHandler
 	public void GameStartSkyPvP(GameStartEvent ev){
 		getWorldData().clearWorld();
-		ArrayList<Location> locs = getWorldData().getLocs(Team.RED);
+		ArrayList<Location> locs = getWorldData().getSpawnLocations(Team.RED);
 		TargetNextPlayer = new AddonTargetNextPlayer(250,this);
 		TargetNextPlayer.setAktiv(true);
 		
@@ -326,7 +326,7 @@ public class SkyPvP extends SoloGame{
 		Scoreboard board;
 		for(Player p : UtilServer.getPlayers()){
 			if(locs.isEmpty())break;
-			getGameList().addPlayer(p, PlayerState.IN);
+			getGameList().addPlayer(p, PlayerState.INGAME);
 			getManager().Clear(p);
 			if(getManager().getPermManager().hasPermission(p, PermissionType.SkyPvP_Mehr_Leben)){
 				life.put(p, 3);
@@ -351,7 +351,7 @@ public class SkyPvP extends SoloGame{
 		if(!locs.isEmpty()){
 			entity_king=new AddonEntityKing(this);
 			entity_king.spawnMobs(locs, EntityType.WOLF, "§c§lWolf");
-			entity_king.spawnMobs(getWorldData().getLocs(Team.BLUE), EntityType.IRON_GOLEM, "§6§lIronGolem");
+			entity_king.spawnMobs(getWorldData().getSpawnLocations(Team.BLUE), EntityType.IRON_GOLEM, "§6§lIronGolem");
 			entity_king.setDamage(true);
 			entity_king.setMove(true);
 			entity_king.setAttack(true);

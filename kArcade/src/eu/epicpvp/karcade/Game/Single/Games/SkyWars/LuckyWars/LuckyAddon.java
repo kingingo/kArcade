@@ -144,8 +144,8 @@ public class LuckyAddon extends kListener {
 		SingleWorldData worldData = instance.getWorldData();
 
 		if(worldData.getMap().getLocations().containsKey(Team.DIAMOND)){
-			Location loc1 = worldData.getLocs(Team.DIAMOND).get(0);
-			Location loc2 = worldData.getLocs(Team.DIAMOND).get(1);
+			Location loc1 = worldData.getSpawnLocations(Team.DIAMOND).get(0);
+			Location loc2 = worldData.getSpawnLocations(Team.DIAMOND).get(1);
 
 			setIsland(Team.DIAMOND, this.normalAmount, this.normalDistance, loc1, loc2);
 		}else{
@@ -156,8 +156,8 @@ public class LuckyAddon extends kListener {
 	public void setPlayerIsland(Team playerTeam) {
 		SingleWorldData worldData = instance.getWorldData();
 
-		Location loc1 = worldData.getLocs(Team.getTeamToVillageTeam(playerTeam)).get(0);
-		Location loc2 = worldData.getLocs(Team.getTeamToVillageTeam(playerTeam)).get(1);
+		Location loc1 = worldData.getSpawnLocations(Team.getTeamToVillageTeam(playerTeam)).get(0);
+		Location loc2 = worldData.getSpawnLocations(Team.getTeamToVillageTeam(playerTeam)).get(1);
 
 		setIsland(playerTeam, this.playerAmount, this.playerDistance, loc1, loc2);
 	}
@@ -201,7 +201,7 @@ public class LuckyAddon extends kListener {
 			location.getBlock().setType(Material.SPONGE);
 			logMessage(" DIS:" + distances.size() + " I:" + i + " G:" + ground.size());
 		}
-		logMessage("A:" + amount + " D:" + distance + " G:" + ground.size() + " P:" + placed.size() + " T:" + t.Name());
+		logMessage("A:" + amount + " D:" + distance + " G:" + ground.size() + " P:" + placed.size() + " T:" + t.getDisplayName());
 	}
 
 }

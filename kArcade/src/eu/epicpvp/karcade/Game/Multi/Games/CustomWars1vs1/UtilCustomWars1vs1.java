@@ -258,7 +258,7 @@ public class UtilCustomWars1vs1 {
 		return v;
 	}
 	
-	public static DyeColor cd(String s){
+	public static DyeColor getDyeColorFromTeamName(String s){
 		if(s.equalsIgnoreCase(Color.RED.toString()))return DyeColor.RED;
 		if(s.equalsIgnoreCase(Color.YELLOW.toString()))return DyeColor.YELLOW;
 		if(s.equalsIgnoreCase("§9"))return DyeColor.BLUE;

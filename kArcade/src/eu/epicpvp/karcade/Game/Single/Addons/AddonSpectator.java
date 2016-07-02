@@ -25,10 +25,10 @@ public class AddonSpectator implements Listener {
 	@EventHandler
 	public void Move(PlayerMoveEvent ev){
 		Player p = ev.getPlayer();
-			if(game.getGameList().isPlayerState(p)==PlayerState.OUT){
+			if(game.getGameList().isPlayerState(p)==PlayerState.SPECTATOR){
 				if(game.getManager().getPermManager().hasPermission(p, PermissionType.SERVER_JOIN_SPECTATE))return;
 				
-				for (Player s : game.getGameList().getPlayers(PlayerState.IN)) {
+				for (Player s : game.getGameList().getPlayers(PlayerState.INGAME)) {
 					if(!s.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()))continue;
 					ploc = s.getLocation();
 					if (p.getLocation().distance(ploc) <= 5) {
@@ -36,8 +36,8 @@ public class AddonSpectator implements Listener {
 						break;
 					}
 				}
-			}else if(game.getGameList().isPlayerState(p)==PlayerState.IN){
-				for (Player s : game.getGameList().getPlayers(PlayerState.OUT)) {
+			}else if(game.getGameList().isPlayerState(p)==PlayerState.INGAME){
+				for (Player s : game.getGameList().getPlayers(PlayerState.SPECTATOR)) {
 					if(game.getManager().getPermManager().hasPermission(s, PermissionType.SERVER_JOIN_SPECTATE))continue;
 					if(!s.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()))continue;
 					ploc = s.getLocation();

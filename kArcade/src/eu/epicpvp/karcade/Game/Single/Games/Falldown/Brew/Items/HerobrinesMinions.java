@@ -34,7 +34,7 @@ public class HerobrinesMinions extends BrewItem{
 	
 	@EventHandler
 	public void Launch(final PlayerInteractEvent event){
-		if(UtilEvent.isAction(event, ActionType.R)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
+		if(UtilEvent.isAction(event, ActionType.RIGHT)&&event.getPlayer().getItemInHand().hasItemMeta()&&event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 			if(UtilItem.ItemNameEquals(getRealItem(), event.getPlayer().getItemInHand())){
 				event.setCancelled(true);
 				if(!fireEvent(event.getPlayer())){
