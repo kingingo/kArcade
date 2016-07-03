@@ -282,7 +282,7 @@ public class TeamGame extends SingleGame {
 
 		while (players.hasNext()) {
 			Player p = players.next();
-			if(getVoteTeam().getVote().containsKey(p)){
+			if(getVoteTeam()!=null&&getVoteTeam().getVote().containsKey(p)){
 				getTeamList().put(p, getVoteTeam().getVote().get(p));
 				continue;
 			}
