@@ -305,7 +305,7 @@ public class CustomWars1vs1 extends MultiTeamGame{
 			
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
-				getGames().getManager().Clear(player);
+				getGames().getManager().clear(player);
 				UtilPlayer.sendPacket(player, getWorldBorderPacket());
 			}
 

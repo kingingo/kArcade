@@ -293,7 +293,7 @@ public class SurvivalGames1vs1 extends MultiTeamGame{
 			UtilSurvivalGames1vs1.loadEnderChest(this);
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
-				getGames().getManager().Clear(player);
+				getGames().getManager().clear(player);
 				player.getInventory().setItem(8, UtilSurvivalGames1vs1.getEnderchest_compass());
 				player.setScoreboard(scoreboard);
 				UtilPlayer.sendPacket(player, getWorldBorderPacket());

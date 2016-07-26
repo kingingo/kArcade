@@ -70,7 +70,6 @@ import eu.epicpvp.kcore.Events.ServerChangeGameTypeEvent;
 import eu.epicpvp.kcore.Hologram.Hologram;
 import eu.epicpvp.kcore.Listener.kListener;
 import eu.epicpvp.kcore.MySQL.MySQL;
-import eu.epicpvp.kcore.Nick.NickManager;
 import eu.epicpvp.kcore.Permission.PermissionManager;
 import eu.epicpvp.kcore.Pet.PetManager;
 import eu.epicpvp.kcore.Util.Color;
@@ -116,8 +115,6 @@ public class kArcadeManager extends kListener {
 	@Getter
 	private CommandService service;
 	private Hologram hologram;
-	@Getter
-	private NickManager nickManager;
 
 	public kArcadeManager(JavaPlugin plugin, String modulName, String g, PermissionManager permManager, MySQL mysql,
 			ClientWrapper client, CommandHandler cmd) {
@@ -134,7 +131,6 @@ public class kArcadeManager extends kListener {
 		this.service = new CommandService(permManager);
 		this.hologram = new Hologram(getInstance());
 		this.hologram.RemoveText();
-		this.nickManager = new NickManager(permManager);
 		getLoc_stats().getWorld().loadChunk(getLoc_stats().getWorld().getChunkAt(getLoc_stats()));
 		getLoc_raking().getWorld().loadChunk(getLoc_raking().getWorld().getChunkAt(getLoc_raking()));
 
@@ -422,7 +418,7 @@ public class kArcadeManager extends kListener {
 			System.err.println("[Debug]: Zeit: " + ((System.currentTimeMillis() - time) / 1000.0D) + " Seconds");
 	}
 
-	public void Clear(Player player) {
+	public void clear(Player player) {
 		player.setGameMode(GameMode.SURVIVAL);
 		player.setAllowFlight(false);
 		UtilInv.Clear(player);

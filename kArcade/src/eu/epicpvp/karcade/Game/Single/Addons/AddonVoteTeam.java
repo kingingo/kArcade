@@ -22,11 +22,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Permission.PermissionManager;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.InventorySize;
 import eu.epicpvp.kcore.Util.UtilEvent;
@@ -229,11 +231,12 @@ public class AddonVoteTeam implements Listener {
 		int playerTeamIndex = 1;
 		for (Player p : vote.keySet()) {
 			if (vote.get(p) == t) {
+				LoadedPlayer lp = UtilServer.getClient().getPlayerAndLoad(p.getName());
 				if (p.equals(player)) {
 					is = UtilItem.setGlowing(is, true);
 					l.add("§6" + playerTeamIndex + ".§a " + p.getName());
 				} else
-					l.add("§6" + playerTeamIndex + ".§7 " + p.getName());
+					l.add("§6" + playerTeamIndex + ".§7 " + (lp.hasNickname() ? PermissionManager.getManager().hasPermission(player, "nick.showunnicked") ? p.getName() : lp.getNickname() : p.getName()));
 				playerTeamIndex++;
 			}
 		}

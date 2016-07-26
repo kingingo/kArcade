@@ -177,7 +177,7 @@ public class MultiTeamGame extends MultiGame {
 		for (Player p : getTeamList().keySet()) {
 			String playerTeam = getTeamList().get(p).getDisplayName();
 			String color = getTeamList().get(p).getColor();
-			UtilScoreboard.addTeam(board, playerTeam, color).addEntry(p.getName());
+			UtilScoreboard.addPlayerToTeam(board, UtilScoreboard.addTeam(board, playerTeam, color), p);
 			p.setPlayerListName(color+p.getName());
 			p.setScoreboard(board);
 		}
@@ -222,7 +222,7 @@ public class MultiTeamGame extends MultiGame {
 	public void SetSpectator(PlayerRespawnEvent ev, Player player) {
 		delTeam(player);
 		getGameList().addPlayer(player, PlayerState.SPECTATOR);
-		getGames().getManager().Clear(player);
+		getGames().getManager().clear(player);
 		List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 		if (l.size() > 1) {
 			if (ev == null) {

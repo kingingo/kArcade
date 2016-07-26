@@ -9,7 +9,7 @@ import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.Events.PlayerUseBrewIt
 import eu.epicpvp.kcore.Listener.kListener;
 import lombok.Getter;
 
-public class BrewItem extends kListener{
+public class BrewItem extends kListener {
 
 	private ItemStack item;
 	@Getter
@@ -18,33 +18,33 @@ public class BrewItem extends kListener{
 	private int power;
 	@Getter
 	private Falldown falldown;
-	
-	public BrewItem(int power,ItemStack item,Integer[] brewing_items,Falldown falldown){
-		super(falldown.getManager().getInstance(),item.getItemMeta().getDisplayName());
-		this.item=item;
-		this.brewing_items=brewing_items;
-		this.power=power;
-		this.falldown=falldown;
+
+	public BrewItem(int power, ItemStack item, Integer[] brewing_items, Falldown falldown) {
+		super(falldown.getManager().getInstance(), item.getItemMeta().getDisplayName());
+		this.item = item;
+		this.brewing_items = brewing_items;
+		this.power = power;
+		this.falldown = falldown;
 	}
-	
-	public ItemStack getRealItem(){
+
+	public ItemStack getRealItem() {
 		return item;
 	}
-	
+
 	public ItemStack getItem() {
 		return item.clone();
 	}
-	
-	public boolean fireEvent(Player player){
+
+	public boolean fireEvent(Player player) {
 		PlayerUseBrewItemEvent ev = new PlayerUseBrewItemEvent(player, this);
 		Bukkit.getPluginManager().callEvent(ev);
 		return ev.isCancelled();
 	}
-	
-	public boolean check(Integer[] id,Player player) {
+
+	public boolean check(Integer[] id, Player player) {
 		boolean ok = false;
 		Integer[] ids = new Integer[3];
-		ids=brewing_items.clone();
+		ids = brewing_items.clone();
 
 		boolean unsortiert = true;
 		int temp;
@@ -71,13 +71,12 @@ public class BrewItem extends kListener{
 				}
 		}
 
-		if ((id[0].equals(ids[0])) && (id[1].equals(ids[1]))
-				&& (id[2].equals(ids[2]))) {
+		if ((id[0].equals(ids[0])) && (id[1].equals(ids[1])) && (id[2].equals(ids[2]))) {
 			ok = true;
 			player.getInventory().addItem(item.clone());
 		}
-		
+
 		return ok;
 	}
-	
+
 }

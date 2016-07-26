@@ -75,7 +75,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		int r=0;
 		
 		for(Player p : UtilServer.getPlayers()){
-			getManager().Clear(p);
+			getManager().clear(p);
 			Life.put(p, 6);
 			kills.put(p, 0);
 			getGameList().addPlayer(p,PlayerState.INGAME);
@@ -135,7 +135,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	  }
 	
 	public void getSpawnInventory(Player p){
-			getManager().Clear(p);
+			getManager().clear(p);
 			if(getManager().getPermManager().hasPermission(p, PermissionType.OneInTheChamber_KIT)){
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.YELLOW));
 				int r = UtilMath.RandomInt(5, 1);

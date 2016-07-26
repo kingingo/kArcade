@@ -44,7 +44,7 @@ public class MultiSoloGame extends MultiGame{
 	}
 	
 	public void SetSpectator(PlayerRespawnEvent ev,Player player){
-	    getGames().getManager().Clear(player);
+	    getGames().getManager().clear(player);
 	    List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 	    if(l.size()>1){
 	    	if(ev==null){

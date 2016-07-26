@@ -117,50 +117,39 @@ public class TeamGame extends SingleGame {
 	}
 
 	public Team calculateLowestTeam(boolean returnNullBySame) {
-		return calculateLowestTeam(teamList.values().toArray(new Team[0]),returnNullBySame);
+		return calculateLowestTeam(teamList.values().toArray(new Team[0]), returnNullBySame);
 	}
-	
-	public Team calculateLowestTeam(Team[] teams,boolean returnNullBySame) {
+
+	public Team calculateLowestTeam(Team[] teams, boolean returnNullBySame) {
 		HashMap<Team, Integer> playerCount = new HashMap<>();
-		for(Team t : teams)
+		for (Team t : teams)
 			playerCount.put(t, 0);
-		for(Entry<Player, Team> t : teamList.entrySet()){
-			if(playerCount.containsKey(t.getValue()))
-				playerCount.put(t.getValue(), playerCount.get(t.getValue())+1);
+		for (Entry<Player, Team> t : teamList.entrySet()) {
+			if (playerCount.containsKey(t.getValue()))
+				playerCount.put(t.getValue(), playerCount.get(t.getValue()) + 1);
 		}
 		List<Entry<Team, Integer>> playerCountEntries = new ArrayList<>(playerCount.entrySet());
-		Collections.sort(playerCountEntries,new Comparator<Entry<Team, Integer>>() {
+		Collections.sort(playerCountEntries, new Comparator<Entry<Team, Integer>>() {
 			@Override
 			public int compare(Entry<Team, Integer> o1, Entry<Team, Integer> o2) {
 				return Integer.compare(o1.getValue(), o2.getValue());
 			}
 		});
-		if(playerCountEntries.isEmpty())
-			if(returnNullBySame)
+		if (playerCountEntries.isEmpty())
+			if (returnNullBySame)
 				return null;
 			else
 				return Team.RED;
 		return playerCountEntries.get(0).getKey();
 		/*
-		Team t = null;
-
-		for (Team team : teams) {
-			t = team;
-			for (Team team1 : teams) {
-				if (isInTeam(t) > isInTeam(team1)) {
-					t = null;
-					break;
-				}
-			}
-			if (t != null) {
-				break;
-			}
-		}
-		if (t == null && !returnNullBySame)
-			t = Team.RED;
-		return t;
-		
-		*/
+		 * Team t = null;
+		 * 
+		 * for (Team team : teams) { t = team; for (Team team1 : teams) { if
+		 * (isInTeam(t) > isInTeam(team1)) { t = null; break; } } if (t != null)
+		 * { break; } } if (t == null && !returnNullBySame) t = Team.RED; return
+		 * t;
+		 * 
+		 */
 	}
 
 	public void delTeam(Player p) {
@@ -242,13 +231,8 @@ public class TeamGame extends SingleGame {
 			UtilScoreboard.addTeam(getScoreboard(), team.getDisplayName(), team.getColor());
 
 			for (Player player : list) {
-				if (getManager().getNickManager() != null && getManager().getNickManager().getNicks().containsKey(player.getEntityId())) {
-					getScoreboard().getTeam(team.getDisplayName()).addEntry(getManager().getNickManager().getNicks().get(player.getEntityId()).getName());
-					player.setPlayerListName(team.getColor()+getManager().getNickManager().getNicks().get(player.getEntityId()).getName());
-					continue;
-				}
 				getScoreboard().getTeam(team.getDisplayName()).addPlayer(player);
-				player.setPlayerListName(team.getColor()+player.getName());
+				player.setPlayerListName(team.getColor() + "{player_" + player.getName() + "}");
 			}
 
 			for (Player p : list) {
@@ -268,58 +252,39 @@ public class TeamGame extends SingleGame {
 
 	public void distributePlayers(Team[] teams, ArrayList<Player> list) {
 		/*
-		if (getVoteTeam() != null) {
-			for (Player player : getVoteTeam().getVote().keySet()) {
-				if (list.contains(player)) {
-					getTeamList().put(player, getVoteTeam().getVote().get(player));
-					list.remove(player);
-				}
-			}
-		}
-		*/
+		 * if (getVoteTeam() != null) { for (Player player :
+		 * getVoteTeam().getVote().keySet()) { if (list.contains(player)) {
+		 * getTeamList().put(player, getVoteTeam().getVote().get(player));
+		 * list.remove(player); } } }
+		 */
 		Collections.shuffle(list);
 		Iterator<Player> players = list.iterator();
 
 		while (players.hasNext()) {
 			Player p = players.next();
-			if(getVoteTeam()!=null&&getVoteTeam().getVote().containsKey(p)){
+			if (getVoteTeam() != null && getVoteTeam().getVote().containsKey(p)) {
 				getTeamList().put(p, getVoteTeam().getVote().get(p));
 				continue;
 			}
-			if(getTeamList().containsKey(p)){ //Whjyever (Not possiable)
+			if (getTeamList().containsKey(p)) { // Whjyever (Not possiable)
 				continue;
 			}
 			Team lowest = calculateLowestTeam(teams, false);
 			getTeamList().put(p, lowest);
 		}
-		
+
 		/*
-		Player player;
-		for (int i = 0; i < list.size(); i++) {
-			if (list.isEmpty())
-				break;
-			player = list.get(i);
-			if (getTeamList().containsKey(player))
-				continue;
-
-			if (!isSetTeam(teams)) {
-				for (Team t : teams) {
-					if (!isSetTeam(t)) {
-						getTeamList().put(player, t);
-						break;
-					}
-				}
-				continue;
-			}
-
-			Team team = calculateLowestTeam(false);
-			if (team != null) {
-				getTeamList().put(player, team);
-			} else {
-				getTeamList().put(player, teams[0]);
-			}
-		}
-		*/
+		 * Player player; for (int i = 0; i < list.size(); i++) { if
+		 * (list.isEmpty()) break; player = list.get(i); if
+		 * (getTeamList().containsKey(player)) continue;
+		 * 
+		 * if (!isSetTeam(teams)) { for (Team t : teams) { if (!isSetTeam(t)) {
+		 * getTeamList().put(player, t); break; } } continue; }
+		 * 
+		 * Team team = calculateLowestTeam(false); if (team != null) {
+		 * getTeamList().put(player, team); } else { getTeamList().put(player,
+		 * teams[0]); } }
+		 */
 	}
 
 	public boolean isSetTeam(Team[] teams) {
@@ -407,7 +372,7 @@ public class TeamGame extends SingleGame {
 			spec = new AddonSpectator(this);
 		delTeam(player);
 		getGameList().addPlayer(player, PlayerState.SPECTATOR);
-		getManager().Clear(player);
+		getManager().clear(player);
 		List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 		if (l.size() > 1) {
 			if (ev == null) {

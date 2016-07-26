@@ -322,7 +322,7 @@ public class Masterbuilders extends SoloGame{
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		}else{
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+"{player_"+ev.getPlayer().getName()+"}"+":§7 "+ev.getMessage());
 		}
 	}
 
@@ -352,12 +352,12 @@ public class Masterbuilders extends SoloGame{
 					UtilScoreboard.resetScore(scoreGER, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreGER, "§a§lGewinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreGER, 5, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(scoreGER, "§7"+ranking.get(0).getObject(), DisplaySlot.SIDEBAR, 5);
+					UtilScoreboard.setScore(scoreGER, "§7"+"{player_"+ranking.get(0).getObject()+"}", DisplaySlot.SIDEBAR, 5);
 
 					UtilScoreboard.resetScore(scoreENG, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreENG, "§a§lWinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreENG, 5, DisplaySlot.SIDEBAR);
-					UtilScoreboard.setScore(scoreENG, "§7"+ranking.get(0).getObject(), DisplaySlot.SIDEBAR, 5);
+					UtilScoreboard.setScore(scoreENG, "§7"+"{player_"+ranking.get(0).getObject()+"}", DisplaySlot.SIDEBAR, 5);
 					
 					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§e§l1",ranking.get(0).getObject()});
 					setWinner( ranking.get(0).getObject() );
@@ -467,8 +467,8 @@ public class Masterbuilders extends SoloGame{
 		setStart(getStart()-1);
 		
 		if(getStart()==0){
-			Title en = new Title("§7Built by","§e"+p);
-			Title ger = new Title("§7Gebaut von","§e"+p);
+			Title en = new Title("§7Built by","§e"+"{player_"+p+"}");
+			Title ger = new Title("§7Gebaut von","§e"+"{player_"+p+"}");
 			
 			for(Player player : UtilServer.getPlayers()){
 				player.getInventory().clear();
@@ -686,7 +686,7 @@ public class Masterbuilders extends SoloGame{
 			
 			ItemStack option = UtilItem.RenameItem(new ItemStack(Material.BOOK), "§bOption");
 			for(Player player : UtilServer.getPlayers()){
-				getManager().Clear(player);
+				getManager().clear(player);
 				player.getInventory().setItem(8, option);
 				if(TranslationHandler.getLanguage(player)==LanguageType.GERMAN){
 					player.setScoreboard(scoreGER);
@@ -708,7 +708,7 @@ public class Masterbuilders extends SoloGame{
 		
 		int i=0;
 		for(Player player : UtilServer.getPlayers()){
-			getManager().Clear(player);
+			getManager().clear(player);
 			if(i>=12){
 				System.err.println("MasterBuilders zu viele Spieler Online ("+UtilServer.getPlayers().size()+")! Der Spieler "+player.getName()+" wird gegickt");
 				player.kickPlayer("Too many Players!");

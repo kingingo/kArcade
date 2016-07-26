@@ -128,7 +128,7 @@ public class OneInTheChamber extends MultiSoloGame{
 	  }
 	
 	public void getSpawnInventory(Player p){
-			getGames().getManager().Clear(p);
+			getGames().getManager().clear(p);
 			if(getGames().getManager().getPermManager().hasPermission(p, PermissionType.OneInTheChamber_KIT)){
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.YELLOW));
 				int r = UtilMath.RandomInt(5, 1);

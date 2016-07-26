@@ -33,12 +33,6 @@ public class AddonLobbyJump  extends kListener {
 			Block below = e.getPlayer().getLocation().clone().add(0, -1, 0).getBlock();
 			if(below.getType() == Material.WOOL){
 				below.setData((byte) ((below.getData()+1)%DyeColor.values().length));
-				/*
-				Wool wool = (Wool) below.getState().getData();
-				wool.setColor(DyeColor.values()[(wool.getColor().ordinal()+1)%DyeColor.values().length]);
-				below.getState().setData(wool);
-				below.getState().update(true);
-				*/
 			}
 		}
 	}

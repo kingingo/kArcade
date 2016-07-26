@@ -2,10 +2,12 @@ package eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +23,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
+
+import com.mojang.authlib.GameProfile;
+import com.sk89q.jchronic.handlers.SRPAHandler;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
@@ -60,6 +65,7 @@ import eu.epicpvp.kcore.ItemFake.ItemFake;
 import eu.epicpvp.kcore.ItemFake.ItemFakeManager;
 import eu.epicpvp.kcore.ItemFake.Events.ItemFakePickupEvent;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemManager;
+import eu.epicpvp.kcore.Listener.Chat.filter.ChatUtils;
 import eu.epicpvp.kcore.NPC.NPC;
 import eu.epicpvp.kcore.NPC.NPCManager;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -77,17 +83,29 @@ import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilPlayer;
+import eu.epicpvp.kcore.Util.UtilReflection;
 import eu.epicpvp.kcore.Util.UtilScoreboard;
 import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilString;
 import eu.epicpvp.kcore.Util.UtilTime;
 import lombok.Getter;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.server.v1_8_R3.ChatBaseComponent;
+import net.minecraft.server.v1_8_R3.ChatComponentUtils;
+import net.minecraft.server.v1_8_R3.ChatMessage;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.PlayerInfoData;
 
-public class TroubleInMinecraft extends TeamGame{
-	
+public class TroubleInMinecraft extends TeamGame {
+
 	@Getter
-	private HashMap<Integer,String> npclist = new HashMap<>();
-	private ArrayList<Player> arrow =new ArrayList<>();
+	private HashMap<Integer, String> npclist = new HashMap<>();
+	private ArrayList<Player> arrow = new ArrayList<>();
 	private Tester tester;
 	private Shop dshop;
 	@Getter
@@ -108,7 +126,7 @@ public class TroubleInMinecraft extends TeamGame{
 	private Shop detective_shop;
 	@Getter
 	private LaunchItemManager ilManager;
-	
+
 	public TroubleInMinecraft(kArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
@@ -135,389 +153,399 @@ public class TroubleInMinecraft extends TeamGame{
 		setFoodChange(false);
 		setCompassAddon(true);
 		setRespawn(true);
-		this.npclist=new HashMap<>();
-		shotgun=new Shotgun(this);
-		sniper=new Sniper(this);
-		minigun=new Minigun(this);
+		this.npclist = new HashMap<>();
+		shotgun = new Shotgun(this);
+		sniper = new Sniper(this);
+		minigun = new Minigun(this);
 		getManager().getCmd().register(CommandTraitorChat.class, new CommandTraitorChat(this));
 		getManager().getCmd().register(CommandDetective.class, new CommandDetective(this));
 		getManager().getCmd().register(CommandTraitor.class, new CommandTraitor(this));
-		npcManager= new NPCManager(getManager().getInstance());
-		magnet=new MagnetStab(npcManager);
+		npcManager = new NPCManager(getManager().getInstance());
+		magnet = new MagnetStab(npcManager);
 		Radar r = new Radar(this);
-		ilManager=new LaunchItemManager(getManager().getInstance());
+		ilManager = new LaunchItemManager(getManager().getInstance());
 		defi = new Defibrillator(this);
-		traitor_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§cTraitorShop"),"Traitor-Shop:",StatsKey.TTT_TRAITOR_PUNKTE,Team.TRAITOR,new IShop[]{
-				new Medipack(this),
-				new Fake_Chest(this),
-				new Knife(this),
-				r,
-				new Tester_Spoofer(this),
-				new CreeperSpawner(this),
-		});
-		
-		detective_shop= new Shop(this,UtilItem.RenameItem(new ItemStack(Material.BOW),"§1DetectiveShop"),"Detective-Shop:",StatsKey.TTT_DETECTIVE_PUNKTE,Team.DETECTIVE,new IShop[]{
-				new Golden_Weapon(this),
-				r,
-				//defi,
-				new Healing_Station(this),
-				new Medipack(this),
-				new DNA_TEST(this),
-		});
-		setWorldData(new SingleWorldData(manager,getType()));
+		traitor_shop = new Shop(this, UtilItem.RenameItem(new ItemStack(Material.BOW), "§cTraitorShop"), "Traitor-Shop:", StatsKey.TTT_TRAITOR_PUNKTE, Team.TRAITOR, new IShop[] { new Medipack(this), new Fake_Chest(this), new Knife(this), r, new Tester_Spoofer(this), new CreeperSpawner(this), });
+
+		detective_shop = new Shop(this, UtilItem.RenameItem(new ItemStack(Material.BOW), "§1DetectiveShop"), "Detective-Shop:", StatsKey.TTT_DETECTIVE_PUNKTE, Team.DETECTIVE, new IShop[] { new Golden_Weapon(this), r,
+				// defi,
+				new Healing_Station(this), new Medipack(this), new DNA_TEST(this), });
+		setWorldData(new SingleWorldData(manager, getType()));
 		getWorldData().Initialize();
 		ServiceTroubleInMinecraft.setTtt(this);
 		setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
 
-//	Ein Innocent t§tet einen Traitor: +20 Karma
-//	Ein Innocent t§tet einen Innocent: -20 Karma
-//	Ein Innocent t§tet einen Detective: -50 Karma
-//	Ein Detective t§tet einen Traitor: +30 Karma und 2 Detective-Punkte
-//	Ein Detective t§tet einen Innocent: -20 Karma
-//	Ein Detective t§tet einen Detective: -50 Karma
-//	Ein Traitor t§tet einen Innocent: +10 Karma und 2 Traitor-Punkte
-//	Ein Traitor t§tet einen Detective: +20 Karma und 4 Traitor-Punkte
-//	Ein Traitor t§tet einen Traitor: -50 Karma
-	
-//	Shops:
-	
-//	Traitor-Shop:
-//	Medipack (1 Punkt): Heil 2,5 Herzen
-//	Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
-//	Creeper Arrows (2 Punkte): Aus geschossenen Pfeilen spawnen Creeper
-//	Disguiser (3 Punkte): Versteckt den eigenen Name
-//	Tester-Spoofer (4 Punkte): Traitoren werden zu 75% im Tester also Innocent angezeigt.
-//	Fake-Chest (4 Punkte): Wenn man dieses Fake-Item aufnimmt stirbt man sofort.
-//	Teleporter (4 Punkte): Erm§glicht die einmalige teleportation zu einem vorher festgelegten Punkt.
-//	C4 (5 Punkte): Ein TNT-Block der mit einer Redstone-Fackel aktiviert werden kann.
-//	Knife (6 Punkte): Erm§glicht einmalig das sofortige t§ten eines Spielers von hinten.
-//	JihadBomb (7 Punkte): L§sst alle Spieler um einen selbst explodieren.
-//	FireGrenade (7 Punkte): Erzeugt ein gro§es Feuer, nachdem sie explodiert ist.
-//	SmokeGrenade (7 Punkte): Erzeugt eine gro§e Rauchwolke nach der Explosion.
-	
-//	Detective-Shop:
-//	Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
-//	DNA-Test (2 Punkte): Untersucht Leichen auf genauere Informationen.
-//	Healing-Station (2 Punkte): Heilt andere Spieler in der n§he der Heal-Station.
-//	Fluffy (3 Punkte): Ein Hund, der in der N§he von Traitoren knurrt.
-//	Golden Weapon (5 Punkte): Ein Goldschwert, welches einmalig einen Traitor mit einem Schlag t§tet. Bei Innocents zerbricht es sofort.
-	
-	//RED BLOCK = PLAYER SPAWN
-	//BLUE = BUTTON
-	//GREEN = JOIN
-	//MELON = LAMPEN
-	//GRAY = GLASS
-	//YELLOW = ITEM'S
-	
+	// Ein Innocent t§tet einen Traitor: +20 Karma
+	// Ein Innocent t§tet einen Innocent: -20 Karma
+	// Ein Innocent t§tet einen Detective: -50 Karma
+	// Ein Detective t§tet einen Traitor: +30 Karma und 2 Detective-Punkte
+	// Ein Detective t§tet einen Innocent: -20 Karma
+	// Ein Detective t§tet einen Detective: -50 Karma
+	// Ein Traitor t§tet einen Innocent: +10 Karma und 2 Traitor-Punkte
+	// Ein Traitor t§tet einen Detective: +20 Karma und 4 Traitor-Punkte
+	// Ein Traitor t§tet einen Traitor: -50 Karma
+
+	// Shops:
+
+	// Traitor-Shop:
+	// Medipack (1 Punkt): Heil 2,5 Herzen
+	// Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
+	// Creeper Arrows (2 Punkte): Aus geschossenen Pfeilen spawnen Creeper
+	// Disguiser (3 Punkte): Versteckt den eigenen Name
+	// Tester-Spoofer (4 Punkte): Traitoren werden zu 75% im Tester also
+	// Innocent angezeigt.
+	// Fake-Chest (4 Punkte): Wenn man dieses Fake-Item aufnimmt stirbt man
+	// sofort.
+	// Teleporter (4 Punkte): Erm§glicht die einmalige teleportation zu einem
+	// vorher festgelegten Punkt.
+	// C4 (5 Punkte): Ein TNT-Block der mit einer Redstone-Fackel aktiviert
+	// werden kann.
+	// Knife (6 Punkte): Erm§glicht einmalig das sofortige t§ten eines Spielers
+	// von hinten.
+	// JihadBomb (7 Punkte): L§sst alle Spieler um einen selbst explodieren.
+	// FireGrenade (7 Punkte): Erzeugt ein gro§es Feuer, nachdem sie explodiert
+	// ist.
+	// SmokeGrenade (7 Punkte): Erzeugt eine gro§e Rauchwolke nach der
+	// Explosion.
+
+	// Detective-Shop:
+	// Radar (1 Punkt): Zeigt auf einen ausgewählten Spieler.
+	// DNA-Test (2 Punkte): Untersucht Leichen auf genauere Informationen.
+	// Healing-Station (2 Punkte): Heilt andere Spieler in der n§he der
+	// Heal-Station.
+	// Fluffy (3 Punkte): Ein Hund, der in der N§he von Traitoren knurrt.
+	// Golden Weapon (5 Punkte): Ein Goldschwert, welches einmalig einen Traitor
+	// mit einem Schlag t§tet. Bei Innocents zerbricht es sofort.
+
+	// RED BLOCK = PLAYER SPAWN
+	// BLUE = BUTTON
+	// GREEN = JOIN
+	// MELON = LAMPEN
+	// GRAY = GLASS
+	// YELLOW = ITEM'S
+
 	@EventHandler
-	public void Chest(PlayerInteractEvent ev){
-		if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)&&ev.getClickedBlock().getType()==Material.CHEST)ev.setCancelled(true);
+	public void Chest(PlayerInteractEvent ev) {
+		if (UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK) && ev.getClickedBlock().getType() == Material.CHEST)
+			ev.setCancelled(true);
 	}
-	
-//	@EventHandler
-//	public void Chat(AsyncPlayerChatEvent ev){
-//		ev.setCancelled(true);
-//		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
-//			ev.setCancelled(true);
-//			UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(p, "PREFIX_GAME",getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
-//			return;
-//		}
-//		UtilServer.broadcast(C.cGray+ev.getPlayer().getDisplayName()+": "+ev.getMessage());
-//	}
-	
+
+	// @EventHandler
+	// public void Chat(AsyncPlayerChatEvent ev){
+	// ev.setCancelled(true);
+	// if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.OUT).contains(ev.getPlayer())){
+	// ev.setCancelled(true);
+	// UtilPlayer.sendMessage(ev.getPlayer(),Language.getText(p,
+	// "PREFIX_GAME",getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
+	// return;
+	// }
+	// UtilServer.broadcast(C.cGray+ev.getPlayer().getDisplayName()+":
+	// "+ev.getMessage());
+	// }
+
 	@EventHandler
-	public void Inv(InventoryClickEvent ev){
-		if (!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
-		Player p = (Player)ev.getWhoClicked();
-		if(ev.getClickedInventory().getType()==InventoryType.PLAYER){
-			if(ev.getCurrentItem().getType()==Material.BOW){
+	public void Inv(InventoryClickEvent ev) {
+		if (!(ev.getWhoClicked() instanceof Player) || ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)
+			return;
+		Player p = (Player) ev.getWhoClicked();
+		if (ev.getClickedInventory().getType() == InventoryType.PLAYER) {
+			if (ev.getCurrentItem().getType() == Material.BOW) {
 				ev.setCancelled(true);
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void Chat(AsyncPlayerChatEvent ev){
+	public void Chat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
-		
-		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
+
+		if ((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString())) && UtilString.isBadWord(ev.getMessage()) || UtilString.checkForIP(ev.getMessage())) {
 			ev.setMessage("Ich heul rum!");
-			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
+			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX") + TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
-		
-		if(getState()!=GameState.InGame){
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
-		}else{
-				if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
-					Team t = getTeam(ev.getPlayer());
-					if(t==null){
-						UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
-					}else{
-						for(Player p : getGameList().getPlayers(PlayerState.INGAME)){
-							if(t==Team.TRAITOR){
-								if(getTeam(p)==t){
-									p.sendMessage(t.getColor()+t.getDisplayName()+" §8| "+t.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
-								}else{
-									p.sendMessage(Team.INOCCENT.getColor()+Team.INOCCENT.getDisplayName()+" §8| "+Team.INOCCENT.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
-								}
-							}else{
-								p.sendMessage(t.getColor()+t.getDisplayName()+" §8| "+t.getColor()+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
+
+		if (getState() != GameState.InGame) {
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
+		} else {
+			if (getGameList().isPlayerState(ev.getPlayer()) == PlayerState.INGAME) {
+				Team t = getTeam(ev.getPlayer());
+				if (t == null) {
+					UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
+				} else {
+					for (Player p : getGameList().getPlayers(PlayerState.INGAME)) {
+						if (t == Team.TRAITOR) {
+							if (getTeam(p) == t) {
+								p.sendMessage(t.getColor() + t.getDisplayName() + " §8| " + t.getColor() + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
+							} else {
+								p.sendMessage(Team.INOCCENT.getColor() + Team.INOCCENT.getDisplayName() + " §8| " + Team.INOCCENT.getColor() + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 							}
+						} else {
+							p.sendMessage(t.getColor() + t.getDisplayName() + " §8| " + t.getColor() + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 						}
 					}
-				}else{
-					for(Player p : getGameList().getPlayers(PlayerState.SPECTATOR)){
-						p.sendMessage(Color.ORANGE+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
-					}
 				}
+			} else {
+				for (Player p : getGameList().getPlayers(PlayerState.SPECTATOR)) {
+					p.sendMessage(Color.ORANGE + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
+				}
+			}
 		}
 	}
-	
-	public Team getHaveWinTeam(){
+
+	public Team getHaveWinTeam() {
 		Team t = Team.INOCCENT;
-        for(Player p : getTeamList().keySet()){
-        	if(getTeamList().get(p)==Team.TRAITOR){
-        		t=Team.TRAITOR;
-        		break;
-        	}
-        }
+		for (Player p : getTeamList().keySet()) {
+			if (getTeamList().get(p) == Team.TRAITOR) {
+				t = Team.TRAITOR;
+				break;
+			}
+		}
 		return t;
 	}
-	
-	@EventHandler(priority=EventPriority.LOWEST)
-	public void Aufdecken(PlayerInteractNPCEvent ev){
-		 	if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
-		 		NPC npc = ev.getNpc();
-				if(npclist.containsKey(npc.getEntityID())){
-					String name = npclist.get(npc.getEntityID());
-					Location loc = npc.getLocation();
-					npclist.remove(npc.getEntityID());
-					npc.despawn();
-					Team t = defi.getTeams().get(name.toLowerCase());
-					
-					if(t!=null)broadcastWithPrefix("TTT_LEICHE_IDENTIFIZIERT", new String[]{t.getColor()+name,t.getColor()+t.getDisplayName()});
-//					if(t==Team.TRAITOR){
-//						for(Player p : getGameList().getPlayers(PlayerState.IN)){
-//							if(getTeam(p)==t){
-//								UtilPlayer.setTab(Team.TRAITOR.getColor()+"[T] "+name.getName(), p, false);
-//							}else{
-//								UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+name.getName(), p, false);
-//							}
-//						}
-//					}else if(t==Team.DETECTIVE){
-//						for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.DETECTIVE.getColor()+"[D] "+name.getName(), p, false);
-//					}else if(t==Team.INOCCENT){
-//						for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+name.getName(), p, false);
-//					}
-					npc = npcManager.createNPC( name , loc);
-					npc.spawn();
-					//npc.sleep();
-					if(getTeam(ev.getPlayer())==Team.DETECTIVE){
-						getStats().setInt(ev.getPlayer(),getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, ev.getPlayer())+1, StatsKey.TTT_DETECTIVE_PUNKTE);	
-					}
-//					else if(getTeam(ev.getPlayer())==Team.TRAITOR){
-//						getStats().setInt(ev.getPlayer(),getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, ev.getPlayer())+1, StatsKey.TTT_TRAITOR_PUNKTE);	
-//					}
-				}else{
-					if(defi.getTeams().containsKey(npc.getName().toLowerCase())){
-						UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_NPC_CLICKED", new String[]{npc.getName(),defi.getTeams().get(npc.getName().toLowerCase()).getColor()+defi.getTeams().get(npc.getName().toLowerCase()).name()}));
-					}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void Aufdecken(PlayerInteractNPCEvent ev) {
+		if (getGameList().isPlayerState(ev.getPlayer()) == PlayerState.INGAME && ev.getNpc() != null) {
+			NPC npc = ev.getNpc();
+			if (npclist.containsKey(npc.getEntityID())) {
+				String name = npclist.get(npc.getEntityID());
+				Location loc = npc.getLocation();
+				npclist.remove(npc.getEntityID());
+				npc.despawn();
+				Team t = defi.getTeams().get(name.toLowerCase());
+
+				if (t != null)
+					broadcastWithPrefix("TTT_LEICHE_IDENTIFIZIERT", new String[] { t.getColor() + "{player_" + name + "}", t.getColor() + t.getDisplayName() });
+				// if(t==Team.TRAITOR){
+				// for(Player p : getGameList().getPlayers(PlayerState.IN)){
+				// if(getTeam(p)==t){
+				// UtilPlayer.setTab(Team.TRAITOR.getColor()+"[T]
+				// "+name.getName(), p, false);
+				// }else{
+				// UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I]
+				// "+name.getName(), p, false);
+				// }
+				// }
+				// }else if(t==Team.DETECTIVE){
+				// for(Player p :
+				// getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.DETECTIVE.getColor()+"[D]
+				// "+name.getName(), p, false);
+				// }else if(t==Team.INOCCENT){
+				// for(Player p :
+				// getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I]
+				// "+name.getName(), p, false);
+				// }
+				npc = npcManager.createNPC(name, loc);
+				npc.spawn();
+				// npc.sleep();
+				if (getTeam(ev.getPlayer()) == Team.DETECTIVE) {
+					getStats().setInt(ev.getPlayer(), getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, ev.getPlayer()) + 1, StatsKey.TTT_DETECTIVE_PUNKTE);
 				}
-		 	}
+				// else if(getTeam(ev.getPlayer())==Team.TRAITOR){
+				// getStats().setInt(ev.getPlayer(),getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE,
+				// ev.getPlayer())+1, StatsKey.TTT_TRAITOR_PUNKTE);
+				// }
+			} else {
+				if (defi.getTeams().containsKey(npc.getName().toLowerCase())) {
+					UtilPlayer.sendMessage(ev.getPlayer(), TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "TTT_NPC_CLICKED", new String[] { npc.getName(), defi.getTeams().get(npc.getName().toLowerCase()).getColor() + defi.getTeams().get(npc.getName().toLowerCase()).name() }));
+				}
+			}
 		}
-	
+	}
+
 	@EventHandler
-	public void DeathTTT(PlayerDeathEvent ev){
-		if(ev.getEntity() instanceof Player&&getGameList().getPlayers(PlayerState.INGAME).contains( ((Player)ev.getEntity()) )){
-			getStats().setInt(((Player)ev.getEntity()),getStats().getInt(StatsKey.DEATHS, ((Player)ev.getEntity()))+1, StatsKey.DEATHS);
-			getStats().setInt(((Player)ev.getEntity()),getStats().getInt(StatsKey.LOSE, ((Player)ev.getEntity()))+1, StatsKey.LOSE);
-			getGameList().addPlayer( ((Player)ev.getEntity()) , PlayerState.SPECTATOR);
+	public void DeathTTT(PlayerDeathEvent ev) {
+		if (ev.getEntity() instanceof Player && getGameList().getPlayers(PlayerState.INGAME).contains(((Player) ev.getEntity()))) {
+			getStats().setInt(((Player) ev.getEntity()), getStats().getInt(StatsKey.DEATHS, ((Player) ev.getEntity())) + 1, StatsKey.DEATHS);
+			getStats().setInt(((Player) ev.getEntity()), getStats().getInt(StatsKey.LOSE, ((Player) ev.getEntity())) + 1, StatsKey.LOSE);
+			getGameList().addPlayer(((Player) ev.getEntity()), PlayerState.SPECTATOR);
 			boolean b = false;
-			for(ItemStack item : ev.getDrops()){
-				for(TTT_Item ii : TTT_Item.values()){
-					if(UtilItem.ItemNameEquals(ii.getItem(), item)){
-						b=true;
+			for (ItemStack item : ev.getDrops()) {
+				for (TTT_Item ii : TTT_Item.values()) {
+					if (UtilItem.ItemNameEquals(ii.getItem(), item)) {
+						b = true;
 						break;
 					}
 				}
-				if(b)new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4),0.2,UtilMath.RandomDouble(-0.4, 0.4)),item);
+				if (b)
+					new ItemFake(ev.getEntity().getLocation().add(UtilMath.RandomDouble(-0.4, 0.4), 0.2, UtilMath.RandomDouble(-0.4, 0.4)), item);
 			}
 			ev.getDrops().clear();
-			Team t = getTeam(((Player)ev.getEntity()));
-			NPC npc = npcManager.createNPC( "Unidentifiziert" , ((Player)ev.getEntity()).getLocation());
+			Team t = getTeam(((Player) ev.getEntity()));
+			NPC npc = npcManager.createNPC("Unidentifiziert", ((Player) ev.getEntity()).getLocation());
 			npc.spawn();
-			//npc.sleep();
-//			if(t==Team.TRAITOR){
-//				for(Player p : getGameList().getPlayers(PlayerState.IN)){
-//					if(getTeam(p)==t){
-//						UtilPlayer.setTab(Team.TRAITOR.getColor()+"[T] "+((Player)ev.getEntity()).getName(), p, true);
-//					}else{
-//						UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+((Player)ev.getEntity()).getName(), p, true);
-//					}
-//				}
-//			}else if(t==Team.DETECTIVE){
-//				for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.DETECTIVE.getColor()+"[D] "+((Player)ev.getEntity()).getName(), p, true);
-//			}else if(t==Team.INOCCENT){
-//				for(Player p : getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I] "+((Player)ev.getEntity()).getName(), p, true);
-//			}
-			npclist.put(npc.getEntityID(), ((Player)ev.getEntity()).getName());
-			if(ev.getEntity().getKiller() instanceof Player){
-				getStats().setInt(((Player)ev.getEntity().getKiller()),getStats().getInt(StatsKey.KILLS, ((Player)ev.getEntity().getKiller()))+1, StatsKey.KILLS);
-				
-				Team t1 = getTeam( ((Player)ev.getEntity().getKiller()) );
-				int k = getStats().getInt(StatsKey.TTT_KARMA, (Player)ev.getEntity().getKiller());
-				int d=-1;
-				int tr=-1;
-				((Player)ev.getEntity()).sendMessage(TranslationHandler.getText(((Player)ev.getEntity()), "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(((Player)ev.getEntity()), "KILL_BY", new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
-				((Player)ev.getEntity().getKiller()).sendMessage(TranslationHandler.getText(((Player)ev.getEntity().getKiller()), "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(((Player)ev.getEntity().getKiller()), "KILL_BY", new String[]{((Player)ev.getEntity()).getName(),((Player)ev.getEntity().getKiller()).getName()}));
-				if(t1==Team.TRAITOR){
-					if(t==Team.TRAITOR){
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, StatsKey.TTT_KARMA);
-						k=-50;
-					}else if(t==Team.INOCCENT){
-						getMoney().add(((Player)ev.getEntity().getKiller()), StatsKey.COINS, 5);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+10, StatsKey.TTT_KARMA);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+2, StatsKey.TTT_TRAITOR_PUNKTE);
-						k=10;
-						tr=2;
-					}else if(t==Team.DETECTIVE){
-						getMoney().add(((Player)ev.getEntity().getKiller()), StatsKey.COINS, 5);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, StatsKey.TTT_KARMA);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, (Player)ev.getEntity().getKiller())+4, StatsKey.TTT_TRAITOR_PUNKTE);
-						k=20;
-						tr=4;
+			// npc.sleep();
+			// if(t==Team.TRAITOR){
+			// for(Player p : getGameList().getPlayers(PlayerState.IN)){
+			// if(getTeam(p)==t){
+			// UtilPlayer.setTab(Team.TRAITOR.getColor()+"[T]
+			// "+((Player)ev.getEntity()).getName(), p, true);
+			// }else{
+			// UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I]
+			// "+((Player)ev.getEntity()).getName(), p, true);
+			// }
+			// }
+			// }else if(t==Team.DETECTIVE){
+			// for(Player p :
+			// getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.DETECTIVE.getColor()+"[D]
+			// "+((Player)ev.getEntity()).getName(), p, true);
+			// }else if(t==Team.INOCCENT){
+			// for(Player p :
+			// getGameList().getPlayers(PlayerState.IN))UtilPlayer.setTab(Team.INOCCENT.getColor()+"[I]
+			// "+((Player)ev.getEntity()).getName(), p, true);
+			// }
+			npclist.put(npc.getEntityID(), ((Player) ev.getEntity()).getName());
+			if (ev.getEntity().getKiller() instanceof Player) {
+				getStats().setInt(((Player) ev.getEntity().getKiller()), getStats().getInt(StatsKey.KILLS, ((Player) ev.getEntity().getKiller())) + 1, StatsKey.KILLS);
+
+				Team t1 = getTeam(((Player) ev.getEntity().getKiller()));
+				int k = getStats().getInt(StatsKey.TTT_KARMA, (Player) ev.getEntity().getKiller());
+				int d = -1;
+				int tr = -1;
+				((Player) ev.getEntity()).sendMessage(TranslationHandler.getText(((Player) ev.getEntity()), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(((Player) ev.getEntity()), "KILL_BY", new String[] { ((Player) ev.getEntity()).getName(), ((Player) ev.getEntity().getKiller()).getName() }));
+				((Player) ev.getEntity().getKiller()).sendMessage(TranslationHandler.getText(((Player) ev.getEntity().getKiller()), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(((Player) ev.getEntity().getKiller()), "KILL_BY", new String[] { ((Player) ev.getEntity()).getName(), ((Player) ev.getEntity().getKiller()).getName() }));
+				if (t1 == Team.TRAITOR) {
+					if (t == Team.TRAITOR) {
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k - 50, StatsKey.TTT_KARMA);
+						k = -50;
+					} else if (t == Team.INOCCENT) {
+						getMoney().add(((Player) ev.getEntity().getKiller()), StatsKey.COINS, 5);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k + 10, StatsKey.TTT_KARMA);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, (Player) ev.getEntity().getKiller()) + 2, StatsKey.TTT_TRAITOR_PUNKTE);
+						k = 10;
+						tr = 2;
+					} else if (t == Team.DETECTIVE) {
+						getMoney().add(((Player) ev.getEntity().getKiller()), StatsKey.COINS, 5);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k + 20, StatsKey.TTT_KARMA);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, (Player) ev.getEntity().getKiller()) + 4, StatsKey.TTT_TRAITOR_PUNKTE);
+						k = 20;
+						tr = 4;
 					}
-				}else if(t1==Team.INOCCENT){
-					if(t==Team.TRAITOR){
-						getMoney().add(((Player)ev.getEntity().getKiller()), StatsKey.COINS, 5);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+20, StatsKey.TTT_KARMA);
-						k=20;
-					}else if(t==Team.INOCCENT){
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, StatsKey.TTT_KARMA);
-						k=-20;
-					}else if(t==Team.DETECTIVE){
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, StatsKey.TTT_KARMA);
-						k=-50;
+				} else if (t1 == Team.INOCCENT) {
+					if (t == Team.TRAITOR) {
+						getMoney().add(((Player) ev.getEntity().getKiller()), StatsKey.COINS, 5);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k + 20, StatsKey.TTT_KARMA);
+						k = 20;
+					} else if (t == Team.INOCCENT) {
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k - 20, StatsKey.TTT_KARMA);
+						k = -20;
+					} else if (t == Team.DETECTIVE) {
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k - 50, StatsKey.TTT_KARMA);
+						k = -50;
 					}
-				}else if(t1==Team.DETECTIVE){
-					if(t==Team.TRAITOR){
-						getMoney().add(((Player)ev.getEntity().getKiller()), StatsKey.COINS, 10);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k+30, StatsKey.TTT_KARMA);
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) ,getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, (Player)ev.getEntity().getKiller())+2, StatsKey.TTT_DETECTIVE_PUNKTE);
-						k=30;
-						d=2;
-					}else if(t==Team.INOCCENT){
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-20, StatsKey.TTT_KARMA);
-						k=-20;
-					}else if(t==Team.DETECTIVE){
-						getStats().setInt( ((Player)ev.getEntity().getKiller()) , k-50, StatsKey.TTT_KARMA);
-						k=-50;
-					}
-				}
-			
-				if(d!=-1){
-					if(k>0){
-						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
-							"§aDu hast §e"+k+" Karma§a erhalten.",
-							"§bDu hast §e"+d+" Detective-Punke§b erhalten."
-						});
-					}else{
-						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
-							 "§cDu hast §e"+k+" Karma§c verloren.",
-							 "§bDu hast §e"+d+" Detective-Punke§b erhalten."
-						});
-					}
-				}else if(tr!=-1){
-					if(k>0){
-						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
-							"§aDu hast §e"+k+" Karma§a erhalten.",
-							"§bDu hast §e"+tr+" Traitor-Punke§b erhalten."
-						});
-					}else{
-						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, new String[]{
-							 "§cDu hast §e"+k+" Karma§c verloren.",
-							 "§bDu hast §e"+tr+" Traitor-Punke§b erhalten."
-						});
-					}
-				}else{
-					if(k>0){
-						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§aDu hast §e"+k+" Karma§a erhalten.");
-					}else{
-						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0,1,0), 3, "§cDu hast §e"+k+" Karma§c verloren.");
+				} else if (t1 == Team.DETECTIVE) {
+					if (t == Team.TRAITOR) {
+						getMoney().add(((Player) ev.getEntity().getKiller()), StatsKey.COINS, 10);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k + 30, StatsKey.TTT_KARMA);
+						getStats().setInt(((Player) ev.getEntity().getKiller()), getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, (Player) ev.getEntity().getKiller()) + 2, StatsKey.TTT_DETECTIVE_PUNKTE);
+						k = 30;
+						d = 2;
+					} else if (t == Team.INOCCENT) {
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k - 20, StatsKey.TTT_KARMA);
+						k = -20;
+					} else if (t == Team.DETECTIVE) {
+						getStats().setInt(((Player) ev.getEntity().getKiller()), k - 50, StatsKey.TTT_KARMA);
+						k = -50;
 					}
 				}
-				
+
+				if (d != -1) {
+					if (k > 0) {
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0, 1, 0), 3, new String[] { "§aDu hast §e" + k + " Karma§a erhalten.", "§bDu hast §e" + d + " Detective-Punke§b erhalten." });
+					} else {
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0, 1, 0), 3, new String[] { "§cDu hast §e" + k + " Karma§c verloren.", "§bDu hast §e" + d + " Detective-Punke§b erhalten." });
+					}
+				} else if (tr != -1) {
+					if (k > 0) {
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0, 1, 0), 3, new String[] { "§aDu hast §e" + k + " Karma§a erhalten.", "§bDu hast §e" + tr + " Traitor-Punke§b erhalten." });
+					} else {
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0, 1, 0), 3, new String[] { "§cDu hast §e" + k + " Karma§c verloren.", "§bDu hast §e" + tr + " Traitor-Punke§b erhalten." });
+					}
+				} else {
+					if (k > 0) {
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0, 1, 0), 3, "§aDu hast §e" + k + " Karma§a erhalten.");
+					} else {
+						getManager().getHologram().sendText(ev.getEntity().getKiller(), ev.getEntity().getLocation().add(0, 1, 0), 3, "§cDu hast §e" + k + " Karma§c verloren.");
+					}
+				}
+
 			}
-			
-			delTeam(((Player)ev.getEntity()));
+
+			delTeam(((Player) ev.getEntity()));
 		}
 	}
-	
+
 	@EventHandler
-	public void DropItemFake(PlayerDropItemEvent ev){
+	public void DropItemFake(PlayerDropItemEvent ev) {
 		ev.setCancelled(true);
-		for(TTT_Item t : TTT_Item.values()){
-			if(UtilItem.ItemNameEquals(t.getItem(), ev.getItemDrop().getItemStack())){
+		for (TTT_Item t : TTT_Item.values()) {
+			if (UtilItem.ItemNameEquals(t.getItem(), ev.getItemDrop().getItemStack())) {
 				new ItemFake(ev.getItemDrop());
 				ev.setCancelled(false);
 				break;
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void PickupItemFake(ItemFakePickupEvent ev){
-		if(ev.isCancelled())return;
-		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR)return;
+	public void PickupItemFake(ItemFakePickupEvent ev) {
+		if (ev.isCancelled())
+			return;
+		if (getGameList().isPlayerState(ev.getPlayer()) == PlayerState.SPECTATOR)
+			return;
 		TTT_Item t = getItemFake(ev.getItem());
-		if(t==null){
+		if (t == null) {
 			ev.getItemfake().remove();
 			return;
-		}else if(t==TTT_Item.SCHWERT_IRON&&getState()!=GameState.InGame){
+		} else if (t == TTT_Item.SCHWERT_IRON && getState() != GameState.InGame) {
 			ev.setCancelled(true);
 			return;
 		}
-		
+
 		boolean b = false;
-		
-		if(t.getTyp().equalsIgnoreCase("SCHWERT")){
-			for(ItemStack i : ev.getPlayer().getInventory()){
-				if(i==null||i.getType()==Material.AIR)continue;
-				if(i.getType()==Material.WOOD_SWORD){
-					b=true;
+
+		if (t.getTyp().equalsIgnoreCase("SCHWERT")) {
+			for (ItemStack i : ev.getPlayer().getInventory()) {
+				if (i == null || i.getType() == Material.AIR)
+					continue;
+				if (i.getType() == Material.WOOD_SWORD) {
+					b = true;
 					break;
-				}else if(i.getType()==Material.STONE_SWORD){
-					b=true;
+				} else if (i.getType() == Material.STONE_SWORD) {
+					b = true;
 					break;
-				}else if(i.getType()==Material.IRON_SWORD){
-					b=true;
+				} else if (i.getType() == Material.IRON_SWORD) {
+					b = true;
 					break;
 				}
 			}
-			
-			if(!b){
+
+			if (!b) {
 				ev.getItemfake().remove();
 				ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
 				ev.getPlayer().updateInventory();
 			}
-		}else if(t.getTyp().equalsIgnoreCase("BOW")){
-			for(ItemStack i : ev.getPlayer().getInventory()){
-				if(i==null||i.getType()==Material.AIR)continue;
-				if(i.getType()==Material.BOW){
-					if(i.hasItemMeta()&&i.getItemMeta().hasDisplayName()){
-						if(i.getItemMeta().getDisplayName().equalsIgnoreCase(traitor_shop.getShop_item().getItemMeta().getDisplayName()))continue;
-						if(i.getItemMeta().getDisplayName().equalsIgnoreCase(detective_shop.getShop_item().getItemMeta().getDisplayName()))continue;
+		} else if (t.getTyp().equalsIgnoreCase("BOW")) {
+			for (ItemStack i : ev.getPlayer().getInventory()) {
+				if (i == null || i.getType() == Material.AIR)
+					continue;
+				if (i.getType() == Material.BOW) {
+					if (i.hasItemMeta() && i.getItemMeta().hasDisplayName()) {
+						if (i.getItemMeta().getDisplayName().equalsIgnoreCase(traitor_shop.getShop_item().getItemMeta().getDisplayName()))
+							continue;
+						if (i.getItemMeta().getDisplayName().equalsIgnoreCase(detective_shop.getShop_item().getItemMeta().getDisplayName()))
+							continue;
 					}
-					b=true;
+					b = true;
 					break;
 				}
 			}
-			
-			if(!b){
+
+			if (!b) {
 				ev.getItemfake().remove();
-				if(!arrow.contains(ev.getPlayer())){
+				if (!arrow.contains(ev.getPlayer())) {
 					ItemStack item = TTT_Item.ARROW.getItem().clone();
 					item.setAmount(30);
 					ev.getPlayer().getInventory().addItem(item);
@@ -526,381 +554,446 @@ public class TroubleInMinecraft extends TeamGame{
 				ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
 				ev.getPlayer().updateInventory();
 			}
-		}else if(t.getTyp().equalsIgnoreCase("ARROW")){
+		} else if (t.getTyp().equalsIgnoreCase("ARROW")) {
 			ev.getItemfake().remove();
 			ev.getPlayer().getInventory().addItem(ev.getItem().getItemStack());
 			ev.getPlayer().updateInventory();
 		}
 	}
-	
-	public TTT_Item getItemFake(Item item){
-		if(!item.getItemStack().hasItemMeta())return null;
-		if(!item.getItemStack().getItemMeta().hasDisplayName())return null;
-		
-		switch(item.getItemStack().getItemMeta().getDisplayName()){
-		case "§7Holzschwert":return TTT_Item.SCHWERT_HOLZ;
-		case "§8Steinschwert":return TTT_Item.SCHWERT_STONE;
-		case "§bEisenschwert":return TTT_Item.SCHWERT_IRON;
-		case "§7Pfeile":return TTT_Item.ARROW;
-		//case "§7Bogen":return TTT_Item.BOW_BOGEN;
-		case "§cMinigun":return TTT_Item.BOW_MINIGUN;
-		case "§aShotgun":return TTT_Item.BOW_SHOTGUN;
-		case "§eSniper":return TTT_Item.BOW_SNIPER;
+
+	public TTT_Item getItemFake(Item item) {
+		if (!item.getItemStack().hasItemMeta())
+			return null;
+		if (!item.getItemStack().getItemMeta().hasDisplayName())
+			return null;
+
+		switch (item.getItemStack().getItemMeta().getDisplayName()) {
+		case "§7Holzschwert":
+			return TTT_Item.SCHWERT_HOLZ;
+		case "§8Steinschwert":
+			return TTT_Item.SCHWERT_STONE;
+		case "§bEisenschwert":
+			return TTT_Item.SCHWERT_IRON;
+		case "§7Pfeile":
+			return TTT_Item.ARROW;
+		// case "§7Bogen":return TTT_Item.BOW_BOGEN;
+		case "§cMinigun":
+			return TTT_Item.BOW_MINIGUN;
+		case "§aShotgun":
+			return TTT_Item.BOW_SHOTGUN;
+		case "§eSniper":
+			return TTT_Item.BOW_SNIPER;
 		default:
 			return null;
 		}
 	}
-	
-	public void setItemFake(ArrayList<Location> list){
-		
-		if(!list.isEmpty()){
+
+	public void setItemFake(ArrayList<Location> list) {
+
+		if (!list.isEmpty()) {
 			Location loc = list.get(UtilMath.r(list.size()));
 			TTT_Item.SCHWERT_IRON.setItemFake(loc);
 			list.remove(loc);
 		}
-		
-		int s_h=(int)(list.size()*0.15);// 15 %
-		int s_s=(int)(list.size()*0.10);// 15 %
-		
-		int arrow=(int)(list.size()*0.25);// 15%
-		int b_mg=(int)(list.size()*0.1);// 15%
-		int b_s=(int)(list.size()*0.15);// 15%
-		//int b_b=(int)(list.size()*0.15);// 15%
-		int b_sn=(int)(list.size()*0.10);// 20%
-		
-		System.out.println("INSGESAMT: "+list.size());
-		System.out.println("Holz Schwert:"+s_h);
-		System.out.println("Stein Schwert: "+s_s);
-		System.out.println("Arrow:"+arrow);
-		System.out.println("Minigun:"+b_mg);
-		System.out.println("Shotgun:"+b_s);
-		//System.out.println("Bow:"+b_b);
-		System.out.println("Sniper:"+b_sn);	
-		
+
+		int s_h = (int) (list.size() * 0.15);// 15 %
+		int s_s = (int) (list.size() * 0.10);// 15 %
+
+		int arrow = (int) (list.size() * 0.25);// 15%
+		int b_mg = (int) (list.size() * 0.1);// 15%
+		int b_s = (int) (list.size() * 0.15);// 15%
+		// int b_b=(int)(list.size()*0.15);// 15%
+		int b_sn = (int) (list.size() * 0.10);// 20%
+
+		System.out.println("INSGESAMT: " + list.size());
+		System.out.println("Holz Schwert:" + s_h);
+		System.out.println("Stein Schwert: " + s_s);
+		System.out.println("Arrow:" + arrow);
+		System.out.println("Minigun:" + b_mg);
+		System.out.println("Shotgun:" + b_s);
+		// System.out.println("Bow:"+b_b);
+		System.out.println("Sniper:" + b_sn);
+
 		int r;
-		for(int i=0; i < 20000; i++){
-			if(list.isEmpty())break;
-			r=UtilMath.r(list.size());
-			if(s_h!=0){
+		for (int i = 0; i < 20000; i++) {
+			if (list.isEmpty())
+				break;
+			r = UtilMath.r(list.size());
+			if (s_h != 0) {
 				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				list.remove(r);
 				s_h--;
-			}else if(arrow!=0){
+			} else if (arrow != 0) {
 				TTT_Item.ARROW.setItemFake(list.get(r));
 				list.remove(r);
 				arrow--;
-			}else if(s_s!=0){
+			} else if (s_s != 0) {
 				TTT_Item.SCHWERT_STONE.setItemFake(list.get(r));
 				list.remove(r);
 				s_s--;
-			}else if(b_mg!=0){
+			} else if (b_mg != 0) {
 				TTT_Item.BOW_MINIGUN.setItemFake(list.get(r));
 				list.remove(r);
 				b_mg--;
-			}else if(b_s!=0){
+			} else if (b_s != 0) {
 				TTT_Item.BOW_SHOTGUN.setItemFake(list.get(r));
 				list.remove(r);
 				b_s--;
 			}
-//			else if(b_b!=0){
-//				TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
-//				list.remove(r);
-//				b_b--;
-//			}
-			else if(b_sn!=0){
+			// else if(b_b!=0){
+			// TTT_Item.BOW_BOGEN.setItemFake(list.get(r));
+			// list.remove(r);
+			// b_b--;
+			// }
+			else if (b_sn != 0) {
 				TTT_Item.BOW_SNIPER.setItemFake(list.get(r));
 				list.remove(r);
 				b_sn--;
-			}else{
-				if(UtilMath.r(1)==0){
+			} else {
+				if (UtilMath.r(1) == 0) {
 					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
-				}else{
+				} else {
 					TTT_Item.ARROW.setItemFake(list.get(r));
 				}
 				list.remove(r);
 			}
 		}
-		
-		
+
 	}
-	
+
 	@EventHandler
-	public void Ranking(RankingEvent ev){
+	public void Ranking(RankingEvent ev) {
 		getManager().setRanking(StatsKey.TTT_KARMA);
 	}
-	
+
 	@EventHandler
-	public void inGame(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.SEC)return;
-		if(getState()!=GameState.InGame)return;
-		setStart(getStart()-1);
-		if(isInTeam(Team.INOCCENT)==0&&isInTeam(Team.DETECTIVE)==0){
+	public void inGame(UpdateEvent ev) {
+		if (ev.getType() != UpdateType.SEC)
+			return;
+		if (getState() != GameState.InGame)
+			return;
+		setStart(getStart() - 1);
+		if (isInTeam(Team.INOCCENT) == 0 && isInTeam(Team.DETECTIVE) == 0) {
 			broadcastWithPrefix("TTT_WIN", Team.TRAITOR.getDisplayName());
-			
+
 			System.out.println("[TTT] TRAITOR HABEN GEWONNEN");
-			for(Player p : getTeamList().keySet()){
-				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-					getStats().setInt(p,getStats().getInt(StatsKey.LOSE, p)+1, StatsKey.LOSE);
-				}else{
-					getStats().setInt(p,getStats().getInt(StatsKey.WIN, p)+1, StatsKey.WIN);
+			for (Player p : getTeamList().keySet()) {
+				if (getTeamList().get(p) == Team.INOCCENT || getTeamList().get(p) == Team.DETECTIVE) {
+					getStats().setInt(p, getStats().getInt(StatsKey.LOSE, p) + 1, StatsKey.LOSE);
+				} else {
+					getStats().setInt(p, getStats().getInt(StatsKey.WIN, p) + 1, StatsKey.WIN);
 				}
 			}
-			
-			setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);	
-		}else if(isInTeam(Team.TRAITOR)==0){
+
+			setState(GameState.Restart, GameStateChangeReason.LAST_TEAM);
+		} else if (isInTeam(Team.TRAITOR) == 0) {
 			broadcastWithPrefix("TTT_WIN", Team.INOCCENT.getDisplayName());
 			System.out.println("[TTT] INNOCENT HABEN GEWONNEN");
-			for(Player p : getTeamList().keySet()){
-				if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-					getStats().setInt(p,getStats().getInt(StatsKey.WIN, p)+1, StatsKey.WIN);
-				}else{
-					getStats().setInt(p,getStats().getInt(StatsKey.LOSE, p)+1, StatsKey.LOSE);
+			for (Player p : getTeamList().keySet()) {
+				if (getTeamList().get(p) == Team.INOCCENT || getTeamList().get(p) == Team.DETECTIVE) {
+					getStats().setInt(p, getStats().getInt(StatsKey.WIN, p) + 1, StatsKey.WIN);
+				} else {
+					getStats().setInt(p, getStats().getInt(StatsKey.LOSE, p) + 1, StatsKey.LOSE);
 				}
 			}
-			
-			setState(GameState.Restart,GameStateChangeReason.LAST_TEAM);
+
+			setState(GameState.Restart, GameStateChangeReason.LAST_TEAM);
 		}
-		
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
-		switch(getStart()){
-		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 20: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 10: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 5: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 4: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 3: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 0: 
+
+		for (Player p : UtilServer.getPlayers())
+			UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
+		switch (getStart()) {
+		case 30:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 20:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 15:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 10:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 5:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 4:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 3:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 2:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 1:
+			broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));
+			break;
+		case 0:
 			Team t = getHaveWinTeam();
 			broadcastWithPrefix("TTT_WIN", t.getDisplayName());
-		
-			for(Player p : getTeamList().keySet()){
-				if(t==Team.TRAITOR){
-					if(getTeamList().get(p)==Team.TRAITOR){
-						getStats().setInt(p,getStats().getInt(StatsKey.WIN, p)+1, StatsKey.WIN);
-					}else{
-						getStats().setInt(p,getStats().getInt(StatsKey.LOSE, p)+1, StatsKey.LOSE);
+
+			for (Player p : getTeamList().keySet()) {
+				if (t == Team.TRAITOR) {
+					if (getTeamList().get(p) == Team.TRAITOR) {
+						getStats().setInt(p, getStats().getInt(StatsKey.WIN, p) + 1, StatsKey.WIN);
+					} else {
+						getStats().setInt(p, getStats().getInt(StatsKey.LOSE, p) + 1, StatsKey.LOSE);
 					}
-				}else{
-					if(getTeamList().get(p)==Team.INOCCENT||getTeamList().get(p)==Team.DETECTIVE){
-						getStats().setInt(p,getStats().getInt(StatsKey.WIN, p)+1, StatsKey.WIN);
-					}else{
-						getStats().setInt(p,getStats().getInt(StatsKey.LOSE, p)+1, StatsKey.LOSE);
+				} else {
+					if (getTeamList().get(p) == Team.INOCCENT || getTeamList().get(p) == Team.DETECTIVE) {
+						getStats().setInt(p, getStats().getInt(StatsKey.WIN, p) + 1, StatsKey.WIN);
+					} else {
+						getStats().setInt(p, getStats().getInt(StatsKey.LOSE, p) + 1, StatsKey.LOSE);
 					}
 				}
 			}
-			
+
 			setState(GameState.Restart);
 			broadcastWithPrefixName("GAME_END");
 			break;
 		}
 	}
-	
+
 	@EventHandler
-	public void StatsChange(PlayerStatsChangedEvent ev){
-		if(ev.getManager().getType()!=getType())return;
-		if(getState()!=GameState.LobbyPhase&&getState()!=GameState.Laden){
-			if(UtilPlayer.isOnline(ev.getPlayerId())){
+	public void StatsChange(PlayerStatsChangedEvent ev) {
+		if (ev.getManager().getType() != getType())
+			return;
+		if (getState() != GameState.LobbyPhase && getState() != GameState.Laden) {
+			if (UtilPlayer.isOnline(ev.getPlayerId())) {
 				Player player = UtilPlayer.searchExact(ev.getPlayerId());
-				if(ev.getStats()==StatsKey.TTT_KARMA){
-					UtilScoreboard.setScore(player.getScoreboard(), Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, player));
-				}else if(ev.getStats()==StatsKey.TTT_DETECTIVE_PUNKTE){
-					UtilScoreboard.setScore(player.getScoreboard(), Color.AQUA+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, player));
-				}else if(ev.getStats()==StatsKey.TTT_TRAITOR_PUNKTE){
-					UtilScoreboard.setScore(player.getScoreboard(), Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, player));
-				}else if(ev.getStats()==StatsKey.WIN){
+				if (ev.getStats() == StatsKey.TTT_KARMA) {
+					UtilScoreboard.setScore(player.getScoreboard(), Color.GREEN + "Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, player));
+				} else if (ev.getStats() == StatsKey.TTT_DETECTIVE_PUNKTE) {
+					UtilScoreboard.setScore(player.getScoreboard(), Color.AQUA + "D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, player));
+				} else if (ev.getStats() == StatsKey.TTT_TRAITOR_PUNKTE) {
+					UtilScoreboard.setScore(player.getScoreboard(), Color.RED + "T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, player));
+				} else if (ev.getStats() == StatsKey.WIN) {
 					getMoney().add(player, StatsKey.COINS, 25);
 				}
 			}
 		}
 	}
-	
-	@EventHandler
-	public void StatsLoaded(PlayerStatsLoadedEvent ev){
-		if(ev.getManager().getType() != getType())return;
-		if(getState()!=GameState.LobbyPhase)return;
 
-		if(UtilPlayer.isOnline(ev.getPlayerId())){
+	@EventHandler
+	public void StatsLoaded(PlayerStatsLoadedEvent ev) {
+		if (ev.getManager().getType() != getType())
+			return;
+		if (getState() != GameState.LobbyPhase)
+			return;
+
+		if (UtilPlayer.isOnline(ev.getPlayerId())) {
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int win = getStats().getInt(StatsKey.WIN, player);
 			int lose = getStats().getInt(StatsKey.LOSE, player);
-			
+
 			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-				
+
 				@Override
 				public void run() {
-					
-					getManager().getHologram().sendText(player,getManager().getLoc_stats().clone().add(0, 0.6, 0),new String[]{
-						Color.GREEN+getType().getTyp()+Color.ORANGE+"§l Info",
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER",getType().getTyp()+" §a"+kArcade.id),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMap().getMapName()),
-						" ",
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_KARMA", getStats().getInt(StatsKey.TTT_KARMA, player)),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_TESTS", getStats().getInt(StatsKey.TTT_TESTS, player)),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_TRAITOR_POINTS", getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, player)),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_DETECTIVE_POINTS", getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, player)),
-						" ",
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_GAMES", (win+lose)),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_WINS", win),
-						TranslationHandler.getText(player, "GAME_HOLOGRAM_LOSE", lose),
-						});
+
+					getManager().getHologram().sendText(player, getManager().getLoc_stats().clone().add(0, 0.6, 0), new String[] { Color.GREEN + getType().getTyp() + Color.ORANGE + "§l Info", TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER", getType().getTyp() + " §a" + kArcade.id), TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", getWorldData().getMap().getMapName()), " ", TranslationHandler.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()), TranslationHandler.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)), TranslationHandler.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)), TranslationHandler.getText(player, "GAME_HOLOGRAM_KARMA", getStats().getInt(StatsKey.TTT_KARMA, player)), TranslationHandler.getText(player, "GAME_HOLOGRAM_TESTS", getStats().getInt(StatsKey.TTT_TESTS, player)), TranslationHandler.getText(player, "GAME_HOLOGRAM_TRAITOR_POINTS", getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, player)), TranslationHandler.getText(player, "GAME_HOLOGRAM_DETECTIVE_POINTS", getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, player)), " ", TranslationHandler.getText(player, "GAME_HOLOGRAM_GAMES", (win + lose)), TranslationHandler.getText(player, "GAME_HOLOGRAM_WINS", win), TranslationHandler.getText(player, "GAME_HOLOGRAM_LOSE", lose), });
 				}
 			});
 		}
 	}
-	
+
 	@EventHandler
-	public void Schutzzeit(UpdateEvent ev){
-		if(ev.getType()!=UpdateType.SEC)return;
-		if(getState()!=GameState.StartGame)return;
-		setStart(getStart()-1);
-		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "SCHUTZZEIT_END_IN", getStart()));
-		switch(getStart()){
-		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
+	public void Schutzzeit(UpdateEvent ev) {
+		if (ev.getType() != UpdateType.SEC)
+			return;
+		if (getState() != GameState.StartGame)
+			return;
+		setStart(getStart() - 1);
+		for (Player p : UtilServer.getPlayers())
+			UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "SCHUTZZEIT_END_IN", getStart()));
+		switch (getStart()) {
+		case 30:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
 		case 25:
-			for(Player player1 : getGameList().getPlayers(PlayerState.INGAME)){
-				for(Player player2 : getGameList().getPlayers(PlayerState.INGAME)){
+			for (Player player1 : getGameList().getPlayers(PlayerState.INGAME)) {
+				for (Player player2 : getGameList().getPlayers(PlayerState.INGAME)) {
 					player1.showPlayer(player2);
 					player2.showPlayer(player1);
 				}
 			}
 			break;
-		case 20: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 15: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 10: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 5: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 4: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 3: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 2: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 1: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 0: 
-			setStart(60*20);
+		case 20:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 15:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 10:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 5:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 4:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 3:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 2:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 1:
+			broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());
+			break;
+		case 0:
+			setStart(60 * 20);
 			ArrayList<Player> plist = new ArrayList<>();
-			for(Player p : getGameList().getPlayers(PlayerState.INGAME)){
+			for (Player p : getGameList().getPlayers(PlayerState.INGAME)) {
 				plist.add(p);
 			}
-			PlayerVerteilung(verteilung(),plist);
-			ArrayList<Player> d = (ArrayList<Player>)getPlayersFromTeam(Team.DETECTIVE);
+			PlayerVerteilung(verteilung(), plist);
+			ArrayList<Player> d = (ArrayList<Player>) getPlayersFromTeam(Team.DETECTIVE);
 			Scoreboard ps;
-			for(Player p : d){
+			for (Player p : d) {
 				ps = Bukkit.getScoreboardManager().getNewScoreboard();
-				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.BLUE+"DetectiveBoard");
-				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
-				UtilScoreboard.setScore(ps,Color.AQUA+"D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, p));
-				if(d.size()!=1){
-					UtilScoreboard.setScore(ps,"§7", DisplaySlot.SIDEBAR, -1);
-					UtilScoreboard.setScore(ps,Color.BLUE+"Detective:", DisplaySlot.SIDEBAR, -2);
+				UtilScoreboard.addBoard(ps, DisplaySlot.SIDEBAR, Color.BLUE + "DetectiveBoard");
+				UtilScoreboard.setScore(ps, Color.GREEN + "Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
+				UtilScoreboard.setScore(ps, Color.AQUA + "D-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_DETECTIVE_PUNKTE, p));
+				if (d.size() != 1) {
+					UtilScoreboard.setScore(ps, "§7", DisplaySlot.SIDEBAR, -1);
+					UtilScoreboard.setScore(ps, Color.BLUE + "Detective:", DisplaySlot.SIDEBAR, -2);
 					int t = -3;
-					for(Player p1 : d){
-						if(p1==p)continue;
-						UtilScoreboard.setScore(ps,p1.getName(), DisplaySlot.SIDEBAR, t);
+					for (Player p1 : d) {
+						if (p1 == p)
+							continue;
+						UtilScoreboard.setScore(ps, "{player_"+p1.getName()+"}", DisplaySlot.SIDEBAR, t);
 						t--;
 					}
 				}
-				
-				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
-				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.TRAITOR||getTeamList().get(p1)==Team.INOCCENT){
-						s.addPlayer(p1);
+
+				org.bukkit.scoreboard.Team team = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
+				team.setPrefix(Team.INOCCENT.getColor() + "[I] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.TRAITOR || getTeamList().get(p1) == Team.INOCCENT) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
-				
-				s = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
-				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.DETECTIVE){
-						s.addPlayer(p1);
+
+				team = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
+				team.setPrefix(Team.DETECTIVE.getColor() + "[D] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.DETECTIVE) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
-				
+
 				p.setScoreboard(ps);
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.DETECTIVE.getDisplayName()));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(p, "TTT_IS_NOW", Team.DETECTIVE.getDisplayName()));
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
 			}
-			ArrayList<Player> t = (ArrayList<Player>)getPlayersFromTeam(Team.TRAITOR);
-			for(Player p : t){
+			ArrayList<Player> t = (ArrayList<Player>) getPlayersFromTeam(Team.TRAITOR);
+			for (Player p : t) {
 				traitor.add(p);
 				p.getInventory().addItem(traitor_shop.getShop_item());
-				ps=Bukkit.getScoreboardManager().getNewScoreboard();
-				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"TraitorBoard");
-				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
-				UtilScoreboard.setScore(ps,Color.RED+"T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, p));
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.TRAITOR.getDisplayName()));
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_TRAITOR_CHAT"));
-				if(t.size()!=1){
-					UtilScoreboard.setScore(ps,"§7", DisplaySlot.SIDEBAR, -1);
-					UtilScoreboard.setScore(ps,Color.RED+"Traitor:", DisplaySlot.SIDEBAR, -2);
+				ps = Bukkit.getScoreboardManager().getNewScoreboard();
+				UtilScoreboard.addBoard(ps, DisplaySlot.SIDEBAR, Color.RED + "TraitorBoard");
+				UtilScoreboard.setScore(ps, Color.GREEN + "Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
+				UtilScoreboard.setScore(ps, Color.RED + "T-Punkte:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_TRAITOR_PUNKTE, p));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(p, "TTT_IS_NOW", Team.TRAITOR.getDisplayName()));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(p, "TTT_TRAITOR_CHAT"));
+				if (t.size() != 1) {
+					UtilScoreboard.setScore(ps, "§7", DisplaySlot.SIDEBAR, -1);
+					UtilScoreboard.setScore(ps, Color.RED + "Traitor:", DisplaySlot.SIDEBAR, -2);
 					int t1 = -3;
-					for(Player p1 : t){
-						if(p1==p)continue;
-						UtilScoreboard.setScore(ps,p1.getName(), DisplaySlot.SIDEBAR, t1);
+					for (Player p1 : t) {
+						if (p1 == p)
+							continue;
+						UtilScoreboard.setScore(ps, "{player_"+p1.getName()+"}", DisplaySlot.SIDEBAR, t1);
 						t1--;
 					}
 				}
-				
-				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
-				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.INOCCENT){
-						s.addPlayer(p1);
+
+				org.bukkit.scoreboard.Team team = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
+				team.setPrefix(Team.INOCCENT.getColor() + "[I] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.INOCCENT) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
-				
-				s = ps.registerNewTeam(Team.TRAITOR.getDisplayName());
-				s.setPrefix(Team.TRAITOR.getColor()+"[T] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.TRAITOR){
-						s.addPlayer(p1);
+
+				team = ps.registerNewTeam(Team.TRAITOR.getDisplayName());
+				team.setPrefix(Team.TRAITOR.getColor() + "[T] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.TRAITOR) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
-				
-				s = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
-				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.DETECTIVE){
-						s.addPlayer(p1);
+
+				team = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
+				team.setPrefix(Team.DETECTIVE.getColor() + "[D] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.DETECTIVE) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
 				p.setScoreboard(ps);
 			}
-			
-			for(Player p : t){
-				for(Player p1 : t){
-					UtilPlayer.setPlayerFakeEquipment(p, p1, UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.RED), (short)2);
+
+			for (Player p : t) {
+				for (Player p1 : t) {
+					UtilPlayer.setPlayerFakeEquipment(p, p1, UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.RED), (short) 2);
 				}
 			}
-			
+
 			ArrayList<Player> i = (ArrayList<Player>) getPlayersFromTeam(Team.INOCCENT);
-			
-			for(Player p:i){
-				ps=Bukkit.getScoreboardManager().getNewScoreboard();
-				UtilScoreboard.addBoard(ps,DisplaySlot.SIDEBAR, Color.RED+"InnocentBoard");
-				UtilScoreboard.setScore(ps,Color.GREEN+"Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
-				org.bukkit.scoreboard.Team s = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
-				s.setPrefix(Team.INOCCENT.getColor()+"[I] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.TRAITOR||getTeamList().get(p1)==Team.INOCCENT){
-						s.addPlayer(p1);
+
+			for (Player p : i) {
+				ps = Bukkit.getScoreboardManager().getNewScoreboard();
+				UtilScoreboard.addBoard(ps, DisplaySlot.SIDEBAR, Color.RED + "InnocentBoard");
+				UtilScoreboard.setScore(ps, Color.GREEN + "Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
+				org.bukkit.scoreboard.Team team = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
+				team.setPrefix(Team.INOCCENT.getColor() + "[I] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.TRAITOR || getTeamList().get(p1) == Team.INOCCENT) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
-				
-				s = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
-				s.setPrefix(Team.DETECTIVE.getColor()+"[D] ");
-				for(Player p1 : getTeamList().keySet()){
-					if(getTeamList().get(p1)==Team.DETECTIVE){
-						s.addPlayer(p1);
+
+				team = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
+				team.setPrefix(Team.DETECTIVE.getColor() + "[D] ");
+				for (Player p1 : getTeamList().keySet()) {
+					if (getTeamList().get(p1) == Team.DETECTIVE) {
+						UtilScoreboard.addPlayerToTeam(team.getScoreboard(), team, p1);
 					}
 				}
 				p.setScoreboard(ps);
-				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",getType().getTyp())+TranslationHandler.getText(p, "TTT_IS_NOW",Team.INOCCENT.getDisplayName()));
+				p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(p, "TTT_IS_NOW", Team.INOCCENT.getDisplayName()));
 			}
+			
+			for(Player p : Bukkit.getOnlinePlayers()){
+				Team team = getTeamList().get(p);
+				for(Player target : Bukkit.getOnlinePlayers()){
+					String name = "";
+					switch (team) {
+					case INOCCENT:
+						name = Team.INOCCENT.getColor()+"[I] {player_"+p.getName()+"}";
+						break;
+					case DETECTIVE:
+						name = Team.DETECTIVE.getColor()+"[D] {player_"+p.getName()+"}";
+						break;
+					case TRAITOR:
+						if(getTeamList().get(target) == Team.TRAITOR)
+							name = Team.TRAITOR.getColor()+"[T] {player_"+p.getName()+"}";
+						else
+							name = Team.INOCCENT.getColor()+"[I] {player_"+p.getName()+"}";
+						break;
+					default:
+						break;
+					}
+					sendTabName(target, p, name);
+				}
+			}
+			
 			setDamage(true);
 			setProjectileDamage(true);
 			setDamageSelf(true);
@@ -911,123 +1004,186 @@ public class TroubleInMinecraft extends TeamGame{
 		}
 	}
 	
+	private void sendTabName(Player target,Player from, String name){
+		PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, ((CraftPlayer)from).getHandle());
+		List<PlayerInfoData> data = (List<PlayerInfoData>) UtilReflection.getPrivateValue(packet, "b");
+		for(PlayerInfoData d : data){
+			if(d.d() == null)
+				continue;
+			//UtilReflection.setFinalValue(UtilReflection.getField(GameProfile.class, "properties"), copied, UtilReflection.getPrivateValue(d.a(), "properties"));
+			BaseComponent[] comps = TextComponent.fromLegacyText(name);
+			String json = ComponentSerializer.toString(comps);
+			IChatBaseComponent comp = ChatSerializer.a(json);
+			UtilReflection.setFinalValue(UtilReflection.getField(PlayerInfoData.class, "e"),  (PlayerInfoData) d, (net.minecraft.server.v1_8_R3.IChatBaseComponent) comp);
+		}
+		
+		((CraftPlayer)target).getHandle().playerConnection.sendPacket(packet);
+	}
+
 	@EventHandler
-	public void GameStateChange(GameStateChangeEvent ev){
-		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=GameState.Restart&&ev.getReason()!=GameStateChangeReason.CHANGE_TYPE){
-			System.err.println("[TTT] GameStateChangeReason: "+ev.getReason().getName());
-			if(traitor.isEmpty()){
+	public void GameStateChange(GameStateChangeEvent ev) {
+		if (ev.getTo() == GameState.Restart && ev.getFrom() != GameState.Restart && ev.getReason() != GameStateChangeReason.CHANGE_TYPE) {
+			System.err.println("[TTT] GameStateChangeReason: " + ev.getReason().getName());
+			if (traitor.isEmpty()) {
 				String t = "";
-				for(Player p : traitor){
-					t=t+p.getName()+",";
+				for (Player p : traitor) {
+					t = t + "{player_" + p.getName() + "}" + ",";
 				}
-				broadcastWithPrefix("§cDiese Spieler waren Traitor: §e"+t.substring(0, t.length()-1));
+				broadcastWithPrefix("§cDiese Spieler waren Traitor: §e" + t.substring(0, t.length() - 1));
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void World(WorldLoadEvent ev){
-		this.tester = new Tester(this, getWorldData().getSpawnLocations(Team.BLUE).get(0),getWorldData().getSpawnLocations(Team.GREEN).get(0), getWorldData().getSpawnLocations(Team.SOLO), getWorldData().getSpawnLocations(Team.GRAY));
+	public void World(WorldLoadEvent ev) {
+		this.tester = new Tester(this, getWorldData().getSpawnLocations(Team.BLUE).get(0), getWorldData().getSpawnLocations(Team.GREEN).get(0), getWorldData().getSpawnLocations(Team.SOLO), getWorldData().getSpawnLocations(Team.GRAY));
 	}
-	
+
 	@EventHandler
-	public void Regen(EntityRegainHealthEvent ev){
-		if(getState()==GameState.LobbyPhase)return;
-		if(ev.getRegainReason()==RegainReason.SATIATED)ev.setCancelled(true);
+	public void Regen(EntityRegainHealthEvent ev) {
+		if (getState() == GameState.LobbyPhase)
+			return;
+		if (ev.getRegainReason() == RegainReason.SATIATED)
+			ev.setCancelled(true);
 	}
-	
+
 	@EventHandler
-	public void StatsCreate(PlayerStatsCreateEvent ev){
-		if(ev.getManager().getType() != getType())return;
-		if(UtilPlayer.isOnline(ev.getPlayerId())){
+	public void StatsCreate(PlayerStatsCreateEvent ev) {
+		if (ev.getManager().getType() != getType())
+			return;
+		if (UtilPlayer.isOnline(ev.getPlayerId())) {
 			ev.getManager().setInt(UtilPlayer.searchExact(ev.getPlayerId()), 150, StatsKey.TTT_KARMA);
 		}
 	}
-	
+
 	@EventHandler
-	public void Start(GameStartEvent ev){
+	public void Start(GameStartEvent ev) {
 		ArrayList<Location> list = getWorldData().getSpawnLocations(Team.RED);
-		int r=0;
-		for(Player p : UtilServer.getPlayers()){
-			getManager().Clear(p);
+		int r = 0;
+		for (Player p : UtilServer.getPlayers()) {
+			getManager().clear(p);
 			p.setMaxHealth(40);
 			p.setHealth(40);
-			r=UtilMath.r(list.size());
+			r = UtilMath.r(list.size());
 			p.teleport(list.get(r));
 			p.getInventory().addItem(magnet.getStab());
-			getGameList().addPlayer(p,PlayerState.INGAME);
+			getGameList().addPlayer(p, PlayerState.INGAME);
 		}
-		ifm=new ItemFakeManager(getManager().getInstance(),getManager().getHologram());
+		ifm = new ItemFakeManager(getManager().getInstance(), getManager().getHologram());
 		setItemFake(getWorldData().getSpawnLocations(Team.YELLOW));
-		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
+		new AddonDay(getManager().getInstance(), getWorldData().getWorld());
 		setDamage(false);
 		setStart(31);
 		setState(GameState.StartGame);
 	}
 
-	public HashMap<Team,Integer> verteilung(){
-		HashMap<Team,Integer> list = new HashMap<>();
+	public HashMap<Team, Integer> verteilung() {
+		HashMap<Team, Integer> list = new HashMap<>();
 		list.put(Team.DETECTIVE, getDetective());
 		list.put(Team.TRAITOR, getTraitor());
-		list.put(Team.INOCCENT,UtilServer.getPlayers().size()-(getTraitor()+getDetective()));
-		
+		list.put(Team.INOCCENT, UtilServer.getPlayers().size() - (getTraitor() + getDetective()));
+
 		return list;
 	}
-	
-	public int getTraitor(){
-		switch(UtilServer.getPlayers().size()){
-		case 3: return 1;
-		case 4: return 1;
-		case 5: return 1;
-		case 6: return 2;
-		case 7: return 2;
-		case 8: return 2;
-		case 9: return 2;
-		case 10: return 3;
-		case 11: return 3;
-		case 12: return 3;
-		case 13: return 3;
-		case 14: return 4;
-		case 15: return 4;
-		case 16: return 5;
-		case 17: return 5;
-		case 18: return 5;
-		case 19: return 6;
-		case 20: return 6;
-		case 21: return 7;
-		case 22: return 7;
-		case 23: return 8;
-		case 24: return 8;
+
+	public int getTraitor() {
+		switch (UtilServer.getPlayers().size()) {
+		case 3:
+			return 1;
+		case 4:
+			return 1;
+		case 5:
+			return 1;
+		case 6:
+			return 2;
+		case 7:
+			return 2;
+		case 8:
+			return 2;
+		case 9:
+			return 2;
+		case 10:
+			return 3;
+		case 11:
+			return 3;
+		case 12:
+			return 3;
+		case 13:
+			return 3;
+		case 14:
+			return 4;
+		case 15:
+			return 4;
+		case 16:
+			return 5;
+		case 17:
+			return 5;
+		case 18:
+			return 5;
+		case 19:
+			return 6;
+		case 20:
+			return 6;
+		case 21:
+			return 7;
+		case 22:
+			return 7;
+		case 23:
+			return 8;
+		case 24:
+			return 8;
 		}
 		return -1;
 	}
-	
-	public int getDetective(){
-		switch(UtilServer.getPlayers().size()){
-		case 3: return 1;
-		case 4: return 1;
-		case 5: return 1;
-		case 6: return 1;
-		case 7: return 1;
-		case 8: return 1;
-		case 9: return 1;
-		case 10: return 2;
-		case 11: return 2;
-		case 12: return 2;
-		case 13: return 2;
-		case 14: return 2;
-		case 15: return 3;
-		case 16: return 3;
-		case 17: return 3;
-		case 18: return 3;
-		case 19: return 4;
-		case 20: return 4;
-		case 21: return 5;
-		case 22: return 5;
-		case 23: return 6;
-		case 24: return 6;
+
+	public int getDetective() {
+		switch (UtilServer.getPlayers().size()) {
+		case 3:
+			return 1;
+		case 4:
+			return 1;
+		case 5:
+			return 1;
+		case 6:
+			return 1;
+		case 7:
+			return 1;
+		case 8:
+			return 1;
+		case 9:
+			return 1;
+		case 10:
+			return 2;
+		case 11:
+			return 2;
+		case 12:
+			return 2;
+		case 13:
+			return 2;
+		case 14:
+			return 2;
+		case 15:
+			return 3;
+		case 16:
+			return 3;
+		case 17:
+			return 3;
+		case 18:
+			return 3;
+		case 19:
+			return 4;
+		case 20:
+			return 4;
+		case 21:
+			return 5;
+		case 22:
+			return 5;
+		case 23:
+			return 6;
+		case 24:
+			return 6;
 		}
 		return -1;
 	}
-	
+
 }

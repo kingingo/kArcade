@@ -327,7 +327,7 @@ public class SkyPvP extends SoloGame{
 		for(Player p : UtilServer.getPlayers()){
 			if(locs.isEmpty())break;
 			getGameList().addPlayer(p, PlayerState.INGAME);
-			getManager().Clear(p);
+			getManager().clear(p);
 			if(getManager().getPermManager().hasPermission(p, PermissionType.SkyPvP_Mehr_Leben)){
 				life.put(p, 3);
 			}else{

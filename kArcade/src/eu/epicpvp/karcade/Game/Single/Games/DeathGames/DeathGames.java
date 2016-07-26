@@ -673,7 +673,7 @@ public class DeathGames extends SoloGame{
 		new AddonPlayerTeleport(this);
 		Title title = new Title("", "");
 		for(Player p : UtilServer.getPlayers()){
-			getManager().Clear(p);
+			getManager().clear(p);
 			getGameList().addPlayer(p,PlayerState.INGAME);
 			p.teleport( new Location(getWorldData().getWorld(), UtilMath.RandomDouble(maxX, minX), 200, UtilMath.RandomDouble(maxZ, minZ)) );
 			p.getInventory().addItem(new ItemStack(Material.COMPASS));

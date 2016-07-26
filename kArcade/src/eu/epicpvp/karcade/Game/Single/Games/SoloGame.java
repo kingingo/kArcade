@@ -59,7 +59,7 @@ public class SoloGame extends SingleGame{
 	
 	public void SetSpectator(PlayerRespawnEvent ev,Player player){
 		if(spec==null)spec=new AddonSpectator(this);
-	    getManager().Clear(player);
+	    getManager().clear(player);
 	    List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 	    if(l.size()>1){
 	    	if(ev==null){

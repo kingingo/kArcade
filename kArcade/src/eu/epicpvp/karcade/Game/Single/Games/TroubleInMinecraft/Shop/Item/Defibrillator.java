@@ -78,7 +78,7 @@ public class Defibrillator implements Listener,IShop{
 		if(l.isEmpty())return;
 		
 		for(Player r : l){
-			TTT.getManager().Clear(r);
+			TTT.getManager().clear(r);
 			r.setGameMode(GameMode.SURVIVAL);
 			r.setMaxHealth(40);
 			r.setHealth(40);

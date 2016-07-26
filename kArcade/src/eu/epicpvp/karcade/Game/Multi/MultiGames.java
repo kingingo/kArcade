@@ -475,7 +475,7 @@ public class MultiGames extends Game{
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void joinM(PlayerJoinEvent ev){
-		getManager().Clear(ev.getPlayer());
+		getManager().clear(ev.getPlayer());
 		for(Player p : UtilServer.getPlayers()){
 			p.hidePlayer(ev.getPlayer());
 			ev.getPlayer().hidePlayer(p);

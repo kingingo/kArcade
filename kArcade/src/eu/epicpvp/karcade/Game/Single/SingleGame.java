@@ -490,7 +490,7 @@ public class SingleGame extends Game {
 	public void joinnow(PlayerJoinEvent ev){
 		ev.setJoinMessage(null);
 		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX") + "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://ClashMc.eu/");
-		getManager().Clear(ev.getPlayer());
+		getManager().clear(ev.getPlayer());
 		
 		if(isState(GameState.LobbyPhase)){
 			ev.getPlayer().teleport(getManager().getLobby());

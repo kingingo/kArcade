@@ -506,11 +506,11 @@ public class Falldown extends SoloGame{
 			if(getManager().getPermManager().hasPermission(p, PermissionType.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
 			
 			if(getGameList().isPlayerState(p) == PlayerState.INGAME){
-				event.setFormat(getManager().getPermManager().getPrefix(p) + p.getName() + "§7:§7 "+ msg);
+				event.setFormat(getManager().getPermManager().getPrefix(p) + "{player_"+p.getName()+"}" + "§7:§7 "+ msg);
 			}else{
 				event.setCancelled(true);
 				for(Player player : getGameList().getPlayers(PlayerState.SPECTATOR)){
-					player.sendMessage("§c[Spectator-Chat] " + p.getName() + ":§7 "+ msg);
+					player.sendMessage("§c[Spectator-Chat] " + "{player_"+p.getName()+"}" + ":§7 "+ msg);
 				}
 			}
 		}
@@ -936,7 +936,7 @@ public class Falldown extends SoloGame{
 	
 	@EventHandler
 	public void kick(PlayerKickEvent ev){
-		if(ev.getReason().equalsIgnoreCase("Flying is not enabled on this server"))ev.setCancelled(true);
+		if(ev.getReason().equalsIgnoreCase("Flying is not enabled on this server")) ev.setCancelled(true);
 	}
 	
 	@EventHandler
@@ -948,7 +948,7 @@ public class Falldown extends SoloGame{
 		for(Player player : UtilServer.getPlayers()){
 			UtilPlayer.sendHovbarText(player, "§4§lZweier Teams erlaubt!");
 			player.teleport(spawn);
-			getManager().Clear(player);
+			getManager().clear(player);
 			player.setLevel( getStats().getInt(StatsKey.POWER, player) );
 			getGameList().addPlayer(player,PlayerState.INGAME);
 			player.getInventory().addItem(UtilItem.addEnchantmentGlow(UtilItem.RenameItem(new ItemStack(Material.STICK), "§cMagic Stick")));
