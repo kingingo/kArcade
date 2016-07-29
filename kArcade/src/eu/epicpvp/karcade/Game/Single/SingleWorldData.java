@@ -19,7 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import dev.wolveringer.dataserver.gamestats.GameType;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.WorldLoadEvent;
 import eu.epicpvp.karcade.Game.World.GameMap;
 import eu.epicpvp.karcade.Game.World.WorldData;
@@ -38,11 +38,11 @@ import eu.epicpvp.kcore.Util.UtilWorldEdit;
 
 public class SingleWorldData extends WorldData{
 	
-	public SingleWorldData(kArcadeManager manager,String gameName,String kuerzel){
+	public SingleWorldData(ArcadeManager manager,String gameName,String kuerzel){
 		super(manager,gameName,kuerzel);
 	}
 	
-	public SingleWorldData(kArcadeManager manager,GameType type){
+	public SingleWorldData(ArcadeManager manager,GameType type){
 		this(manager,type.name(),type.getShortName());
 	}
 	
@@ -94,7 +94,7 @@ public class SingleWorldData extends WorldData{
 		File[] maps = new File[files.size()];
 		int size = files.size();
 		for(int i = 0; i < size; i++){
-			maps[i]=files.get(UtilMath.r(files.size()));
+			maps[i]=files.get(UtilMath.randomInteger(files.size()));
 			files.remove(maps[i]);
 		}
 		return maps;
@@ -106,7 +106,7 @@ public class SingleWorldData extends WorldData{
 		File[] maps = new File[map_amount];
 		
 		for(int i = 0; i < map_amount; i++){
-			maps[i]=files.get(UtilMath.r(files.size()));
+			maps[i]=files.get(UtilMath.randomInteger(files.size()));
 			files.remove(maps[i]);
 		}
 		
@@ -216,8 +216,8 @@ public class SingleWorldData extends WorldData{
 			for(int o = 0; o < (amount*amount) ; o++){
 				if(list.isEmpty())break;
 				if(l.isEmpty())break;
-				loc=list.get(UtilMath.r(list.size()));
-				files=(File[])l.keySet().toArray()[UtilMath.r(l.size())];
+				loc=list.get(UtilMath.randomInteger(list.size()));
+				files=(File[])l.keySet().toArray()[UtilMath.randomInteger(l.size())];
 				f=true;
 				for(File[] fi : l.keySet()){
 					if(fi==files){
@@ -237,7 +237,7 @@ public class SingleWorldData extends WorldData{
 				a--;
 				l.put(files, a);
 				
-				file=files[UtilMath.r(files.length)];
+				file=files[UtilMath.randomInteger(files.length)];
 				log("A: "+a+" FILE:"+file.getName());
 						
 				if(file.getName().contains("PLAYER_ISLAND")){

@@ -79,7 +79,7 @@ import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 import lombok.Setter;
 
-public class kArcadeManager extends kListener {
+public class ArcadeManager extends kListener {
 
 	@Getter
 	@Setter
@@ -100,7 +100,7 @@ public class kArcadeManager extends kListener {
 	private Location loc_stats = new Location(Bukkit.getWorld("world"), -436.5, 38.75, 326.3);
 	@Getter
 	@Setter
-	private Location loc_raking = new Location(Bukkit.getWorld("world"), -434.545,36.5,311.465);
+	private Location loc_raking = new Location(Bukkit.getWorld("world"), -434.545, 36.5, 311.465);
 	@Getter
 	@Setter
 	private String[] string_ranking;
@@ -116,8 +116,7 @@ public class kArcadeManager extends kListener {
 	private CommandService service;
 	private Hologram hologram;
 
-	public kArcadeManager(JavaPlugin plugin, String modulName, String g, PermissionManager permManager, MySQL mysql,
-			ClientWrapper client, CommandHandler cmd) {
+	public ArcadeManager(JavaPlugin plugin, String modulName, String g, PermissionManager permManager, MySQL mysql, ClientWrapper client, CommandHandler cmd) {
 		super(plugin, "kArcadeManager");
 		this.Instance = plugin;
 		this.lobby.setPitch((float) 27.6);
@@ -177,9 +176,7 @@ public class kArcadeManager extends kListener {
 			out.write("\n");
 			out.write("rm -R world/playerdata/*");
 			out.write("\n");
-			out.write("screen -AdmS a" + kArcade.id
-					+ " java -server -XX:+UseConcMarkSweepGC -XX:MaxGCPauseMillis=50 -XX:+UseParNewGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=7 -XX:+AggressiveOpts -Xms100M -Xmx"
-					+ gb + "G -d64 -jar paperspigot.jar nogui");
+			out.write("screen -AdmS a" + kArcade.id + " java -server -XX:+UseConcMarkSweepGC -XX:MaxGCPauseMillis=50 -XX:+UseParNewGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=7 -XX:+AggressiveOpts -Xms100M -Xmx" + gb + "G -d64 -jar paperspigot.jar nogui");
 			out.close();
 
 			DebugLog("Der maximale Ram wurde auf " + gb + "GB gesetzt!");
@@ -275,7 +272,7 @@ public class kArcadeManager extends kListener {
 	}
 
 	public PetManager getPetManager() {
-		if (pet == null){
+		if (pet == null) {
 			pet = new PetManager(getInstance());
 			pet.setEntityDamageEvent(false);
 		}
@@ -289,17 +286,16 @@ public class kArcadeManager extends kListener {
 			response.getAsync(new Callback<PacketOutTopTen>() {
 				@Override
 				public void call(PacketOutTopTen packet, Throwable exception) {
-					if(packet.getRanks()!=null){
+					if (packet.getRanks() != null) {
 						setString_ranking(new String[11]);
 						getString_ranking()[0] = Color.GREEN + getGame().getType().getTyp() + Color.ORANGE + "§l Ranking";
 						int i = 1;
 
 						for (RankInformation rInfo : packet.getRanks()) {
-							getString_ranking()[i] = "§l#" + i + "§r " + rInfo.getPlayer() + " " + win.getMySQLName() + ": "
-									+ rInfo.getTopValue();
+							getString_ranking()[i] = "§l#" + i + "§r " + rInfo.getPlayer() + " " + win.getMySQLName() + ": " + rInfo.getTopValue();
 							i++;
 						}
-					}else{
+					} else {
 						setString_ranking(new String[2]);
 						getString_ranking()[0] = "§cRanking was not loaded!";
 						getString_ranking()[1] = "§4Data Server overloading!?";
@@ -324,8 +320,9 @@ public class kArcadeManager extends kListener {
 	}
 
 	public Game Game(String game) {
-		if(game.equalsIgnoreCase("Master Builders"))game=GameType.Masterbuilders.getTyp();
-		
+		if (game.equalsIgnoreCase("Master Builders"))
+			game = GameType.Masterbuilders.getTyp();
+
 		if (GameType.OneInTheChamber.getTyp().equalsIgnoreCase(game)) {
 			return new OneInTheChamber(this);
 		} else if (GameType.SurvivalGames1vs1.getTyp().equalsIgnoreCase(game)) {
@@ -544,8 +541,7 @@ public class kArcadeManager extends kListener {
 	@EventHandler
 	public void Packet(ServerChangeGameTypeEvent ev) {
 		logMessage("Game Change to " + ev.getType() + " " + ev.getSubType());
-		getInstance().getConfig().set("Config.Server.Game",
-				ev.getType().getTyp() + (ev.getSubType().equalsIgnoreCase("none") ? "" : ev.getSubType()));
+		getInstance().getConfig().set("Config.Server.Game", ev.getType().getTyp() + (ev.getSubType().equalsIgnoreCase("none") ? "" : ev.getSubType()));
 
 		getInstance().saveConfig();
 		if (getGame() != null)

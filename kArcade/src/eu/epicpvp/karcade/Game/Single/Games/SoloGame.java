@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonSpectator;
@@ -27,7 +27,7 @@ public class SoloGame extends SingleGame{
 	
 	AddonSpectator spec=null;
 	
-	public SoloGame(kArcadeManager manager) {
+	public SoloGame(ArcadeManager manager) {
 		super(manager);
 	}
 	
@@ -63,9 +63,9 @@ public class SoloGame extends SingleGame{
 	    List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 	    if(l.size()>1){
 	    	if(ev==null){
-		    	player.teleport(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));
+		    	player.teleport(l.get(UtilMath.randomInteger(l.size())).getLocation().add(0.0D,3.5D,0.0D));
 	    	}else{
-	    		ev.setRespawnLocation(l.get(UtilMath.r(l.size())).getLocation().add(0.0D,3.5D,0.0D));
+	    		ev.setRespawnLocation(l.get(UtilMath.randomInteger(l.size())).getLocation().add(0.0D,3.5D,0.0D));
 	    	}
 	    }else{
 	    	if(ev==null){

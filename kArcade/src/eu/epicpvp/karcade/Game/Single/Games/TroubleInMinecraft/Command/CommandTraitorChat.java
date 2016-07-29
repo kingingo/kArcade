@@ -34,7 +34,7 @@ public class CommandTraitorChat implements CommandExecutor, Listener{
 			for(String arg : args){
 				msg=msg+" "+arg;
 			}
-			for(Player p1 : TTT.getPlayersFromTeam(t)){
+			for(Player p1 : TTT.getAllPlayersFromTeam(t)){
 				p1.sendMessage("§cTraitor-Chat§8 |§c "+p.getName()+":§7 "+msg);
 			}
 		}

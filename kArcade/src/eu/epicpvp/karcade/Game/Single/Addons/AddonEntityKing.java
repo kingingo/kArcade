@@ -123,7 +123,7 @@ public class AddonEntityKing implements Listener {
 		for(Entity c : getCreature()){
 			l=UtilPlayer.getNearby(c.getLocation(), 5);
 			if(!l.isEmpty()){
-				random=(Player)l.get(UtilMath.r(l.size()));
+				random=(Player)l.get(UtilMath.randomInteger(l.size()));
 				if(((Creature)c).getTarget()!=null&&((Creature)c).getTarget()==random)continue;
 				((Creature)c).setTarget(random);
 			}

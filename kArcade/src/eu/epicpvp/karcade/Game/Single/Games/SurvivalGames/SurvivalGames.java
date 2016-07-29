@@ -21,7 +21,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -57,17 +57,17 @@ public class SurvivalGames extends TeamGame {
 	private HashMap<Location, Inventory> chest = new HashMap<Location, Inventory>();
 	private boolean jump = true;
 
-	public SurvivalGames(kArcadeManager manager) {
+	public SurvivalGames(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		setTyp(GameType.SurvivalGames);
 		setWorldData(new SingleWorldData(manager, getType()));
 		getWorldData().Initialize();
-		setMin_Players(6);
-		setMax_Players(24);
+		setMinPlayers(6);
+		setMaxPlayers(24);
 		setCompassAddon(true);
-		setDamageTeamSelf(false);
-		setDamageTeamOther(true);
+		setTeamDamageOtherEnabled(true);
+		setTeamDamageSelfEnabled(false);
 		setExplosion(false);
 		setDeathDropItems(true);
 		setFoodChange(true);
@@ -637,7 +637,7 @@ public class SurvivalGames extends TeamGame {
 	}
 
 	public Player TeamPartner(Player p) {
-		for (Player p1 : getPlayersFromTeam(getTeam(p))) {
+		for (Player p1 : getAllPlayersFromTeam(getTeam(p))) {
 			if (p1 == p)
 				continue;
 			return p1;
@@ -701,7 +701,7 @@ public class SurvivalGames extends TeamGame {
 		Scoreboard ps;
 		for (Player p : getTeamList().keySet()) {
 			time = System.currentTimeMillis();
-			r = UtilMath.r(list.size());
+			r = UtilMath.randomInteger(list.size());
 			t = getTeamList().get(p);
 			ps = Bukkit.getScoreboardManager().getNewScoreboard();
 			UtilScoreboard.addBoard(ps, DisplaySlot.BELOW_NAME, Color.GRAY + t.getDisplayName().split(" ")[0]);
@@ -715,7 +715,7 @@ public class SurvivalGames extends TeamGame {
 			UtilScoreboard.setScore(ps, "§3", DisplaySlot.SIDEBAR, 10);
 			UtilScoreboard.setScore(ps, "§aPartner:", DisplaySlot.SIDEBAR, 9);
 
-			for (Player p1 : getPlayersFromTeam(getTeam(p))) {
+			for (Player p1 : getAllPlayersFromTeam(getTeam(p))) {
 				if (p == p1)
 					continue;
 				UtilScoreboard.setScore(ps, "§a{player_"+p1.getName()+"}", DisplaySlot.SIDEBAR, 8);
@@ -772,7 +772,7 @@ public class SurvivalGames extends TeamGame {
 				getStats().setInt(p, 1, StatsKey.WIN);
 				broadcastWithPrefix("GAME_WIN", p.getName());
 			} else if (list.size() == 2) {
-				Team t = lastTeam();
+				Team t = getLastTeam();
 				Player p = list.get(0);
 				Player p1 = list.get(1);
 				getStats().setInt(p, 1, StatsKey.WIN);

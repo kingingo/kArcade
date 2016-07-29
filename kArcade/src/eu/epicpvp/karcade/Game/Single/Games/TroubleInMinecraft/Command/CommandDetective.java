@@ -41,7 +41,7 @@ public class CommandDetective implements CommandExecutor, Listener{
 		}
 		
 		int t = TTT.getDetective();
-		int tt = TTT.isInTeam(Team.DETECTIVE);
+		int tt = TTT.getPlayerCountFromTeam(Team.DETECTIVE);
 		if(tt>=t){
 			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_MAX_USED","Detective"));
 			return false;

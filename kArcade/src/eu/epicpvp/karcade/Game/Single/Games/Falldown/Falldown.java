@@ -36,7 +36,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -110,7 +110,7 @@ public class Falldown extends SoloGame{
 	private HashMap<Player,Integer> player_amount;
 	
 	
-	public Falldown(kArcadeManager manager) {
+	public Falldown(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		ServiceFalldown.setFd(this);
@@ -131,8 +131,8 @@ public class Falldown extends SoloGame{
 		}
 		
 		setWorldData(new SingleWorldData(manager,getType()));
-		setMin_Players(8);
-		setMax_Players(16);
+		setMinPlayers(8);
+		setMaxPlayers(16);
 		setCreatureSpawn(false);
 		setDamage(false);
 		setDamagePvP(false);
@@ -383,7 +383,7 @@ public class Falldown extends SoloGame{
 			setDamageSelf(true);
 			setState(GameState.InGame);
 			
-			if(getMax_Players() == 16){
+			if(getMaxPlayers() == 16){
 				setStart( 60*10 );
 			}else{
 				setStart( 60*20 );
@@ -745,7 +745,7 @@ public class Falldown extends SoloGame{
 				player_ebene.remove(p);
 			}else if(p.getLocation().getY()<=0&&!player_up.contains(p)){
 				if(player_amount.containsKey(p)&&player_amount.get(p)>=5){
-					p.teleport(getWorldData().getSpawnLocations(Team.RED).get(0).clone().add(UtilMath.r(20),40,UtilMath.r(20)));
+					p.teleport(getWorldData().getSpawnLocations(Team.RED).get(0).clone().add(UtilMath.randomInteger(20),40,UtilMath.randomInteger(20)));
 					e = (Chicken)p.getWorld().spawnEntity(p.getLocation(), EntityType.CHICKEN);
 					e.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,600*20,1),true);
 					e.setPassenger(p.getWorld().spawnEntity(p.getLocation(), EntityType.CHICKEN));

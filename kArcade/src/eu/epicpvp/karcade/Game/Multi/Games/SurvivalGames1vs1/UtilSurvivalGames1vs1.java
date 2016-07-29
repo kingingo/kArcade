@@ -37,14 +37,14 @@ public class UtilSurvivalGames1vs1 {
 			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.ENDER_PEARL));
 			game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.ENDER_PEARL));
 			
-			if(UtilMath.r(100)>50){
+			if(UtilMath.randomInteger(100)>50){
 				game.getEnderchest_inv().setItem(emptySlot(game.getEnderchest_inv()), new ItemStack(Material.IRON_SWORD));
 			}
 		}
 		
 		ArrayList<Location> locs = (ArrayList<Location>) game.getWorldData().getLocs(game, Team.VILLAGE_BLACK).clone();
 		locs.remove(game.getEnderchest_loc());
-		game.setEnderchest_loc(locs.get(UtilMath.r(locs.size())));
+		game.setEnderchest_loc(locs.get(UtilMath.randomInteger(locs.size())));
 		locs.clear();
 		locs=null;
 		
@@ -58,7 +58,7 @@ public class UtilSurvivalGames1vs1 {
 	
 	public static ItemStack Sonstiges(){
 		try{
-			switch(UtilMath.r(29)){
+			switch(UtilMath.randomInteger(29)){
 			case 0: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(2,1));
 			case 1: return new ItemStack(Material.GOLDEN_APPLE,1);
 			case 2: return new ItemStack(Material.ARROW,UtilMath.RandomInt(10,2));
@@ -98,7 +98,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static ItemStack Tools(){
-		switch(UtilMath.r(7)){
+		switch(UtilMath.randomInteger(7)){
 		case 0: return new ItemStack(Material.WOOD_SWORD);
 		case 1: return new ItemStack(Material.GOLD_SWORD);
 		case 2: return new ItemStack(Material.GOLD_AXE);
@@ -111,7 +111,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static ItemStack IronRuestung(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0: return new ItemStack(Material.IRON_HELMET);
 		case 1: return new ItemStack(Material.IRON_CHESTPLATE);
 		case 2: return new ItemStack(Material.IRON_LEGGINGS);
@@ -123,7 +123,7 @@ public class UtilSurvivalGames1vs1 {
 	
 	public static ItemStack rdmItem(){
 		ItemStack item;
-		switch(UtilMath.r(3)){
+		switch(UtilMath.randomInteger(3)){
 		case 0: item = IronRuestung();break;
 		case 1: item = Tools();break;
 		case 2: item = Sonstiges();break;
@@ -152,7 +152,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static ItemStack rdmFood(){
-		switch(UtilMath.r(6)){
+		switch(UtilMath.randomInteger(6)){
 		case 0:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(3, 2));
 		case 1:return new ItemStack(Material.BREAD,UtilMath.RandomInt(3, 2));
 		case 2:return new ItemStack(Material.CARROT,UtilMath.RandomInt(3, 2));
@@ -164,7 +164,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static Material rdmHelm(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return Material.GOLD_HELMET;
 		case 1:return Material.IRON_HELMET;
 		case 2:return Material.CHAINMAIL_HELMET;
@@ -173,7 +173,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static Material rdmChestplate(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return Material.GOLD_CHESTPLATE;
 		case 1:return Material.IRON_CHESTPLATE;
 		case 2:return Material.CHAINMAIL_CHESTPLATE;
@@ -182,7 +182,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static Material rdmLeggings(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return Material.GOLD_LEGGINGS;
 		case 1:return Material.IRON_LEGGINGS;
 		case 2:return Material.CHAINMAIL_LEGGINGS;
@@ -191,7 +191,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static Material rdmBoots(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 			case 0:return Material.GOLD_BOOTS;
 			case 1:return Material.IRON_BOOTS;
 			case 2:return Material.CHAINMAIL_BOOTS;
@@ -200,7 +200,7 @@ public class UtilSurvivalGames1vs1 {
 	}
 	
 	public static ItemStack rdmPotion(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 			case 0:return new ItemStack(Material.POTION,1,(short)16421);
 			case 1:return new ItemStack(Material.POTION,1,(short)16389);
 			case 2:return new ItemStack(Material.POTION,1,(short)8229);
@@ -272,32 +272,32 @@ public class UtilSurvivalGames1vs1 {
 			template.put(chest, new ArrayList<String>());
 		}
 		
-		if(UtilMath.r(100)>=94){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ENDERPEARL");
+		if(UtilMath.randomInteger(100)>=94){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"ENDERPEARL");
 		}else{
 			template_type.remove("ENDERPEARL");
 		}
 		
-		if(UtilMath.r(100)>=80){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
+		if(UtilMath.randomInteger(100)>=80){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"BOW");
 		}else{
 			template_type.remove("BOW");
 		}
 		
-		if(UtilMath.r(100)>50){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TNT");
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FIRE");
+		if(UtilMath.randomInteger(100)>50){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"TNT");
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"FIRE");
 		}else{
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TNT");
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FIRE");
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"TNT");
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"FIRE");
 		}
 
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"WEB");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"EGG");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SNOWBALL");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"ARROW");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"POTION");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"WEB");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"EGG");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"SNOWBALL");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"FOOD");
 		
 		int r;
 		ArrayList<String> list;
@@ -307,7 +307,7 @@ public class UtilSurvivalGames1vs1 {
 			if(r<=list.size())continue;
 			for(int i = 0; i < (r-list.size()); i++){
 				if(template_type.size()==0)break;
-				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.r(template_type.size())]);
+				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.randomInteger(template_type.size())]);
 			}
 		}
 		
@@ -405,40 +405,40 @@ public class UtilSurvivalGames1vs1 {
 		}
 		
 		for(int i = 0 ; i<1; i++){
-			switch(UtilMath.r(4)){
+			switch(UtilMath.randomInteger(4)){
 			case 0:
 				if(template_type.containsKey("HELM")){
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"HELM");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"HELM");
 					template_type.remove("HELM");
 				}else{
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"CHESTPLATE");
 					template_type.remove("CHESTPLATE");
 				}
 				break;
 			case 1:
 				if(template_type.containsKey("CHESTPLATE")){
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"CHESTPLATE");
 					template_type.remove("CHESTPLATE");
 				}else{
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"HELM");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"HELM");
 					template_type.remove("HELM");
 				}
 				break;
 			case 2:
 				if(template_type.containsKey("LEGGINGS")){
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"LEGGINGS");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"LEGGINGS");
 					template_type.remove("LEGGINGS");
 				}else{
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOOTS");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"BOOTS");
 					template_type.remove("BOOTS");
 				}
 				break;
 			case 3:
 				if(template_type.containsKey("BOOTS")){
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOOTS");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"BOOTS");
 					template_type.remove("BOOTS");
 				}else{
-					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"LEGGINGS");
+					add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"LEGGINGS");
 					template_type.remove("LEGGINGS");
 				}
 				break;
@@ -450,23 +450,23 @@ public class UtilSurvivalGames1vs1 {
 		template_type.remove("LEGGINGS");
 		template_type.remove("BOOTS");
 		
-		if(UtilMath.r(100)>=94){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
+		if(UtilMath.randomInteger(100)>=94){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"BOW");
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"ARROW");
 		}else{
 			template_type.remove("BOW");
 			template_type.remove("ARROW");
 		}
 		
-		if(UtilMath.r(100)>=81){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FIRE");
+		if(UtilMath.randomInteger(100)>=81){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"FIRE");
 		}else{
 			template_type.remove("FIRE");
 		}
 		
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"SWORD");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"POTION");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"FOOD");
 		
 		int r;
 		ArrayList<String> list;
@@ -476,7 +476,7 @@ public class UtilSurvivalGames1vs1 {
 			if(r<=list.size())continue;
 			for(int i = 0; i < (r-list.size()); i++){
 				if(template_type.size()==0)break;
-				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.r(template_type.size())]);
+				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.randomInteger(template_type.size())]);
 			}
 		}
 		
@@ -489,7 +489,7 @@ public class UtilSurvivalGames1vs1 {
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack( Material.FISHING_ROD ) );
 					break;
 				case "SWORD":
-					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack( (UtilMath.r(1)==0?Material.WOOD_SWORD:Material.WOOD_AXE) ) );
+					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack( (UtilMath.randomInteger(1)==0?Material.WOOD_SWORD:Material.WOOD_AXE) ) );
 					break;
 				case "HELM":
 					chest.getInventory().setItem( emptySlot(chest.getInventory()) , new ItemStack(Material.LEATHER_HELMET));
@@ -548,7 +548,7 @@ public class UtilSurvivalGames1vs1 {
 	public static int emptySlot(Inventory inv){
 		int slot=0;
 		for(int i = 0 ; i<2000; i++){
-			slot=UtilMath.r(inv.getSize());
+			slot=UtilMath.randomInteger(inv.getSize());
 			if(inv.getItem(slot)==null||inv.getItem(slot).getType()==Material.AIR){
 				return slot;
 			}

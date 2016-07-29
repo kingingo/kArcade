@@ -13,7 +13,7 @@ import java.util.HashMap;
 import org.bukkit.Location;
 
 import dev.wolveringer.dataserver.gamestats.GameType;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.World.WorldData;
 import eu.epicpvp.karcade.Game.World.Parser.SchematicParser;
@@ -25,7 +25,7 @@ public class MultiWorldData extends WorldData{
 	@Setter
 	private HashMap<MultiGame,HashMap<Team,ArrayList<Location>>> locs; //Alle Team Locations der einzelnen MultiGame Arenas
 	
-	public MultiWorldData(kArcadeManager manager, GameType type) {
+	public MultiWorldData(ArcadeManager manager, GameType type) {
 		super(manager, type);
 		this.locs= new HashMap<>();
 	}

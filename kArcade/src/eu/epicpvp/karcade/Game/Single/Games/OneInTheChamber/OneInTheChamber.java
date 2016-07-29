@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
 import eu.epicpvp.karcade.Game.Single.Games.SoloGame;
@@ -43,12 +43,12 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	//Scoreboard board;
 	private ArrayList<Location> list;
 	
-	public OneInTheChamber(kArcadeManager manager) {
+	public OneInTheChamber(ArcadeManager manager) {
 		super(manager);
 		setTyp(GameType.OneInTheChamber);
 		setStart(186);
-		setMax_Players(16);
-		setMin_Players(2);
+		setMaxPlayers(16);
+		setMinPlayers(2);
 		setCompassAddon(true);
 		setDamagePvE(true);
 		setDamagePvP(true);

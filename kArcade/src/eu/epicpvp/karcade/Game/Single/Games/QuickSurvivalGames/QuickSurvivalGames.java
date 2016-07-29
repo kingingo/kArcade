@@ -29,7 +29,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -68,14 +68,14 @@ public class QuickSurvivalGames extends SoloGame {
 	private boolean jump = true;
 	private HashMap<Player, Integer> kills = new HashMap<>();
 
-	public QuickSurvivalGames(kArcadeManager manager) {
+	public QuickSurvivalGames(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		setTyp(GameType.QuickSurvivalGames);
 		setWorldData(new SingleWorldData(manager, getType()));
 		getWorldData().Initialize();
-		setMin_Players(6);
-		setMax_Players(16);
+		setMinPlayers(6);
+		setMaxPlayers(16);
 		setCompassAddon(true);
 		setExplosion(true);
 		setDeathDropItems(true);
@@ -199,7 +199,7 @@ public class QuickSurvivalGames extends SoloGame {
 
 	public ItemStack Ruestung() {
 		if (UtilMath.RandomInt(100, 1) != 35) {
-			switch (UtilMath.r(4)) {
+			switch (UtilMath.randomInteger(4)) {
 			case 0:
 				return new ItemStack(UtilMath.RandomInt(301, 298));
 			case 1:
@@ -554,7 +554,7 @@ public class QuickSurvivalGames extends SoloGame {
 				r = 0;
 				list.add(getWorldData().getSpawnLocations(Team.RED).get(0));
 			} else {
-				r = UtilMath.r(list.size());
+				r = UtilMath.randomInteger(list.size());
 			}
 			getManager().clear(p);
 			getGameList().addPlayer(p, PlayerState.INGAME);

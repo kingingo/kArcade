@@ -36,7 +36,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -104,15 +104,15 @@ public class SkyWars extends TeamGame {
 	private AddonTargetNextPlayer targetNextPlayer;
 	private InventoryPageBase choose_type;
 
-	public SkyWars(kArcadeManager manager, SkyWarsType skyWarsType) {
+	public SkyWars(ArcadeManager manager, SkyWarsType skyWarsType) {
 		super(manager);
 		long l = System.currentTimeMillis();
 		this.skyWarsType = skyWarsType;
 		this.ilManager = new LaunchItemManager(getManager().getInstance());
 		this.ranking = new ArrayList<>();
 		setTyp(GameType.SkyWars);
-		setMax_Players(skyWarsType.getMax());
-		setMin_Players(skyWarsType.getMin());
+		setMaxPlayers(skyWarsType.getMax());
+		setMinPlayers(skyWarsType.getMin());
 		setDamage(false);
 		setDamagePvP(false);
 		setDamageSelf(false);
@@ -213,7 +213,7 @@ public class SkyWars extends TeamGame {
 			int color;
 			for (Team t : skyWarsType.getTeam()) {
 				if (getWorldData().existLoc(t)) {
-					color = UtilMath.r(15);
+					color = UtilMath.randomInteger(15);
 					UtilMap.makeQuadrat(null, getWorldData().getSpawnLocations(t).get(0).clone().add(0, 10, 0), 2, 5, gcase.getGround((byte) color), gcase.getWall((byte) color));
 				}
 			}
@@ -222,7 +222,7 @@ public class SkyWars extends TeamGame {
 
 	public ItemStack Sonstiges() {
 		try {
-			switch (UtilMath.r(43)) {
+			switch (UtilMath.randomInteger(43)) {
 			case 0:
 				return new ItemStack(Material.ENDER_PEARL, UtilMath.RandomInt(4, 2));
 			case 1:
@@ -320,7 +320,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public ItemStack Tools() {
-		switch (UtilMath.r(6)) {
+		switch (UtilMath.randomInteger(6)) {
 		case 0:
 			return new ItemStack(Material.DIAMOND_SWORD);
 		case 1:
@@ -339,7 +339,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public ItemStack DiaRuestung() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return new ItemStack(Material.DIAMOND_HELMET);
 		case 1:
@@ -377,7 +377,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public ItemStack IronRuestung() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return new ItemStack(Material.IRON_HELMET);
 		case 1:
@@ -393,14 +393,14 @@ public class SkyWars extends TeamGame {
 
 	public ItemStack rdmItem() {
 		ItemStack item;
-		int r = UtilMath.r(1000);
+		int r = UtilMath.randomInteger(1000);
 		if (r >= 150 && r <= 155) {
 			item = UtilItem.RenameItem(new ItemStack(Material.SLIME_BALL), "§bX");
 			item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
 			return item;
 		}
 
-		switch (UtilMath.r(6)) {
+		switch (UtilMath.randomInteger(6)) {
 		case 0:
 			item = Sonstiges();
 			break;
@@ -425,21 +425,21 @@ public class SkyWars extends TeamGame {
 		}
 
 		if (item.getType() == Material.BOW) {
-			r = UtilMath.r(100);
+			r = UtilMath.randomInteger(100);
 			if (r >= 0 && r <= 40) {
 				item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
 			} else if (r >= 40 && r <= 60) {
 				item.addEnchantment(Enchantment.ARROW_FIRE, 1);
 			}
 		} else if (item.getType() == Material.IRON_CHESTPLATE) {
-			r = UtilMath.r(100);
+			r = UtilMath.randomInteger(100);
 			if (r >= 0 && r <= 30) {
 				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 			} else if (r >= 30 && r <= 50) {
 				item.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
 			}
 		} else if (item.getType() == Material.DIAMOND_CHESTPLATE) {
-			r = UtilMath.r(100);
+			r = UtilMath.randomInteger(100);
 			if (r >= 0 && r <= 40) {
 				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 			} else if (r >= 30 && r <= 50) {
@@ -448,7 +448,7 @@ public class SkyWars extends TeamGame {
 		} else if (item.getType() == Material.IRON_SWORD) {
 			item.addEnchantment(Enchantment.DAMAGE_ALL, 3);
 		} else if (item.getType() == Material.DIAMOND_SWORD) {
-			r = UtilMath.r(100);
+			r = UtilMath.randomInteger(100);
 			if (r >= 0 && r <= 40) {
 				item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
 			} else if (r >= 40 && r <= 60) {
@@ -508,7 +508,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public Material rdmBlock() {
-		switch (UtilMath.r(3)) {
+		switch (UtilMath.randomInteger(3)) {
 		case 0:
 			return Material.STONE;
 		case 1:
@@ -521,7 +521,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public ItemStack rdmFood() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return new ItemStack(Material.COOKED_BEEF, UtilMath.RandomInt(16, 8));
 		case 1:
@@ -536,7 +536,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public Material rdmHelm() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return Material.DIAMOND_HELMET;
 		case 1:
@@ -551,7 +551,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public Material rdmChestplate() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return Material.DIAMOND_CHESTPLATE;
 		case 1:
@@ -566,7 +566,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public Material rdmLeggings() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return Material.DIAMOND_LEGGINGS;
 		case 1:
@@ -592,7 +592,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public Material rdmBoots() {
-		switch (UtilMath.r(4)) {
+		switch (UtilMath.randomInteger(4)) {
 		case 0:
 			return Material.DIAMOND_BOOTS;
 		case 1:
@@ -607,7 +607,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public ItemStack rdmPotion() {
-		switch (UtilMath.r(5)) {
+		switch (UtilMath.randomInteger(5)) {
 		case 0:
 			return new ItemStack(Material.POTION, UtilMath.RandomInt(3, 1), (short) 16421);
 		case 1:
@@ -652,28 +652,28 @@ public class SkyWars extends TeamGame {
 		for (Chest chest : chests)
 			template.put(chest, new ArrayList<String>());
 
-		if (UtilMath.r(100) > 99) {
-			add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "BOW");
-			add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "ARROW");
+		if (UtilMath.randomInteger(100) > 99) {
+			add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "BOW");
+			add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "ARROW");
 		} else {
 			template_type.remove("BOW");
 			template_type.remove("ARROW");
 		}
 
 		if (skyWarsType == SkyWarsType._32x4) {
-			add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "FOOD");
-			add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "FOOD");
+			add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "FOOD");
+			add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "FOOD");
 		}
 
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "SWORD");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "BLOCK");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "BLOCK");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "BLOCK");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "TOOL");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "POTION");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "CHESTPLATE");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "BOOTS");
-		add((Chest) template.keySet().toArray()[UtilMath.r(template.size())], "FOOD");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "SWORD");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "BLOCK");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "BLOCK");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "BLOCK");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "TOOL");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "POTION");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "CHESTPLATE");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "BOOTS");
+		add((Chest) template.keySet().toArray()[UtilMath.randomInteger(template.size())], "FOOD");
 
 		int r;
 		ArrayList<String> list;
@@ -683,7 +683,7 @@ public class SkyWars extends TeamGame {
 			if (r <= list.size())
 				continue;
 			for (int i = 0; i < (r - list.size()); i++) {
-				add(chest, (String) this.template_type.keySet().toArray()[UtilMath.r(this.template_type.size())]);
+				add(chest, (String) this.template_type.keySet().toArray()[UtilMath.randomInteger(this.template_type.size())]);
 			}
 		}
 
@@ -753,7 +753,7 @@ public class SkyWars extends TeamGame {
 			for (ItemStack item : chest.getInventory().getContents()) {
 				if (item != null && item.getType() != Material.AIR) {
 					if (item.getType() == Material.BOW) {
-						switch (UtilMath.r(3)) {
+						switch (UtilMath.randomInteger(3)) {
 						case 0:
 							item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
 							break;
@@ -776,14 +776,14 @@ public class SkyWars extends TeamGame {
 						if (item.getType() == Material.WOOD_SWORD) {
 							item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
 						} else if (item.getType() == Material.DIAMOND_SWORD) {
-							r = UtilMath.r(100);
+							r = UtilMath.randomInteger(100);
 							if (r >= 50 && r <= 55) {
 								item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
 							} else if (r >= 0 && r <= 40) {
 								item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
 							}
 						} else if (item.getType() == Material.GOLD_SWORD) {
-							r = UtilMath.r(100);
+							r = UtilMath.randomInteger(100);
 							item.addEnchantment(Enchantment.DURABILITY, 1);
 							if (r >= 0 && r <= 60) {
 								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
@@ -793,14 +793,14 @@ public class SkyWars extends TeamGame {
 						} else if (item.getType() == Material.STONE_SWORD) {
 							item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
 						} else if (item.getType() == Material.IRON_SWORD) {
-							r = UtilMath.r(100);
+							r = UtilMath.randomInteger(100);
 							if (r >= 40 && r <= 80) {
 								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
 							}
 						}
 					} else if (UtilItem.isArmor(item)) {
 						if (UtilItem.isGoldArmor(item)) {
-							r = UtilMath.r(100);
+							r = UtilMath.randomInteger(100);
 							if (r >= 0 && r <= 60) {
 								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 							} else {
@@ -808,14 +808,14 @@ public class SkyWars extends TeamGame {
 							}
 						} else if (UtilItem.isChainmailArmor(item)) {
 							if (UtilItem.isChestplate(item)) {
-								r = UtilMath.r(100);
+								r = UtilMath.randomInteger(100);
 								if (r >= 60 && r <= 80) {
 									item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 								}
 							}
 							item.addEnchantment(Enchantment.PROTECTION_FIRE, 3);
 						} else if (UtilItem.isIronArmor(item)) {
-							r = UtilMath.r(100);
+							r = UtilMath.randomInteger(100);
 							if (r >= 60 && r <= 80) {
 								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 							}
@@ -830,7 +830,7 @@ public class SkyWars extends TeamGame {
 	public int emptySlot(Inventory inv) {
 		int slot = 0;
 		for (int i = 0; i < 2000; i++) {
-			slot = UtilMath.r(inv.getSize());
+			slot = UtilMath.randomInteger(inv.getSize());
 			if (inv.getItem(slot) == null || inv.getItem(slot).getType() == Material.AIR) {
 				return slot;
 			}
@@ -882,7 +882,7 @@ public class SkyWars extends TeamGame {
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(), TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		} else {
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer() + "}:§7 " + ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer().getName() + "}:§7 " + ev.getMessage());
 		}
 	}
 
@@ -1051,7 +1051,7 @@ public class SkyWars extends TeamGame {
 	}
 
 	public Player TeamPartner(Player p) {
-		for (Player p1 : getPlayersFromTeam(getTeam(p))) {
+		for (Player p1 : getAllPlayersFromTeam(getTeam(p))) {
 			if (p1 == p)
 				continue;
 			return p1;

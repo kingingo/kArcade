@@ -27,6 +27,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
@@ -35,7 +37,7 @@ import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.iterator.InfinityIterator;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -107,7 +109,7 @@ public class CustomWars extends TeamGame {
 	private HashMap<String, Integer> kills = new HashMap<>();
 	private ArrayList<kSort<String>> ranking;
 
-	public CustomWars(kArcadeManager manager, GameType type, CustomWarsType customType) {
+	public CustomWars(ArcadeManager manager, GameType type, CustomWarsType customType) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		this.customType = customType;
@@ -140,8 +142,8 @@ public class CustomWars extends TeamGame {
 		setDamageEvP(false);
 		setDamagePvE(false);
 		setDamagePvP(false);
-		setDamageTeamOther(true);
-		setDamageTeamSelf(false);
+		setTeamDamageOtherEnabled(true);
+		setTeamDamageSelfEnabled(false);
 		setProjectileDamage(true);
 		setRespawn(true);
 		setBlackFade(false);
@@ -149,8 +151,8 @@ public class CustomWars extends TeamGame {
 		setExplosion(true);
 		setBlockBreak(true);
 		setBlockPlace(true);
-		setMin_Players(customType.getMin());
-		setMax_Players(customType.getMax());
+		setMinPlayers(customType.getMin());
+		setMaxPlayers(customType.getMax());
 
 		getInventoryTypDisallow().add(InventoryType.WORKBENCH);
 		getInventoryTypDisallow().add(InventoryType.DISPENSER);
@@ -195,7 +197,7 @@ public class CustomWars extends TeamGame {
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev) {
 		if (getGameList().isPlayerState(ev.getPlayer()) == PlayerState.INGAME) {
-			ev.setRespawnLocation(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).get(UtilMath.r(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).size())));
+			ev.setRespawnLocation(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).get(UtilMath.randomInteger(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).size())));
 		}
 	}
 
@@ -225,7 +227,7 @@ public class CustomWars extends TeamGame {
 			for (Player p : UtilServer.getPlayers()) {
 				if (getTeamList().containsKey(p))
 					continue;
-				Team t = littleTeam();
+				Team t = calculateLowestTeam();
 				addTeam(p, t);
 				p.teleport(getWorldData().getSpawnLocations(t).get(0));
 			}
@@ -507,6 +509,22 @@ public class CustomWars extends TeamGame {
 	}
 
 	@EventHandler
+	public void a(ChunkLoadEvent e){
+		for(Entity et : e.getChunk().getEntities())
+			if (!(et instanceof Player) && !(et instanceof Villager))
+				et.remove();
+	}
+	
+	@EventHandler
+	public void a(ChunkUnloadEvent e){
+		for(Entity et : e.getChunk().getEntities()){
+			if(et instanceof Player || et instanceof Villager)
+				return;
+		}
+		e.setCancelled(true);
+	}
+	
+	@EventHandler
 	public void Start(GameStartEvent ev) {
 		long time = System.currentTimeMillis();
 
@@ -561,7 +579,7 @@ public class CustomWars extends TeamGame {
 
 		//Teleport Players
 		for (Team t : teams) {
-			List<Player> players = getPlayersFromTeam(t);
+			List<Player> players = getAllPlayersFromTeam(t);
 			UtilScoreboard.setScore(getScoreboard(), "§a§l" + Zeichen.BIG_HERZ.getIcon() + " " + t.getColor() + t.getDisplayName(), DisplaySlot.SIDEBAR, players.size());
 			getTeams().put(t, true);
 			setVillager(t, villagerEntityType);
@@ -631,10 +649,10 @@ public class CustomWars extends TeamGame {
 	public void GameStateChange(GameStateChangeEvent ev) {
 		if (ev.getTo() == GameState.Restart && ev.getReason() != GameStateChangeReason.CHANGE_TYPE) {
 			if (game_end()) {
-				Team t = lastTeam();
+				Team t = getLastTeam();
 				//				int size = getPlayerFrom(t).size();
 
-				for (Player p : getPlayersFromTeam(t)) {
+				for (Player p : getAllPlayersFromTeam(t)) {
 					if (getGameList().isPlayerState(p) == PlayerState.INGAME) {
 						getStats().addInt(p, 1, StatsKey.WIN);
 
@@ -677,10 +695,10 @@ public class CustomWars extends TeamGame {
 		if (getTeams().containsKey(team)) {
 			if (getTeams().get(team)) {
 				UtilScoreboard.resetScore(getScoreboard(), "§a§l" + Zeichen.BIG_HERZ.getIcon() + " " + team.getColor() + team.getDisplayName(), DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(getScoreboard(), "§a§l" + Zeichen.BIG_HERZ.getIcon() + " " + team.getColor() + team.getDisplayName(), DisplaySlot.SIDEBAR, getPlayersFromTeam(team).size() - 1);
+				UtilScoreboard.setScore(getScoreboard(), "§a§l" + Zeichen.BIG_HERZ.getIcon() + " " + team.getColor() + team.getDisplayName(), DisplaySlot.SIDEBAR, getAllPlayersFromTeam(team).size() - 1);
 			} else {
 				UtilScoreboard.resetScore(getScoreboard(), "§4§l" + Zeichen.MAHLZEICHEN_FETT.getIcon() + " " + team.getColor() + team.getDisplayName(), DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(getScoreboard(), "§4§l" + Zeichen.MAHLZEICHEN_FETT.getIcon() + " " + team.getColor() + team.getDisplayName(), DisplaySlot.SIDEBAR, getPlayersFromTeam(team).size() - 1);
+				UtilScoreboard.setScore(getScoreboard(), "§4§l" + Zeichen.MAHLZEICHEN_FETT.getIcon() + " " + team.getColor() + team.getDisplayName(), DisplaySlot.SIDEBAR, getAllPlayersFromTeam(team).size() - 1);
 			}
 		}
 	}
@@ -688,7 +706,7 @@ public class CustomWars extends TeamGame {
 	@EventHandler
 	public void bedDeath(AddonBedKingDeathEvent ev) {
 		UtilScoreboard.resetScore(getScoreboard(), "§a§l" + Zeichen.BIG_HERZ.getIcon() + " " + ev.getTeam().getColor() + ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getScoreboard(), "§4§l" + Zeichen.MAHLZEICHEN_FETT.getIcon() + " " + ev.getTeam().getColor() + ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR, getPlayersFromTeam(ev.getTeam()).size());
+		UtilScoreboard.setScore(getScoreboard(), "§4§l" + Zeichen.MAHLZEICHEN_FETT.getIcon() + " " + ev.getTeam().getColor() + ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR, getAllPlayersFromTeam(ev.getTeam()).size());
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		Title t = new Title("", "");
@@ -719,7 +737,7 @@ public class CustomWars extends TeamGame {
 				broadcast("§7[" + t.getColor() + t.getDisplayName() + "§7] " + "{player_"+ev.getPlayer().getName()+"}" + ": §7" + ev.getMessage().subSequence(1, ev.getMessage().length()));
 			} else {
 				Team t = getTeam(ev.getPlayer());
-				for (Player p : getPlayersFromTeam(getTeam(ev.getPlayer()))) {
+				for (Player p : getAllPlayersFromTeam(getTeam(ev.getPlayer()))) {
 					UtilPlayer.sendMessage(p, t.getColor() + "Team-Chat " + "{player_"+ev.getPlayer().getName()+"}" + ":§7 " + ev.getMessage());
 				}
 			}

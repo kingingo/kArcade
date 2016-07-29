@@ -1,10 +1,9 @@
 package eu.epicpvp.karcade.Game.Single.Addons;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -43,19 +42,17 @@ public class AddonVoteTeam implements Listener {
 
 	@Getter
 	private SingleGame game;
-	private Team[] list;
+	private Team[] avariableTeams;
 	private int invSize = 0;
 	private int maxPlayerPerTeam = 3;
-	@Getter
 	private HashMap<Team, Integer> invslot = new HashMap<>();
-	@Getter
 	private HashMap<Player, Team> vote = new HashMap<>();
 
 	private HashMap<Player, Inventory> openViews = new HashMap<>();
 
 	public AddonVoteTeam(SingleGame game, Team[] list, InventorySize size, int MaxInTeam) {
 		this.game = game;
-		this.list = list;
+		this.avariableTeams = list;
 		this.maxPlayerPerTeam = MaxInTeam;
 		this.invSize = size.getSize();
 		Bukkit.getPluginManager().registerEvents(this, this.game.getManager().getInstance());
@@ -153,11 +150,12 @@ public class AddonVoteTeam implements Listener {
 				}
 			if (clickedTeam != null) {
 				HashMap<Team, Integer> votes = new HashMap<>();
-				for (Team t : list)
+				for (Team t : avariableTeams)
 					votes.put(t, 0);
 				for (Entry<Player, Team> e : vote.entrySet())
 					votes.put(e.getValue(), votes.get(e.getValue()) + 1);
-				int minVote = list.length * maxPlayerPerTeam;
+				int minVote = avariableTeams.length * maxPlayerPerTeam;
+				
 				for (Entry<Team, Integer> e : votes.entrySet())
 					if (e.getValue() < minVote)
 						minVote = e.getValue();
@@ -167,7 +165,7 @@ public class AddonVoteTeam implements Listener {
 					if (!votes.containsKey(p))
 						notChoosen++;
 
-				if (votes.get(clickedTeam) > minVote /*+ (notChoosen / list.length)*/) {
+				if (votes.get(clickedTeam) > (Bukkit.getOnlinePlayers().size()/avariableTeams.length) /*+ (notChoosen / list.length)*/ && !(votes.get(clickedTeam) >= maxPlayerPerTeam)) { //Second for display team full
 					player.sendMessage("§cDu kannst dieses Team nicht betreten da die Teams sonnst unausgeglichen werden würden.");
 				} else {
 					if (votes.get(clickedTeam) >= maxPlayerPerTeam) {
@@ -253,7 +251,7 @@ public class AddonVoteTeam implements Listener {
 
 	public Inventory buildVoteInventory(Player player) {
 		Inventory inv = Bukkit.createInventory(null, invSize, "§lVote:");
-		for (Team t : list) {
+		for (Team t : avariableTeams) {
 			inv.setItem(invslot.get(t), buildTeamItem(t, player));
 		}
 		for (int i = 0; i < inv.getSize(); i++) {
@@ -275,7 +273,7 @@ public class AddonVoteTeam implements Listener {
 	public void Quit(PlayerQuitEvent ev) {
 		if (game.getState() != GameState.LobbyPhase)
 			return;
-		if (getVote().containsKey(ev.getPlayer())) {
+		if (vote.containsKey(ev.getPlayer())) {
 			Team t = vote.get(ev.getPlayer());
 			vote.remove(ev.getPlayer());
 			updateTeam(t);
@@ -293,6 +291,16 @@ public class AddonVoteTeam implements Listener {
 			return;
 		}
 		event.setCancelled(true);
+	}
+	
+	public Team getVotedTeam(Player player){
+		if(vote.containsKey(player))
+			return vote.get(player);
+		return null;
+	}
+	
+	public Set<Entry<Player, Team>> getAllVotes(){
+		return vote.entrySet();
 	}
 
 }

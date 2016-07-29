@@ -40,7 +40,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 		}
 		
 		int t = TTT.getTraitor();
-		int tt = TTT.isInTeam(Team.TRAITOR);
+		int tt = TTT.getPlayerCountFromTeam(Team.TRAITOR);
 		if(tt>=t){
 			((Player)cs).sendMessage(TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_MAX_USED","Traitor"));
 			return false;

@@ -50,7 +50,7 @@ public class UtilSkyWars1vs1 {
 	
 	public static ItemStack Sonstiges(){
 		try{
-			switch(UtilMath.r(39)){
+			switch(UtilMath.randomInteger(39)){
 			case 0: return new ItemStack(Material.ENDER_PEARL,UtilMath.RandomInt(4, 2));
 			case 1: return new ItemStack(Material.GOLDEN_APPLE,1);
 			case 2: return new ItemStack(Material.ARROW,UtilMath.RandomInt(64,32));
@@ -244,7 +244,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static ItemStack Tools(){
-		switch(UtilMath.r(5)){
+		switch(UtilMath.randomInteger(5)){
 		case 0: return new ItemStack(Material.DIAMOND_SWORD);
 		case 1: return new ItemStack(Material.IRON_SWORD);
 		case 2: return new ItemStack(Material.DIAMOND_AXE);
@@ -255,7 +255,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static ItemStack DiaRuestung(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0: return new ItemStack(Material.DIAMOND_HELMET);
 		case 1: return new ItemStack(Material.DIAMOND_CHESTPLATE);
 		case 2: return new ItemStack(Material.DIAMOND_LEGGINGS);
@@ -266,7 +266,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static ItemStack IronRuestung(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0: return new ItemStack(Material.IRON_HELMET);
 		case 1: return new ItemStack(Material.IRON_CHESTPLATE);
 		case 2: return new ItemStack(Material.IRON_LEGGINGS);
@@ -278,14 +278,14 @@ public class UtilSkyWars1vs1 {
 	
 	public static ItemStack rdmItem(){
 		ItemStack item;
-		int r = UtilMath.r(1000);
+		int r = UtilMath.randomInteger(1000);
 		if(r>=150&&r<=155){
 			item=UtilItem.RenameItem(new ItemStack(Material.SLIME_BALL), "§bX");
 			item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
 			return item;
 		}
 		
-		switch(UtilMath.r(6)){
+		switch(UtilMath.randomInteger(6)){
 		case 0: item = Sonstiges();break;
 		case 1: item = IronRuestung();break;
 		case 2: item = DiaRuestung();break;
@@ -296,21 +296,21 @@ public class UtilSkyWars1vs1 {
 		}
 		
 		if(item.getType()==Material.BOW){
-			r=UtilMath.r(100);
+			r=UtilMath.randomInteger(100);
 			if(r>=0&&r<=40){
 				item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
 			}else if(r>=40&&r<=60){
 				item.addEnchantment(Enchantment.ARROW_FIRE, 1);
 			}
 		}else if(item.getType()==Material.IRON_CHESTPLATE){
-			r=UtilMath.r(100);
+			r=UtilMath.randomInteger(100);
 			if(r>=0&&r<=30){
 				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 			}else if(r>=30&&r<=50){
 				item.addEnchantment(Enchantment.PROTECTION_FIRE, 4);
 			}
 		}else if(item.getType()==Material.DIAMOND_CHESTPLATE){
-			r=UtilMath.r(100);
+			r=UtilMath.randomInteger(100);
 			if(r>=0&&r<=40){
 				item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 			}else if(r>=30&&r<=50){
@@ -319,7 +319,7 @@ public class UtilSkyWars1vs1 {
 		}else if(item.getType()==Material.IRON_SWORD){
 			item.addEnchantment(Enchantment.DAMAGE_ALL, 3);
 		}else if(item.getType()==Material.DIAMOND_SWORD){
-			r=UtilMath.r(100);
+			r=UtilMath.randomInteger(100);
 			if(r>=0&&r<=40){
 				item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
 			}else if(r>=40&&r<=60){
@@ -355,7 +355,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static Material rdmBlock(){
-		switch(UtilMath.r(3)){
+		switch(UtilMath.randomInteger(3)){
 		case 0:return Material.STONE;
 		case 1:return Material.DIRT;
 		case 2:return Material.WOOD;
@@ -364,7 +364,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static ItemStack rdmFood(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(16, 8));
 		case 1:return new ItemStack(Material.BREAD,UtilMath.RandomInt(16, 8));
 		case 2:return new ItemStack(Material.CAKE);
@@ -374,7 +374,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static Material rdmHelm(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return Material.DIAMOND_HELMET;
 		case 1:return Material.GOLD_HELMET;
 		case 2:return Material.IRON_HELMET;
@@ -384,7 +384,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static Material rdmChestplate(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return Material.DIAMOND_CHESTPLATE;
 		case 1:return Material.GOLD_CHESTPLATE;
 		case 2:return Material.IRON_CHESTPLATE;
@@ -394,7 +394,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static Material rdmLeggings(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 		case 0:return Material.DIAMOND_LEGGINGS;
 		case 1:return Material.GOLD_LEGGINGS;
 		case 2:return Material.IRON_LEGGINGS;
@@ -412,7 +412,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static Material rdmBoots(){
-		switch(UtilMath.r(4)){
+		switch(UtilMath.randomInteger(4)){
 			case 0:return Material.DIAMOND_BOOTS;
 			case 1:return Material.GOLD_BOOTS;
 			case 2:return Material.IRON_BOOTS;
@@ -422,7 +422,7 @@ public class UtilSkyWars1vs1 {
 	}
 	
 	public static ItemStack rdmPotion(){
-		switch(UtilMath.r(5)){
+		switch(UtilMath.randomInteger(5)){
 			case 0:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16421);
 			case 1:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16417);
 			case 2:return new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(short)16389);
@@ -495,20 +495,20 @@ public class UtilSkyWars1vs1 {
 			template.put(chest, new ArrayList<String>());
 		}
 		
-		if(UtilMath.r(100)>70){
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BOW");
-			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"ARROW");
+		if(UtilMath.randomInteger(100)>70){
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"BOW");
+			add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"ARROW");
 		}else{
 			template_type.remove("BOW");
 			template_type.remove("ARROW");
 		}
 		
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"SWORD");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"BLOCK");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"TOOL");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"POTION");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"CHESTPLATE");
-		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.r(template.size())] ,"FOOD");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"SWORD");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"BLOCK");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"TOOL");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"POTION");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"CHESTPLATE");
+		add(template,template_type, (Chest)template.keySet().toArray()[UtilMath.randomInteger(template.size())] ,"FOOD");
 		
 		int r;
 		ArrayList<String> list;
@@ -517,7 +517,7 @@ public class UtilSkyWars1vs1 {
 			r=UtilMath.RandomInt(8, 5);
 			if(r<=list.size())continue;
 			for(int i = 0; i < (r-list.size()); i++){
-				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.r(template_type.size())]);
+				add(template,template_type,chest, (String)template_type.keySet().toArray()[UtilMath.randomInteger(template_type.size())]);
 			}
 		}
 		
@@ -592,7 +592,7 @@ public class UtilSkyWars1vs1 {
 			for(ItemStack item : chest.getInventory().getContents()){
 				if(item!=null&&item.getType()!=Material.AIR){
 					if(item.getType()==Material.BOW){
-						switch(UtilMath.r(3)){
+						switch(UtilMath.randomInteger(3)){
 						case 0:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);break;
 						case 1:item.addEnchantment(Enchantment.ARROW_DAMAGE, 3);break;
 						case 2:item.addEnchantment(Enchantment.ARROW_DAMAGE, 1);item.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);break;
@@ -602,14 +602,14 @@ public class UtilSkyWars1vs1 {
 						if(item.getType()==Material.WOOD_SWORD){
 							item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
 						}else if(item.getType()==Material.DIAMOND_SWORD){
-							r=UtilMath.r(100);
+							r=UtilMath.randomInteger(100);
 							if(r>=50&&r<=55){
 								item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
 							}else if(r>=0&&r<=40){
 								item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
 							}
 						}else if(item.getType()==Material.GOLD_SWORD){
-							r=UtilMath.r(100);
+							r=UtilMath.randomInteger(100);
 							item.addEnchantment(Enchantment.DURABILITY, 1);
 							if(r>=0&&r<=60){
 								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
@@ -619,14 +619,14 @@ public class UtilSkyWars1vs1 {
 						}else if(item.getType()==Material.STONE_SWORD){
 							item.addEnchantment(Enchantment.DAMAGE_ALL, 1);
 						}else if(item.getType()==Material.IRON_SWORD){
-							r=UtilMath.r(100);
+							r=UtilMath.randomInteger(100);
 							if(r>=40&&r<=80){
 								item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
 							}
 						}
 					}else if(UtilItem.isArmor(item)){
 						if(UtilItem.isGoldArmor(item)){
-							r=UtilMath.r(100);
+							r=UtilMath.randomInteger(100);
 							if(r>=0&&r<=60){
 								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 							}else{
@@ -634,14 +634,14 @@ public class UtilSkyWars1vs1 {
 							}
 						}else if(UtilItem.isChainmailArmor(item)){
 							if(UtilItem.isChestplate(item)){
-								r=UtilMath.r(100);
+								r=UtilMath.randomInteger(100);
 								if(r>=60&&r<=80){
 									item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 								}
 							}
 							item.addEnchantment(Enchantment.PROTECTION_FIRE, 3);
 						}else if(UtilItem.isIronArmor(item)){
-							r=UtilMath.r(100);
+							r=UtilMath.randomInteger(100);
 							if(r>=60&&r<=80){
 								item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 							}
@@ -656,7 +656,7 @@ public class UtilSkyWars1vs1 {
 	public static int emptySlot(Inventory inv){
 		int slot=0;
 		for(int i = 0 ; i<2000; i++){
-			slot=UtilMath.r(inv.getSize());
+			slot=UtilMath.randomInteger(inv.getSize());
 			if(inv.getItem(slot)==null||inv.getItem(slot).getType()==Material.AIR){
 				return slot;
 			}

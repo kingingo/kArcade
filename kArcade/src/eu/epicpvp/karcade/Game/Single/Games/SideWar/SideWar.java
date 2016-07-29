@@ -7,7 +7,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Single.GameMapVote;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
@@ -17,7 +17,7 @@ import eu.epicpvp.kcore.Util.UtilMath;
 
 public class SideWar extends TeamGame{
 
-	public SideWar(kArcadeManager manager) {
+	public SideWar(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		setTyp(GameType.SideWar);
@@ -35,8 +35,8 @@ public class SideWar extends TeamGame{
 		setDamageEvP(false);
 		setDamagePvE(false);
 		setDamagePvP(false);
-		setDamageTeamOther(true);
-		setDamageTeamSelf(false);
+		setTeamDamageOtherEnabled(true);
+		setTeamDamageSelfEnabled(false);
 		setProjectileDamage(true);
 		setRespawn(true);
 		setBlackFade(false);
@@ -44,8 +44,8 @@ public class SideWar extends TeamGame{
 		setExplosion(false);
 		setBlockBreak(true);
 		setBlockPlace(true);
-		setMin_Players(8);
-		setMax_Players(16);
+		setMinPlayers(8);
+		setMaxPlayers(16);
 		
 		setWorldData(new SingleWorldData(manager,getType().getTyp(),getType().getShortName()));
 		getWorldData().setCleanroomChunkGenerator(true);
@@ -72,7 +72,7 @@ public class SideWar extends TeamGame{
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){
-			 ev.setRespawnLocation( getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).get(UtilMath.r(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).size())) );
+			 ev.setRespawnLocation( getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).get(UtilMath.randomInteger(getWorldData().getSpawnLocations(getTeam(ev.getPlayer())).size())) );
 		 }
 	}
 

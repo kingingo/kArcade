@@ -95,7 +95,7 @@ public class AddonWordVote extends kListener{
 					Collections.sort(sort,kSort.DESCENDING);
 					getMasterbuilders().setBuilding(Buildings.get(sort.get(0).getObject()));
 				}else{
-					getMasterbuilders().setBuilding(buildings[UtilMath.r(buildings.length)]);
+					getMasterbuilders().setBuilding(buildings[UtilMath.randomInteger(buildings.length)]);
 				}
 				
 				for(Player player : getMasterbuilders().getGameList().getPlayers(PlayerState.INGAME))player.getInventory().clear();

@@ -83,7 +83,7 @@ public class AddonVoteHandler extends kListener{
 	
 	@EventHandler
 	public void preStart(GamePreStartEvent ev){
-		if(ev.getGame().getMin_Players() <= UtilServer.getPlayers().size() && active)done();
+		if(ev.getGame().getMinPlayers() <= UtilServer.getPlayers().size() && active)done();
 		
 	}
 	

@@ -5,16 +5,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Permission.PermissionType;
 
 public class CommandSpectate implements CommandExecutor{
 	
-	kArcadeManager Manager;
+	ArcadeManager Manager;
 	
-	public CommandSpectate(kArcadeManager Manager){
+	public CommandSpectate(ArcadeManager Manager){
 		this.Manager=Manager;
 	}
 	

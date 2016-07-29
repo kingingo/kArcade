@@ -27,7 +27,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -111,15 +111,15 @@ public class DeathGames extends SoloGame{
 	private ArrayList<ItemStack> normal = new ArrayList<>();
 	private SingleKitShop kitShop;
 	
-	public DeathGames(kArcadeManager manager) {
+	public DeathGames(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		setTyp(GameType.DeathGames);
 		setWorldData(new SingleWorldData(manager,getType()));
 		setupItems();
 		setCreatureSpawn(true);
-		setMin_Players(4);
-		setMax_Players(12);
+		setMinPlayers(4);
+		setMaxPlayers(12);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageEvP(false);
@@ -165,9 +165,9 @@ public class DeathGames extends SoloGame{
 		nobiome.add(Biome.SWAMPLAND_MOUNTAINS);
 		nobiome.add(Biome.SMALL_MOUNTAINS);
 		getWorldData().loadBiomes(nobiome);
-		getWorldData().getMap().setMapName(((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.r(getWorldData().getBiomes().size())]));
+		getWorldData().getMap().setMapName(((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.randomInteger(getWorldData().getBiomes().size())]));
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
-		grenze=new AddonWorldBorder(this, getCenter(), (getMax_Players()*10));
+		grenze=new AddonWorldBorder(this, getCenter(), (getMaxPlayers()*10));
 		
 		this.kitShop=new SingleKitShop(getManager().getInstance(),getMoney(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
 			
@@ -393,18 +393,18 @@ public class DeathGames extends SoloGame{
 	public Inventory setupInv() {
 		Inventory inv = Bukkit.createInventory(null, 9 * 3, "DeathGames");
 		ItemStack[] is = new ItemStack[9 * 3];
-		for (int ii = 0; ii < UtilMath.r(3) + 2; ii++) {
-			if (UtilMath.r(15) == 1) {
-				ItemStack added = selten.get(UtilMath.r(selten.size()));
-				inv.setItem(UtilMath.r(26), added);
+		for (int ii = 0; ii < UtilMath.randomInteger(3) + 2; ii++) {
+			if (UtilMath.randomInteger(15) == 1) {
+				ItemStack added = selten.get(UtilMath.randomInteger(selten.size()));
+				inv.setItem(UtilMath.randomInteger(26), added);
 				is[ii] = added;
-			} else if (UtilMath.r(5) == 3 || UtilMath.r(5) == 1) {
-				ItemStack added = medium.get(UtilMath.r(medium.size()));
-				inv.setItem(UtilMath.r(26), added);
+			} else if (UtilMath.randomInteger(5) == 3 || UtilMath.randomInteger(5) == 1) {
+				ItemStack added = medium.get(UtilMath.randomInteger(medium.size()));
+				inv.setItem(UtilMath.randomInteger(26), added);
 				is[ii] = added;
 			} else {
-				ItemStack added = normal.get(UtilMath.r(normal.size()));
-				inv.setItem(UtilMath.r(26), added);
+				ItemStack added = normal.get(UtilMath.randomInteger(normal.size()));
+				inv.setItem(UtilMath.randomInteger(26), added);
 				is[ii] = added;
 			}
 		}
@@ -497,14 +497,14 @@ public class DeathGames extends SoloGame{
 
 		Inventory inv = Bukkit.createInventory(null, 9 * 3, "DeathGames");
 		ItemStack[] is = new ItemStack[9 * 3];
-		for (int ii = 0; ii < UtilMath.r(3) + 2; ii++) {
-			if (UtilMath.r(5) == 1) {
-				ItemStack added = selten.get(UtilMath.r(selten.size()));
-				inv.setItem(UtilMath.r(26), added);
+		for (int ii = 0; ii < UtilMath.randomInteger(3) + 2; ii++) {
+			if (UtilMath.randomInteger(5) == 1) {
+				ItemStack added = selten.get(UtilMath.randomInteger(selten.size()));
+				inv.setItem(UtilMath.randomInteger(26), added);
 				is[ii] = added;
 			} else {
-				ItemStack added = medium.get(UtilMath.r(medium.size()));
-				inv.setItem(UtilMath.r(26), added);
+				ItemStack added = medium.get(UtilMath.randomInteger(medium.size()));
+				inv.setItem(UtilMath.randomInteger(26), added);
 				is[ii] = added;
 			}
 		}

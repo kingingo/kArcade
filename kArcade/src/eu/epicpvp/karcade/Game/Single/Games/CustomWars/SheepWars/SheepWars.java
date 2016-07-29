@@ -19,7 +19,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.SheepWars1vs1.UtilSheepWars1vs1;
 import eu.epicpvp.karcade.Game.Single.Events.AddonEntityTeamKingDeathEvent;
@@ -48,7 +48,7 @@ public class SheepWars extends CustomWars{
 	@Getter
 	private HashMap<Player, String> kits = new HashMap();
 	
-	public SheepWars(kArcadeManager manager, CustomWarsType customType) {
+	public SheepWars(ArcadeManager manager, CustomWarsType customType) {
 		super(manager, GameType.SheepWars, customType);
 		
 		kitshop=new SingleKitShop(getManager().getInstance(),getMoney(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, UtilSheepWars1vs1.getKits(this));
@@ -57,7 +57,7 @@ public class SheepWars extends CustomWars{
 	@EventHandler
 	public void sheepDeath(AddonEntityTeamKingDeathEvent ev){
 		UtilScoreboard.resetScore(getScoreboard(), "§a§l"+Zeichen.BIG_HERZ.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getScoreboard(), "§4§l"+Zeichen.MAHLZEICHEN_FETT.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR, getPlayersFromTeam(ev.getTeam()).size());
+		UtilScoreboard.setScore(getScoreboard(), "§4§l"+Zeichen.MAHLZEICHEN_FETT.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR, getAllPlayersFromTeam(ev.getTeam()).size());
 		getTeams().remove(ev.getTeam());
 		getTeams().put(ev.getTeam(), false);
 		Title t = new Title("","");

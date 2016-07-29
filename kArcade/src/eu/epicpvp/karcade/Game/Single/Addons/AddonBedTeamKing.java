@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.material.Bed;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonBedKingDeathEvent;
 import eu.epicpvp.karcade.Game.Single.Games.TeamGame;
@@ -25,13 +25,13 @@ import lombok.Getter;
 public class AddonBedTeamKing implements Listener {
 	
 	@Getter
-	private kArcadeManager manager;;
+	private ArcadeManager manager;;
 	@Getter
 	private HashMap<Team,Block> teams = new HashMap<>();
 	@Getter
 	private TeamGame team;
 	
-	public AddonBedTeamKing(kArcadeManager manager,Team[] teams,TeamGame team){
+	public AddonBedTeamKing(ArcadeManager manager,Team[] teams,TeamGame team){
 		this.manager=manager;
 		this.team=team;
 		BlockFace face = null;

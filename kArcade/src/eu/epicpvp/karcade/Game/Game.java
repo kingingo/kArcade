@@ -24,12 +24,11 @@ import dev.wolveringer.events.Event;
 import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.booster.BoosterStatusChangeEvent;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
-import eu.epicpvp.karcade.Game.Single.Addons.AddonLobbyJump;
 import eu.epicpvp.karcade.Game.World.Event.WorldDataInitializeEvent;
 import eu.epicpvp.kcore.Addons.AddonDay;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
@@ -51,7 +50,7 @@ import lombok.Setter;
 public class Game extends kListener {
 
 	@Getter
-	private kArcadeManager manager;
+	private ArcadeManager manager;
 	@Getter
 	@Setter
 	private String packetServer = "hub";
@@ -67,10 +66,10 @@ public class Game extends kListener {
 	private GameState state = GameState.NONE;
 	@Getter
 	@Setter
-	private int Min_Players = 1;
+	private int minPlayers = 1;
 	@Getter
 	@Setter
-	private int Max_Players = 50;
+	private int maxPlayers = 50;
 	@Setter
 	@Getter
 	private boolean apublic = true;
@@ -80,8 +79,8 @@ public class Game extends kListener {
 	@Getter
 	@Setter
 	private NetworkBooster booster;
-	
-	public Game(kArcadeManager manager) {
+
+	public Game(ArcadeManager manager) {
 		super(manager.getInstance(), "Game");
 		this.manager = manager;
 		this.money = StatsManagerRepository.createStatsManager(GameType.Money);
@@ -238,8 +237,7 @@ public class Game extends kListener {
 	public void OpenChest(PlayerInteractEvent ev) {
 		if (getState() == GameState.LobbyPhase && ev.getPlayer().getWorld().getUID() == getManager().getLobby().getWorld().getUID()) {
 			if (UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)) {
-				if (ev.getClickedBlock().getType() == Material.BREWING_STAND || ev.getClickedBlock().getType() == Material.DROPPER || ev.getClickedBlock().getType() == Material.DISPENSER || ev.getClickedBlock().getType() == Material.ANVIL || ev.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE || ev.getClickedBlock().getType() == Material.TRAP_DOOR || ev.getClickedBlock().getType() == Material.WORKBENCH || ev.getClickedBlock().getType() == Material.FURNACE
-						|| ev.getClickedBlock().getType() == Material.ENDER_CHEST || ev.getClickedBlock().getType() == Material.CHEST)
+				if (ev.getClickedBlock().getType() == Material.BREWING_STAND || ev.getClickedBlock().getType() == Material.DROPPER || ev.getClickedBlock().getType() == Material.DISPENSER || ev.getClickedBlock().getType() == Material.ANVIL || ev.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE || ev.getClickedBlock().getType() == Material.TRAP_DOOR || ev.getClickedBlock().getType() == Material.WORKBENCH || ev.getClickedBlock().getType() == Material.FURNACE || ev.getClickedBlock().getType() == Material.ENDER_CHEST || ev.getClickedBlock().getType() == Material.CHEST)
 					ev.setCancelled(true);
 			}
 		}
@@ -265,7 +263,7 @@ public class Game extends kListener {
 	@EventHandler
 	public void statusUpdate(ServerStatusUpdateEvent ev) {
 		ev.getPacket().setTyp(getType());
-		ev.getPacket().setMaxPlayers(getMax_Players());
+		ev.getPacket().setMaxPlayers(getMaxPlayers());
 		ev.getPacket().setPlayers(UtilServer.getPlayers().size());
 		ev.getPacket().setState(getState());
 	}
@@ -311,8 +309,7 @@ public class Game extends kListener {
 		if (isState(GameState.LobbyPhase) || this instanceof MultiGames)
 			updateInfo();
 		if (this instanceof SingleGame && getState() == GameState.LobbyPhase)
-			broadcastWithPrefix("GAME_ENTER", new String[]
-			{ ev.getPlayer().getName(), String.valueOf(UtilServer.getPlayers().size()), String.valueOf(getMax_Players()) });
+			broadcastWithPrefix("GAME_ENTER", new String[] { ev.getPlayer().getName(), String.valueOf(UtilServer.getPlayers().size()), String.valueOf(getMaxPlayers()) });
 	}
 
 }

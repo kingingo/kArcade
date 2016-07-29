@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
 import eu.epicpvp.kcore.Util.UtilItem;
@@ -23,7 +23,7 @@ public class AddonBagPack implements Listener {
 	@Getter
 	private boolean Only_One_BagPack_in_Inventory = false;
 	
-	public AddonBagPack(kArcadeManager manager){
+	public AddonBagPack(ArcadeManager manager){
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}
 	

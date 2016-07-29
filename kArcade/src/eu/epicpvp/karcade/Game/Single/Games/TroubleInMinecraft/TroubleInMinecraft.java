@@ -24,14 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import com.mojang.authlib.GameProfile;
-import com.sk89q.jchronic.handlers.SRPAHandler;
-
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Events.WorldLoadEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
@@ -65,7 +62,6 @@ import eu.epicpvp.kcore.ItemFake.ItemFake;
 import eu.epicpvp.kcore.ItemFake.ItemFakeManager;
 import eu.epicpvp.kcore.ItemFake.Events.ItemFakePickupEvent;
 import eu.epicpvp.kcore.LaunchItem.LaunchItemManager;
-import eu.epicpvp.kcore.Listener.Chat.filter.ChatUtils;
 import eu.epicpvp.kcore.NPC.NPC;
 import eu.epicpvp.kcore.NPC.NPCManager;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
@@ -93,9 +89,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_8_R3.ChatBaseComponent;
-import net.minecraft.server.v1_8_R3.ChatComponentUtils;
-import net.minecraft.server.v1_8_R3.ChatMessage;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
@@ -127,19 +120,20 @@ public class TroubleInMinecraft extends TeamGame {
 	@Getter
 	private LaunchItemManager ilManager;
 
-	public TroubleInMinecraft(kArcadeManager manager) {
+	public TroubleInMinecraft(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
 		setTyp(GameType.TroubleInMinecraft);
-		setMin_Players(6);
-		setMax_Players(16);
+		setMinPlayers(6);
+		setMaxPlayers(16);
 		getInventoryTypDisallow().add(InventoryType.ANVIL);
 		getInventoryTypDisallow().add(InventoryType.BREWING);
 		getInventoryTypDisallow().add(InventoryType.DISPENSER);
 		getInventoryTypDisallow().add(InventoryType.BEACON);
 		getInventoryTypDisallow().add(InventoryType.DROPPER);
 		getInventoryTypDisallow().add(InventoryType.WORKBENCH);
-		setDamageTeamSelf(true);
+		setTeamDamageOtherEnabled(false);
+		setTeamDamageSelfEnabled(true);
 		setDamageSelf(true);
 		setItemDrop(true);
 		setItemPickup(false);
@@ -153,7 +147,6 @@ public class TroubleInMinecraft extends TeamGame {
 		setFoodChange(false);
 		setCompassAddon(true);
 		setRespawn(true);
-		this.npclist = new HashMap<>();
 		shotgun = new Shotgun(this);
 		sniper = new Sniper(this);
 		minigun = new Minigun(this);
@@ -591,7 +584,7 @@ public class TroubleInMinecraft extends TeamGame {
 	public void setItemFake(ArrayList<Location> list) {
 
 		if (!list.isEmpty()) {
-			Location loc = list.get(UtilMath.r(list.size()));
+			Location loc = list.get(UtilMath.randomInteger(list.size()));
 			TTT_Item.SCHWERT_IRON.setItemFake(loc);
 			list.remove(loc);
 		}
@@ -618,7 +611,7 @@ public class TroubleInMinecraft extends TeamGame {
 		for (int i = 0; i < 20000; i++) {
 			if (list.isEmpty())
 				break;
-			r = UtilMath.r(list.size());
+			r = UtilMath.randomInteger(list.size());
 			if (s_h != 0) {
 				TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				list.remove(r);
@@ -650,7 +643,7 @@ public class TroubleInMinecraft extends TeamGame {
 				list.remove(r);
 				b_sn--;
 			} else {
-				if (UtilMath.r(1) == 0) {
+				if (UtilMath.randomInteger(1) == 0) {
 					TTT_Item.SCHWERT_HOLZ.setItemFake(list.get(r));
 				} else {
 					TTT_Item.ARROW.setItemFake(list.get(r));
@@ -673,7 +666,7 @@ public class TroubleInMinecraft extends TeamGame {
 		if (getState() != GameState.InGame)
 			return;
 		setStart(getStart() - 1);
-		if (isInTeam(Team.INOCCENT) == 0 && isInTeam(Team.DETECTIVE) == 0) {
+		if (getPlayerCountFromTeam(Team.INOCCENT) == 0 && getPlayerCountFromTeam(Team.DETECTIVE) == 0) {
 			broadcastWithPrefix("TTT_WIN", Team.TRAITOR.getDisplayName());
 
 			System.out.println("[TTT] TRAITOR HABEN GEWONNEN");
@@ -686,7 +679,7 @@ public class TroubleInMinecraft extends TeamGame {
 			}
 
 			setState(GameState.Restart, GameStateChangeReason.LAST_TEAM);
-		} else if (isInTeam(Team.TRAITOR) == 0) {
+		} else if (getPlayerCountFromTeam(Team.TRAITOR) == 0) {
 			broadcastWithPrefix("TTT_WIN", Team.INOCCENT.getDisplayName());
 			System.out.println("[TTT] INNOCENT HABEN GEWONNEN");
 			for (Player p : getTeamList().keySet()) {
@@ -850,8 +843,8 @@ public class TroubleInMinecraft extends TeamGame {
 			for (Player p : getGameList().getPlayers(PlayerState.INGAME)) {
 				plist.add(p);
 			}
-			PlayerVerteilung(verteilung(), plist);
-			ArrayList<Player> d = (ArrayList<Player>) getPlayersFromTeam(Team.DETECTIVE);
+			distributePlayersWithLimits(verteilung(), plist);
+			ArrayList<Player> d = (ArrayList<Player>) getAllPlayersFromTeam(Team.DETECTIVE);
 			Scoreboard ps;
 			for (Player p : d) {
 				ps = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -891,7 +884,7 @@ public class TroubleInMinecraft extends TeamGame {
 				p.getInventory().setChestplate(UtilItem.LSetColor(new ItemStack(Material.LEATHER_CHESTPLATE), org.bukkit.Color.BLUE));
 				p.getInventory().addItem(detective_shop.getShop_item());
 			}
-			ArrayList<Player> t = (ArrayList<Player>) getPlayersFromTeam(Team.TRAITOR);
+			ArrayList<Player> t = (ArrayList<Player>) getAllPlayersFromTeam(Team.TRAITOR);
 			for (Player p : t) {
 				traitor.add(p);
 				p.getInventory().addItem(traitor_shop.getShop_item());
@@ -945,7 +938,7 @@ public class TroubleInMinecraft extends TeamGame {
 				}
 			}
 
-			ArrayList<Player> i = (ArrayList<Player>) getPlayersFromTeam(Team.INOCCENT);
+			ArrayList<Player> i = (ArrayList<Player>) getAllPlayersFromTeam(Team.INOCCENT);
 
 			for (Player p : i) {
 				ps = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -997,7 +990,7 @@ public class TroubleInMinecraft extends TeamGame {
 			setDamage(true);
 			setProjectileDamage(true);
 			setDamageSelf(true);
-			setDamageTeamOther(true);
+			setTeamDamageOtherEnabled(true);
 			broadcastWithPrefixName("SCHUTZZEIT_END");
 			setState(GameState.InGame);
 			break;
@@ -1064,7 +1057,7 @@ public class TroubleInMinecraft extends TeamGame {
 			getManager().clear(p);
 			p.setMaxHealth(40);
 			p.setHealth(40);
-			r = UtilMath.r(list.size());
+			r = UtilMath.randomInteger(list.size());
 			p.teleport(list.get(r));
 			p.getInventory().addItem(magnet.getStab());
 			getGameList().addPlayer(p, PlayerState.INGAME);

@@ -28,7 +28,7 @@ import dev.wolveringer.client.connection.PacketListener;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.protocoll.packets.Packet;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Command.CommandSpectate;
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -99,7 +99,7 @@ public class MultiGames extends Game{
 	@Getter
 	private InventoryPageBase page;
 	
-	public MultiGames(kArcadeManager manager,String type){
+	public MultiGames(ArcadeManager manager,String type){
 		super(manager);
 		setTyp(GameType.get(type));
 		this.spielerTeams=ArenaType._TEAMx6.getTeam();
@@ -194,7 +194,7 @@ public class MultiGames extends Game{
 					if(zips.size()==1){
 						file = zips.get(0);
 					}else{
-						file = zips.get(UtilMath.r(zips.size()));
+						file = zips.get(UtilMath.randomInteger(zips.size()));
 					}
 					v=new Versus(this, file ,loc);
 					games.put(v.getArena(), v);
@@ -231,7 +231,7 @@ public class MultiGames extends Game{
 					if(zips.size()==1){
 						file = zips.get(0);
 					}else{
-						file = zips.get(UtilMath.r(zips.size()));
+						file = zips.get(UtilMath.randomInteger(zips.size()));
 					}
 					loc=loc.add(0, 0, 5000);
 					v=new CustomWars1vs1(this, "Loading ...",loc,file);
@@ -267,7 +267,7 @@ public class MultiGames extends Game{
 					if(zips.size()==1){
 						file = zips.get(0);
 					}else{
-						file = zips.get(UtilMath.r(zips.size()));
+						file = zips.get(UtilMath.randomInteger(zips.size()));
 					}
 					loc=loc.add(0, 0, 5000);
 					v=new SkyWars1vs1(this, "Loading ...",loc,file);
@@ -303,7 +303,7 @@ public class MultiGames extends Game{
 					if(zips.size()==1){
 						file = zips.get(0);
 					}else{
-						file = zips.get(UtilMath.r(zips.size()));
+						file = zips.get(UtilMath.randomInteger(zips.size()));
 					}
 					loc=loc.add(0, 0, 5000);
 					v=new SurvivalGames1vs1(this, "Loading ...",loc,file);

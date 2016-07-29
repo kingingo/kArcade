@@ -56,7 +56,9 @@ public class Votes {
 	public Vote done(){
 		ArrayList<kSort<Vote>> votes = getVoteList();
 		done.call(votes, null);
-		
+		if(votes.size() == 0){
+			return null;
+		}
 		return votes.get(0).getObject();
 	}
 	

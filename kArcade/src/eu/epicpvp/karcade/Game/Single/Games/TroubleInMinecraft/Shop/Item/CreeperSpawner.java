@@ -96,7 +96,7 @@ public class CreeperSpawner extends kListener implements IShop{
 						Creature c = (Creature)ev.getItem().getDroppedItem()[0].getLocation().getWorld().spawnCreature(ev.getItem().getDroppedItem()[0].getLocation(), CreatureType.CREEPER);
 						Player p = null;
 						HashMap<Player,Double> l = UtilPlayer.getInRadius(ev.getItem().getDroppedItem()[0].getLocation(), 9);
-						if(!l.isEmpty())p=(Player) l.keySet().toArray()[UtilMath.r(l.size())];
+						if(!l.isEmpty())p=(Player) l.keySet().toArray()[UtilMath.randomInteger(l.size())];
 						c.setTarget(p);
 						list.put(c, event.getPlayer());
 					}

@@ -21,7 +21,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.patterns.Pattern;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ public class AddonSphereGrenze implements Listener {
 	
 	@Getter
 	private ArrayList<Location> grenzen = new ArrayList<>();
-	private kArcadeManager manager;
+	private ArcadeManager manager;
 	private World world;
 	@Getter
 	@Setter
@@ -39,7 +39,7 @@ public class AddonSphereGrenze implements Listener {
 	Location mitte;
 	int radius=30;
 	
-	public AddonSphereGrenze(kArcadeManager manager,World world){
+	public AddonSphereGrenze(ArcadeManager manager,World world){
 		this.manager=manager;
 		this.world=world;
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());

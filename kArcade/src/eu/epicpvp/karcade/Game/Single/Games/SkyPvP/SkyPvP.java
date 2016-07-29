@@ -28,7 +28,7 @@ import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -68,12 +68,12 @@ public class SkyPvP extends SoloGame{
 	private AddonEntityKing entity_king;
 	private AddonTargetNextPlayer TargetNextPlayer;
 	
-	public SkyPvP(kArcadeManager manager){
+	public SkyPvP(ArcadeManager manager){
 		super(manager);
 		long l = System.currentTimeMillis();
 		setTyp(GameType.SkyPvP);
-		setMax_Players(12);
-		setMin_Players(5);
+		setMaxPlayers(12);
+		setMinPlayers(5);
 		setDamage(true);
 		setDamagePvP(true);
 		setDamageSelf(true);
@@ -123,7 +123,7 @@ public class SkyPvP extends SoloGame{
 		}
 		
 		list.put(c_files, 1);
-		list.put(p_files, getMax_Players());
+		list.put(p_files, getMaxPlayers());
 		list.put(o_files, UtilMath.RandomInt(4, 2));
 		
 		getWorldData().setIsland(list,20, new Location(getWorldData().getWorld(),0,80,0));
@@ -177,7 +177,7 @@ public class SkyPvP extends SoloGame{
 					Inventory inv = Bukkit.createInventory(null, 9, "EnderChest");
 					
 					for(int i = 0; i < UtilMath.RandomInt(4, 2); i++){
-						inv.addItem( enderchest_material.get(UtilMath.r(enderchest_material.size())).clone() );
+						inv.addItem( enderchest_material.get(UtilMath.randomInteger(enderchest_material.size())).clone() );
 					}
 					enderchests.put(ev.getClickedBlock().getLocation(), inv);
 					
@@ -333,7 +333,7 @@ public class SkyPvP extends SoloGame{
 			}else{
 				life.put(p, 2);
 			}
-			r=UtilMath.r(locs.size());
+			r=UtilMath.randomInteger(locs.size());
 			p.teleport(locs.get(r));
 			board=Bukkit.getScoreboardManager().getNewScoreboard();
 			UtilScoreboard.addBoard(board, DisplaySlot.SIDEBAR,UtilScoreboard.getScoreboardDisplayname());
@@ -379,7 +379,7 @@ public class SkyPvP extends SoloGame{
 			Chest c = (Chest)ev.getEntity().getLocation().getBlock().getState();
 			
 			for(int i = 0; i < UtilMath.RandomInt(8, 3); i++){
-				c.getInventory().addItem( enderchest_material.get(UtilMath.r(enderchest_material.size())).clone() );
+				c.getInventory().addItem( enderchest_material.get(UtilMath.randomInteger(enderchest_material.size())).clone() );
 			}
 			
 			ev.getEntity().getLocation().getWorld().strikeLightningEffect(ev.getEntity().getLocation());

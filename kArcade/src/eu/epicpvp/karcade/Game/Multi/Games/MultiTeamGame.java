@@ -226,9 +226,9 @@ public class MultiTeamGame extends MultiGame {
 		List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 		if (l.size() > 1) {
 			if (ev == null) {
-				player.teleport(l.get(UtilMath.r(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
+				player.teleport(l.get(UtilMath.randomInteger(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
 			} else {
-				ev.setRespawnLocation(l.get(UtilMath.r(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
+				ev.setRespawnLocation(l.get(UtilMath.randomInteger(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
 			}
 		} else {
 			if (ev == null) {

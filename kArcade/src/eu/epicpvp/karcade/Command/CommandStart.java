@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Permission.PermissionType;
@@ -19,9 +19,9 @@ import eu.epicpvp.kcore.Util.UtilPlayer;
 
 public class CommandStart implements CommandExecutor{
 	
-	kArcadeManager Manager;
+	ArcadeManager Manager;
 	
-	public CommandStart(kArcadeManager Manager){
+	public CommandStart(ArcadeManager Manager){
 		this.Manager=Manager;
 	}
 	

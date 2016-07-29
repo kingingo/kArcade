@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
 import lombok.Getter;
@@ -13,10 +13,10 @@ import lombok.Getter;
 public class AddonMove implements Listener{
 
 	@Getter
-	private kArcadeManager manager;
+	private ArcadeManager manager;
 	private boolean move = true;
 	
-	public AddonMove(kArcadeManager manager){
+	public AddonMove(ArcadeManager manager){
 		this.manager=manager;
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 	}

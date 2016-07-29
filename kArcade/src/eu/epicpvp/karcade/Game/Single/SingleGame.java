@@ -45,7 +45,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;
@@ -94,10 +94,10 @@ public class SingleGame extends Game {
 	public boolean DamageSelf = true;
 	@Getter
 	@Setter
-	public boolean DamageTeamSelf = false;
+	public boolean teamDamageSelfEnabled = false;
 	@Getter
 	@Setter
-	public boolean DamageTeamOther = true;
+	public boolean teamDamageOtherEnabled = true;
 	@Getter
 	@Setter
 	public boolean HangingBreak = false;
@@ -207,21 +207,21 @@ public class SingleGame extends Game {
 	private SingleWorldData worldData;
 	private AddonVoteHandler voteHandler;
 
-	public SingleGame(kArcadeManager manager) {
+	public SingleGame(ArcadeManager manager) {
 		super(manager);
 		this.gameList = new GameList(getManager());
 		new AddonLobbyJump(this);
 	}
 
-	public AddonVoteHandler getVoteHandler(){
-		if(this.voteHandler==null)this.voteHandler=new AddonVoteHandler(this);
+	public AddonVoteHandler getVoteHandler() {
+		if (this.voteHandler == null)
+			this.voteHandler = new AddonVoteHandler(this);
 		return this.voteHandler;
 	}
-	
+
 	@EventHandler
 	public void soilChangeEntity(EntityInteractEvent event) {
-		if (!isSoilChange() && (event.getEntityType() != EntityType.PLAYER)
-				&& (event.getBlock().getType() == Material.SOIL))
+		if (!isSoilChange() && (event.getEntityType() != EntityType.PLAYER) && (event.getBlock().getType() == Material.SOIL))
 			event.setCancelled(true);
 	}
 
@@ -248,8 +248,7 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void InterBack(PlayerInteractEvent ev) {
-		if (UtilEvent.isAction(ev, ActionType.RIGHT) && getGameList().getPlayers().containsKey(ev.getPlayer())
-				&& getGameList().getPlayers().get(ev.getPlayer()) == PlayerState.SPECTATOR) {
+		if (UtilEvent.isAction(ev, ActionType.RIGHT) && getGameList().getPlayers().containsKey(ev.getPlayer()) && getGameList().getPlayers().get(ev.getPlayer()) == PlayerState.SPECTATOR) {
 			if (ev.getPlayer().getItemInHand() == null)
 				return;
 			if (ev.getPlayer().getItemInHand().getTypeId() != 385)
@@ -269,8 +268,7 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void Damage(EntityDamageEvent ev) {
-		if (ev.getEntity() instanceof Player
-				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getEntity()))
+		if (ev.getEntity() instanceof Player && getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getEntity()))
 			ev.setCancelled(true);
 		if (isState(GameState.LobbyPhase))
 			ev.setCancelled(true);
@@ -283,8 +281,7 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void Food(FoodLevelChangeEvent ev) {
-		if (ev.getEntity() instanceof Player
-				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getEntity()))
+		if (ev.getEntity() instanceof Player && getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getEntity()))
 			ev.setCancelled(true);
 		if ((isState(GameState.LobbyPhase)) || !FoodChange) {
 			ev.setCancelled(true);
@@ -316,30 +313,30 @@ public class SingleGame extends Game {
 		}
 	}
 
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void StartGameGame(GameStartEvent ev) {
-		if(UtilServer.getPlayers().size() > getMax_Players()){
+		if (UtilServer.getPlayers().size() > getMaxPlayers()) {
 			ArrayList<Player> all = new ArrayList<>(UtilServer.getPlayers());
 			ArrayList<Player> kickable = new ArrayList<>(all);
 			kickable.removeIf(player -> player.hasPermission(PermissionType.JOIN_FULL_SERVER.getPermissionToString()));
 
 			Player player;
-			for(int i = 0; i < (all.size()-getMax_Players()); i++){
-				if(kickable.isEmpty()){
-					player=all.get(UtilMath.r(all.size()));
-				}else{
-					player=kickable.get(UtilMath.r(kickable.size()));
+			for (int i = 0; i < (all.size() - getMaxPlayers()); i++) {
+				if (kickable.isEmpty()) {
+					player = all.get(UtilMath.randomInteger(all.size()));
+				} else {
+					player = kickable.get(UtilMath.randomInteger(kickable.size()));
 				}
-				
+
 				all.remove(player);
 				kickable.remove(player);
-				
+
 				player.kickPlayer(TranslationHandler.getText(player, (player.hasPermission(PermissionType.JOIN_FULL_SERVER.getPermissionToString()) ? "SERVER_FULL_WITH_PREMIUM" : "SERVER_FULL")));
-				logMessage("Der Spieler "+player.getName()+" wurde gekickt, weil zu viele Online sind. ("+i+")");
+				logMessage("Der Spieler " + player.getName() + " wurde gekickt, weil zu viele Online sind. (" + i + ")");
 			}
 		}
-		
-		if (getWorldData() != null && getWorldData().getMap()!=null) {
+
+		if (getWorldData() != null && getWorldData().getMap() != null) {
 			if (getWorldData().getWorld() != null) {
 				getWorldData().getWorld().setStorm(false);
 			}
@@ -348,9 +345,7 @@ public class SingleGame extends Game {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev) {
-		if ((ev.getDamager() instanceof Player
-				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getDamager())) || !Damage
-				|| isState(GameState.LobbyPhase)) {
+		if ((ev.getDamager() instanceof Player && getGameList().getPlayers(PlayerState.SPECTATOR).contains((Player) ev.getDamager())) || !Damage || isState(GameState.LobbyPhase)) {
 			if (getManager().getService().isDebug())
 				System.err.println("[Game] Cancelled TRUE bei Damage");
 			ev.setCancelled(true);
@@ -369,8 +364,7 @@ public class SingleGame extends Game {
 				System.err.println("[Game] Cancelled TRUE bei DamagePvE");
 			// P vs E
 			ev.setCancelled(true);
-		} else if ((ev.getDamager() instanceof Arrow || ev.getDamager() instanceof Snowball
-				|| ev.getDamager() instanceof Egg) && !ProjectileDamage) {
+		} else if ((ev.getDamager() instanceof Arrow || ev.getDamager() instanceof Snowball || ev.getDamager() instanceof Egg) && !ProjectileDamage) {
 			if (getManager().getService().isDebug())
 				System.err.println("[Game] Cancelled TRUE bei ProjectileDamage");
 			ev.setCancelled(true);
@@ -379,8 +373,7 @@ public class SingleGame extends Game {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void PlaceBlockInMap(BlockPlaceEvent ev) {
-		if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.ALL_PERMISSION)
-				|| ev.getPlayer().isOp())
+		if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.ALL_PERMISSION) || ev.getPlayer().isOp())
 			return;
 		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
 			ev.setCancelled(true);
@@ -391,8 +384,7 @@ public class SingleGame extends Game {
 			ev.setCancelled(false);
 			return;
 		}
-		if ((!isState(GameState.InGame)) || BlockPlaceDeny.contains(ev.getBlock().getType())
-				|| (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))) {
+		if ((!isState(GameState.InGame)) || BlockPlaceDeny.contains(ev.getBlock().getType()) || (!BlockPlace && !BlockPlaceAllow.contains(ev.getBlock().getType()))) {
 			if (getManager().getService().isDebug())
 				System.err.println("[Game] Cancelled TRUE bei BLOCKPLACE1 " + ev.getBlock().getType().name());
 			ev.setCancelled(true);
@@ -415,36 +407,29 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void BreakBlockInMap(BlockBreakEvent ev) {
-		if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.ALL_PERMISSION)
-				|| ev.getPlayer().isOp())
+		if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.ALL_PERMISSION) || ev.getPlayer().isOp())
 			return;
 		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()))
 			ev.setCancelled(true);
 		if (ev.getBlock().getWorld().getUID() == getManager().getLobby().getWorld().getUID())
 			ev.setCancelled(true);
-		if ((isState(GameState.LobbyPhase)) || BlockBreakDeny.contains(ev.getBlock().getType())
-				|| (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))) {
+		if ((isState(GameState.LobbyPhase)) || BlockBreakDeny.contains(ev.getBlock().getType()) || (!BlockBreak && !BlockBreakAllow.contains(ev.getBlock().getType()))) {
 			ev.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void PickUpItemsFromGround(PlayerPickupItemEvent ev) {
-		if ((isState(GameState.LobbyPhase))
-				|| !ItemPickup && !ItemPickupAllow.contains(ev.getItem().getItemStack().getTypeId())
-				|| (ItemPickupDeny.contains(ev.getItem().getItemStack().getTypeId()))) {
+		if ((isState(GameState.LobbyPhase)) || !ItemPickup && !ItemPickupAllow.contains(ev.getItem().getItemStack().getTypeId()) || (ItemPickupDeny.contains(ev.getItem().getItemStack().getTypeId()))) {
 			ev.setCancelled(true);
-		} else if (getState() != GameState.LobbyPhase
-				&& getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
+		} else if (getState() != GameState.LobbyPhase && getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
 			ev.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void Drop(PlayerDropItemEvent ev) {
-		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()) || (isState(GameState.LobbyPhase))
-				|| ItemDropDeny.contains(ev.getItemDrop().getItemStack().getTypeId())
-				|| (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop().getItemStack().getTypeId()))) {
+		if (getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()) || (isState(GameState.LobbyPhase)) || ItemDropDeny.contains(ev.getItemDrop().getItemStack().getTypeId()) || (!ItemDrop && !ItemDropAllow.contains(ev.getItemDrop().getItemStack().getTypeId()))) {
 			ev.setCancelled(true);
 		}
 	}
@@ -479,52 +464,48 @@ public class SingleGame extends Game {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void JoinRanking(PlayerJoinEvent ev) {
-		UtilPlayer.setTab(ev.getPlayer(), getType().getTyp()+kArcade.id);
+		UtilPlayer.setTab(ev.getPlayer(), getType().getTyp() + kArcade.id);
 		if (getState() != GameState.LobbyPhase)
 			return;
-		getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(),
-				getManager().getString_ranking());
+		getManager().getHologram().sendText(ev.getPlayer(), getManager().getLoc_raking(), getManager().getString_ranking());
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void joinnow(PlayerJoinEvent ev){
+	public void joinnow(PlayerJoinEvent ev) {
 		ev.setJoinMessage(null);
 		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX") + "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://ClashMc.eu/");
 		getManager().clear(ev.getPlayer());
-		
-		if(isState(GameState.LobbyPhase)){
+
+		if (isState(GameState.LobbyPhase)) {
 			ev.getPlayer().teleport(getManager().getLobby());
 			if (getStart() <= 2) {
 				setStart(3);
 			}
-			
-			if (getMax_Players() <= UtilServer.getPlayers().size()) {
+
+			if (getMaxPlayers() <= UtilServer.getPlayers().size()) {
 				if (getStart() > 16) {
 					setStart(16);
 				}
 			}
 		}
-		
+
 		if (getType() != null) {
-			ev.getPlayer()
-					.sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())
-							+ TranslationHandler.getText(ev.getPlayer(), "WHEREIS_TEXT",
-									getType().getTyp() + " " + kArcade.id));
+			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "WHEREIS_TEXT", getType().getTyp() + " " + kArcade.id));
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void loadPerm(PlayerLoadPermissionEvent ev) {
-		if (UtilServer.getPlayers().size() > getMax_Players() && isState(GameState.LobbyPhase)) {
+		if (UtilServer.getPlayers().size() > getMaxPlayers() && isState(GameState.LobbyPhase)) {
 			if (getManager().getPermManager().hasPermission(ev.getPlayer(), PermissionType.JOIN_FULL_SERVER)) {
-				logMessage("Ein Premium Spieler ist gejoint "+ev.getPlayer().getName());
+				logMessage("Ein Premium Spieler ist gejoint " + ev.getPlayer().getName());
 				boolean b = false;
 				for (Player p : UtilServer.getPlayers()) {
 					if (!getManager().getPermManager().hasPermission(p, PermissionType.JOIN_FULL_SERVER)) {
-						UtilPlayer.sendMessage(p,TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
+						UtilPlayer.sendMessage(p, TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "KICKED_BY_PREMIUM"));
 						UtilBG.sendToServer(p, getManager().getInstance());
 						b = true;
-						logMessage("Der Spieler "+p.getName()+" wird für "+ev.getPlayer().getName()+" gekickt!");
+						logMessage("Der Spieler " + p.getName() + " wird für " + ev.getPlayer().getName() + " gekickt!");
 						break;
 					}
 				}
@@ -646,8 +627,7 @@ public class SingleGame extends Game {
 
 	@EventHandler
 	public void Time_Start(UpdateEvent ev) {
-		if (ev.getType() == UpdateType.MIN_04 && getState() == GameState.LobbyPhase
-				&& UtilServer.getPlayers().size() <= 0) {
+		if (ev.getType() == UpdateType.MIN_04 && getState() == GameState.LobbyPhase && UtilServer.getPlayers().size() <= 0) {
 			if (TimeSpan.HOUR * 3 < (System.currentTimeMillis() - kArcade.start_time)) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
 			}
@@ -714,12 +694,12 @@ public class SingleGame extends Game {
 				break;
 			}
 		} else {
-			if (UtilServer.getPlayers().size() >= getMin_Players()) {
+			if (UtilServer.getPlayers().size() >= getMinPlayers()) {
 				Bukkit.getPluginManager().callEvent(new GameStartEvent(getType()));
 				updateInfo();
 			} else {
 				start = -1;
-				broadcastWithPrefix("GAME_START_MIN_PLAYER", getMin_Players());
+				broadcastWithPrefix("GAME_START_MIN_PLAYER", getMinPlayers());
 			}
 		}
 	}

@@ -24,7 +24,7 @@ import com.sk89q.worldedit.data.DataException;
 
 import dev.wolveringer.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
 import eu.epicpvp.kcore.Util.UtilFile;
 import eu.epicpvp.kcore.Util.UtilMap;
@@ -41,7 +41,7 @@ public abstract class WorldData {
 	@Getter
 	private String gameName;
 	@Getter
-	private kArcadeManager manager;
+	private ArcadeManager manager;
 	@Getter
 	private String shortName;
 	@Getter
@@ -55,11 +55,11 @@ public abstract class WorldData {
 	private HashMap<String,Location> biomes;
 	private ArrayList<File> loadFiles;
 	
-	public WorldData(kArcadeManager manager,GameType type){
+	public WorldData(ArcadeManager manager,GameType type){
 		this(manager,type.name(),type.getShortName());
 	}
 	
-	public WorldData(kArcadeManager manager,String gameName,String shortName){
+	public WorldData(ArcadeManager manager,String gameName,String shortName){
 		this.manager=manager;
 		this.gameName=gameName;
 		this.shortName=shortName;

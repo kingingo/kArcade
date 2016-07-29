@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.PlayerStateChangeEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class GameList implements Listener{
 	@Getter
 	private HashMap<Player, PlayerState> players = new HashMap<>();
     
-    public GameList(kArcadeManager manager){
+    public GameList(ArcadeManager manager){
     	Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
     }
     

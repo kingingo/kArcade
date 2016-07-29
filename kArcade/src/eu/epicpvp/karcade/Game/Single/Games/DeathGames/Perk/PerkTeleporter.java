@@ -43,7 +43,7 @@ public class PerkTeleporter extends Perk{
 				UtilInv.remove(ev.getPlayer(), item.getType(), (byte)0, 1);
 				ArrayList<Player> l = (ArrayList<Player>)game.getGameList().getPlayers(PlayerState.INGAME).clone();
 				l.remove(ev.getPlayer());
-				Player tele = l.get(UtilMath.r(l.size()));
+				Player tele = l.get(UtilMath.randomInteger(l.size()));
 				
 				Location tele_loc = tele.getLocation();
 				Location p_loc= ev.getPlayer().getLocation();

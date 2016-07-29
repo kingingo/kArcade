@@ -30,7 +30,7 @@ public static MasterbuildersType getSkyWarsTypeWithSize(int size){
 }
 
 public static MasterbuildersType random(){
-	return values()[UtilMath.r(values().length)];
+	return values()[UtilMath.randomInteger(values().length)];
 }
 	
 }

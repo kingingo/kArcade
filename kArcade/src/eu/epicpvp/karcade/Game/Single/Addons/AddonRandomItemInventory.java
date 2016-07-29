@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.kcore.Util.Color;
 import eu.epicpvp.kcore.Util.UtilEvent;
 import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
@@ -24,7 +24,7 @@ public class AddonRandomItemInventory implements Listener{
 	private ArrayList<Material> itemlist;
 	private Material m;
 	
-	public AddonRandomItemInventory(kArcadeManager manager,Material m,ArrayList<Material> itemlist){
+	public AddonRandomItemInventory(ArcadeManager manager,Material m,ArrayList<Material> itemlist){
 		Bukkit.getPluginManager().registerEvents(this, manager.getInstance());
 		this.itemlist=itemlist;
 		this.m=m;
@@ -42,7 +42,7 @@ public class AddonRandomItemInventory implements Listener{
 				Inventory inv = Bukkit.createInventory(null, 9,"Random Inventory:");
 				int r=0;
 				for(int i = 0; i < inv.getSize() ; i++){
-					r=UtilMath.r(itemlist.size());
+					r=UtilMath.randomInteger(itemlist.size());
 					inv.addItem(new ItemStack(itemlist.get(r)));
 				}
 				ev.getPlayer().openInventory(inv);

@@ -191,9 +191,9 @@ public class LuckyAddon extends kListener {
 			}
 			Location location;
 			if (distances.isEmpty()) {
-				location = ground.get(UtilMath.r(ground.size()));
+				location = ground.get(UtilMath.randomInteger(ground.size()));
 			} else {
-				location = distances.get(UtilMath.r(distances.size()));
+				location = distances.get(UtilMath.randomInteger(distances.size()));
 			}
 
 			ground.remove(location);

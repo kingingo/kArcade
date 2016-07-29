@@ -14,7 +14,9 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -23,9 +25,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import de.schlichtherle.util.Arrays;
 import dev.wolveringer.dataserver.gamestats.GameState;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.TeamAddEvent;
 import eu.epicpvp.karcade.Game.Events.TeamDelEvent;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
@@ -52,7 +53,7 @@ public class TeamGame extends SingleGame {
 	private AddonVoteTeam VoteTeam;
 	private AddonSpectator spec = null;
 
-	public TeamGame(kArcadeManager manager) {
+	public TeamGame(ArcadeManager manager) {
 		super(manager);
 	}
 
@@ -63,7 +64,7 @@ public class TeamGame extends SingleGame {
 
 	public String getERR(Team[] t, int size) {
 		String s = "";
-		HashMap<Team, Integer> l = verteilung(t, size);
+		HashMap<Team, Integer> l = createTeamDistributionLimits(t, size);
 		for (Team te : l.keySet()) {
 			s = s + "TEAM:" + te.getDisplayName() + "/" + l.get(te);
 		}
@@ -75,28 +76,28 @@ public class TeamGame extends SingleGame {
 		return s;
 	}
 
-	public HashMap<Team, Integer> verteilung(Team[] t, int size) {
+	public HashMap<Team, Integer> createTeamDistributionLimits(Team[] teams, int size) {
 		if (size == 1) {
 			HashMap<Team, Integer> list = new HashMap<>();
-			for (Team team : t)
+			for (Team team : teams)
 				list.put(team, 1);
 			return list;
 		} else if (size == 2) {
 			HashMap<Team, Integer> list = new HashMap<>();
-			for (Team team : t)
+			for (Team team : teams)
 				list.put(team, 2);
 			return list;
 		} else {
 			HashMap<Team, Integer> list = new HashMap<>();
 			Collection<? extends Player> l = UtilServer.getPlayers();
 
-			for (Team team : t) {
-				list.put(team, l.size() / t.length);
+			for (Team team : teams) {
+				list.put(team, l.size() / teams.length);
 			}
 
-			if (l.size() % t.length != 0) {
-				list.remove(t[0]);
-				list.put(t[0], (l.size() / t.length) + 1);
+			if (l.size() % teams.length != 0) {
+				list.remove(teams[0]);
+				list.put(teams[0], (l.size() / teams.length) + 1);
 			}
 
 			return list;
@@ -112,7 +113,7 @@ public class TeamGame extends SingleGame {
 		return i;
 	}
 
-	public Team littleTeam() {
+	public Team calculateLowestTeam() {
 		return calculateLowestTeam(true);
 	}
 
@@ -121,6 +122,16 @@ public class TeamGame extends SingleGame {
 	}
 
 	public Team calculateLowestTeam(Team[] teams, boolean returnNullBySame) {
+		List<Entry<Team, Integer>> playerCountEntries = calculateLowestTeams(teams, returnNullBySame);
+		if (playerCountEntries.isEmpty())
+			if (returnNullBySame)
+				return null;
+			else
+				return Team.RED;
+		return playerCountEntries.get(0).getKey();
+	}
+	
+	public List<Entry<Team, Integer>> calculateLowestTeams(Team[] teams, boolean returnNullBySame) {
 		HashMap<Team, Integer> playerCount = new HashMap<>();
 		for (Team t : teams)
 			playerCount.put(t, 0);
@@ -139,17 +150,8 @@ public class TeamGame extends SingleGame {
 			if (returnNullBySame)
 				return null;
 			else
-				return Team.RED;
-		return playerCountEntries.get(0).getKey();
-		/*
-		 * Team t = null;
-		 * 
-		 * for (Team team : teams) { t = team; for (Team team1 : teams) { if
-		 * (isInTeam(t) > isInTeam(team1)) { t = null; break; } } if (t != null)
-		 * { break; } } if (t == null && !returnNullBySame) t = Team.RED; return
-		 * t;
-		 * 
-		 */
+				return new ArrayList<>();
+		return playerCountEntries;
 	}
 
 	public void delTeam(Player p) {
@@ -159,7 +161,7 @@ public class TeamGame extends SingleGame {
 		}
 	}
 
-	public Team lastTeam() {
+	public Team getLastTeam() {
 		Team t = null;
 		for (Player p : teamList.keySet()) {
 			t = teamList.get(p);
@@ -176,21 +178,12 @@ public class TeamGame extends SingleGame {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void SpectJoin(PlayerJoinEvent ev) {
 		if (getState() != GameState.LobbyPhase) {
-			SetSpectator(null, ev.getPlayer());
+			setSpectator(null, ev.getPlayer());
 		}
 	}
 
-	public boolean islastTeam() {
-		Team t;
-		for (Player p : teamList.keySet()) {
-			t = teamList.get(p);
-			for (Player p1 : teamList.keySet()) {
-				if (teamList.get(p1) != t) {
-					return false;
-				}
-			}
-		}
-		return true;
+	public boolean hasLastTeam() {
+		return getLastTeam() != null;
 	}
 
 	public Team getTeam(Player p) {
@@ -200,33 +193,25 @@ public class TeamGame extends SingleGame {
 		return null;
 	}
 
-	public ArrayList<Player> getPlayersFromTeam(Team t) {
+	public ArrayList<Player> getAllPlayersFromTeam(Team t) {
 		ArrayList<Player> list = new ArrayList<>();
-		for (Player p : teamList.keySet()) {
-			if (teamList.get(p) == t) {
-				list.add(p);
+		for (Entry<Player, Team> entry : teamList.entrySet()) {
+			if (entry.getValue() == t) {
+				list.add(entry.getKey());
 			}
 		}
 		return list;
 	}
 
-	public int isInTeam(Team t) {
-		int i = 0;
-
-		for (Player p : teamList.keySet()) {
-			if (teamList.get(p) == t) {
-				i++;
-			}
-		}
-
-		return i;
+	public int getPlayerCountFromTeam(Team t) {
+		return getAllPlayersFromTeam(t).size();
 	}
 
 	public void updateTab(Team[] teams) {
 		if (getScoreboard() == null)
 			setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		for (Team team : teams) {
-			ArrayList<Player> list = getPlayersFromTeam(team);
+			ArrayList<Player> list = getAllPlayersFromTeam(team);
 
 			UtilScoreboard.addTeam(getScoreboard(), team.getDisplayName(), team.getColor());
 
@@ -244,47 +229,26 @@ public class TeamGame extends SingleGame {
 
 	}
 
-	public int r(int i) {
+	public int random(int i) {
 		if (i == 1)
 			return 0;
 		return UtilMath.RandomInt((i - 1), 0);
 	}
 
 	public void distributePlayers(Team[] teams, ArrayList<Player> list) {
-		/*
-		 * if (getVoteTeam() != null) { for (Player player :
-		 * getVoteTeam().getVote().keySet()) { if (list.contains(player)) {
-		 * getTeamList().put(player, getVoteTeam().getVote().get(player));
-		 * list.remove(player); } } }
-		 */
 		Collections.shuffle(list);
 		Iterator<Player> players = list.iterator();
 
+		if(getVoteTeam() != null)
+			for(Entry<Player, Team> voted : getVoteTeam().getAllVotes())
+				getTeamList().put(voted.getKey(), voted.getValue());
+		
 		while (players.hasNext()) {
 			Player p = players.next();
-			if (getVoteTeam() != null && getVoteTeam().getVote().containsKey(p)) {
-				getTeamList().put(p, getVoteTeam().getVote().get(p));
+			if (getTeamList().containsKey(p)) //Voted
 				continue;
-			}
-			if (getTeamList().containsKey(p)) { // Whjyever (Not possiable)
-				continue;
-			}
-			Team lowest = calculateLowestTeam(teams, false);
-			getTeamList().put(p, lowest);
+			getTeamList().put(p, calculateLowestTeam(teams, false));
 		}
-
-		/*
-		 * Player player; for (int i = 0; i < list.size(); i++) { if
-		 * (list.isEmpty()) break; player = list.get(i); if
-		 * (getTeamList().containsKey(player)) continue;
-		 * 
-		 * if (!isSetTeam(teams)) { for (Team t : teams) { if (!isSetTeam(t)) {
-		 * getTeamList().put(player, t); break; } } continue; }
-		 * 
-		 * Team team = calculateLowestTeam(false); if (team != null) {
-		 * getTeamList().put(player, team); } else { getTeamList().put(player,
-		 * teams[0]); } }
-		 */
 	}
 
 	public boolean isSetTeam(Team[] teams) {
@@ -305,7 +269,7 @@ public class TeamGame extends SingleGame {
 
 		for (Team team1 : teams) {
 			for (Team team2 : teams) {
-				if (isInTeam(team1) != isInTeam(team2)) {
+				if (getPlayerCountFromTeam(team1) != getPlayerCountFromTeam(team2)) {
 					return false;
 				}
 			}
@@ -314,29 +278,22 @@ public class TeamGame extends SingleGame {
 		return true;
 	}
 
-	public void PlayerVerteilung(HashMap<Team, Integer> teamVerteilung, ArrayList<Player> list) {
-		if (getVoteTeam() != null) {
-			for (Player player : getVoteTeam().getVote().keySet()) {
-				if (list.contains(player)) {
-					getTeamList().put(player, getVoteTeam().getVote().get(player));
-					list.remove(player);
-				}
-			}
-		}
-
+	public void distributePlayersWithLimits(HashMap<Team, Integer> teamVerteilung, ArrayList<Player> list) {
+		if(getVoteTeam() != null)
+			for(Entry<Player, Team> voted : getVoteTeam().getAllVotes())
+				getTeamList().put(voted.getKey(), voted.getValue());
+		
 		Collections.shuffle(list);
-		Player player;
-		for (int i = 0; i < list.size(); i++) {
-			if (list.isEmpty())
-				break;
-			player = list.get(i);
-
+		Iterator<Player> players = list.iterator();
+		while(players.hasNext()) {
+			Player player = players.next();
 			if (getTeamList().containsKey(player))
 				continue;
-			for (Team team : teamVerteilung.keySet()) {
-				if (isInTeam(team) >= teamVerteilung.get(team))
+			List<Entry<Team, Integer>> playerPerTeam = calculateLowestTeams(teamVerteilung.keySet().toArray(new Team[0]), false);
+			for (Entry<Team, Integer> team : playerPerTeam) {
+				if (team == null || team.getValue() >= teamVerteilung.get(team.getKey()))
 					continue;
-				addTeam(player, team);
+				teamList.put(player, team.getKey());
 				break;
 			}
 		}
@@ -350,7 +307,7 @@ public class TeamGame extends SingleGame {
 		if (isState(GameState.Restart) || isState(GameState.LobbyPhase))
 			return;
 		getGameList().addPlayer(ev.getPlayer(), PlayerState.SPECTATOR);
-		if (islastTeam() && (getState() == GameState.InGame || getState() == GameState.DeathMatch)) {
+		if (hasLastTeam() && (getState() == GameState.InGame || getState() == GameState.DeathMatch)) {
 			setState(GameState.Restart, GameStateChangeReason.LAST_TEAM);
 		} else if (getGameList().getPlayers(PlayerState.INGAME).size() <= 1) {
 			setState(GameState.Restart, GameStateChangeReason.LAST_PLAYER);
@@ -363,11 +320,11 @@ public class TeamGame extends SingleGame {
 			if (!getGameList().getPlayers(PlayerState.INGAME).isEmpty()) {
 				ev.setRespawnLocation(getGameList().getPlayers(PlayerState.INGAME).get(0).getLocation());
 			}
-			SetSpectator(ev, ev.getPlayer());
+			setSpectator(ev, ev.getPlayer());
 		}
 	}
 
-	public void SetSpectator(PlayerRespawnEvent ev, Player player) {
+	public void setSpectator(PlayerRespawnEvent ev, Player player) {
 		if (spec == null)
 			spec = new AddonSpectator(this);
 		delTeam(player);
@@ -376,9 +333,9 @@ public class TeamGame extends SingleGame {
 		List<Player> l = getGameList().getPlayers(PlayerState.INGAME);
 		if (l.size() > 1) {
 			if (ev == null) {
-				player.teleport(l.get(UtilMath.r(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
+				player.teleport(l.get(UtilMath.randomInteger(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
 			} else {
-				ev.setRespawnLocation(l.get(UtilMath.r(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
+				ev.setRespawnLocation(l.get(UtilMath.randomInteger(l.size())).getLocation().add(0.0D, 3.5D, 0.0D));
 			}
 		} else {
 			if (ev == null) {
@@ -400,7 +357,7 @@ public class TeamGame extends SingleGame {
 		player.getInventory().addItem(getCompass().getCompassItem());
 		player.getInventory().setItem(8, UtilItem.RenameItem(new ItemStack(385), "§aZurück zur Lobby"));
 
-		if (islastTeam() && (getState() == GameState.InGame || getState() == GameState.DeathMatch)) {
+		if (hasLastTeam() && (getState() == GameState.InGame || getState() == GameState.DeathMatch)) {
 			setState(GameState.Restart, GameStateChangeReason.LAST_TEAM);
 		} else if (getGameList().getPlayers(PlayerState.INGAME).size() <= 1) {
 			setState(GameState.Restart, GameStateChangeReason.LAST_PLAYER);
@@ -410,34 +367,39 @@ public class TeamGame extends SingleGame {
 		getMoney().save(player);
 	}
 
+	/*//Not needed See below
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void arrow_damage(EntityDamageByEntityEvent ev) {
+	public void handleArrowDamage(EntityDamageByEntityEvent ev) {
 		if (ev.getEntity() instanceof Player && ev.getDamager() instanceof Arrow) {
 			Arrow a = (Arrow) ev.getDamager();
 			if (!(a.getShooter() instanceof Player))
 				return;
 			Player d = (Player) a.getShooter();
 			Player v = (Player) ev.getEntity();
-			if (!DamageTeamSelf && getTeam(d) == getTeam(v)) {
+			if (!teamDamageSelfEnabled && getTeam(d) == getTeam(v)) {
 				if (getManager().getService().isDebug())
 					System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf Projectile");
 				ev.setCancelled(true);
-			} else if (!DamageTeamOther && getTeam(d) != getTeam(v)) {
+			} else if (!teamDamageOtherEnabled && getTeam(d) != getTeam(v)) {
 				if (getManager().getService().isDebug())
 					System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther Projectile");
 				ev.setCancelled(true);
 			}
 		}
 	}
-
+	*/
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void TeamDamage(EntityDamageByEntityEvent ev) {
-		if ((ev.getEntity() instanceof Player && ev.getDamager() instanceof Player)) {
-			if (!DamageTeamSelf && getTeam((Player) ev.getDamager()) == getTeam((Player) ev.getEntity())) {
+	public void handleTeamDamage(EntityDamageByEntityEvent ev) {
+		Player entity = getPlayerFromDamager(ev.getEntity());
+		Player damager = getPlayerFromDamager(ev.getDamager());
+		
+		if (entity != null && damager != null) {
+			if (!teamDamageSelfEnabled && getTeam(damager) == getTeam(entity)) {
 				if (getManager().getService().isDebug())
 					System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamSelf");
 				ev.setCancelled(true);
-			} else if (!DamageTeamOther && getTeam((Player) ev.getDamager()) != getTeam((Player) ev.getEntity())) {
+			} else if (!teamDamageOtherEnabled && getTeam(damager) != getTeam(entity)) {
 				if (getManager().getService().isDebug())
 					System.err.println("[TeamGame] Cancelled TRUE bei DamageTeamOther");
 				ev.setCancelled(true);
@@ -445,4 +407,14 @@ public class TeamGame extends SingleGame {
 		}
 	}
 
+	private Player getPlayerFromDamager(Entity e){
+		if(e instanceof Player)
+			return (Player) e;
+		if(e instanceof Projectile){
+			Projectile projectile = (Projectile) e;
+			if(projectile.getShooter() instanceof Player)
+				return (Player) projectile.getShooter();
+		}
+		return null;
+	}
 }

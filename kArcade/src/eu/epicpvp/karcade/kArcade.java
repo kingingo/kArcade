@@ -37,7 +37,7 @@ import eu.epicpvp.kcore.Util.UtilWorld;
 
 public class kArcade extends JavaPlugin {
 
-	public static kArcadeManager manager;
+	public static ArcadeManager manager;
 	public static PermissionManager permissionManager;
 	private Updater updater;
 	private MySQL mysql;
@@ -68,7 +68,7 @@ public class kArcade extends JavaPlugin {
 			permissionManager = new PermissionManager(this, GroupTyp.GAME);
 			cmd = new CommandHandler(this);
 			cmd.register(CommandScan.class, new CommandScan(permissionManager));
-			manager = new kArcadeManager(this, "ArcadeManager", getConfig().getString("Config.Server.Game"), permissionManager, mysql, UtilServer.getClient(), cmd);
+			manager = new ArcadeManager(this, "ArcadeManager", getConfig().getString("Config.Server.Game"), permissionManager, mysql, UtilServer.getClient(), cmd);
 			cmd.register(CommandStart.class, new CommandStart(manager));
 			cmd.register(CommandCMDMute.class, new CommandCMDMute(this));
 			cmd.register(CommandChatMute.class, new CommandChatMute(this));

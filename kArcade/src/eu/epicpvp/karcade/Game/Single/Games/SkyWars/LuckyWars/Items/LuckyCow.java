@@ -41,7 +41,7 @@ public class LuckyCow extends LuckyThrowItem{
 			
 			ev.getDrops().add(new ItemStack(Material.COOKED_BEEF,UtilMath.RandomInt(15, 10)));
 			
-			if(UtilMath.r(250)<25){
+			if(UtilMath.randomInteger(250)<25){
 				ev.getDrops().add(new ItemStack(Material.GOLDEN_CARROT,2));
 				ev.getDrops().add(new ItemStack(Material.POTION,UtilMath.RandomInt(3, 1),(byte)16421));
 			}else

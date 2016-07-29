@@ -26,7 +26,7 @@ import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.player.LanguageType;
 import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.karcade.kArcadeManager;
+import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
@@ -100,7 +100,7 @@ public class Masterbuilders extends SoloGame{
 	
 	private HashMap<Team,HashMap<Location,UtilParticle>> particles;
 	
-	public Masterbuilders(kArcadeManager manager,MasterbuildersType mtype) {
+	public Masterbuilders(ArcadeManager manager,MasterbuildersType mtype) {
 		super(manager);
 		long l = System.currentTimeMillis();
 		setTyp(GameType.Masterbuilders);
@@ -113,8 +113,8 @@ public class Masterbuilders extends SoloGame{
 		setFoodChange(false);
 		setItemPickup(false);
 		setItemDrop(false);
-		setMax_Players(mtype.getMax());
-		setMin_Players(mtype.getMin());
+		setMaxPlayers(mtype.getMax());
+		setMinPlayers(mtype.getMin());
 		
 		this.mtype=mtype;
 		this.area=new HashMap<>();
@@ -704,7 +704,7 @@ public class Masterbuilders extends SoloGame{
 	@EventHandler
 	public void start(GameStartEvent ev){
 		this.mainArea=new AddonMainArea(getManager().getInstance());
-		this.building=Buildings.values()[UtilMath.r(Buildings.values().length)];
+		this.building=Buildings.values()[UtilMath.randomInteger(Buildings.values().length)];
 		
 		int i=0;
 		for(Player player : UtilServer.getPlayers()){

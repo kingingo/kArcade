@@ -67,13 +67,13 @@ public class Healing_Station implements Listener,IShop {
 			if(d<=0.0){
 				b.setType(Material.AIR);
 				for(int i = 0; i<10; i++){
-					b.getLocation().getWorld().playEffect(b.getLocation().add(UtilMath.r(4),UtilMath.r(3),UtilMath.r(4)), Effect.FLAME, -10);
+					b.getLocation().getWorld().playEffect(b.getLocation().add(UtilMath.randomInteger(4),UtilMath.randomInteger(3),UtilMath.randomInteger(4)), Effect.FLAME, -10);
 				}
 				l.add(b);
 				continue;
 			}
 			for(int i = 0; i<10; i++){
-				b.getLocation().getWorld().playEffect(b.getLocation().add(UtilMath.r(4),UtilMath.r(3),UtilMath.r(4)), Effect.HEART, -10);
+				b.getLocation().getWorld().playEffect(b.getLocation().add(UtilMath.randomInteger(4),UtilMath.randomInteger(3),UtilMath.randomInteger(4)), Effect.HEART, -10);
 			}
 			
 			for(Player p : TTT.getGameList().getPlayers(PlayerState.INGAME)){
