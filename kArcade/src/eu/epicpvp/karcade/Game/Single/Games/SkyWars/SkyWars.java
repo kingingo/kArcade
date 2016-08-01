@@ -882,7 +882,7 @@ public class SkyWars extends TeamGame {
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(), TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		} else {
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer().getName() + "}:§7 " + ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
 		}
 	}
 
@@ -1022,7 +1022,7 @@ public class SkyWars extends TeamGame {
 
 				broadcastWithPrefix("KILL_BY", new String[] { v.getName(), a.getName() });
 				this.hit.remove(a);
-				Title t = new Title("§c§lYOUR ARE DEATH!", "§a" + "{player_" + a.getName() + "}" + ": " + UtilPlayer.getPlayerLiveString(a));
+				Title t = new Title("§c§lYOUR ARE DEATH!", "§a" + a.getName() + ": " + UtilPlayer.getPlayerLiveString(a));
 				t.send(v);
 				return;
 			}
@@ -1032,8 +1032,8 @@ public class SkyWars extends TeamGame {
 				Player p = TeamPartner(v);
 				if (p == null)
 					return;
-				UtilScoreboard.resetScore(p.getScoreboard(), "§e" + "{player_" + v.getName() + "}", DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(p.getScoreboard(), "§c" + "{player_" + v.getName() + "}", DisplaySlot.SIDEBAR, 8);
+				UtilScoreboard.resetScore(p.getScoreboard(), "§e" + v.getName(), DisplaySlot.SIDEBAR);
+				UtilScoreboard.setScore(p.getScoreboard(), "§c" + v.getName(), DisplaySlot.SIDEBAR, 8);
 			}
 
 		}
@@ -1101,18 +1101,18 @@ public class SkyWars extends TeamGame {
 
 			Bukkit.broadcastMessage("§a§l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 			if (!winner.equals("")) {
-				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("Winner - " + winner).length()) + "§eWinner §7- " + "{player_"+winner+"}");
+				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("Winner - " + winner).length()) + "§eWinner §7- " + winner);
 				Bukkit.broadcastMessage(" ");
 			}
 
 			if (!this.ranking.isEmpty() && this.ranking.size() >= 1) {
-				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("1st - " + this.ranking.get(0).getObject() + " - " + this.ranking.get(0).getValue()).length()) + "§e1st Killer - §7" + "{player_" + this.ranking.get(0).getObject() + "}" + " - " + this.ranking.get(0).getValue());
+				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("1st - " + this.ranking.get(0).getObject() + " - " + this.ranking.get(0).getValue()).length()) + "§e1st Killer - §7" + this.ranking.get(0).getObject() + " - " + this.ranking.get(0).getValue());
 			}
 			if (!this.ranking.isEmpty() && this.ranking.size() >= 2) {
-				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("2st - " + this.ranking.get(1).getObject() + " - " + this.ranking.get(1).getValue()).length()) + "§62st Killer - §7" + "{player_" + this.ranking.get(1).getObject() + "}" + " - " + this.ranking.get(1).getValue());
+				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("2st - " + this.ranking.get(1).getObject() + " - " + this.ranking.get(1).getValue()).length()) + "§62st Killer - §7" + this.ranking.get(1).getObject() + " - " + this.ranking.get(1).getValue());
 			}
 			if (!this.ranking.isEmpty() && this.ranking.size() >= 3) {
-				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("3st - " + this.ranking.get(2).getObject() + " - " + this.ranking.get(2).getValue()).length()) + "§c3st Killer - §7" + "{player_" + this.ranking.get(2).getObject() + "}" + " - " + this.ranking.get(2).getValue());
+				Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("3st - " + this.ranking.get(2).getObject() + " - " + this.ranking.get(2).getValue()).length()) + "§c3st Killer - §7" + this.ranking.get(2).getObject() + " - " + this.ranking.get(2).getValue());
 			}
 			Bukkit.broadcastMessage("§a§l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 		}

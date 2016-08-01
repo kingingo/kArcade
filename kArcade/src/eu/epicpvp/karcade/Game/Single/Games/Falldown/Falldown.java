@@ -506,11 +506,11 @@ public class Falldown extends SoloGame{
 			if(getManager().getPermManager().hasPermission(p, PermissionType.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
 			
 			if(getGameList().isPlayerState(p) == PlayerState.INGAME){
-				event.setFormat(getManager().getPermManager().getPrefix(p) + "{player_"+p.getName()+"}" + "§7:§7 "+ msg);
+				event.setFormat(getManager().getPermManager().getPrefix(p) + p.getName() + "§7:§7 "+ msg);
 			}else{
 				event.setCancelled(true);
 				for(Player player : getGameList().getPlayers(PlayerState.SPECTATOR)){
-					player.sendMessage("§c[Spectator-Chat] " + "{player_"+p.getName()+"}" + ":§7 "+ msg);
+					player.sendMessage("§c[Spectator-Chat] " + p.getName() + ":§7 "+ msg);
 				}
 			}
 		}

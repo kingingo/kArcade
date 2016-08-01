@@ -234,7 +234,7 @@ public class AddonVoteTeam implements Listener {
 					is = UtilItem.setGlowing(is, true);
 					l.add("§6" + playerTeamIndex + ".§a " + p.getName());
 				} else
-					l.add("§6" + playerTeamIndex + ".§7 " + (lp.hasNickname() ? PermissionManager.getManager().hasPermission(player, "nick.showunnicked") ? p.getName() : lp.getNickname() : p.getName()));
+					l.add("§6" + playerTeamIndex + ".§7 " + (false && lp.hasNickname() ? PermissionManager.getManager().hasPermission(player, "nick.showunnicked") ? p.getName() : lp.getNickname() : p.getName()));
 				playerTeamIndex++;
 			}
 		}

@@ -384,12 +384,12 @@ public class CustomWars extends TeamGame {
 
 			Team t = getTeam(victim);
 			getStats().addInt(victim, 1, StatsKey.DEATHS);
-			v = t.getColor() + "{player_"+victim.getName()+"}";
+			v = t.getColor() + victim.getName();
 
 			if (killer != null) {
 				getMoney().add(killer, StatsKey.COINS, 4);
 				getStats().addInt(killer, 1, StatsKey.KILLS);
-				k = getTeam(killer).getColor() + "{player_"+killer.getName()+"}";
+				k = getTeam(killer).getColor() + killer.getName();
 				int ki = kills.get(killer.getName());
 				ki++;
 				kills.remove(killer.getName());
@@ -676,13 +676,13 @@ public class CustomWars extends TeamGame {
 				}
 
 				if (!this.ranking.isEmpty() && this.ranking.size() >= 1) {
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("1st Killer - " + this.ranking.get(0).getObject() + " - " + this.ranking.get(0).getValue()).length()) + "§e1st Killer - §7" + "{player_"+this.ranking.get(0).getObject()+"}" + " - " + this.ranking.get(0).getValue());
+					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("1st Killer - " + this.ranking.get(0).getObject() + " - " + this.ranking.get(0).getValue()).length()) + "§e1st Killer - §7" + this.ranking.get(0).getObject() + " - " + this.ranking.get(0).getValue());
 				}
 				if (!this.ranking.isEmpty() && this.ranking.size() >= 2) {
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("2st Killer - " + this.ranking.get(1).getObject() + " - " + this.ranking.get(1).getValue()).length()) + "§62st Killer - §7" + "{player_"+this.ranking.get(1).getObject()+"}" + " - " + this.ranking.get(1).getValue());
+					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("2st Killer - " + this.ranking.get(1).getObject() + " - " + this.ranking.get(1).getValue()).length()) + "§62st Killer - §7" + this.ranking.get(1).getObject() + " - " + this.ranking.get(1).getValue());
 				}
 				if (!this.ranking.isEmpty() && this.ranking.size() >= 3) {
-					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("3st Killer - " + this.ranking.get(2).getObject() + " - " + this.ranking.get(2).getValue()).length()) + "§c3st Killer - §7" + "{player_"+this.ranking.get(2).getObject()+"}" + " - " + this.ranking.get(2).getValue());
+					Bukkit.broadcastMessage(UtilString.center("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬".length(), ("3st Killer - " + this.ranking.get(2).getObject() + " - " + this.ranking.get(2).getValue()).length()) + "§c3st Killer - §7" + this.ranking.get(2).getObject() + " - " + this.ranking.get(2).getValue());
 				}
 				Bukkit.broadcastMessage("§a§l▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 			}
@@ -734,18 +734,18 @@ public class CustomWars extends TeamGame {
 		if (!isState(GameState.LobbyPhase) && getTeamList().containsKey(ev.getPlayer())) {
 			if (ev.getMessage().toCharArray()[0] == '#') {
 				Team t = getTeam(ev.getPlayer());
-				broadcast("§7[" + t.getColor() + t.getDisplayName() + "§7] " + "{player_"+ev.getPlayer().getName()+"}" + ": §7" + ev.getMessage().subSequence(1, ev.getMessage().length()));
+				broadcast("§7[" + t.getColor() + t.getDisplayName() + "§7] " + ev.getPlayer().getName() + ": §7" + ev.getMessage().subSequence(1, ev.getMessage().length()));
 			} else {
 				Team t = getTeam(ev.getPlayer());
 				for (Player p : getAllPlayersFromTeam(getTeam(ev.getPlayer()))) {
-					UtilPlayer.sendMessage(p, t.getColor() + "Team-Chat " + "{player_"+ev.getPlayer().getName()+"}" + ":§7 " + ev.getMessage());
+					UtilPlayer.sendMessage(p, t.getColor() + "Team-Chat " + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
 				}
 			}
 		} else if (getState() != GameState.LobbyPhase && getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(), TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
 		} else {
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_"+ev.getPlayer().getName()+"}" + ":§7 " + ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
 		}
 	}
 
