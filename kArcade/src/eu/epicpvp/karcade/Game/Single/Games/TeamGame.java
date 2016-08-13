@@ -217,7 +217,7 @@ public class TeamGame extends SingleGame {
 
 			for (Player player : list) {
 				getScoreboard().getTeam(team.getDisplayName()).addPlayer(player);
-				player.setPlayerListName(team.getColor() + player.getName());
+				player.setPlayerListName(team.getColor() + "{player_" + player.getName() + "}");
 			}
 
 			for (Player p : list) {

@@ -260,28 +260,28 @@ public class TroubleInMinecraft extends TeamGame {
 		}
 
 		if (getState() != GameState.InGame) {
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 		} else {
 			if (getGameList().isPlayerState(ev.getPlayer()) == PlayerState.INGAME) {
 				Team t = getTeam(ev.getPlayer());
 				if (t == null) {
-					UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+					UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 				} else {
 					for (Player p : getGameList().getPlayers(PlayerState.INGAME)) {
 						if (t == Team.TRAITOR) {
 							if (getTeam(p) == t) {
-								p.sendMessage(t.getColor() + t.getDisplayName() + " §8| " + t.getColor() + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+								p.sendMessage(t.getColor() + t.getDisplayName() + " §8| " + t.getColor() + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 							} else {
-								p.sendMessage(Team.INOCCENT.getColor() + Team.INOCCENT.getDisplayName() + " §8| " + Team.INOCCENT.getColor() + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+								p.sendMessage(Team.INOCCENT.getColor() + Team.INOCCENT.getDisplayName() + " §8| " + Team.INOCCENT.getColor() + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 							}
 						} else {
-							p.sendMessage(t.getColor() + t.getDisplayName() + " §8| " + t.getColor() + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+							p.sendMessage(t.getColor() + t.getDisplayName() + " §8| " + t.getColor() + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 						}
 					}
 				}
 			} else {
 				for (Player p : getGameList().getPlayers(PlayerState.SPECTATOR)) {
-					p.sendMessage(Color.ORANGE + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+					p.sendMessage(Color.ORANGE + "{player_" + ev.getPlayer().getName() + "}" + ":§7 " + ev.getMessage());
 				}
 			}
 		}
@@ -310,7 +310,7 @@ public class TroubleInMinecraft extends TeamGame {
 				Team t = defi.getTeams().get(name.toLowerCase());
 
 				if (t != null)
-					broadcastWithPrefix("TTT_LEICHE_IDENTIFIZIERT", new String[] { t.getColor() + name, t.getColor() + t.getDisplayName() });
+					broadcastWithPrefix("TTT_LEICHE_IDENTIFIZIERT", new String[] { t.getColor() + "{player_" + name + "}", t.getColor() + t.getDisplayName() });
 				// if(t==Team.TRAITOR){
 				// for(Player p : getGameList().getPlayers(PlayerState.IN)){
 				// if(getTeam(p)==t){
@@ -858,7 +858,7 @@ public class TroubleInMinecraft extends TeamGame {
 					for (Player p1 : d) {
 						if (p1 == p)
 							continue;
-						UtilScoreboard.setScore(ps, p1.getName(), DisplaySlot.SIDEBAR, t);
+						UtilScoreboard.setScore(ps, "{player_"+p1.getName()+"}", DisplaySlot.SIDEBAR, t);
 						t--;
 					}
 				}
@@ -901,7 +901,7 @@ public class TroubleInMinecraft extends TeamGame {
 					for (Player p1 : t) {
 						if (p1 == p)
 							continue;
-						UtilScoreboard.setScore(ps, p1.getName(), DisplaySlot.SIDEBAR, t1);
+						UtilScoreboard.setScore(ps, "{player_"+p1.getName()+"}", DisplaySlot.SIDEBAR, t1);
 						t1--;
 					}
 				}
@@ -969,16 +969,16 @@ public class TroubleInMinecraft extends TeamGame {
 					String name = "";
 					switch (team) {
 					case INOCCENT:
-						name = Team.INOCCENT.getColor()+"[I] "+p.getName();
+						name = Team.INOCCENT.getColor()+"[I] {player_"+p.getName()+"}";
 						break;
 					case DETECTIVE:
-						name = Team.DETECTIVE.getColor()+"[D] "+p.getName();
+						name = Team.DETECTIVE.getColor()+"[D] {player_"+p.getName()+"}";
 						break;
 					case TRAITOR:
 						if(getTeamList().get(target) == Team.TRAITOR)
-							name = Team.TRAITOR.getColor()+"[T] "+p.getName();
+							name = Team.TRAITOR.getColor()+"[T] {player_"+p.getName()+"}";
 						else
-							name = Team.INOCCENT.getColor()+"[I] "+p.getName();
+							name = Team.INOCCENT.getColor()+"[I] {player_"+p.getName()+"}";
 						break;
 					default:
 						break;
@@ -1020,7 +1020,7 @@ public class TroubleInMinecraft extends TeamGame {
 			if (traitor.isEmpty()) {
 				String t = "";
 				for (Player p : traitor) {
-					t = t + p.getName() + ",";
+					t = t + "{player_" + p.getName() + "}" + ",";
 				}
 				broadcastWithPrefix("§cDiese Spieler waren Traitor: §e" + t.substring(0, t.length() - 1));
 			}

@@ -618,8 +618,8 @@ public class SurvivalGames extends TeamGame {
 
 			Player t = TeamPartner(victim);
 			if (t != null) {
-				UtilScoreboard.resetScore(t.getScoreboard(), "§a" + victim.getName(), DisplaySlot.SIDEBAR);
-				UtilScoreboard.setScore(t.getScoreboard(), "§c" + victim.getName(), DisplaySlot.SIDEBAR, 8);
+				UtilScoreboard.resetScore(t.getScoreboard(), "§a" + "{player_" + victim.getName() + "}", DisplaySlot.SIDEBAR);
+				UtilScoreboard.setScore(t.getScoreboard(), "§c" + "{player_" + victim.getName() + "}", DisplaySlot.SIDEBAR, 8);
 			}
 		} else if (ev.getEntity() instanceof Player) {
 			Player victim = ev.getEntity();
@@ -658,14 +658,14 @@ public class SurvivalGames extends TeamGame {
 
 		if (!isState(GameState.LobbyPhase) && getTeamList().containsKey(ev.getPlayer())) {
 			for (Player player : getGameList().getPlayers(PlayerState.INGAME))
-				player.sendMessage("§7[§c" + getTeam(ev.getPlayer()).getDisplayName() + "§7] " + ev.getPlayer().getName() + ": " + ev.getMessage());
+				player.sendMessage("§7[§c" + getTeam(ev.getPlayer()).getDisplayName() + "§7] " + "{player_"+ev.getPlayer().getName()+"}" + ": " + ev.getMessage());
 		} else if (getState() != GameState.LobbyPhase && getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())) {
 			ev.setCancelled(true);
 			for (Player player : getGameList().getPlayers(PlayerState.SPECTATOR))
-				player.sendMessage("§7[§6Spectator§7] " + ev.getPlayer().getName() + ": " + ev.getMessage());
+				player.sendMessage("§7[§6Spectator§7] " + "{player_"+ev.getPlayer().getName()+"}" + ": " + ev.getMessage());
 			// UtilPlayer.sendMessage(ev.getPlayer(),Text.PREFIX_GAME.getText(getType().getTyp())+Text.SPECTATOR_CHAT_CANCEL.getText());
 		} else {
-			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + ev.getPlayer().getName() + ":§7 " + ev.getMessage());
+			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_"+ev.getPlayer().getName()+"}" + ":§7 " + ev.getMessage());
 		}
 	}
 
@@ -718,7 +718,7 @@ public class SurvivalGames extends TeamGame {
 			for (Player p1 : getAllPlayersFromTeam(getTeam(p))) {
 				if (p == p1)
 					continue;
-				UtilScoreboard.setScore(ps, "§a"+p1.getName(), DisplaySlot.SIDEBAR, 8);
+				UtilScoreboard.setScore(ps, "§a{player_"+p1.getName()+"}", DisplaySlot.SIDEBAR, 8);
 			}
 
 			UtilScoreboard.setScore(ps, "§3", DisplaySlot.SIDEBAR, 7);

@@ -503,10 +503,10 @@ public class QuickSurvivalGames extends SoloGame {
 			kills.remove(killer);
 			kills.put(killer, k);
 
-			UtilScoreboard.resetScore(getScoreboard(), killer.getName() + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
-			UtilScoreboard.resetScore(getScoreboard(), victim.getName() + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(getScoreboard(), killer.getName() + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, k);
-			UtilScoreboard.setScore(getScoreboard(), victim.getName() + " §4" + Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
+			UtilScoreboard.resetScore(getScoreboard(), "{player_" + killer.getName() + "} §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+			UtilScoreboard.resetScore(getScoreboard(), "{player_" + victim.getName() + "} §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+			UtilScoreboard.setScore(getScoreboard(), "{player_" + killer.getName() + "} §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, k);
+			UtilScoreboard.setScore(getScoreboard(), "{player_" + victim.getName() + "} §4" + Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
 
 			UtilParticle.FLAME.display(1, 60, victim.getLocation(), 15);
 		} else if (ev.getEntity() instanceof Player) {
@@ -516,8 +516,8 @@ public class QuickSurvivalGames extends SoloGame {
 			broadcastWithPrefix("DEATH", new String[] { victim.getName() });
 			getGameList().addPlayer(victim, PlayerState.SPECTATOR);
 
-			UtilScoreboard.resetScore(getScoreboard(), victim.getName() + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
-			UtilScoreboard.setScore(getScoreboard(), victim.getName() + " §4" + Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
+			UtilScoreboard.resetScore(getScoreboard(), "{player_" + victim.getName() + "} §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+			UtilScoreboard.setScore(getScoreboard(), "{player_" + victim.getName() + "}" + " §4" + Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
 			UtilParticle.FLAME.display(1, 60, victim.getLocation(), 15);
 		}
 	}
@@ -560,7 +560,7 @@ public class QuickSurvivalGames extends SoloGame {
 			getGameList().addPlayer(p, PlayerState.INGAME);
 			p.teleport(list.get(r));
 			list.remove(r);
-			UtilScoreboard.setScore(getScoreboard(), p.getName() + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, 0);
+			UtilScoreboard.setScore(getScoreboard(), "{player_" + p.getName() + "}" + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR, 0);
 			p.setScoreboard(getScoreboard());
 			kills.put(p, 0);
 			title.setSubtitle(TranslationHandler.getText(p, "NO_TEAMS_ALLOWED"));
@@ -583,8 +583,8 @@ public class QuickSurvivalGames extends SoloGame {
 	public void QuitSc(PlayerQuitEvent ev) {
 		if (getScoreboard() == null)
 			return;
-		UtilScoreboard.resetScore(getScoreboard(), ev.getPlayer().getName() + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
-		UtilScoreboard.setScore(getScoreboard(), ev.getPlayer().getName() + " §4" + Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
+		UtilScoreboard.resetScore(getScoreboard(), "{player_" + ev.getPlayer().getName() + "}" + " §a" + Zeichen.BIG_HERZ.getIcon(), DisplaySlot.SIDEBAR);
+		UtilScoreboard.setScore(getScoreboard(), "{player_" + ev.getPlayer().getName() + "}" + " §4" + Zeichen.MAHLZEICHEN_FETT.getIcon(), DisplaySlot.SIDEBAR, -1);
 	}
 
 	@EventHandler

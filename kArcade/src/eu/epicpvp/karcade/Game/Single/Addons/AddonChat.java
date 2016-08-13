@@ -53,15 +53,15 @@ public class AddonChat extends kListener {
 				if (team_game.getGameList().isPlayerState(ev.getPlayer()) == PlayerState.INGAME) {
 					if (spectator) {
 						for (Player p : team_game.getGameList().getPlayers(PlayerState.INGAME)) {
-							p.sendMessage(Color.GRAY + ev.getPlayer().getName()+"§7:§f " + ev.getMessage());
+							p.sendMessage(Color.GRAY + "{player_"+ev.getPlayer().getName()+"}§7:§f " + ev.getMessage());
 						}
 					} else {
-						UtilServer.broadcast(team_game.getTeam(ev.getPlayer()).getColor() + team_game.getTeam(ev.getPlayer()).getDisplayName() + " " + ev.getPlayer().getName()+"§7:§f " + ev.getMessage());
+						UtilServer.broadcast(team_game.getTeam(ev.getPlayer()).getColor() + team_game.getTeam(ev.getPlayer()).getDisplayName() + " " + "{player_"+ev.getPlayer().getName()+"}§7:§f " + ev.getMessage());
 					}
 				} else {
 					if (spectator) {
 						for (Player p : team_game.getGameList().getPlayers(PlayerState.SPECTATOR)) {
-							p.sendMessage(Color.ORANGE + ev.getPlayer().getName()+"§7:§f " + ev.getMessage());
+							p.sendMessage(Color.ORANGE + "{player_"+ev.getPlayer().getName()+"}§7:§f " + ev.getMessage());
 						}
 					} else {
 						UtilPlayer.sendMessage(ev.getPlayer(), TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", team_game.getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
@@ -71,15 +71,15 @@ public class AddonChat extends kListener {
 				if (game.getGameList().isPlayerState(ev.getPlayer()) == PlayerState.INGAME) {
 					if (spectator) {
 						for (Player p : game.getGameList().getPlayers(PlayerState.INGAME)) {
-							p.sendMessage(Color.GRAY + ev.getPlayer().getName()+"§7:§f " + ev.getMessage());
+							p.sendMessage(Color.GRAY + "{player_"+ev.getPlayer().getName()+"}§7:§f " + ev.getMessage());
 						}
 					} else {
-						UtilServer.broadcast(game.getManager().getPermManager().getPrefix(ev.getPlayer()) + ev.getPlayer().getName()+"§7:§f " + ev.getMessage());
+						UtilServer.broadcast(game.getManager().getPermManager().getPrefix(ev.getPlayer()) + "{player_"+ev.getPlayer().getName()+"}§7:§f " + ev.getMessage());
 					}
 				} else {
 					if (spectator) {
 						for (Player p : game.getGameList().getPlayers(PlayerState.SPECTATOR)) {
-							p.sendMessage(Color.ORANGE + ev.getPlayer().getName()+":§7:§f " + ev.getMessage());
+							p.sendMessage(Color.ORANGE + "{player_"+ev.getPlayer().getName()+"}:§7:§f " + ev.getMessage());
 						}
 					} else {
 						UtilPlayer.sendMessage(ev.getPlayer(), TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", team_game.getType().getTyp()) + TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
