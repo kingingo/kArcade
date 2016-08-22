@@ -48,6 +48,7 @@ public class kArcade extends JavaPlugin {
 
 	public void onEnable() {
 		try {
+			UtilServer.setPluginInstance(this); //KCore init some stuff with other plugin instance...
 			start_time = System.currentTimeMillis();
 			loadConfig();
 			mysql = new MySQL(getConfig().getString("Config.MySQL.User"), getConfig().getString("Config.MySQL.Password"), getConfig().getString("Config.MySQL.Host"), getConfig().getString("Config.MySQL.DB"), this);
