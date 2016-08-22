@@ -75,7 +75,7 @@ public class kArcade extends JavaPlugin {
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			cmd.register(CommandTppos.class, new CommandTppos());
-			UtilServer.createLagListener(cmd);
+			UtilServer.getLagListener(); //Init lag listener
 			new AACHack("A" + id);
 			new ListenerCMD(this);
 

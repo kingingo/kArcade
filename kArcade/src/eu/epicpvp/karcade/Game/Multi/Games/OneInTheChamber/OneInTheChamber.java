@@ -23,7 +23,7 @@ import eu.epicpvp.karcade.Game.Multi.Addons.MultiGameArenaRestore;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiSoloGame;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
-import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
+import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutWorldBorder;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
@@ -42,7 +42,7 @@ public class OneInTheChamber extends MultiSoloGame{
 	private HashMap<Player,Integer> Life = new HashMap<>();
 	private HashMap<Player,Integer> kills = new HashMap<>();
 	private MultiGameArenaRestore area;
-	private kPacketPlayOutWorldBorder packet;
+	private WrapperPacketPlayOutWorldBorder packet;
 
 	public OneInTheChamber(MultiGames games, String Map,Location pasteLocation,File file) {
 		super(games, Map, pasteLocation);

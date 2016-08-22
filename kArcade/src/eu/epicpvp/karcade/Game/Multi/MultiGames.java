@@ -103,7 +103,6 @@ public class MultiGames extends Game{
 		super(manager);
 		setTyp(GameType.get(type));
 		this.spielerTeams=ArenaType._TEAMx6.getTeam();
-		UtilServer.createLagListener(manager.getCmd());
 		setState(GameState.LobbyPhase);
 		setSet_default_scoreboard(false);
 		setWorldData(new MultiWorldData(getManager(), getType()));

@@ -43,7 +43,7 @@ import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Enum.Zeichen;
 import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import eu.epicpvp.kcore.Listener.kListener;
-import eu.epicpvp.kcore.PacketAPI.Packets.kPacketPlayOutWorldBorder;
+import eu.epicpvp.kcore.PacketAPI.Packets.WrapperPacketPlayOutWorldBorder;
 import eu.epicpvp.kcore.Packets.PacketArenaSettings;
 import eu.epicpvp.kcore.Packets.PacketArenaStatus;
 import eu.epicpvp.kcore.Packets.PacketArenaWinner;
@@ -147,7 +147,7 @@ public class MultiGame extends kListener{
 	private ButtonBase button;
 	@Getter
 	@Setter 
-	private kPacketPlayOutWorldBorder worldBorderPacket;
+	private WrapperPacketPlayOutWorldBorder worldBorderPacket;
 	
 	public MultiGame(MultiGames games,String Map,Location pasteLocation) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
