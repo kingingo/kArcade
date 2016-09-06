@@ -56,6 +56,13 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<!-- Spigot API -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
@@ -64,51 +71,50 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- epicpvp dependencies -->
+		<dependency>
 			<groupId>eu.epicpvp</groupId>
 			<artifactId>aac</artifactId>
 			<version>1.0</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!--Spigot API -->
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<groupId>eu.epicpvp</groupId>
+			<artifactId>core-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>
-		<!--Bukkit API -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldedit</artifactId>
-			<version>6.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldguard</artifactId>
-			<version>6.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>DatenClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
+		<!-- other plugin dependencies -->
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>6.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldguard</artifactId>
+			<version>6.1.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- other -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.16.8</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.epicpvp</groupId>
-			<artifactId>core-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
