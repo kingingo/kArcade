@@ -51,6 +51,7 @@ public class kArcade extends JavaPlugin {
 			UtilServer.setPluginInstance(this); //KCore init some stuff with other plugin instance...
 			start_time = System.currentTimeMillis();
 			loadConfig();
+			
 			mysql = new MySQL(getConfig().getString("Config.MySQL.User"), getConfig().getString("Config.MySQL.Password"), getConfig().getString("Config.MySQL.Host"), getConfig().getString("Config.MySQL.DB"), this);
 			UtilFile.DeleteFolder(new File("schematics"));
 			UtilFile.DeleteFolder(new File("void"));
@@ -68,6 +69,7 @@ public class kArcade extends JavaPlugin {
 
 			permissionManager = new PermissionManager(this, GroupTyp.GAME);
 			cmd = new CommandHandler(this);
+			UtilServer.getLagListener(); //Init lag listener
 			cmd.register(CommandScan.class, new CommandScan(permissionManager));
 			manager = new ArcadeManager(this, "ArcadeManager", getConfig().getString("Config.Server.Game"), permissionManager, mysql, UtilServer.getClient(), cmd);
 			cmd.register(CommandStart.class, new CommandStart(manager));
@@ -76,7 +78,6 @@ public class kArcade extends JavaPlugin {
 			cmd.register(CommandToggle.class, new CommandToggle(this));
 			cmd.register(CommandForceStart.class, new CommandForceStart(manager));
 			cmd.register(CommandTppos.class, new CommandTppos());
-			UtilServer.getLagListener(); //Init lag listener
 			new AACHack("A" + id);
 			new ListenerCMD(this);
 
