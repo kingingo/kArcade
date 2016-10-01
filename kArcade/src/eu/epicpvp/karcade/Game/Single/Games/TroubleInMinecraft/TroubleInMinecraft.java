@@ -27,8 +27,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
+import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Events.WorldLoadEvent;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
@@ -67,7 +67,6 @@ import eu.epicpvp.kcore.NPC.NPCManager;
 import eu.epicpvp.kcore.NPC.Event.PlayerInteractNPCEvent;
 import eu.epicpvp.kcore.Permission.PermissionType;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsChangedEvent;
-import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsCreateEvent;
 import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Update.UpdateType;
@@ -85,12 +84,12 @@ import eu.epicpvp.kcore.Util.UtilServer;
 import eu.epicpvp.kcore.Util.UtilString;
 import eu.epicpvp.kcore.Util.UtilTime;
 import lombok.Getter;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.PlayerInfoData;
 
@@ -1040,14 +1039,15 @@ public class TroubleInMinecraft extends TeamGame {
 			ev.setCancelled(true);
 	}
 
-	@EventHandler
-	public void StatsCreate(PlayerStatsCreateEvent ev) {
-		if (ev.getManager().getType() != getType())
-			return;
-		if (UtilPlayer.isOnline(ev.getPlayerId())) {
-			ev.getManager().setInt(UtilPlayer.searchExact(ev.getPlayerId()), 150, StatsKey.TTT_KARMA);
-		}
-	}
+	//TODO Event inactive!
+//	@EventHandler
+//	public void StatsCreate(PlayerStatsCreateEvent ev) {
+//		if (ev.getManager().getType() != getType())
+//			return;
+//		if (UtilPlayer.isOnline(ev.getPlayerId())) {
+//			ev.getManager().setInt(UtilPlayer.searchExact(ev.getPlayerId()), 150, StatsKey.TTT_KARMA);
+//		}
+//	}
 
 	@EventHandler
 	public void Start(GameStartEvent ev) {
