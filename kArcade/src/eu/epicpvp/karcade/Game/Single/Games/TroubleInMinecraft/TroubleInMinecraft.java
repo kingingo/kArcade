@@ -22,7 +22,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 
 import dev.wolveringer.dataserver.gamestats.GameState;
@@ -865,7 +864,6 @@ public class TroubleInMinecraft extends TeamGame {
 
 				org.bukkit.scoreboard.Team team = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.INOCCENT.getColor() + "[I] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.TRAITOR || getTeamList().get(p1) == Team.INOCCENT) {
@@ -875,7 +873,6 @@ public class TroubleInMinecraft extends TeamGame {
 
 				team = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.DETECTIVE.getColor() + "[D] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.DETECTIVE) {
@@ -912,7 +909,6 @@ public class TroubleInMinecraft extends TeamGame {
 
 				org.bukkit.scoreboard.Team team = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.INOCCENT.getColor() + "[I] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.INOCCENT) {
@@ -922,7 +918,6 @@ public class TroubleInMinecraft extends TeamGame {
 
 				team = ps.registerNewTeam(Team.TRAITOR.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.TRAITOR.getColor() + "[T] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.TRAITOR) {
@@ -932,7 +927,6 @@ public class TroubleInMinecraft extends TeamGame {
 
 				team = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.DETECTIVE.getColor() + "[D] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.DETECTIVE) {
@@ -956,7 +950,6 @@ public class TroubleInMinecraft extends TeamGame {
 				UtilScoreboard.setScore(ps, Color.GREEN + "Karma:", DisplaySlot.SIDEBAR, getStats().getInt(StatsKey.TTT_KARMA, p));
 				org.bukkit.scoreboard.Team team = ps.registerNewTeam(Team.INOCCENT.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.INOCCENT.getColor() + "[I] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.TRAITOR || getTeamList().get(p1) == Team.INOCCENT) {
@@ -966,8 +959,6 @@ public class TroubleInMinecraft extends TeamGame {
 
 				team = ps.registerNewTeam(Team.DETECTIVE.getDisplayName());
 				team.setCanSeeFriendlyInvisibles(false);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
-				team.setNameTagVisibility(NameTagVisibility.NEVER);
 				team.setPrefix(Team.DETECTIVE.getColor() + "[D] ");
 				for (Player p1 : getTeamList().keySet()) {
 					if (getTeamList().get(p1) == Team.DETECTIVE) {
