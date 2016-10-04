@@ -6,11 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Listener.kListener;
 
@@ -20,7 +18,7 @@ public class AddonLobbyJump  extends kListener {
 		super((JavaPlugin) game.getPlugin(),"Lobby Jump");
 		this.game = game;
 	}
-	
+
 	@EventHandler
 	public void a(PlayerMoveEvent e){
 		if(game.getState() == GameState.LobbyPhase){

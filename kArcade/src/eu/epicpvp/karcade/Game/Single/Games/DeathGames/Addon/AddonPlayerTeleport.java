@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 
 import com.google.common.collect.Lists;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Events.PlayerStateChangeEvent;
 import eu.epicpvp.karcade.Game.Single.Games.DeathGames.DeathGames;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -34,18 +34,18 @@ public class AddonPlayerTeleport extends kListener{
 	private Player pl4;
 	private Location loc1;
 	private Location loc2;
-	
+
 	public AddonPlayerTeleport(DeathGames instance){
 		super(instance.getManager().getInstance(),"[AddonPlayerTeleport]");
 		this.instance=instance;
 	}
-	
+
 	@EventHandler
 	public void State(PlayerStateChangeEvent ev){
 		if(ev.getPlayerState()==PlayerState.INGAME)tplist.add(ev.getPlayer());
 		if(ev.getPlayerState()==PlayerState.SPECTATOR)tplist.remove(ev.getPlayer());
 	}
-	
+
 	@EventHandler
 	public void Teleport(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
@@ -72,7 +72,7 @@ public class AddonPlayerTeleport extends kListener{
 
 					if (!lasttp.contains(p1)) {
 						p1.teleport(loc2);
-						
+
 						if(p1.isInsideVehicle()){
 							Entity en = p1.getVehicle();
 							p1.leaveVehicle();
@@ -86,7 +86,7 @@ public class AddonPlayerTeleport extends kListener{
 
 						p1.leaveVehicle();
 					}
-					
+
 					if (!lasttp.contains(p2)) {
 						p2.teleport(loc1);
 						if(p2.isInsideVehicle()){
@@ -125,5 +125,5 @@ public class AddonPlayerTeleport extends kListener{
 			}
 		}
 	}
-	
+
 }

@@ -10,8 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;
@@ -19,17 +19,17 @@ import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 
 public class CommandDetective implements CommandExecutor, Listener{
-	
+
 	TroubleInMinecraft TTT;
-	
+
 	public CommandDetective(TroubleInMinecraft TTT){
 		this.TTT=TTT;
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
-	
+
 	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "detective", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
-		
+
 		if(TTT.getState()!=GameState.LobbyPhase){
 			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_LOBBYPHASE"));
 			return false;
@@ -39,7 +39,7 @@ public class CommandDetective implements CommandExecutor, Listener{
 			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_KEINE","Detective"));
 			return false;
 		}
-		
+
 		int t = TTT.getDetective();
 		int tt = TTT.getPlayerCountFromTeam(Team.DETECTIVE);
 		if(tt>=t){
@@ -52,7 +52,7 @@ public class CommandDetective implements CommandExecutor, Listener{
 		UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_USE",new String[]{"Detective",String.valueOf(t_p)}));
 		return false;
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Quit(PlayerQuitEvent ev){
 		if(TTT.getState()!=GameState.LobbyPhase)return;

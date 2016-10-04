@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.CustomWars1vs1;
 import eu.epicpvp.kcore.Enum.Team;
@@ -32,14 +32,14 @@ public class MultiAddonDropItems extends kListener {
 	private boolean drop_name = true;
 	@Getter
 	private JavaPlugin instance;
-	
+
 	public MultiAddonDropItems(JavaPlugin instance,int drop_rate){
 		super(instance,"[MultiAddonDropItems]");
 		this.instance=instance;
 		this.drop_rate=drop_rate;
 		this.games=new ArrayList<>();
 	}
-	
+
 	public void clear(MultiGame game){
 		for(Entity entity : game.getWorldData().getWorld().getEntities()){
 			if(entity instanceof Item){
@@ -51,9 +51,9 @@ public class MultiAddonDropItems extends kListener {
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void Interact(PlayerPickupItemEvent ev){	
+	public void Interact(PlayerPickupItemEvent ev){
 		if(ev.getItem().getItemStack().getType()==Material.CLAY_BRICK){
 			UtilItem.RenameItem(ev.getItem().getItemStack(), "§bBronze");
 		}else if(ev.getItem().getItemStack().getType()==Material.IRON_INGOT){
@@ -62,20 +62,20 @@ public class MultiAddonDropItems extends kListener {
 			UtilItem.RenameItem(ev.getItem().getItemStack(), "§bGold");
 		}
 	}
-	
+
 	public String getName(){
 		i++;
 		return String.valueOf(i);
 	}
-	
+
 	public void drop(Location loc,ItemStack item, int anzahl,String Name){
 		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, UtilItem.RenameItem(item, Name));
 	}
-	
+
 	public void drop(Location loc,ItemStack item, int anzahl){
 		for(int i = 0; i < anzahl; i++)loc.getWorld().dropItem(loc, (drop_name ? UtilItem.RenameItem(item, getName() ) : item) );
 	}
-	
+
 	@EventHandler
 	public void Update(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SEC){
@@ -87,7 +87,7 @@ public class MultiAddonDropItems extends kListener {
 				}
 			}
 		}
-		
+
 		if(ev.getType()==UpdateType.SLOW){
 			for(MultiGame game : games){
 				if(game.getWorldData().existLoc(game,Team.SILBER)){
@@ -97,7 +97,7 @@ public class MultiAddonDropItems extends kListener {
 				}
 			}
 		}
-		
+
 		if(ev.getType()==UpdateType.SLOWER){
 			for(MultiGame game : games){
 				if(game.getWorldData().existLoc(game,Team.GOLD)){
@@ -108,5 +108,5 @@ public class MultiAddonDropItems extends kListener {
 			}
 		}
 	}
-	
+
 }

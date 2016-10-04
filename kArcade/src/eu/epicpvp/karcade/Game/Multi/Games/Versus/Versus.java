@@ -14,9 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiAddonMove;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiGameArenaRestore;
@@ -47,7 +47,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Versus extends MultiTeamGame{
-	
+
 	@Getter
 	@Setter
 	private ArenaType max_type;
@@ -55,12 +55,12 @@ public class Versus extends MultiTeamGame{
 	private MultiAddonMove addonMove;
 	private MultiGameArenaRestore area;
 	private Scoreboard scoreboard;
-	
+
 	public Versus(MultiGames games,File file,Location location) {
 		super(games,"",location);
 		getWorldData().loadSchematic(this, location, file);
 		UtilBG.setHub("versus");
-		
+
 		if(!getWorldData().existLoc(this, Team.SHEEP_RED)||
 				getWorldData().existLoc(this, Team.SHEEP_RED)&&getWorldData().getLocs(this, Team.SHEEP_RED).isEmpty()){
 			logMessage("Fehler SHEEP_RED NICHT GEFUNDEN");
@@ -70,13 +70,13 @@ public class Versus extends MultiTeamGame{
 		}else{
 			area=new MultiGameArenaRestore(this, getWorldData().getLocs(this, Team.SHEEP_RED).get(0).add(0, 1, 0), getWorldData().getLocs(this, Team.SHEEP_BLUE).get(0));
 		}
-		
+
 		setDropItem(false);
 		setPickItem(true);
 		setDropItembydeath(false);
 		setFoodlevelchange(false);
 		addonMove=new MultiAddonMove(this);
-		
+
 		this.scoreboard=Bukkit.getScoreboardManager().getNewScoreboard();
 		UtilScoreboard.addBoard(scoreboard, DisplaySlot.SIDEBAR, "§6§lVERSUS Board:");
 		UtilScoreboard.setScore(scoreboard, "   ", DisplaySlot.SIDEBAR, 7);
@@ -86,10 +86,10 @@ public class Versus extends MultiTeamGame{
 		UtilScoreboard.setScore(scoreboard, "§eKit: ", DisplaySlot.SIDEBAR, 3);
 		UtilScoreboard.setScore(scoreboard, "  ", DisplaySlot.SIDEBAR, 1);
 		UtilScoreboard.setScore(scoreboard, "§7----------------", DisplaySlot.SIDEBAR, 0);
-		
+
 		loadMaxTeam();
 		setMax_type(ArenaType.withTeamAnzahl(getTeams()));
-		
+
 		if(getMax_type()==null){
 			String s="";
 			for(Team t : getWorldData().getTeams(this).keySet())s+=","+t.getDisplayName();
@@ -104,15 +104,15 @@ public class Versus extends MultiTeamGame{
 				}
 			}
 		}
-		
+
 		setKit(new PlayerKit());
 	}
-	
+
 	public void setSettings(PacketArenaSettings settings){
 		if(settings.getTeam()==Team.SOLO){
 			settings.setTeam(littleTeam());
 		}
-		
+
 //		if(UtilPlayer.isOnline(settings.getPlayer())){
 //			getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
 //			getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
@@ -121,19 +121,19 @@ public class Versus extends MultiTeamGame{
 //		}else{
 			getGames().getWarte_liste().put(settings.getPlayer(), settings);
 //		}
-		
+
 		setMax_team(settings.getMax_team());
 		setMin_team(settings.getMin_team());
-		
+
 		if(getKit().kit == null || getKit().kit.equalsIgnoreCase(settings.getKit())){
 			getKit().kit = settings.getKit();
 			getKit().id = -1;
 		}
-		
+
 		setType(settings.getType());
 		setState(GameState.Laden);
 	}
-	
+
 	@EventHandler
 	public void Join(MultiGamePlayerJoinEvent ev){
 		if(ev.getGame()!=this)return;
@@ -147,17 +147,17 @@ public class Versus extends MultiTeamGame{
 			updateInfo();
 		}
 	}
-	
+
 	@EventHandler
 	public void chat(MultiGameAddonChatEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
 			ev.setCancelled(true);
-			
+
 			for(Player player : getGameList().getPlayers().keySet())
 				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+"§8 § §7"+ev.getMessage());
 		}
 	}
-	
+
 	@EventHandler
 	public void Death(PlayerDeathEvent ev){
 		if(getTeamList().containsKey(ev.getEntity())){
@@ -166,7 +166,7 @@ public class Versus extends MultiTeamGame{
 			getGameList().getPlayers().put(ev.getEntity(), PlayerState.SPECTATOR);
 			getGames().getStats().addInt(ev.getEntity(), 1, StatsKey.DEATHS);
 			getGames().getStats().addInt(ev.getEntity(), 1, StatsKey.LOSE);
-			
+
 			if(ev.getEntity().getKiller()!=null){
 
 				getGames().getStats().addInt(ev.getEntity().getKiller(), 1, StatsKey.KILLS);
@@ -178,13 +178,13 @@ public class Versus extends MultiTeamGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void InGame(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SEC){
 			if(getState()==GameState.InGame){
 				if(getTimer()==-1)setTimer(60*5);
-				
+
 				if(getTimer()<0){
 					setTimer(60*5);
 				}
@@ -192,7 +192,7 @@ public class Versus extends MultiTeamGame{
 				for(Player p : getGameList().getPlayers().keySet()){
 					UtilDisplay.displayTextBar(p,TranslationHandler.getText(p, "GAME_END_IN",UtilTime.formatSeconds(getTimer())));
 				}
-				
+
 				if(getTimer()!=0){
 					switch(getTimer()){
 					case 300:broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -213,7 +213,7 @@ public class Versus extends MultiTeamGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void lobby(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
@@ -221,18 +221,18 @@ public class Versus extends MultiTeamGame{
 			if(area!=null)area.restore();
 			this.addonMove.setMove(false);
 			UtilScoreboard.resetScore(scoreboard, 2, DisplaySlot.SIDEBAR);
-			
+
 			org.bukkit.scoreboard.Team t;
 			for(int i = 0; i<this.scoreboard.getTeams().size(); i++){
 				t=(org.bukkit.scoreboard.Team)this.scoreboard.getTeams().toArray()[i];
 				for(int a = 0; a<t.getPlayers().size(); a++)t.removePlayer((OfflinePlayer)t.getPlayers().toArray()[a]);
 			}
-			
+
 			setDamagePvP(false);
 			setDamage(false);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void loadStats(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType()==GameType.Money)return;
@@ -247,12 +247,12 @@ public class Versus extends MultiTeamGame{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Start(MultiGameStartEvent ev){
 		if(ev.getGame()!=this)return;
 			this.addonMove.setMove(true);
-			
+
 			for(Player player : getTeamList().keySet()){
 				if(getKit()!=null){
 					if(getKit().content!=null&&getKit().armor_content!=null){
@@ -267,13 +267,13 @@ public class Versus extends MultiTeamGame{
 					player.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
 				}
 			}
-			
+
 			if(getKit()!=null){
 				UtilScoreboard.setScore(scoreboard, "§7"+getKit().kit, DisplaySlot.SIDEBAR, 2);
 			}else{
 				UtilScoreboard.setScore(scoreboard, "§7Default", DisplaySlot.SIDEBAR, 2);
 			}
-			
+
 			setTeamTab(scoreboard);
 			setDamagePvP(true);
 			setDamage(true);

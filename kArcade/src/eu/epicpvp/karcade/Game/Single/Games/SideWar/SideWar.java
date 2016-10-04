@@ -3,9 +3,9 @@ package eu.epicpvp.karcade.Game.Single.Games.SideWar;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -21,7 +21,7 @@ public class SideWar extends TeamGame{
 		super(manager);
 		long t = System.currentTimeMillis();
 		setTyp(GameType.SideWar);
-		
+
 		setDamage(false);
 		setItemDrop(false);
 		setItemPickup(false);
@@ -46,10 +46,10 @@ public class SideWar extends TeamGame{
 		setBlockPlace(true);
 		setMinPlayers(8);
 		setMaxPlayers(16);
-		
+
 		setWorldData(new SingleWorldData(manager,getType().getTyp(),getType().getShortName()));
 		getWorldData().setCleanroomChunkGenerator(true);
-		
+
 		if(kArcade.id==-1){
 			getVoteHandler().add(new GameMapVote(getWorldData(), -1));
 		}else{
@@ -59,16 +59,16 @@ public class SideWar extends TeamGame{
 				getVoteHandler().add(new GameMapVote(getWorldData(), 3));
 			}
 		}
-		
+
 		manager.DebugLog(t, this.getClass().getName());
 		setState(GameState.LobbyPhase);
 	}
-	
+
 	@EventHandler
 	public void Ranking(RankingEvent ev){
 		getManager().setRanking(StatsKey.WIN);
 	}
-	
+
 	@EventHandler
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		 if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.INGAME){

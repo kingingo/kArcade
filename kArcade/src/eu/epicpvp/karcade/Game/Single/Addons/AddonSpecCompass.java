@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Util.UtilEvent;
@@ -23,7 +23,7 @@ import eu.epicpvp.kcore.Util.UtilGear;
 import eu.epicpvp.kcore.Util.UtilInv;
 
 public class AddonSpecCompass implements Listener{
-	
+
 	public SingleGame game;
 	public Inventory inv;
 
@@ -31,7 +31,7 @@ public class AddonSpecCompass implements Listener{
 		Bukkit.getPluginManager().registerEvents(this, game.getManager().getInstance());
 		this.game=game;
 	}
-	
+
 	public ItemStack getCompassItem(){
 		ItemStack i = new ItemStack(Material.COMPASS);
 		ItemMeta im = i.getItemMeta();
@@ -49,7 +49,7 @@ public class AddonSpecCompass implements Listener{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	  public void DropItem(PlayerDropItemEvent event)
 	  {
@@ -62,7 +62,7 @@ public class AddonSpecCompass implements Listener{
 
 	    event.setCancelled(true);
 	  }
-	
+
 	@EventHandler
 	public void Inv(InventoryClickEvent ev){
 		if (!game.isCompassAddon()||!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
@@ -82,7 +82,7 @@ public class AddonSpecCompass implements Listener{
 			}
 		}
 	}
-	
+
 	public Inventory getCompassInv(){
 		if(inv==null)inv=Bukkit.createInventory(null, 27,"§lTeleporter");
 		inv.clear();
@@ -96,5 +96,5 @@ public class AddonSpecCompass implements Listener{
 		}
 		return inv;
 	}
-	
+
 }

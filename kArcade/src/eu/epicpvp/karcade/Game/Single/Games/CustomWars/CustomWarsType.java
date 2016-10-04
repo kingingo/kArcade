@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Util.UtilMath;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public enum CustomWarsType {
 	private int inGameTime;
 	@Getter
 	private List<GameType> types;
-	
+
 	private CustomWarsType(int inGameTime, int rate,int team_size,int min,int max,Team[] team, int drop_rate,List<GameType> types){
 		this.max=max;
 		this.inGameTime=inGameTime;
@@ -61,11 +61,11 @@ public enum CustomWarsType {
 				a++;
 			}
 		}
-		
+
 		System.out.println("[EpicPvP] CustomWarsType RANDOM "+list.size());
 		return list.get(UtilMath.RandomInt(list.size(), 0));
 	}
-		
+
 	public static CustomWarsType getTypeWithSize(int size){
 		for(CustomWarsType type : CustomWarsType.values()){
 			if(type.getTeam().length==size){

@@ -12,8 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.Shop.Item.Events.TesterSpooferEvent;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Enum.Team;
@@ -53,7 +53,7 @@ public class Tester implements Listener{
 	@Getter
 	HashMap<Player,Long> last = new HashMap<Player,Long>();
 	long l=-1;
-	
+
 	public Tester(TroubleInMinecraft TTT){
 		this.TTT=TTT;
 		for(Location l : Lampen){
@@ -61,7 +61,7 @@ public class Tester implements Listener{
 		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
-	
+
 	public Tester(TroubleInMinecraft TTT,Location Button,Location Join, Location[] Lampen, Location[] Glass){
 		this.TTT=TTT;
 		this.Button=Button;
@@ -73,7 +73,7 @@ public class Tester implements Listener{
 		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
-	
+
 	public Tester(TroubleInMinecraft TTT,Location Button,Location Join, ArrayList<Location> Lampen, ArrayList<Location> Glass){
 		this.TTT=TTT;
 		this.Join=Join;
@@ -95,7 +95,7 @@ public class Tester implements Listener{
 		}
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
-	
+
 	@EventHandler
 	public void Test(UpdateEvent ev){
 		if(UpdateType.SEC!=ev.getType())return;
@@ -136,27 +136,27 @@ public class Tester implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onBlockRedstone(BlockRedstoneEvent event) {
 		if (event.getBlock().getType() != Material.REDSTONE_LAMP_ON) return;
 		event.setNewCurrent(50);
 	}
-	
+
 	@EventHandler
 	public void Interact(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)&&ev.getClickedBlock().getType() == Material.STONE_BUTTON){
 			if(TTT.getState()!=GameState.InGame||!TTT.getGameList().getPlayers(PlayerState.INGAME).contains(ev.getPlayer()))return;
 			if(Button.getBlockY()!=ev.getClickedBlock().getLocation().getBlockY()||Button.getBlockX()!=ev.getClickedBlock().getLocation().getBlockX()||Button.getBlockZ()!=ev.getClickedBlock().getLocation().getBlockZ())return;
 			ev.setCancelled(true);
-			
+
 			if(l!=-1){
 				if(l > System.currentTimeMillis()){
 					UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_TESTER_WAS_USED"));
 					return;
 				}
 			}
-			
+
 			if(use){
 				ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "TTT_TESTER_USED"));
 			}else{
@@ -178,5 +178,5 @@ public class Tester implements Listener{
 			}
 		}
 	}
-	
+
 }

@@ -9,7 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Events.MultiGamePlayerJoinEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.CustomWars1vs1;
@@ -38,7 +38,7 @@ public class SheepWars1vs1 extends CustomWars1vs1{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void JoinSheepWars(MultiGamePlayerJoinEvent ev){
 		if(ev.getGame()!=this)return;

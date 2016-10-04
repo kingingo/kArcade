@@ -22,7 +22,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator;
@@ -54,30 +54,30 @@ public abstract class WorldData {
 	@Setter
 	private HashMap<String,Location> biomes;
 	private ArrayList<File> loadFiles;
-	
+
 	public WorldData(ArcadeManager manager,GameType type){
 		this(manager,type.name(),type.getShortName());
 	}
-	
+
 	public WorldData(ArcadeManager manager,String gameName,String shortName){
 		this.manager=manager;
 		this.gameName=gameName;
 		this.shortName=shortName;
 		this.cleanroomChunkGenerator=false;
 	}
-	
+
 	public void logErr(String msg){
 		System.err.println("[WorldData]: "+msg);
 	}
-	
+
 	public void logErr(String... msgs){
 		for(String msg : msgs)System.err.println("[WorldData]: "+msg);
 	}
-	
+
 	public void log(String msg){
 		System.out.println("[WorldData]: "+msg);
 	}
-	
+
 	public void log(String... msgs){
 		for(String msg : msgs)System.out.println("[WorldData]: "+msg);
 	}
@@ -85,62 +85,62 @@ public abstract class WorldData {
 	public void clearWorld(){
 		clearWorld(getMap());
 	}
-	
+
 	public void clearWorld(GameMap map){
 		for(Entity e : map.getWorld().getEntities())if(!(e instanceof Player))e.remove();
 	}
-	 
+
 	public void Uninitialize(){
 		Uninitialize(getMap());
 	}
-	
+
 	public void Uninitialize(GameMap map){
 		if(map!=null){
 			if(getMap()!=null&&map.getWorld()!=null&&getMap().getWorld().getUID() == map.getWorld().getUID())setMap(null);
-			
+
 			if(map.getWorld()!=null)UtilMap.UnloadWorld(getManager().getInstance(), map.getWorld());
 			UtilFile.DeleteFolder(map.getFile());
 			map.clear();
 		}
 	 }
-	 
+
 	 public File UnzipSchematic(File file){
 		 new File("schematics").mkdir();
 		 File folder = new File("schematics" + File.separator + file.getName().replaceAll(".zip", ""));
 		 folder.mkdir();
-		 
+
 		 try {
 			 UtilFile.unzip(file, folder);
 		 } catch (IOException e) {
 			 e.printStackTrace();
 		 }
-		 
+
 		 return folder;
 	}
-	 
+
 	 public File[] loadSchematicFiles(){
 		 ArrayList<File> maps = loadSchematics();
 		 File[] files = new File[maps.size()];
 		 int i = 0;
-		 
+
 		 for(File f : maps){
 			 files[i]=f;
 			 i++;
 		 }
-		 
+
 		 maps.clear();
 		 maps=null;
 		 return files;
 	 }
-	 
+
 	 public ArrayList<File> loadZips(){
 		 return loadFile(".zip");
 	 }
-	 
+
 	 public String getMapFolder(){
 		 return kArcade.FilePath+File.separator+getGameName();
 	 }
-	 
+
 	 public ArrayList<File> loadFile(String fileType){
 		 if(loadFiles!=null)return loadFiles;
 		 File folder = new File(getMapFolder());
@@ -148,54 +148,54 @@ public abstract class WorldData {
 		 if (!folder.exists()) folder.mkdirs();
 		 log("Look in the Folder: " + folder);
 		 if(fileType!=null)log("Look only for these file types " + fileType.toUpperCase());
-		 
+
 		 for (File file : folder.listFiles()){
 			 if (file.isFile()){
 				 if(fileType==null||file.getName().endsWith(fileType))maps.add(file);
 		     }
 		 }
-		 
+
 		 for (File map : maps)
 			 log("Files: "+map.getPath());
-		 
+
 		 this.loadFiles=maps;
 		 return maps;
 	 }
-	 
+
 	 public World getWorld(){
 //		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
 		return getMap().getWorld();
 	 }
-	 
+
 	 public String getMapName(){
 		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
 		return getMap().getMapName();
 	 }
-	 
+
 	 public ArrayList<File> loadSchematics(){
 		 return loadFile(".schematic");
 	 }
-	 
+
 	 public void loadBiomes(ArrayList<Biome> nobiome){
 		 loadBiomes(getMap(), nobiome);
 	 }
-	 
+
 	 public void loadBiomes(GameMap map, ArrayList<Biome> nobiome){
 		 if(getBiomes()==null)setBiomes(new HashMap<String, Location>());
 		 Location start = map.getWorld().getSpawnLocation().clone();
-		 
+
 		 for(int i=0;i<150.000;i++){
 			 start.add(0,0,i);
 			 map.getWorld().loadChunk(start.getChunk());
 		 }
-		 
+
 		 start=map.getWorld().getSpawnLocation().clone();
-		 
+
 		 for(int i=0;i<150.000;i++){
 			 start.add(i,0,0);
 			 map.getWorld().loadChunk(start.getChunk());
 		 }
-		
+
 		 int bx;
 		 int bz;
 		 Block block;
@@ -214,41 +214,41 @@ public abstract class WorldData {
 			}
 		}
 	 }
-	 
+
 	 public void createCustomWorld(String s,String fileName){
 		 Uninitialize();
 		 WorldCreator wc = new WorldCreator(fileName);
 		 wc.generator(new CleanroomChunkGenerator(s));
 		 setMap(new GameMap(UtilWorld.LoadWorld(wc),new File(fileName),this));
 	 }
-	 
+
 	 public void createFlatWorld(){
 		 createCustomWorld("64,grass","void");
 	 }
-	 
+
 	 public void createCleanWorld(){
 		 createCustomWorld(".0,AIR","void");
 	 }
-	 
+
 	 public void createWorld(){
 		 Uninitialize();
 		 setMap(new GameMap(Bukkit.createWorld(new WorldCreator(getShortName())),new File(getShortName()),this));
 	 }
-	 
+
 	 public void setBiome(Location l,Biome biome){
 		 setBiome(l, 200, biome);
 	 }
-	 
-	public void setBiome(Location l,int add,Biome biome){	
+
+	public void setBiome(Location l,int add,Biome biome){
 		int min_x = l.getBlockX()-add;
 		int max_x = l.getBlockX()+add;
-		
+
 		int min_z = l.getBlockZ()-add;
 		int max_z = l.getBlockZ()+add;
-		
+
 		UtilWorldEdit.setBiome(new Location(l.getWorld(),min_x,90,min_z), new Location(l.getWorld(),max_x,90,max_z),biome);
 	}
-	
+
 	public void pasteSchematic(Location l,File file){
 		if(getEditSession()==null)setEditSession(new EditSession(new BukkitWorld(l.getWorld()), 999999999));
 		l.getChunk().load();

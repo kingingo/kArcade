@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Events.TeamAddEvent;
 import eu.epicpvp.karcade.Game.Events.TeamDelEvent;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;

@@ -18,7 +18,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.WorldLoadEvent;
 import eu.epicpvp.karcade.Game.World.GameMap;
@@ -37,20 +37,20 @@ import eu.epicpvp.kcore.Util.UtilWorld;
 import eu.epicpvp.kcore.Util.UtilWorldEdit;
 
 public class SingleWorldData extends WorldData{
-	
+
 	public SingleWorldData(ArcadeManager manager,String gameName,String kuerzel){
 		super(manager,gameName,kuerzel);
 	}
-	
+
 	public SingleWorldData(ArcadeManager manager,GameType type){
 		this(manager,type.name(),type.getShortName());
 	}
-	
+
 	public void addLoc(Team team,Location loc){
 		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
 		addLoc(getMap(), team,loc);
 	}
-	
+
 	public void addLoc(GameMap map,Team team,Location loc){
 		if(!map.getLocations().containsKey(team))map.getLocations().put(team, new ArrayList<Location>());
 		map.getLocations().get(team).add(loc);
@@ -60,16 +60,16 @@ public class SingleWorldData extends WorldData{
 		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
 		return existLoc(getMap(), team);
 	}
-	
+
 	public boolean existLoc(GameMap map,Team team){
 		return map.getLocations().containsKey(team);
 	}
-	
+
 	public ArrayList<Location> getSpawnLocations(Team team){
 		if(getMap() == null)throw new NullPointerException("WorldData GameMap ist NULL");
 		return getLocs(getMap(), team);
 	}
-	
+
 	public ArrayList<Location> getLocs(GameMap map,Team team){
 		if(team==null){
 			logErr("Team == NULL!");
@@ -81,15 +81,15 @@ public class SingleWorldData extends WorldData{
 			return map.getLocations().get(team);
 		}
 	}
-	
+
 	public File[] randomMaps(int map_amount) throws Exception{
 		return randomMaps(loadZips(),map_amount);
 	}
-	
+
 	public File[] toFiles(){
 		return toFiles(loadZips());
 	}
-	
+
 	public File[] toFiles(ArrayList<File> files){
 		File[] maps = new File[files.size()];
 		int size = files.size();
@@ -99,24 +99,24 @@ public class SingleWorldData extends WorldData{
 		}
 		return maps;
 	}
-	
+
 	public File[] randomMaps(ArrayList<File> files,int map_amount) throws Exception{
 		if(files.isEmpty())return null;
 		if(files.size() < map_amount) throw new Exception("Zu wenig einträge um "+map_amount+">"+files.size()+" zufüllige Maps auszuwählen!");
 		File[] maps = new File[map_amount];
-		
+
 		for(int i = 0; i < map_amount; i++){
 			maps[i]=files.get(UtilMath.randomInteger(files.size()));
 			files.remove(maps[i]);
 		}
-		
+
 		return maps;
 	}
-	
+
 	public File randomMap(){
 		return randomMap(loadZips());
 	}
-	
+
 	public File randomMap(ArrayList<File> files){
 		if(files.isEmpty())return null;
 		if(files.size()==1)return files.get(0);
@@ -126,13 +126,13 @@ public class SingleWorldData extends WorldData{
 	public File UnzipWorld(){
 		return UnzipWorld(randomMap());
 	}
-	
+
 	public File UnzipWorld(File file){
 	    if(file==null)throw new NullPointerException("Die File ist null");
 	    String folder = file.getName();
 	    if(folder.endsWith(".zip"))folder=folder.replaceAll(".zip", "");
 	    folder="worldData_"+folder;
-	    
+
 	    new File(folder).mkdir();
 	    new File(folder + File.separator + "region"+File.separator).mkdir();
 	    new File(folder + File.separator + "data"+File.separator).mkdir();
@@ -147,11 +147,11 @@ public class SingleWorldData extends WorldData{
 	    new File(folder + File.separator + "uid.dat").delete();
 	    return new File(folder);
 	}
-	
+
 	public void Initialize(){
 		Initialize(randomMap(loadZips()));
 	}
-	
+
 	public void Initialize(File file){
 		final WorldData wd = this;
 		UtilServer.getServer().getScheduler().runTaskAsynchronously(getManager().getInstance(), new Runnable()
@@ -168,7 +168,7 @@ public class SingleWorldData extends WorldData{
 	            }else{
 	            	map=new GameMap(UtilWorld.LoadWorld(new WorldCreator(nfile.getName())),nfile, wd);
 	            }
-	            
+
 	            map.getWorld().setDifficulty(Difficulty.HARD);
 	            LoadWorldConfig(map);
 	            if(getMap()==null)setMap(map);
@@ -179,16 +179,16 @@ public class SingleWorldData extends WorldData{
 	      }
 	    });
 	}
-	
+
 	public void Initialize(GameMap map){
 		if(isCleanroomChunkGenerator()){
 			map.setWorld(UtilWorld.LoadWorld(new WorldCreator(map.getFile().getName()), new CleanroomChunkGenerator(".0,AIR")));
 	    }else{
 	    	map.setWorld(UtilWorld.LoadWorld(new WorldCreator(map.getFile().getName())));
 	    }
-		
+
 		map.getWorld().setDifficulty(Difficulty.HARD);
-		
+
 		LoadWorldConfig(map);
 		if(getMap()==null)setMap(map);
 		Bukkit.getPluginManager().callEvent(new WorldDataInitializeEvent( this, map ));
@@ -197,11 +197,11 @@ public class SingleWorldData extends WorldData{
 	public void setIsland(HashMap<File[],Integer> l,int border,Location location){
 		setIsland(l, border, location, getMap());
 	}
-	
+
 	public void setIsland(HashMap<File[],Integer> l,int border,Location location,GameMap map){
 		int amount=0;
 		for(Integer i : l.values())amount=amount+i;
-		
+
 		ArrayList<Location> list = UtilLocation.RandomLocs(location.getWorld(), amount, border, location);
 		File file;
 		File[] files;
@@ -232,18 +232,18 @@ public class SingleWorldData extends WorldData{
 					l.remove(files);
 					continue;
 				}
-				
+
 				l.remove(files);
 				a--;
 				l.put(files, a);
-				
+
 				file=files[UtilMath.randomInteger(files.length)];
 				log("A: "+a+" FILE:"+file.getName());
-						
+
 				if(file.getName().contains("PLAYER_ISLAND")){
 					loc.setY(UtilMath.RandomInt(80, 65));
 					UtilWorldEdit.pastePlate(loc, file);
-					
+
 					block=UtilLocation.searchBlock(Material.ENDER_PORTAL_FRAME, 20, loc);
 					if(block==null){
 						logErr("RED_LOCATION NOT FOUND!!!!");
@@ -260,7 +260,7 @@ public class SingleWorldData extends WorldData{
 						logErr("BLUE_LOCATION NOT FOUND!!!!");
 						continue;
 					}
-					
+
 					for(Block b : blocks){
 						map.getLocations().get(Team.BLUE.getDisplayName()).add(b.getLocation());
 						b.setType(Material.AIR);
@@ -273,7 +273,7 @@ public class SingleWorldData extends WorldData{
 						logErr("GREEN_LOCATION NOT FOUND!!!!");
 						continue;
 					}
-					
+
 					for(Block b : blocks){
 						map.getLocations().get(Team.GREEN.getDisplayName()).add(b.getLocation());
 					}
@@ -283,11 +283,11 @@ public class SingleWorldData extends WorldData{
 		log("Load Islands:");
 		for(Team team : map.getLocations().keySet())log("	TEAM:"+team.getDisplayName()+" LOC_ANZAHL:"+map.getLocations().get(team).size());
 	}
-	
+
 	public void LoadWorldConfig(){
 		LoadWorldConfig(getMap());
 	}
-	
+
 	public GameMap LoadWorldConfig(GameMap map){
 		log("Map: "+map.getFile().getName());
 		String line=null;
@@ -295,14 +295,14 @@ public class SingleWorldData extends WorldData{
 			FileInputStream fstream = new FileInputStream(map.getFile().getAbsolutePath() + File.separator + "WorldConfig.dat");
 			DataInputStream in = new DataInputStream(fstream);
 		    BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		    
+
 		    while((line=br.readLine()) != null){
 		    	String[] tokens = line.split(":");
 		    	if (tokens.length >= 2){
 		    		WorldDataLoadConfigEvent ev = new WorldDataLoadConfigEvent(this, map, tokens);
 		    		Bukkit.getPluginManager().callEvent(ev);
 		    		if(ev.isCancelled())continue;
-		    		
+
 		    		if(tokens[0].equalsIgnoreCase("MAP_NAME")){
 		    			map.setMapName(tokens[1]);
 		    		}else if(tokens[0].equalsIgnoreCase("ITEM")){
@@ -550,7 +550,7 @@ public class SingleWorldData extends WorldData{
 		    		}else{
 		    			logErr("LOAD TEAM NOT FIND -> "+tokens[0]+" "+tokens[1]);
 		    		}
-		    		
+
 		        }
 		    }
 		    in.close();
@@ -564,12 +564,12 @@ public class SingleWorldData extends WorldData{
 		if(map.getItem()==null){
 			map.setItem(UtilItem.RenameItem(new ItemStack(Material.BEDROCK,1), "§7"+map.getMapName()));
 		}
-		
+
 		log("Load Config:");
 		log("Map Name: "+map.getMapName());
 		log("ITEM: "+map.getItem().getType().name());
 		for(Team team : map.getLocations().keySet())log("TEAM:"+team.getDisplayName()+" LOC:"+map.getLocations().get(team).size());
-		
+
 		return map;
 	}
 }

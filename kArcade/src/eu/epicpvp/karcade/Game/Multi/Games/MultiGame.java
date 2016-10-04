@@ -2,6 +2,7 @@ package eu.epicpvp.karcade.Game.Multi.Games;
 
 import java.util.ArrayList;
 
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,9 +27,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
@@ -129,26 +129,26 @@ public class MultiGame extends kListener{
 	@Getter
 	private Location pasteLocation;
 	@Getter
-	@Setter 
+	@Setter
 	private int min_team=0;
 	@Getter
-	@Setter 
+	@Setter
 	private int max_team=0; // wird von spiel zu spiel geaendert!
 	@Getter
-	@Setter 
+	@Setter
 	private int teams=0; // Maximale Team groesse
 	@Getter
-	@Setter 
+	@Setter
 	private int team=0;
 	@Getter
 	private ArenaType type;
 	@Getter
-	@Setter 
+	@Setter
 	private ButtonBase button;
 	@Getter
-	@Setter 
+	@Setter
 	private WrapperPacketPlayOutWorldBorder worldBorderPacket;
-	
+
 	public MultiGame(MultiGames games,String Map,Location pasteLocation) {
 		super(games.getManager().getInstance(), "MultiGame:Arena"+games.getGames().size());
 		this.games=games;
@@ -159,12 +159,12 @@ public class MultiGame extends kListener{
 		this.min_team=0;
 		this.max_team=0;
 	}
-	
+
 	public void setSettings(PacketArenaSettings settings){
 		if(settings.getTeam()==Team.SOLO && this instanceof MultiTeamGame){
 			settings.setTeam(((MultiTeamGame)this).littleTeam());
 		}
-		
+
 //		if(UtilPlayer.isOnline(settings.getPlayer())){
 //			((MultiTeamGame)this).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 //			getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.IN);
@@ -173,13 +173,13 @@ public class MultiGame extends kListener{
 //		}else{
 			getGames().getWarte_liste().put(settings.getPlayer(), settings);
 //		}
-		
+
 		setMax_team(settings.getMax_team());
 		setMin_team(settings.getMin_team());
 		setType(settings.getType());
 		setState(GameState.Laden);
 	}
-	
+
 	public void updateInfoButton(){
 		if(button==null)return;
 		String players = "";
@@ -195,7 +195,7 @@ public class MultiGame extends kListener{
 		button.setItemStack(UtilItem.setLore(button.getItemStack(), new String[]{"§aMap§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §e"+getMap(),"§aStatus§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+" §e "+getState().name(),"§aSpieler§7 "+Zeichen.DOUBLE_ARROWS_R.getIcon()+"§e "+(players.length()>3?players.substring(0, players.length()-3):"")}));
 		button.refreshItemStack();
 	}
-	
+
 	public void loadMaxTeam(){
 		setTeams(0);
 		for(Team team : games.getSpielerTeams()){
@@ -205,27 +205,27 @@ public class MultiGame extends kListener{
 		}
 		logMessage("Max Team: "+getTeams());
 	}
-	
+
 	public void setType(ArenaType type){
 		this.type=type;
 		setTeam(type.getTeam().length);
 	}
-	
+
 	public MultiWorldData getWorldData(){
 		return getGames().getWorldData();
 	}
-	
+
 	public void updateInfo(){
 		updateInfo(null, null, null, true);
 	}
-	
+
 	//SENDET DEN AKTUELLEN STATUS DER ARENA DEN HUB SERVER!
-	public void updateInfo(dev.wolveringer.dataserver.gamestats.GameState state,GameType type,String arena,boolean apublic){	
-		MultiGameUpdateInfoEvent ev = new MultiGameUpdateInfoEvent(this, new PacketArenaStatus( 
-				(state!=null ? state : getState()) 
+	public void updateInfo(GameState state,GameType type,String arena,boolean apublic){
+		MultiGameUpdateInfoEvent ev = new MultiGameUpdateInfoEvent(this, new PacketArenaStatus(
+				(state!=null ? state : getState())
 				, getGameList().getPlayers(PlayerState.INGAME).size()
 				,teams
-				,team 
+				,team
 				,(type!=null ? type : getGames().getType())
 				,"a"+kArcade.id
 				,(arena!=null ? arena : getArena())
@@ -240,36 +240,36 @@ public class MultiGame extends kListener{
 
 		getGames().getManager().getClient().sendPacket(updateTo, ev.getPacket());
 	}
-	
+
 	public void broadcastWithPrefix1(String name){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(player,name));
 	}
-	
+
 	public void broadcastWithPrefix(String name,Object input){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(player,name,input));
 	}
-	
+
 	public void broadcastWithPrefix(String name,Object[] input){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+TranslationHandler.getText(player,name,input));
 	}
-	
+
 	public void broadcastWithPrefix(String msg){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,"PREFIX_GAME",getGames().getType().getTyp())+msg);
 	}
-	
+
 	public void broadcast(String msg){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(msg);
 	}
-	
+
 	public void broadcast(String name,Object[] input){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,name,input));
 	}
-	
+
 	public void setTab(Player p,Color enemy, Color friend){
 		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 		UtilScoreboard.addTeam(board, "friend", friend.toString());
 		UtilScoreboard.addTeam(board, "enemy", enemy.toString());
-		
+
 		for(Player player : UtilServer.getPlayers()){
 			if(player.getUniqueId()==p.getUniqueId()){
 				UtilScoreboard.addPlayerToTeam(board, "enemy", player);
@@ -277,10 +277,10 @@ public class MultiGame extends kListener{
 				UtilScoreboard.addPlayerToTeam(board, "friend", player);
 			}
 		}
-		
+
 		p.setScoreboard(board);
 	}
-	
+
 	@EventHandler
 	public void death(PlayerDeathEvent ev){
 		ev.setDeathMessage(null);
@@ -289,7 +289,7 @@ public class MultiGame extends kListener{
 			if(!dropItembydeath)ev.getDrops().clear();
 		}
 	}
-	
+
 	@EventHandler
 	public void drop(PlayerDropItemEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
@@ -299,7 +299,7 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void pickup(PlayerPickupItemEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
@@ -309,7 +309,7 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void bplace(BlockPlaceEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
@@ -319,7 +319,7 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void bbreak(BlockBreakEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
@@ -329,7 +329,7 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void hunger(FoodLevelChangeEvent ev){
 		if(ev.getEntity() instanceof Player&&getGameList().getPlayers().containsKey(ev.getEntity())){
@@ -339,19 +339,19 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	public void broadcast(String name,Object input){
 		for(Player player : getGameList().getPlayers().keySet())player.sendMessage(TranslationHandler.getText(player,name,input));
 	}
-	
+
 	public boolean isState(GameState gs){
 		return gs==getState();
 	}
-	
+
 	public void setState(GameState gs){
 		setState(gs, GameStateChangeReason.CUSTOM,true);
 	}
-	
+
 	public void setState(GameState gs,boolean update){
 		setState(gs, GameStateChangeReason.CUSTOM,update);
 	}
@@ -359,13 +359,13 @@ public class MultiGame extends kListener{
 	public void setState(GameState gs,GameStateChangeReason reason){
 		setState(gs, reason, true);
 	}
-	
+
 
 	@EventHandler(ignoreCancelled=false)
 	public void BlockBurn(BlockBurnEvent ev){
-		
+
 	}
-	
+
 	@EventHandler(ignoreCancelled=false)
 	public void Interact(PlayerInteractEvent ev){
 		if(getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
@@ -376,7 +376,7 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	public void setState(GameState gs,GameStateChangeReason reason,boolean update){
 		MultiGameStateChangeEvent stateEvent = new MultiGameStateChangeEvent(this,state,gs,reason);
 		Bukkit.getPluginManager().callEvent(stateEvent);
@@ -385,12 +385,12 @@ public class MultiGame extends kListener{
 		if(update)updateInfo();
 		logMessage("GameState wurde zu "+state.string()+"("+reason.name()+") geändert.");
 	}
-	
+
 	public boolean isPlayerState(Player player,PlayerState state){
 		if(!getGameList().getPlayers().containsKey(player))return false;
 		return (getGameList().isPlayerState(player)==state);
 	}
-	
+
 	Title t;
 	Player last_player;
 	Team last_team;
@@ -400,11 +400,11 @@ public class MultiGame extends kListener{
 		if(ev.getTo()==GameState.Restart&&ev.getFrom()!=ev.getTo()){
 			if(this instanceof MultiTeamGame && (((MultiTeamGame)this).islastTeam()||ev.getReason()==GameStateChangeReason.LAST_TEAM)){
 				for(Player player : getGameList().getPlayers(PlayerState.INGAME)){
-					
+
 					getGames().getManager().getClient().sendPacket(updateTo, new PacketArenaWinner(player.getUniqueId(), "a"+kArcade.id, getGames().getType(), getArena()));
 					getGames().getStats().addInt(player, 1, StatsKey.WIN);
 				}
-				
+
 				last_team = ((MultiTeamGame)this).getlastTeam();
 				if(last_team!=null){
 					broadcastWithPrefix("TEAM_WIN",last_team.getColor()+last_team.getDisplayName());
@@ -414,7 +414,7 @@ public class MultiGame extends kListener{
 					}
 				}
 				for(Player player : getGameList().getPlayers().keySet())UtilBG.sendToServer(player, getGames().getManager().getInstance());
-				
+
 				((MultiTeamGame)this).getTeamList().clear();
 				getGameList().getPlayers().clear();
 				setTimer(-1);
@@ -423,11 +423,11 @@ public class MultiGame extends kListener{
 				for(Player player : getGameList().getPlayers(PlayerState.INGAME)){
 					getGames().getStats().addInt(player, 1, StatsKey.WIN);
 				}
-				
+
 				last_player = getGameList().getPlayers(PlayerState.INGAME).get(0);
 
 				getGames().getManager().getClient().sendPacket(updateTo, new PacketArenaWinner(last_player.getUniqueId(), "a"+kArcade.id, getGames().getType(), getArena()));
-				
+
 				if(last_player!=null){
 					broadcastWithPrefix("GAME_WIN",last_player.getName());
 					t= new Title("",TranslationHandler.getText("GAME_WIN",last_player.getName()));
@@ -436,17 +436,17 @@ public class MultiGame extends kListener{
 					}
 				}
 				for(Player player : getGameList().getPlayers().keySet())UtilBG.sendToServer(player, getGames().getManager().getInstance());
-				
+
 				getGameList().getPlayers().clear();
 				setTimer(-1);
 				getGames().updatePlayedGames();
 			}
-			
+
 			UtilServer.getLagMeter().unloadChunks(null,null);
 			UtilServer.getLagMeter().entitiesClearAll();
 		}
 	}
-	
+
 	public void sendTitle(String first,String second){
 		try{
 			t= new Title(first,second);
@@ -455,14 +455,14 @@ public class MultiGame extends kListener{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@EventHandler
 	public void interact(PlayerInteractEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
 			if(isPlayerState(ev.getPlayer(), PlayerState.SPECTATOR))ev.setCancelled(true);
 		}
 	}
-	
+
 
 	@EventHandler
 	public void Restart(UpdateEvent ev){
@@ -472,14 +472,14 @@ public class MultiGame extends kListener{
 					setTimer(7);
 				}
 				setTimer(getTimer()-1);
-				
+
 				if(getTimer()==0){
 					setState(GameState.LobbyPhase);
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void Start(UpdateEvent ev){
 		if(ev.getType()==UpdateType.SEC){
@@ -488,11 +488,11 @@ public class MultiGame extends kListener{
 					setTimer(getStartCountdown());
 				}
 				setTimer(getTimer()-1);
-				
+
 				for(Player p : getGameList().getPlayers().keySet()){
 					UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_START_IN",getTimer()));
 				}
-				
+
 				if(getTimer()!=0){
 					switch(getTimer()){
 					case 30:broadcastWithPrefix("GAME_START_IN", getTimer());break;
@@ -518,10 +518,10 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	public boolean startBereit(){
 		if(getGameList().getPlayers().isEmpty())return false;
-		
+
 		for(Player player : getGameList().getPlayers().keySet()){
 			if(!player.isOnline()){
 				return false;
@@ -529,7 +529,7 @@ public class MultiGame extends kListener{
 		}
 		return true;
 	}
-	
+
 	@EventHandler
 	public void Damage(EntityDamageEvent ev){
 		//ENTITY IST PLAYER?
@@ -541,7 +541,7 @@ public class MultiGame extends kListener{
 			if(EntityDamage.contains(ev.getCause()))ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void MultiGamestart(MultiGameStartEvent ev){
 		if(ev.getGame()==this){
@@ -551,7 +551,7 @@ public class MultiGame extends kListener{
 					p1.hidePlayer(p);
 				}
 			}
-			
+
 			for(Player p : getGameList().getPlayers().keySet()){
 				for(Player p1 : getGameList().getPlayers().keySet()){
 					p.hidePlayer(p1);
@@ -561,12 +561,12 @@ public class MultiGame extends kListener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
 		if(ev.getDamager() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getDamager()) ))return;
 		if(ev.getEntity() instanceof Player && !getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) ))return;
-		
+
 		if((ev.getDamager() instanceof Player && isPlayerState((Player)ev.getDamager(), PlayerState.SPECTATOR)) || !Damage || isState(GameState.LobbyPhase)|| isState(GameState.Laden)){
 			if(getGames().getManager().getService().isDebug())System.err.println("[MultiGame] Cancelled TRUE bei Damage  "+getState());
 			ev.setCancelled(true);
@@ -592,5 +592,5 @@ public class MultiGame extends kListener{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 }

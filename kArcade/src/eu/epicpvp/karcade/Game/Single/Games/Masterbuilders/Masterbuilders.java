@@ -21,10 +21,10 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
-import dev.wolveringer.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -68,7 +68,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Masterbuilders extends SoloGame{
-	
+
 	private HashMap<String, Team> area;
 	private HashMap<Team, AddonArea> team_areas;
 	private MasterbuildersType mtype;
@@ -88,23 +88,23 @@ public class Masterbuilders extends SoloGame{
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)5), "§aGood"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)3), "§bAmazing"),
 			UtilItem.RenameItem(new ItemStack(Material.STAINED_GLASS_PANE,1,(byte)2), "§dWOW! EVERYTHING IS AWESOME!")};
-	
+
 	private AddonWordVote wordVote;
-	
+
 	private Scoreboard scoreENG;
 	private Scoreboard scoreGER;
-	
+
 	private InventoryPageBase option;
 	private InventoryPageBase ground;
 	private InventoryPageBase particle;
-	
+
 	private HashMap<Team,HashMap<Location,UtilParticle>> particles;
-	
+
 	public Masterbuilders(ArcadeManager manager,MasterbuildersType mtype) {
 		super(manager);
 		long l = System.currentTimeMillis();
 		setTyp(GameType.Masterbuilders);
-		
+
 		setDamage(false);
 		setCreatureSpawn(false);
 		setExplosion(false);
@@ -115,16 +115,16 @@ public class Masterbuilders extends SoloGame{
 		setItemDrop(false);
 		setMaxPlayers(mtype.getMax());
 		setMinPlayers(mtype.getMin());
-		
+
 		this.mtype=mtype;
 		this.area=new HashMap<>();
 		this.team_areas=new HashMap<>();
-		
+
 		setWorldData(new SingleWorldData(getManager(), getType()));
 		getWorldData().Initialize();
-		
+
 		this.option=new InventoryPageBase(InventorySize._9, "§bOption");
-		
+
 		this.ground=new InventoryPageBase(InventorySize._45, "§bChange Ground:");
 		UtilInv.getBase().addPage(this.ground);
 		this.ground.addButton(4,new ButtonBack(this.option, UtilItem.RenameItem(new ItemStack(Material.BED), "§cback")));
@@ -162,7 +162,7 @@ public class Masterbuilders extends SoloGame{
 				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)13), "§7Clay Block (Green)"),
 				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)14), "§7Clay Block (Red)"),
 				UtilItem.RenameItem(new ItemStack(Material.STAINED_CLAY,1,(byte)15), "§7Clay Block (Black)")};
-		
+
 		int slot = 9;
 		Click click = new Click(){
 
@@ -173,7 +173,7 @@ public class Masterbuilders extends SoloGame{
 						AddonArea a = team_areas.get(area.get(player.getName()));
 						int y = a.MinMax[a.Y][a.Min]-1;
 						ItemStack i = ((ItemStack)obj);
-						
+
 						for(int x = a.MinMax[a.X][a.Min]; x<a.MinMax[a.X][a.Max]; x++){
 							for(int z = a.MinMax[a.Z][a.Min]; z<a.MinMax[a.Z][a.Max]; z++){
 								if(a.getWorld().getBlockAt(x, y, z).getType()!=Material.COAL_BLOCK){
@@ -187,7 +187,7 @@ public class Masterbuilders extends SoloGame{
 								}
 							}
 						}
-						
+
 						y=0;
 						i=null;
 						a=null;
@@ -195,9 +195,9 @@ public class Masterbuilders extends SoloGame{
 				}
 				player.closeInventory();
 			}
-			
+
 		};
-		
+
 		for(ItemStack i : blocks){
 			this.ground.addButton(slot, new ButtonBase(click, i));
 			slot++;
@@ -220,9 +220,9 @@ public class Masterbuilders extends SoloGame{
 				}
 				player.closeInventory();
 			}
-			
+
 		}, UtilItem.RenameItem(new ItemStack(Material.BUCKET), "§bClear All")));
-		
+
 		ParticleItem[] items = new ParticleItem[]{ParticleItem.ANGRY_VILLAGER,
 				ParticleItem.FOOTSTEP,
 				ParticleItem.HEART,
@@ -239,7 +239,7 @@ public class Masterbuilders extends SoloGame{
 				ParticleItem.FLAME,
 				ParticleItem.SMOKE_NORMAL,
 				ParticleItem.CLOUD};
-		
+
 		 slot = 9;
 		 click = new Click(){
 
@@ -250,20 +250,20 @@ public class Masterbuilders extends SoloGame{
 						if(!particles.containsKey(area.get(player.getName()))){
 							particles.put(area.get(player.getName()), new HashMap<Location,UtilParticle>());
 						}
-						
+
 						player.getInventory().setItem(7, ((ItemStack)obj));
 					}
 				}
 				player.closeInventory();
 			}
-			
+
 		};
-		
+
 		for(ParticleItem i : items){
 			this.particle.addButton(slot, new ButtonBase(click, i.getItem()));
 			slot++;
 		}
-		
+
 		this.option.addButton(6, new ButtonOpenInventory(particle, UtilItem.RenameItem(new ItemStack(Material.NETHER_STAR), "§bParticle")));
 		this.option.fill(Material.STAINED_GLASS_PANE, (byte)7);
 		UtilInv.getBase().addPage(this.option);
@@ -290,7 +290,7 @@ public class Masterbuilders extends SoloGame{
 		return Team.VILLAGE_RED;
 		}
 	}
-	
+
 	@EventHandler
 	public void particle(UpdateEvent ev){
 		if(ev.getType()==UpdateType.FAST){
@@ -307,17 +307,17 @@ public class Masterbuilders extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
 		if(ev.isCancelled())return;
 		ev.setCancelled(true);
-		
+
 		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
 			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
-		
+
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
@@ -334,7 +334,7 @@ public class Masterbuilders extends SoloGame{
 		if(getState()==GameState.DeathMatch){
 			if(getStart()==15){
 				Collections.sort(ranking,kSort.DESCENDING);
-				
+
 				if(!ranking.isEmpty()){
 					if(UtilPlayer.isOnline(ranking.get(0).getObject())){
 						getMoney().addInt(Bukkit.getPlayer(ranking.get(0).getObject()), 15, StatsKey.COINS);
@@ -348,7 +348,7 @@ public class Masterbuilders extends SoloGame{
 							}
 						}
 					}
-					
+
 					UtilScoreboard.resetScore(scoreGER, 6, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreGER, "§a§lGewinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreGER, 5, DisplaySlot.SIDEBAR);
@@ -358,10 +358,10 @@ public class Masterbuilders extends SoloGame{
 					UtilScoreboard.setScore(scoreENG, "§a§lWinner:", DisplaySlot.SIDEBAR, 6);
 					UtilScoreboard.resetScore(scoreENG, 5, DisplaySlot.SIDEBAR);
 					UtilScoreboard.setScore(scoreENG, "§7"+"{player_"+ranking.get(0).getObject()+"}", DisplaySlot.SIDEBAR, 5);
-					
+
 					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§e§l1",ranking.get(0).getObject()});
 					setWinner( ranking.get(0).getObject() );
-					
+
 					if(area.containsKey(ranking.get(0).getObject())){
 						for(Player player : UtilServer.getPlayers())player.teleport( getWorldData().getSpawnLocations( area.get(ranking.get(0).getObject()) ).get(0).clone().add(0, 5, 0) );
 					}
@@ -379,20 +379,20 @@ public class Masterbuilders extends SoloGame{
 					broadcastWithPrefix("MASTERBUILDER_WIN", new String[]{"§c§l3",ranking.get(2).getObject()});
 				}
 			}else if(getStart()==0){
-				setState(GameState.Restart);	
+				setState(GameState.Restart);
 			}
-			
+
 			if(ranking!=null){
 				for(int i = 0 ; i<10; i++){
 					UtilFirework.start(getWorldData().getSpawnLocations( area.get(ranking.get(0).getObject()) ).get(0).clone().add(UtilMath.RandomInt(15, -15), UtilMath.RandomInt(19, 13), UtilMath.RandomInt(15, -15)), Color.rdmColor(), Type.BALL);
 				}
 			}
-			
+
 			setStart(getStart()-1);
-			
+
 		}
 	}
-	
+
 	String p;
 	ArrayList<String> list;
 	boolean explosion=false;
@@ -407,15 +407,15 @@ public class Masterbuilders extends SoloGame{
 		if(getStart()<-5){
 			setStart(21);
 			if(ranking==null)ranking = new ArrayList<>();
-			
+
 			if(!explosion&&p!=null){
 				int i=0;
-					
+
 				for(Player p1 : vote.get(area.get(p)).keySet()){
 					i+=vote.get(area.get(p)).get(p1);
 				}
 				ranking.add(new kSort<String>(p, i));
-					
+
 				if(i<(vote.get(area.get(p)).size())){
 					if(this.team_areas.containsKey(area.get(p))&&!this.team_areas.get(area.get(p)).getBlocks().isEmpty()){
 						UtilParticle.EXPLOSION_HUGE.display(4.0F, 4, ((Location)this.team_areas.get(area.get(p)).getBlocks().keySet().toArray()[0]), 40);
@@ -432,11 +432,11 @@ public class Masterbuilders extends SoloGame{
 						getMoney().addInt(Bukkit.getPlayer(p), 2, StatsKey.COINS);
 					}
 				}
-				
+
 				p=null;
 				i=0;
 			}
-			
+
 			if(list.isEmpty()){
 				for(Player player : UtilServer.getPlayers())player.getInventory().clear();
 				UtilScoreboard.resetScore(scoreGER, 2, DisplaySlot.SIDEBAR);
@@ -449,27 +449,27 @@ public class Masterbuilders extends SoloGame{
 				setStart(15);
 				return;
 			}
-			
+
 			p=list.get(0);
 			list.remove(p);
 			explosion=false;
-			
+
 			for(Player player : UtilServer.getPlayers()){
 				if(TranslationHandler.getLanguage(player)==LanguageType.GERMAN){
 					player.getInventory().setContents(this.items_bewertungGER);
 				}else{
 					player.getInventory().setContents(this.items_bewertungENG);
 				}
-				player.teleport(getWorldData().getSpawnLocations(area.get(p)).get(0).clone().add(0, 5, 0));	
+				player.teleport(getWorldData().getSpawnLocations(area.get(p)).get(0).clone().add(0, 5, 0));
 			}
 		}
-		
+
 		setStart(getStart()-1);
-		
+
 		if(getStart()==0){
 			Title en = new Title("§7Built by","§e"+"{player_"+p+"}");
 			Title ger = new Title("§7Gebaut von","§e"+"{player_"+p+"}");
-			
+
 			for(Player player : UtilServer.getPlayers()){
 				player.getInventory().clear();
 				if(TranslationHandler.getLanguage(player)==LanguageType.GERMAN){
@@ -490,7 +490,7 @@ public class Masterbuilders extends SoloGame{
 	public void mvoe(InventoryClickEvent ev){
 		if(getState()==GameState.SchutzModus)ev.setCancelled(true);
 	}
-	
+
 	ParticleItem particleItem;
 	@EventHandler
 	public void interact(PlayerInteractEvent ev){
@@ -501,16 +501,16 @@ public class Masterbuilders extends SoloGame{
 				if(!vote.containsKey(area.get(p))){
 					vote.put(area.get(p), new HashMap<>());
 				}
-				
+
 				if(ev.getPlayer().getName().equalsIgnoreCase(p))return;
 				if(vote.get(area.get(p)).containsKey(ev.getPlayer())&&vote.get(area.get(p)).get(ev.getPlayer())==ev.getPlayer().getInventory().getHeldItemSlot())return;
-				
+
 				if(TranslationHandler.getLanguage(ev.getPlayer())==LanguageType.GERMAN){
 					ev.getPlayer().getInventory().setContents(this.items_bewertungGER);
 				}else{
 					ev.getPlayer().getInventory().setContents(this.items_bewertungENG);
 				}
-				
+
 				ev.getPlayer().setItemInHand(UtilItem.addEnchantmentGlow(ev.getPlayer().getItemInHand()));
 				vote.get(area.get(p)).remove(ev.getPlayer());
 				vote.get(area.get(p)).put(ev.getPlayer(), ev.getPlayer().getInventory().getHeldItemSlot());
@@ -526,12 +526,12 @@ public class Masterbuilders extends SoloGame{
 					if(ev.getPlayer().getItemInHand().getItemMeta().hasDisplayName()){
 						if(ev.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("§b")){
 							particleItem=ParticleItem.valueOf(ev.getPlayer().getItemInHand());
-							
+
 							if(particleItem!=null){
 								if(!particles.containsKey(area.get(ev.getPlayer().getName()))){
 									particles.put(area.get(ev.getPlayer().getName()), new HashMap<Location,UtilParticle>());
 								}
-								
+
 								if(particles.get(area.get(ev.getPlayer().getName())).size()>=20){
 									ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(),"PREFIX_GAME",getType().getTyp())+TranslationHandler.getText("MASTERBUILDER_PARTICLE_MAX"));
 								}else{
@@ -546,7 +546,7 @@ public class Masterbuilders extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void inGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
@@ -555,12 +555,12 @@ public class Masterbuilders extends SoloGame{
 			setStart((7*60)+1);
 		}
 		setStart(getStart()-1);
-		
+
 		UtilScoreboard.resetScore(scoreENG, 2, DisplaySlot.SIDEBAR);
 		UtilScoreboard.setScore(scoreENG, "§7"+UtilTime.formatSeconds(getStart()), DisplaySlot.SIDEBAR, 2);
 		UtilScoreboard.resetScore(scoreGER, 2, DisplaySlot.SIDEBAR);
 		UtilScoreboard.setScore(scoreGER, "§7"+UtilTime.formatSeconds(getStart()), DisplaySlot.SIDEBAR, 2);
-		
+
 		switch(getStart()){
 		case 30: broadcastWithPrefix("BUILD_END_IN",UtilTime.formatSeconds(getStart()));break;
 		case 15: broadcastWithPrefix("BUILD_END_IN",UtilTime.formatSeconds(getStart()));break;
@@ -574,10 +574,10 @@ public class Masterbuilders extends SoloGame{
 			broadcastWithPrefixName("BUILD_END");
 			UtilScoreboard.resetScore(scoreENG, 3, DisplaySlot.SIDEBAR);
 			UtilScoreboard.setScore(scoreENG, "§cVote Time:", DisplaySlot.SIDEBAR, 3);
-			
+
 			UtilScoreboard.resetScore(scoreGER, 3, DisplaySlot.SIDEBAR);
 			UtilScoreboard.setScore(scoreGER, "§cVote Zeit:", DisplaySlot.SIDEBAR, 3);
-			
+
 			setStart(-1);
 			setState(GameState.SchutzModus);
 			for(Player player : UtilServer.getPlayers()){
@@ -593,7 +593,7 @@ public class Masterbuilders extends SoloGame{
 			break;
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void addonAreaRestoreEvent(AddonAreaRestoreEvent ev){
 		if(GameState.InGame!=getState()){
@@ -601,7 +601,7 @@ public class Masterbuilders extends SoloGame{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	public void createArea(Team team,Player player){
 		Location ecke1 = getWorldData().getSpawnLocations(getArea(team)).get(0).clone();
 		ecke1.getChunk().load();
@@ -611,7 +611,7 @@ public class Masterbuilders extends SoloGame{
 				break;
 			}
 		}
-		
+
 		Location ecke2 = getWorldData().getSpawnLocations(getArea(team)).get(1).clone();
 		ecke2.getChunk().load();
 		for(int y = ecke1.getBlockY(); y < 255 ; y++){
@@ -620,17 +620,17 @@ public class Masterbuilders extends SoloGame{
 				break;
 			}
 		}
-		
+
 		AddonArea a = new AddonArea(getManager().getInstance(), ecke1, ecke2);
 		a.getPlayers().add(player);
 		this.team_areas.put(team, a);
 	}
-	
+
 	@EventHandler
 	public void Ranking(RankingEvent ev){
 		getManager().setRanking(StatsKey.WIN);
 	}
-	
+
 	@EventHandler
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType() != getType())return;
@@ -639,9 +639,9 @@ public class Masterbuilders extends SoloGame{
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int win = getStats().getInt(StatsKey.WIN, player);
 			int lose = getStats().getInt(StatsKey.LOSE, player);
-			
+
 			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-				
+
 				@Override
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats().clone().add(0, -1, 0),new String[]{
@@ -657,7 +657,7 @@ public class Masterbuilders extends SoloGame{
 			});
 		}
 	}
-	
+
 	@EventHandler
 	public void changeToInGame(GameStateChangeEvent ev){
 		if(ev.getFrom()==GameState.StartGame && ev.getTo() == GameState.InGame){
@@ -680,10 +680,10 @@ public class Masterbuilders extends SoloGame{
 			UtilScoreboard.setScore(scoreGER, "§f§lZeit: ", DisplaySlot.SIDEBAR, 3);
 			UtilScoreboard.setScore(scoreGER, "§7-", DisplaySlot.SIDEBAR, 2);
 			UtilScoreboard.setScore(scoreGER, "", DisplaySlot.SIDEBAR, 1);
-			
+
 			UtilScoreboard.setTeams(scoreENG, getManager().getPermManager().getScoreboard().getTeams());
 			UtilScoreboard.setTeams(scoreGER, getManager().getPermManager().getScoreboard().getTeams());
-			
+
 			ItemStack option = UtilItem.RenameItem(new ItemStack(Material.BOOK), "§bOption");
 			for(Player player : UtilServer.getPlayers()){
 				getManager().clear(player);
@@ -695,17 +695,17 @@ public class Masterbuilders extends SoloGame{
 					new Title("","§a§l"+this.building.getEnglish()).send(player);
 					player.setScoreboard(scoreENG);
 				}
-				
+
 				player.setGameMode(GameMode.CREATIVE);
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void start(GameStartEvent ev){
 		this.mainArea=new AddonMainArea(getManager().getInstance());
 		this.building=Buildings.values()[UtilMath.randomInteger(Buildings.values().length)];
-		
+
 		int i=0;
 		for(Player player : UtilServer.getPlayers()){
 			getManager().clear(player);
@@ -723,10 +723,10 @@ public class Masterbuilders extends SoloGame{
 			i++;
 		}
 		new AddonDay(getManager().getInstance(), getWorldData().getWorld());
-		
+
 		setState(GameState.StartGame);
 		this.wordVote.start();
 		if(Bukkit.getPluginManager().getPlugin("AAC")!=null&&Bukkit.getPluginManager().getPlugin("AAC").isEnabled())new AACListener(getManager().getInstance());
 	}
-	
+
 }

@@ -6,20 +6,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
 
 public class CommandTraitorChat implements CommandExecutor, Listener{
-	
+
 	TroubleInMinecraft TTT;
-	
+
 	public CommandTraitorChat(TroubleInMinecraft TTT){
 		this.TTT=TTT;
 	}
-	
+
 	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "tc", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		if(TTT.getState()!=GameState.InGame)return false;
@@ -38,7 +38,7 @@ public class CommandTraitorChat implements CommandExecutor, Listener{
 				p1.sendMessage("§cTraitor-Chat§8 |§c "+p.getName()+":§7 "+msg);
 			}
 		}
-		
+
 		return false;
 	}
 

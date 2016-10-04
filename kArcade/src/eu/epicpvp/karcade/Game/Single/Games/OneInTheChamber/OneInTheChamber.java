@@ -19,8 +19,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Single.SingleWorldData;
@@ -42,7 +42,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	private HashMap<Player,Integer> kills = new HashMap<>();
 	//Scoreboard board;
 	private ArrayList<Location> list;
-	
+
 	public OneInTheChamber(ArcadeManager manager) {
 		super(manager);
 		setTyp(GameType.OneInTheChamber);
@@ -58,14 +58,14 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		setWorldData(new SingleWorldData(manager,getType()));
 		getWorldData().Initialize();
 	}
-	
+
 	@EventHandler
 	public void Respawn(PlayerRespawnEvent ev){
 		if((!isState(GameState.InGame)) || getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR)return;
 		ev.setRespawnLocation(list.get(UtilMath.RandomInt(list.size(), 0)));
 		getSpawnInventory(ev.getPlayer());
 	}
-	
+
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		setStart(187);
@@ -73,13 +73,13 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		list = getWorldData().getSpawnLocations(Team.SOLO);
 		long time = System.currentTimeMillis();
 		int r=0;
-		
+
 		for(Player p : UtilServer.getPlayers()){
 			getManager().clear(p);
 			Life.put(p, 6);
 			kills.put(p, 0);
 			getGameList().addPlayer(p,PlayerState.INGAME);
-			
+
 			getSpawnInventory(p);
 			if(list.size()==1){
 				r=0;
@@ -92,12 +92,12 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		list = getWorldData().getSpawnLocations(Team.SOLO);
 		getManager().DebugLog(time, this.getClass().getName());
 	}
-	
+
 	public void onDisable(){
 		setState(GameState.Restart);
 		getWorldData().Uninitialize();
 	}
-	
+
 	@EventHandler
 	public void Death(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player && ev.getEntity().getKiller() instanceof Player){
@@ -114,7 +114,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	  public void onEntityDamageEventByEntity(EntityDamageByEntityEvent ev)
 	  {
@@ -133,7 +133,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	      }
 	    }
 	  }
-	
+
 	public void getSpawnInventory(Player p){
 			getManager().clear(p);
 			if(getManager().getPermManager().hasPermission(p, PermissionType.OneInTheChamber_KIT)){
@@ -146,16 +146,16 @@ public class OneInTheChamber extends SoloGame implements Listener{
 				case 4:p.getInventory().setItem(8, new ItemStack(Material.ARROW,2));break;
 				case 5:p.getInventory().setItem(8, new ItemStack(Material.ARROW,2));break;
 				}
-				
+
 			}else{
 				p.getInventory().setItem(8, new ItemStack(Material.ARROW,1));
 			}
-			
+
 			p.getInventory().setItem(0, new ItemStack(Material.WOOD_SWORD,1));
 			p.getInventory().setItem(1, new ItemStack(Material.BOW,1));
 			p.getInventory().setItem(7, new ItemStack(Material.REDSTONE,Life.get(p)));
 	}
-	
+
 	@EventHandler
 	public void Countdown(UpdateEvent ev){
 	if(ev.getType()!=UpdateType.SEC)return;
@@ -163,7 +163,7 @@ public class OneInTheChamber extends SoloGame implements Listener{
 	setStart(getStart()-1);
 	if(getStart() > 179 && getStart() < 186){
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "FIGHT_START_IN", getStart()-180) );
-		
+
 		switch(this.getStart()){
 		case 185:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
 		case 184:broadcastWithPrefix("FIGHT_START_IN", String.valueOf(getStart() - 180));break;
@@ -174,19 +174,19 @@ public class OneInTheChamber extends SoloGame implements Listener{
 		}
 	}else{
 		for(Player p : getGameList().getPlayers(PlayerState.BOTH))UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_END_IN", getStart()) );
-		
+
 		switch(getStart()){
 		case 5: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
 		case 4: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
 		case 3: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
 		case 2: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", String.valueOf(getStart()));break;
-		case 0: 
+		case 0:
 			broadcastWithPrefixName("GAME_END");
 			onDisable();
 		break;
 		}
 	}
 	}
-	
+
 }

@@ -32,9 +32,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -99,17 +99,17 @@ public class Falldown extends SoloGame{
 	@Getter
 	private ArrayList<BrewItem> brewItems = new ArrayList<>();
 	private HashMap<Integer, ArrayList<Location>> list = new HashMap<>();
-	
+
 	private World cleanWorld;
 	private Location spawn;
 	private AddonTargetNextPlayer targetNextPlayer;
-	
+
 	private ArrayList<CrystalEbene> ebenen;
 	private ArrayList<Player> player_up;
 	private HashMap<Player,Integer> player_ebene;
 	private HashMap<Player,Integer> player_amount;
-	
-	
+
+
 	public Falldown(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
@@ -120,7 +120,7 @@ public class Falldown extends SoloGame{
 		player_up=new ArrayList<>();
 		player_ebene=new HashMap<>();
 		player_amount=new HashMap<>();
-		
+
 		WorldCreator wc = new WorldCreator("void");
 		wc.generator(new eu.epicpvp.kcore.ChunkGenerator.CleanroomChunkGenerator(".0,AIR"));
 		cleanWorld=Bukkit.createWorld(wc);
@@ -129,7 +129,7 @@ public class Falldown extends SoloGame{
 		for(int i = 0; i<256; i+=75){
 			ebenen.add(new CrystalEbene(new Location(cleanWorld,0,i,0), 40));
 		}
-		
+
 		setWorldData(new SingleWorldData(manager,getType()));
 		setMinPlayers(8);
 		setMaxPlayers(16);
@@ -147,7 +147,7 @@ public class Falldown extends SoloGame{
 		setFoodChange(false);
 		setCompassAddon(true);
 		setItemPickup(true);
-		
+
 		int a = 377; // BLAZE POWDER
 		int b = 288;// FEATHER
 		int c = 331;// Redstone
@@ -176,13 +176,13 @@ public class Falldown extends SoloGame{
 		brewItems.add(new Budder(new Integer[]{c,e,f}, this));
 		brewItems.add(new HerobrinesMinions(new Integer[]{d,e,f}, this));
 //		brewItems.add(new Blocked(new Integer[]{b,d,e}, this));
-		
+
 		ilManager=new LaunchItemManager(getManager().getInstance());
 		getWorldData().Initialize();
 		setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
-	
+
 	@EventHandler
 	public void onBreak(EntityDamageEvent e){
 		if(getState() == GameState.SchutzModus){
@@ -195,14 +195,14 @@ public class Falldown extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void brew(PlayerUseBrewItemEvent ev){
 		if(getState() != GameState.InGame){
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	public ArrayList<Entity> getNearPlayers(int r, Location loc, boolean onlyPlayer) {
 		ArrayList<Entity> ps = new ArrayList<Entity>();
 
@@ -214,7 +214,7 @@ public class Falldown extends SoloGame{
 			}
 
 		}
-		
+
 		if(!onlyPlayer){
 			for (Entity p : getWorldData().getWorld().getEntities()) {
 				if (p.getWorld().getUID() == loc.getWorld().getUID() && loc.distance(p.getLocation()) <= r) {
@@ -227,7 +227,7 @@ public class Falldown extends SoloGame{
 
 		return ps;
 	}
-	
+
 	public ArrayList<kDistance> getNearDistance(int r, Location loc, boolean onlyPlayer, Player player) {
 		ArrayList<kDistance> ps = new ArrayList<kDistance>();
 
@@ -242,7 +242,7 @@ public class Falldown extends SoloGame{
 			}
 
 		}
-		
+
 		if(!onlyPlayer){
 			for (Entity p : getWorldData().getWorld().getEntities()) {
 				if (p.getWorld().getUID() == loc.getWorld().getUID() && loc.distance(p.getLocation()) <= r) {
@@ -255,7 +255,7 @@ public class Falldown extends SoloGame{
 
 		return ps;
 	}
-	
+
 	@EventHandler
 	public void entityDeath(EntityDeathEvent ev){
 		if(!(ev.getEntity() instanceof Player)){
@@ -263,7 +263,7 @@ public class Falldown extends SoloGame{
 			ev.getDrops().clear();
 		}
 	}
-	
+
 	//TEAM RED
 	Player player;
 	int lvl;
@@ -281,7 +281,7 @@ public class Falldown extends SoloGame{
 					player.setLevel(player.getLevel() + 1);
 					lvl-=1;
 				}
-				
+
 				power.remove(player);
 				if(lvl!=0){
 					power.put(player, lvl);
@@ -289,11 +289,11 @@ public class Falldown extends SoloGame{
 			}
 		}
 	}
-	
+
 	public int getLevel(Player p){
 		return getStats().getInt(StatsKey.POWER, p);
 	}
-	
+
 	public void setlevel(Player player, int lvl){
 		getStats().setInt(player, getLevel(player)+lvl, StatsKey.POWER);
 		if(power.containsKey(player)){
@@ -304,7 +304,7 @@ public class Falldown extends SoloGame{
 			power.put(player, lvl);
 		}
 	}
-	
+
 	@EventHandler
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType() != getType())return;
@@ -313,9 +313,9 @@ public class Falldown extends SoloGame{
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int win = getStats().getInt(StatsKey.WIN, player);
 			int lose = getStats().getInt(StatsKey.LOSE, player);
-			
+
 			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-				
+
 				@Override
 				public void run() {
 
@@ -337,27 +337,27 @@ public class Falldown extends SoloGame{
 			});
 		}
 	}
-	
+
 	@EventHandler
 	public void aac(PlayerViolationEvent ev){
 		if(getState() == GameState.SchutzModus){
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void aacCMD(PlayerViolationCommandEvent ev){
 		if(getState() == GameState.SchutzModus){
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void Schutzzeit(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.SchutzModus)return;
 		setStart( getStart()-1 );
-		
+
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationHandler.getText(p, "SCHUTZZEIT_END_IN", getStart()));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
@@ -373,7 +373,7 @@ public class Falldown extends SoloGame{
 		case 3: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 2: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
 		case 1: broadcastWithPrefix("SCHUTZZEIT_END_IN", getStart());break;
-		case 0: 
+		case 0:
 			long t = System.currentTimeMillis();
 			setDamage(true);
 			setDamagePvP(true);
@@ -382,19 +382,19 @@ public class Falldown extends SoloGame{
 			setDamagePvE(true);
 			setDamageSelf(true);
 			setState(GameState.InGame);
-			
+
 			if(getMaxPlayers() == 16){
 				setStart( 60*10 );
 			}else{
 				setStart( 60*20 );
 			}
-			
+
 			broadcastWithPrefixName("SCHUTZZEIT_END");
 			getManager().DebugLog(t, this.getClass().getName());
 		break;
 		}
 	}
-	
+
 	public void EnchantArmor(ItemStack i, Player p) {
 		int lvl = getLevel(p);
 
@@ -406,11 +406,11 @@ public class Falldown extends SoloGame{
 					Effect.POTION_BREAK, 16421);
 			setlevel(p, -30);
 		}
-		
+
 		int type = UtilMath.RandomInt(2, 0);
 		java.util.Random levelRandom = new java.util.Random();
 		p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-		
+
 		if (type == 0) {
 	          i.addEnchantment(Enchantment.PROTECTION_PROJECTILE, levelRandom.nextInt(2) + 1);
 	          i.addEnchantment(Enchantment.PROTECTION_FIRE, levelRandom.nextInt(2) + 1);
@@ -422,7 +422,7 @@ public class Falldown extends SoloGame{
 	          i.addEnchantment(Enchantment.THORNS, levelRandom.nextInt(2) + 1);
 	        }
 	}
-	
+
 	public void EnchantBow(ItemStack i, Player p) {
 		int lvl = getLevel(p);
 		if(lvl < 30){
@@ -433,7 +433,7 @@ public class Falldown extends SoloGame{
 					Effect.POTION_BREAK, 16421);
 			setlevel(p, -30);
 		}
-		
+
 		int type = UtilMath.RandomInt(2, 0);
 		java.util.Random levelRandom = new java.util.Random();
 		p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
@@ -448,7 +448,7 @@ public class Falldown extends SoloGame{
 	        i.addEnchantment(Enchantment.ARROW_KNOCKBACK, levelRandom.nextInt(2) + 1);
 	      }
 	}
-	
+
 	private String is(ItemStack i) {
 		String item = "null";
 		int id = i.getTypeId();
@@ -463,7 +463,7 @@ public class Falldown extends SoloGame{
 
 		return item;
 	}
-	
+
 	private void EnchantSword(ItemStack i, Player p) {
 		int lvl = getLevel(p);
 
@@ -475,7 +475,7 @@ public class Falldown extends SoloGame{
 					Effect.POTION_BREAK, 16421);
 			setlevel(p, -30);
 		}
-		
+
 		int type = UtilMath.RandomInt(2, 0);
 		java.util.Random levelRandom = new java.util.Random();
 		p.getWorld().playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
@@ -489,22 +489,22 @@ public class Falldown extends SoloGame{
 	          i.addEnchantment(Enchantment.DURABILITY, levelRandom.nextInt(2) + 1);
 	          i.addEnchantment(Enchantment.FIRE_ASPECT, levelRandom.nextInt(2) + 1);
 	        }
-		
+
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChatd(AsyncPlayerChatEvent event) {
 		if (!event.isCancelled()) {
-			
+
 			if((!event.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
 				event.setMessage("Ich heul rum!");
 				event.getPlayer().sendMessage(TranslationHandler.getText(event.getPlayer(), "PREFIX")+TranslationHandler.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 			}
-			
+
 			Player p = event.getPlayer();
 			String msg = event.getMessage();
 			if(getManager().getPermManager().hasPermission(p, PermissionType.ALL_PERMISSION))msg=msg.replaceAll("&", "§");
-			
+
 			if(getGameList().isPlayerState(p) == PlayerState.INGAME){
 				event.setFormat(getManager().getPermManager().getPrefix(p) + "{player_"+p.getName()+"}" + "§7:§7 "+ msg);
 			}else{
@@ -515,7 +515,7 @@ public class Falldown extends SoloGame{
 			}
 		}
 	}
-	
+
 	public static String RandomItem() {
 		String i = "";
 		int z = UtilMath.RandomInt(11, 1);
@@ -533,7 +533,7 @@ public class Falldown extends SoloGame{
 		}
 		return i;
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void LobbyMenu(PlayerInteractEvent ev){
 		if((UtilEvent.isAction(ev, ActionType.PHYSICAL)&& (ev.getClickedBlock().getType() == Material.SOIL))||(UtilEvent.isAction(ev, ActionType.BLOCK)&&!ev.getPlayer().isOp())){
@@ -552,7 +552,7 @@ public class Falldown extends SoloGame{
 
 		return i;
 	}
-	
+
 	private ItemStack RandomBrau() {
 		int a = 377; // BLAZE POWDER
 		int b = 288;// FEATHER
@@ -560,7 +560,7 @@ public class Falldown extends SoloGame{
 		int d = 348;// GLOWSTONE DUST
 		int e = 378;// MAGMA CREAM
 		int f = 360;// MAGMA CREAM
-		
+
 		ItemStack i = null;
 		int z = UtilMath.RandomInt(12, 1);
 		if (z == 1 || z == 7) {
@@ -579,7 +579,7 @@ public class Falldown extends SoloGame{
 
 		return i;
 	}
-	
+
 	private ItemStack RandomSword() {
 		ItemStack i = null;
 		int high = 5;
@@ -600,7 +600,7 @@ public class Falldown extends SoloGame{
 
 		return i;
 	}
-	
+
 	@EventHandler
 	public void Brew(PlayerInteractEvent ev){
 		if (UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK) && ev.getClickedBlock().getType() == Material.BREWING_STAND) {
@@ -618,14 +618,14 @@ public class Falldown extends SoloGame{
 					if (id[1] == null) {
 						id[1] = ev.getPlayer().getItemInHand().getTypeId();
 						final Location loc = ev.getClickedBlock().getLocation();
-						
+
 						Bukkit.getScheduler().scheduleAsyncDelayedTask(getManager().getInstance(), new Runnable(){
 
 							@Override
 							public void run() {
 								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)3);
 							}
-							
+
 						},2);
 
 						UtilInv.remove(p, id[1], ev.getPlayer().getItemInHand().getData().getData(), 1);
@@ -638,9 +638,9 @@ public class Falldown extends SoloGame{
 							@Override
 							public void run() {
 								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)7);
-								
+
 							}
-							
+
 						},2);
 
 						UtilInv.remove(p, id[2], ev.getPlayer().getItemInHand().getData().getData(), 1);
@@ -654,9 +654,9 @@ public class Falldown extends SoloGame{
 							@Override
 							public void run() {
 								p.sendBlockChange(loc, Material.BREWING_STAND, (byte)2);
-								
+
 							}
-							
+
 						},2);
 					}
 					playerbrauen.put(p, id);
@@ -670,12 +670,12 @@ public class Falldown extends SoloGame{
 						@Override
 						public void run() {
 							p.sendBlockChange(loc, Material.BREWING_STAND, (byte)2);
-							
+
 						}
-						
+
 					},10);
 					UtilInv.remove(p, id[0], ev.getPlayer().getItemInHand().getData().getData(), 1);
-					p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt.");		
+					p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME", getType().getTyp())+ "§bDas Item wurde den Braustand hinzugef§gt.");
 				}
 				return;
 			} else if (p.getItemInHand().getType() == Material.STICK) {
@@ -707,7 +707,7 @@ public class Falldown extends SoloGame{
 							playerbrauen.remove(p);
 							return;
 						}
-						
+
 						boolean have = Brauen(id, p);
 
 						if (!have) {
@@ -729,7 +729,7 @@ public class Falldown extends SoloGame{
 			}
 		}
 	}
-	
+
 	String i;
 	Player p;
 	Vector vel;
@@ -752,14 +752,14 @@ public class Falldown extends SoloGame{
 					p.setPassenger(e);
 					return;
 				}
-				
+
 				p.setVelocity(new Vector(0,100,0));
 				player_ebene.remove(p);
 				player_up.add(p);
 			}else if(p.getLocation().getY()>=240&&player_up.contains(p)){
 				player_up.remove(p);
 				player_ebene.remove(p);
-				
+
 				if(player_amount.containsKey(p)){
 					int i = player_amount.get(p);
 					i++;
@@ -780,7 +780,7 @@ public class Falldown extends SoloGame{
 					}
 				}
 			}
-			
+
 			if(ev.getPlayer().getPassenger() != null){
 				if(ev.getPlayer().getPassenger().getType() == EntityType.CHICKEN){
 					if(ev.getPlayer().isOnGround()){
@@ -792,7 +792,7 @@ public class Falldown extends SoloGame{
 						e.remove();
 						return;
 					}
-					
+
 					p = ev.getPlayer();
 					vel = p.getVelocity();
 				    dir = p.getLocation().getDirection();
@@ -800,7 +800,7 @@ public class Falldown extends SoloGame{
 				    p.setFallDistance(1);
 				}
 			}
-			
+
 			if(!p.isOnGround()&&getGameList().isPlayerState(p)==PlayerState.INGAME){
 				for (Entity e : p.getLocation().getChunk().getEntities()) {
 					if (e instanceof EnderCrystal) {
@@ -831,7 +831,7 @@ public class Falldown extends SoloGame{
 			}
 		}
 	}
-	
+
 	public boolean Brauen(Integer[] id, Player p) {
 		boolean have = false;
 		for(BrewItem item : brewItems){
@@ -843,7 +843,7 @@ public class Falldown extends SoloGame{
 		}
 		return have;
 	}
-	
+
 	String t;
 	@EventHandler
 	public void Enchant(PlayerInteractEvent ev){
@@ -859,13 +859,13 @@ public class Falldown extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void InGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setStart( getStart()-1 );
-		
+
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(p,TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())));
 		switch(getStart()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
@@ -877,7 +877,7 @@ public class Falldown extends SoloGame{
 		case 3: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
-		case 0: 
+		case 0:
 			setDamage(false);
 			setDamagePvP(false);
 			setState(GameState.Restart);
@@ -885,7 +885,7 @@ public class Falldown extends SoloGame{
 		break;
 		}
 	}
-	
+
 	@EventHandler
 	public void GameStateChangeFD(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
@@ -899,30 +899,30 @@ public class Falldown extends SoloGame{
 				System.err.println("WINNER: "+p.getName());
 			}
 		}
-		
+
 	}
-	
+
 	@EventHandler
 	public void join(PlayerJoinEvent ev){
 		UtilPlayer.sendHovbarText(ev.getPlayer(), "§4§lZweier Teams erlaubt!");
 	}
-	
+
 	@EventHandler
 	public void Ranking(RankingEvent ev){
 		getManager().setRanking(StatsKey.WIN);
 	}
-	
+
 	@EventHandler
 	public void DeathFD(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player){
 			Player v = (Player)ev.getEntity();
-			
+
 			getStats().addInt(v, 1, StatsKey.LOSE);
 			getGameList().addPlayer(v, PlayerState.SPECTATOR);
-			
+
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
-				
+
 				getStats().addInt(a, 1, StatsKey.KILLS);
 				getMoney().addInt(a, 5, StatsKey.COINS);
 				setlevel(a, 40);
@@ -933,12 +933,12 @@ public class Falldown extends SoloGame{
 			getStats().addInt(v, 1, StatsKey.DEATHS);
 		}
 	}
-	
+
 	@EventHandler
 	public void kick(PlayerKickEvent ev){
 		if(ev.getReason().equalsIgnoreCase("Flying is not enabled on this server")) ev.setCancelled(true);
 	}
-	
+
 	@EventHandler
 	public void Start(GameStartEvent ev){
 		setStart((60*2)+25);
@@ -955,5 +955,5 @@ public class Falldown extends SoloGame{
 			player.getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.COMPASS), "§cRadar"));
 		}
 	}
-	
+
 }

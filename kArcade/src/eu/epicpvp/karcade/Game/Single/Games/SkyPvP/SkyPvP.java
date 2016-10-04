@@ -24,9 +24,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -67,7 +67,7 @@ public class SkyPvP extends SoloGame{
 	private ArrayList<ItemStack> enderchest_material = new ArrayList<>();
 	private AddonEntityKing entity_king;
 	private AddonTargetNextPlayer TargetNextPlayer;
-	
+
 	public SkyPvP(ArcadeManager manager){
 		super(manager);
 		long l = System.currentTimeMillis();
@@ -102,7 +102,7 @@ public class SkyPvP extends SoloGame{
 				o++;
 			}
 		}
-		
+
 		File[] p_files = new File[p];
 		File[] c_files = new File[c];
 		File[] o_files = new File[o];
@@ -121,13 +121,13 @@ public class SkyPvP extends SoloGame{
 				o++;
 			}
 		}
-		
+
 		list.put(c_files, 1);
 		list.put(p_files, getMaxPlayers());
 		list.put(o_files, UtilMath.RandomInt(4, 2));
-		
+
 		getWorldData().setIsland(list,20, new Location(getWorldData().getWorld(),0,80,0));
-	
+
 		Chest chest;
 		Block b;
 		for(Location loc : getWorldData().getSpawnLocations(Team.RED)){
@@ -146,17 +146,17 @@ public class SkyPvP extends SoloGame{
 			chest=null;
 			b=null;
 		}
-		
+
 		UtilMap.loadChunks(new Location(getWorldData().getWorld(),0,80,0), 700);
 		getManager().DebugLog(l, this.getClass().getName());
 	}
-	
+
 	public void loadMaterialList(){
 		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8257));
 		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8259));
 		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8226));
 		enderchest_material.add(new ItemStack(Material.POTION,2,(byte) 8233));
-		
+
 
 		enderchest_material.add(new ItemStack(Material.EXP_BOTTLE,16));
 		enderchest_material.add(new ItemStack(Material.DIAMOND,3));
@@ -164,7 +164,7 @@ public class SkyPvP extends SoloGame{
 		enderchest_material.add(new ItemStack(Material.GOLDEN_APPLE,2));
 		enderchest_material.add(new ItemStack(Material.MONSTER_EGG,2,(byte)50));
 	}
-	
+
 	@EventHandler
 	public void Enderchest(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)&&getGameList().getPlayers(PlayerState.INGAME).contains(ev.getPlayer())){
@@ -175,29 +175,29 @@ public class SkyPvP extends SoloGame{
 				}else{
 					if(enderchest_material.isEmpty())loadMaterialList();
 					Inventory inv = Bukkit.createInventory(null, 9, "EnderChest");
-					
+
 					for(int i = 0; i < UtilMath.RandomInt(4, 2); i++){
 						inv.addItem( enderchest_material.get(UtilMath.randomInteger(enderchest_material.size())).clone() );
 					}
 					enderchests.put(ev.getClickedBlock().getLocation(), inv);
-					
+
 					ev.setCancelled(true);
 					ev.getPlayer().openInventory(enderchests.get(ev.getClickedBlock().getLocation()));
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void Chat(AsyncPlayerChatEvent ev){
 		if(ev.isCancelled())return;
 		ev.setCancelled(true);
-		
+
 		if((!ev.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(ev.getMessage())||UtilString.checkForIP(ev.getMessage())){
 			ev.setMessage("Ich heul rum!");
 			ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX")+TranslationHandler.getText(ev.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 		}
-		
+
 		if(getState()!=GameState.LobbyPhase&&getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer())){
 			ev.setCancelled(true);
 			UtilPlayer.sendMessage(ev.getPlayer(),TranslationHandler.getText(ev.getPlayer(), "PREFIX_GAME", getType().getTyp())+TranslationHandler.getText(ev.getPlayer(), "SPECTATOR_CHAT_CANCEL"));
@@ -205,7 +205,7 @@ public class SkyPvP extends SoloGame{
 			UtilServer.broadcast(getManager().getPermManager().getPrefix(ev.getPlayer())+ev.getPlayer().getDisplayName()+":§7 "+ev.getMessage());
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void RespawnLocation(PlayerRespawnEvent ev){
 		if(island.containsKey(ev.getPlayer())){
@@ -215,7 +215,7 @@ public class SkyPvP extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void inGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
@@ -237,7 +237,7 @@ public class SkyPvP extends SoloGame{
 			break;
 		}
 	}
-	
+
 	@EventHandler
 	public void DeathSkyPvP(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player){
@@ -253,10 +253,10 @@ public class SkyPvP extends SoloGame{
 				life.remove(v);
 				life.put(v, i);
 			}
-			
+
 			UtilScoreboard.resetScore(v.getScoreboard(), "§bLeben: ", DisplaySlot.SIDEBAR);
 			UtilScoreboard.setScore(v.getScoreboard(), "§bLeben: ", DisplaySlot.SIDEBAR, life.get(v));
-			
+
 			if(ev.getEntity().getKiller() instanceof Player){
 				Player a = (Player)ev.getEntity().getKiller();
 				getStats().addInt(a,1, StatsKey.KILLS);
@@ -265,12 +265,12 @@ public class SkyPvP extends SoloGame{
 				return;
 			}
 			broadcastWithPrefix("DEATH", v.getName());
-			
+
 			if(b)broadcastWithPrefix("GAME_AUSGESCHIEDEN", v.getName());
 			getStats().addInt(v,1, StatsKey.DEATHS);
 		}
 	}
-	
+
 	@EventHandler
 	public void GameStateChangeSkyPvP(GameStateChangeEvent ev){
 		if(ev.getFrom()==GameState.InGame&&ev.getTo()==GameState.Restart){
@@ -282,7 +282,7 @@ public class SkyPvP extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void StatsLoaded(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType() != getType())return;
@@ -291,9 +291,9 @@ public class SkyPvP extends SoloGame{
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int win = getStats().getInt(StatsKey.WIN, player);
 			int lose = getStats().getInt(StatsKey.LOSE, player);
-			
+
 			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-				
+
 				@Override
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
@@ -313,14 +313,14 @@ public class SkyPvP extends SoloGame{
 			});
 		}
 	}
-	
+
 	@EventHandler
 	public void GameStartSkyPvP(GameStartEvent ev){
 		getWorldData().clearWorld();
 		ArrayList<Location> locs = getWorldData().getSpawnLocations(Team.RED);
 		TargetNextPlayer = new AddonTargetNextPlayer(250,this);
 		TargetNextPlayer.setAktiv(true);
-		
+
 		if(locs.size()<UtilServer.getPlayers().size())System.err.println("[SkyPvP] Es sind zu wenig Location's angegeben!");
 		int r;
 		Scoreboard board;
@@ -347,7 +347,7 @@ public class SkyPvP extends SoloGame{
 			island.put(p, locs.get(r));
 			locs.remove(r);
 		}
-		
+
 		if(!locs.isEmpty()){
 			entity_king=new AddonEntityKing(this);
 			entity_king.spawnMobs(locs, EntityType.WOLF, "§c§lWolf");
@@ -356,37 +356,37 @@ public class SkyPvP extends SoloGame{
 			entity_king.setMove(true);
 			entity_king.setAttack(true);
 			entity_king.setAttack_damage(5.0);
-			
+
 			for(Entity c : entity_king.getCreature()){
 				if(c instanceof Wolf){
 					((Wolf)c).setAngry(true);
 				}
 			}
 		}
-		
+
 		new AddonDay(getManager().getInstance(),getWorldData().getWorld());
 		setStart((60*30)+1);
 		setState(GameState.InGame);
 	}
-	
+
 	@EventHandler
 	public void EntityKingDeath(AddonEntityKingDeathEvent ev){
 		if(ev.getEntity().getType()==EntityType.IRON_GOLEM){
 			ev.getEntity().getLocation().getBlock().setType(Material.CHEST);
-			
+
 			if(enderchest_material.isEmpty())loadMaterialList();
-			
+
 			Chest c = (Chest)ev.getEntity().getLocation().getBlock().getState();
-			
+
 			for(int i = 0; i < UtilMath.RandomInt(8, 3); i++){
 				c.getInventory().addItem( enderchest_material.get(UtilMath.randomInteger(enderchest_material.size())).clone() );
 			}
-			
+
 			ev.getEntity().getLocation().getWorld().strikeLightningEffect(ev.getEntity().getLocation());
 			UtilParticle.LARGE_SMOKE.display(1, 100, ev.getEntity().getLocation(), 20);
 		}
 	}
-	
+
 	@EventHandler
 	public void Ranking(RankingEvent ev){
 		getManager().setRanking(StatsKey.WIN);

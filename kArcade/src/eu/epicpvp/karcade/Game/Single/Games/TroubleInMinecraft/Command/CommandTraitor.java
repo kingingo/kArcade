@@ -10,8 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
 import eu.epicpvp.kcore.Enum.Team;
@@ -19,14 +19,14 @@ import eu.epicpvp.kcore.Translation.TranslationHandler;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 
 public class CommandTraitor implements CommandExecutor, Listener{
-	
+
 	TroubleInMinecraft TTT;
-	
+
 	public CommandTraitor(TroubleInMinecraft TTT){
 		this.TTT=TTT;
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
-	
+
 	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "traitor", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 		if(TTT.getState()!=GameState.LobbyPhase){
@@ -38,7 +38,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 			UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_KEINE","Traitor"));
 			return false;
 		}
-		
+
 		int t = TTT.getTraitor();
 		int tt = TTT.getPlayerCountFromTeam(Team.TRAITOR);
 		if(tt>=t){
@@ -51,7 +51,7 @@ public class CommandTraitor implements CommandExecutor, Listener{
 		UtilPlayer.sendMessage(((Player)cs),TranslationHandler.getText(((Player)cs), "PREFIX_GAME", TTT.getType().getTyp())+TranslationHandler.getText(((Player)cs), "TTT_PASSE_USE",new String[]{"Traitor",String.valueOf(t_p)}));
 		return false;
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Quit(PlayerQuitEvent ev){
 		if(TTT.getState()!=GameState.LobbyPhase)return;

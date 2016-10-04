@@ -8,8 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.Command.CommandForceStart;
 import eu.epicpvp.karcade.Command.CommandScan;
 import eu.epicpvp.karcade.Command.CommandStart;
@@ -21,13 +21,11 @@ import eu.epicpvp.kcore.Command.Admin.CommandCMDMute;
 import eu.epicpvp.kcore.Command.Admin.CommandChatMute;
 import eu.epicpvp.kcore.Command.Admin.CommandToggle;
 import eu.epicpvp.kcore.Command.Admin.CommandTppos;
-import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Listener.AntiCrashListener.AntiCrashListener;
 import eu.epicpvp.kcore.Listener.BungeeCordFirewall.BungeeCordFirewallListener;
 import eu.epicpvp.kcore.Listener.Command.ListenerCMD;
 import eu.epicpvp.kcore.MySQL.MySQL;
 import eu.epicpvp.kcore.Permission.PermissionManager;
-import eu.epicpvp.kcore.Teams.TeamManager;
 import eu.epicpvp.kcore.Update.Updater;
 import eu.epicpvp.kcore.Util.UtilBG;
 import eu.epicpvp.kcore.Util.UtilException;
@@ -51,7 +49,7 @@ public class kArcade extends JavaPlugin {
 			UtilServer.setPluginInstance(this); //KCore init some stuff with other plugin instance...
 			start_time = System.currentTimeMillis();
 			loadConfig();
-			
+
 			mysql = new MySQL(getConfig().getString("Config.MySQL.User"), getConfig().getString("Config.MySQL.Password"), getConfig().getString("Config.MySQL.Host"), getConfig().getString("Config.MySQL.DB"), this);
 			UtilFile.DeleteFolder(new File("schematics"));
 			UtilFile.DeleteFolder(new File("void"));

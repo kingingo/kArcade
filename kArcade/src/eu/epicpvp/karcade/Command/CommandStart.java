@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Command.CommandHandler.Sender;
@@ -24,19 +24,19 @@ public class CommandStart implements CommandExecutor{
 		TranslationHandler.registerFallback(LanguageType.GERMAN, "arcade.command.start.minplayer", "§cEs sind zu wenig Spieler (min. %s0) online!");
 		TranslationHandler.registerFallback(LanguageType.ENGLISH, "arcade.command.start.minplayer", "§cNot enough players (min. %s0) online!");
 	}
-	
+
 	ArcadeManager Manager;
-	
+
 	public CommandStart(ArcadeManager Manager){
 		this.Manager=Manager;
 	}
-	
+
 	@eu.epicpvp.kcore.Command.CommandHandler.Command(command = "start", sender = Sender.PLAYER)
 	public boolean onCommand(CommandSender cs, Command cmd, String arg2,String[] args) {
 			final Player p = (Player)cs;
 			if(!p.hasPermission(PermissionType.START_SERVER.getPermissionToString()))return false;
 			if(!(Manager.getGame() instanceof SingleGame))return false;
-			
+
 			if(p.hasPermission(PermissionType.START_SERVER_SET_TIME.getPermissionToString())){
 				AnvilGUI gui = new AnvilGUI(p,Manager.getInstance(), new AnvilGUI.AnvilClickEventHandler(){
 
@@ -52,9 +52,9 @@ public class CommandStart implements CommandExecutor{
 					        }
 						}
 					}
-					
+
 	    		});
-	    		
+
 					 ItemStack renamed = UtilItem.RenameItem(new ItemStack(Material.NAME_TAG), "Zahl");
 					 gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, renamed);
 					 gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, UtilItem.RenameItem(new ItemStack(Material.NAME_TAG), "§aFertig"));

@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.BuildType;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreEvent;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.MultiGameAddonAreaRestoreExplosionEvent;
@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class MultiGameArenaRestore extends kListener{
-	
+
 		private MultiGame game;
 		@Getter
 		private HashMap<Location,BlockState> blocks;
@@ -47,34 +47,34 @@ public class MultiGameArenaRestore extends kListener{
 		@Getter
 		@Setter
 		private ArrayList<Material> blacklist;
-		
+
 		public MultiGameArenaRestore(MultiGame game,Location ecke1,Location ecke2){
 			super(game.getGames().getManager().getInstance(),"GameArenaRestore: "+game.getArena());
 			this.blocks=new HashMap<>();
 			this.game=game;
 			this.world=ecke1.getWorld();
 			this.MinMax=UtilLocation.getMinMax(ecke1, ecke2);
-			
+
 			ecke1=new Location(ecke1.getWorld(),MinMax[UtilLocation.X][UtilLocation.Max],MinMax[UtilLocation.Y][UtilLocation.Max],MinMax[UtilLocation.Z][UtilLocation.Max]);
 			logMessage(UtilLocation.getLocString(ecke1));
-			
+
 			ecke2=new Location(ecke2.getWorld(),MinMax[UtilLocation.X][UtilLocation.Min],MinMax[UtilLocation.Y][UtilLocation.Min],MinMax[UtilLocation.Z][UtilLocation.Min]);
 			logMessage(UtilLocation.getLocString(ecke2));
 		}
-		
+
 		public boolean isInArea(Player player){
 			return isInArea(player.getLocation());
 		}
-		
+
 		public boolean isInArea(Location loc){
 			return UtilLocation.isInMinMax(MinMax, loc);
 		}
-		
+
 		public void restore(){
 			for(BlockState b : blocks.values()){
 				b.update(true);
 			}
-			
+
 			for(Entity e : world.getEntities()){
 				if((!(e instanceof Player))&&(!(e instanceof ItemFrame))&&(!(e instanceof ArmorStand))){
 					if(isInArea(e.getLocation())){
@@ -82,7 +82,7 @@ public class MultiGameArenaRestore extends kListener{
 					}
 				}
 			}
-			
+
 			blocks.clear();
 		}
 
@@ -109,18 +109,18 @@ public class MultiGameArenaRestore extends kListener{
 								}
 							}
 						}
-						
+
 						for(Block de : delete)ev.getBlocks().remove(de);
 					}else{
 						ev.getBlocks().clear();
 					}
 					return;
 				}
-				
+
 				ev.setBuild(false);
 			}
 		}
-		
+
 		@EventHandler(priority=EventPriority.LOW,ignoreCancelled=false)
 		public void MultiGameAddonAreaRestore(MultiGameAddonAreaRestoreEvent ev){
 			if(isInArea(ev.getLocation())&&ev.isBuild()){
@@ -154,9 +154,9 @@ public class MultiGameArenaRestore extends kListener{
 					}
 					return;
 				}
-				
+
 				ev.setBuild(false);
 			}
 		}
-		
+
 	}

@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Single.Games.TroubleInMinecraft.TroubleInMinecraft;
 import eu.epicpvp.kcore.Enum.Team;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -35,7 +35,7 @@ public class Shop implements Listener{
 	StatsKey punkte;
 	@Getter
 	Team t;
-	
+
 	public Shop(TroubleInMinecraft TTT,ItemStack shop_item,String Name,StatsKey punkte,Team t,IShop[] ShopList){
 		this.TTT=TTT;
 		this.shop_item=shop_item;
@@ -44,14 +44,14 @@ public class Shop implements Listener{
 		this.Name=Name;
 		shop=Bukkit.createInventory(null, 9,Name);
 		this.ShopList=ShopList;
-		
+
 		for(IShop s : ShopList){
 			shop.addItem(s.getShopItem());
 		}
-		
+
 		Bukkit.getPluginManager().registerEvents(this, TTT.getManager().getInstance());
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void OpenShop(PlayerInteractEvent ev){
 		if(ev.getAction()==Action.PHYSICAL)return;
@@ -63,7 +63,7 @@ public class Shop implements Listener{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void UseShop(InventoryClickEvent ev){
 		if (!(ev.getWhoClicked() instanceof Player)|| ev.getInventory() == null || ev.getCursor() == null || ev.getCurrentItem() == null)return;
@@ -71,7 +71,7 @@ public class Shop implements Listener{
 			Player p = (Player)ev.getWhoClicked();
 			ev.setCancelled(true);
 			p.closeInventory();
-			
+
 			for(IShop s : ShopList){
 				if(UtilItem.ItemNameEquals(ev.getCurrentItem(), s.getShopItem())){
 					int pk = s.getPunkte();
@@ -86,8 +86,8 @@ public class Shop implements Listener{
 					break;
 				}
 			}
-			
+
 		}
 	}
-	
+
 }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 
-import dev.wolveringer.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Multi.Games.MultiGame;
 import eu.epicpvp.karcade.Game.World.WorldData;
@@ -24,18 +24,18 @@ public class MultiWorldData extends WorldData{
 
 	@Setter
 	private HashMap<MultiGame,HashMap<Team,ArrayList<Location>>> locs; //Alle Team Locations der einzelnen MultiGame Arenas
-	
+
 	public MultiWorldData(ArcadeManager manager, GameType type) {
 		super(manager, type);
 		this.locs= new HashMap<>();
 	}
-	
+
 	public void loadSchematic(MultiGame game,Location paste, File folder){
 		folder = UnzipSchematic(folder);
 		pasteSchematic(paste, new File(folder.getAbsolutePath() + File.separator + "file.schematic"));
 		loadSchematicConfig(game, paste, folder);
 	}
-	
+
 	public void loadSchematicConfig(MultiGame game,Location paste, File folder){
 		addMultiGame(game, null);
 		String line=null;
@@ -43,7 +43,7 @@ public class MultiWorldData extends WorldData{
 			FileInputStream fstream = new FileInputStream(folder + File.separator + "SchematicConfig.dat");
 			DataInputStream in = new DataInputStream(fstream);
 		    BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		    
+
 		    while((line=br.readLine()) != null){
 		    	String[] tokens = line.split(":");
 		    	if (tokens.length >= 2){
@@ -136,33 +136,33 @@ public class MultiWorldData extends WorldData{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		log("Load Config:");
 		log("MultiGame Arena: "+game.getArena());
 		log("MultiGame Map: "+game.getMap());
 		for(Team team : locs.get(game).keySet())log("TEAM:"+team.getDisplayName()+" LOC:"+locs.get(game).get(team).size());
 	}
-	
+
 	public void addMultiGame(MultiGame game,Team team){
 		if(!locs.containsKey(game))locs.put(game,new HashMap<>());
 		if(team!=null&&!locs.get(game).containsKey(team))locs.get(game).put(team, new ArrayList<Location>());
 	}
-	
+
 	public void addLoc(MultiGame game,Team team,Location loc){
 		addMultiGame(game,team);
 		locs.get(game).get(team).add(loc);
 	}
-	
+
 	public boolean existLoc(MultiGame game,Team team){
 		addMultiGame(game,team);
 		return locs.get(game).containsKey(team);
 	}
-	
+
 	public HashMap<Team,ArrayList<Location>> getTeams(MultiGame game){
 		addMultiGame(game,null);
 		return locs.get(game);
 	}
-	
+
 	public ArrayList<Location> getLocs(MultiGame game,Team team){
 		addMultiGame(game,team);
 		if(!locs.get(game).containsKey(team)){

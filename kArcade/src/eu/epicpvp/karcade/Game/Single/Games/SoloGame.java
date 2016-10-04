@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Addons.AddonSpecCompass;
@@ -24,13 +24,13 @@ import eu.epicpvp.kcore.Util.UtilMath;
 import eu.epicpvp.kcore.Util.UtilServer;
 
 public class SoloGame extends SingleGame{
-	
+
 	AddonSpectator spec=null;
-	
+
 	public SoloGame(ArcadeManager manager) {
 		super(manager);
 	}
-	
+
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
@@ -41,7 +41,7 @@ public class SoloGame extends SingleGame{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void SpectJoin(PlayerJoinEvent ev){
 		if(getState()!=GameState.LobbyPhase){
@@ -49,14 +49,14 @@ public class SoloGame extends SingleGame{
 			SetSpectator(null,ev.getPlayer());
 		}
 	}
-	
+
 	@EventHandler
 	public void Funk(PlayerRespawnEvent ev){
 		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR){
 			SetSpectator(ev,ev.getPlayer());
 		}
 	}
-	
+
 	public void SetSpectator(PlayerRespawnEvent ev,Player player){
 		if(spec==null)spec=new AddonSpectator(this);
 	    getManager().clear(player);
@@ -87,5 +87,5 @@ public class SoloGame extends SingleGame{
 	    Bukkit.getPluginManager().callEvent(new KitShopPlayerDeleteEvent(player));
 	    getMoney().save(player);
 	  }
-	
+
 }

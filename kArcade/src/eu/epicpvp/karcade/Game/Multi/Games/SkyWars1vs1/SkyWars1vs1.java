@@ -15,8 +15,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.karcade.Game.Multi.Addons.MultiGameArenaRestore;
 import eu.epicpvp.karcade.Game.Multi.Addons.Evemts.MultiGameAddonChatEvent;
@@ -50,10 +50,10 @@ public class SkyWars1vs1 extends MultiTeamGame{
 	private MultiGameArenaRestore area;
 	private HashMap<Chest,ArrayList<String>> template;
 	private HashMap<String,Integer> template_type;
-	
+
 	public SkyWars1vs1(MultiGames games,String Map,Location location,File file) {
 		super(games,Map, location);
-		
+
 		setStartCountdown(31);
 		setWorldBorderPacket(UtilWorld.createWorldBorder(getPasteLocation(), 125*2, 25, 10));
 		Location ecke1 = getPasteLocation().clone();
@@ -65,7 +65,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		UtilBG.setHub("versus");
 		this.area=new MultiGameArenaRestore(this, ecke1,ecke2);
 		getWorldData().loadSchematic(this, location, file);
-		
+
 		setBlockBreak(true);
 		setBlockPlace(true);
 		setDropItem(false);
@@ -75,18 +75,18 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		setDamagePvP(false);
 		setDamage(false);
 		getEntityDamage().add(DamageCause.FALL);
-		
+
 		this.template=new HashMap<>();
 		this.template_type=new HashMap<>();
 		UtilSkyWars1vs1.loadWorld(this, template, template_type);
-		
+
 		if(games.getKitshop() == null){
 			games.setKitshop(new MultiKitShop(games,games.getMoney(), "Kit-Shop", InventorySize._9, UtilSkyWars1vs1.getKits(games)));
 		}
-		
+
 		loadMaxTeam();
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Join(MultiGamePlayerJoinEvent ev){
 		if(ev.getGame()!=this)return;
@@ -102,16 +102,16 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			updateInfo();
 		}
 	}
-	
+
 	@EventHandler
 	public void inGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setTimer(getTimer()-1);
 		if(getTimer()<0)setTimer((60*8)+1);
-		
+
 		for(Player p : getGameList().getPlayers().keySet())UtilDisplay.displayTextBar(TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getTimer())), p);
-		
+
 		switch(getTimer()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
 		case 15: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getTimer()));break;
@@ -127,7 +127,7 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			break;
 		}
 	}
-	
+
 	Player v;
 	Player a;
 	@EventHandler
@@ -135,10 +135,10 @@ public class SkyWars1vs1 extends MultiTeamGame{
 		if(ev.getEntity() instanceof Player && getGameList().getPlayers().containsKey( ((Player)ev.getEntity()) )){
 			v = (Player)ev.getEntity();
 			UtilPlayer.RespawnNow(v, getGames().getManager().getInstance());
-			
+
 			getGames().getStats().addInt(v,1, StatsKey.LOSE);
 			getGameList().addPlayer(v, PlayerState.SPECTATOR);
-			
+
 			if(ev.getEntity().getKiller() instanceof Player){
 				a = (Player)ev.getEntity().getKiller();
 				getGames().getStats().addInt(a,1, StatsKey.KILLS);
@@ -149,19 +149,19 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			getGames().getStats().addInt(v,1, StatsKey.DEATHS);
 		}
 	}
-	
+
 	@EventHandler
 	public void chat(MultiGameAddonChatEvent ev){
 		if(getGameList().getPlayers().containsKey(ev.getPlayer())){
 			ev.setCancelled(true);
-			
+
 			for(Player player : getGameList().getPlayers().keySet()){
 				System.out.println("[AddonChat:"+getArena()+"] "+ev.getPlayer().getName()+": "+ev.getMessage());
 				player.sendMessage(getTeam(ev.getPlayer()).getColor()+ev.getPlayer().getName()+"§8 § §7"+ev.getMessage());
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void MultiGameStateChangeSkyWars1vs1(MultiGameStateChangeEvent ev){
 		if(ev.getGame()==this&&ev.getTo()==GameState.Restart){
@@ -183,9 +183,9 @@ public class SkyWars1vs1 extends MultiTeamGame{
 				new Title("§6§lGEWONNEN").send(p1);
 			}
 		}
-		
+
 	}
-	
+
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
 		if(getState()==GameState.LobbyPhase&&getGameList().getPlayers().containsKey(ev.getPlayer())&&UtilEvent.isAction(ev, ActionType.RIGHT)){
@@ -194,28 +194,28 @@ public class SkyWars1vs1 extends MultiTeamGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void lobby(MultiGameStateChangeEvent ev){
 		if(ev.getGame()!=this)return;
 		if(ev.getTo()==GameState.Restart){
 			if(area!=null)area.restore();
-		
+
 			UtilSkyWars1vs1.loadWorld(this, template, template_type);
 			setDamagePvP(false);
 			setDamage(false);
 			setDropItem(false);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.NORMAL)
 	public void start(MultiGameStartEvent ev){
 		if(ev.getGame() == this){
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.RED).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
 			UtilMap.makeQuadrat(null,getWorldData().getLocs(this, Team.BLUE).get(0).clone().add(0,10, 0), 2, 5, new ItemStack(Material.AIR,1),null);
-			
-			
-			
+
+
+
 			for(Player player : getGameList().getPlayers().keySet()){
 				player.closeInventory();
 				getGames().getManager().clear(player);

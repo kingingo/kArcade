@@ -32,9 +32,9 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.iterator.InfinityIterator;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
@@ -514,7 +514,7 @@ public class CustomWars extends TeamGame {
 			if (!(et instanceof Player) && !(et instanceof Villager))
 				et.remove();
 	}
-	
+
 	@EventHandler
 	public void a(ChunkUnloadEvent e){
 		for(Entity et : e.getChunk().getEntities()){
@@ -523,7 +523,7 @@ public class CustomWars extends TeamGame {
 		}
 		e.setCancelled(true);
 	}
-	
+
 	@EventHandler
 	public void Start(GameStartEvent ev) {
 		long time = System.currentTimeMillis();

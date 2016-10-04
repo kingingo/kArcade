@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -25,7 +24,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.TeamAddEvent;
 import eu.epicpvp.karcade.Game.Events.TeamDelEvent;
@@ -130,7 +129,7 @@ public class TeamGame extends SingleGame {
 				return Team.RED;
 		return playerCountEntries.get(0).getKey();
 	}
-	
+
 	public List<Entry<Team, Integer>> calculateLowestTeams(Team[] teams, boolean returnNullBySame) {
 		HashMap<Team, Integer> playerCount = new HashMap<>();
 		for (Team t : teams)
@@ -242,7 +241,7 @@ public class TeamGame extends SingleGame {
 		if(getVoteTeam() != null)
 			for(Entry<Player, Team> voted : getVoteTeam().getAllVotes())
 				getTeamList().put(voted.getKey(), voted.getValue());
-		
+
 		while (players.hasNext()) {
 			Player p = players.next();
 			if (getTeamList().containsKey(p)) //Voted
@@ -282,7 +281,7 @@ public class TeamGame extends SingleGame {
 		if(getVoteTeam() != null)
 			for(Entry<Player, Team> voted : getVoteTeam().getAllVotes())
 				getTeamList().put(voted.getKey(), voted.getValue());
-		
+
 		Collections.shuffle(list);
 		Iterator<Player> players = list.iterator();
 		while(players.hasNext()) {
@@ -388,12 +387,12 @@ public class TeamGame extends SingleGame {
 		}
 	}
 	*/
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void handleTeamDamage(EntityDamageByEntityEvent ev) {
 		Player entity = getPlayerFromDamager(ev.getEntity());
 		Player damager = getPlayerFromDamager(ev.getDamager());
-		
+
 		if (entity != null && damager != null) {
 			if (!teamDamageSelfEnabled && getTeam(damager) == getTeam(entity)) {
 				if (getManager().getService().isDebug())

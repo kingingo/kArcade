@@ -16,9 +16,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
 import eu.epicpvp.karcade.Game.Multi.Games.CustomWars1vs1.SheepWars1vs1.UtilSheepWars1vs1;
@@ -47,13 +47,13 @@ public class SheepWars extends CustomWars{
 	private SingleKitShop kitshop;
 	@Getter
 	private HashMap<Player, String> kits = new HashMap();
-	
+
 	public SheepWars(ArcadeManager manager, CustomWarsType customType) {
 		super(manager, GameType.SheepWars, customType);
-		
+
 		kitshop=new SingleKitShop(getManager().getInstance(),getMoney(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, UtilSheepWars1vs1.getKits(this));
 	}
-	
+
 	@EventHandler
 	public void sheepDeath(AddonEntityTeamKingDeathEvent ev){
 		UtilScoreboard.resetScore(getScoreboard(), "§a§l"+Zeichen.BIG_HERZ.getIcon()+" "+ev.getTeam().getColor()+ev.getTeam().getDisplayName(), DisplaySlot.SIDEBAR);
@@ -64,13 +64,13 @@ public class SheepWars extends CustomWars{
 		if(ev.getKiller()!=null){
 			getStats().addInt(ev.getKiller(),1, StatsKey.SHEEPWARS_KILLED_SHEEPS);
 		}
-		
+
 		for(Player player : UtilServer.getPlayers()){
 			t.setSubtitle(TranslationHandler.getText(player,"SHEEPWARS_SHEEP_DEATH", ev.getTeam().getColor()+"§l"+ev.getTeam().getDisplayName()));
 			t.send(player);
 		}
 	}
-	
+
 	HashMap<Team,ArrayList<Block>> block = new HashMap<>();
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Break(BlockBreakEvent ev){
@@ -90,14 +90,14 @@ public class SheepWars extends CustomWars{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void start(GameStartEvent ev){
 		HashMap<Player,String> l= new HashMap<>();
 		for(Player p : getTeamList().keySet()){
 			l.put(p, getTeamList().get(p).getColor());
 		}
-		
+
 		for(Kit kit : kitshop.getKits()){
 			kit.StartGame(l);
 			for(Perk perk : kit.getPlayers().keySet()){
@@ -108,7 +108,7 @@ public class SheepWars extends CustomWars{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Place(BlockPlaceEvent ev){
 		if(getState()==GameState.LobbyPhase){
@@ -120,7 +120,7 @@ public class SheepWars extends CustomWars{
 			block.get(getTeam(ev.getPlayer())).add(ev.getBlock());
 		}
 	}
-	
+
 	@EventHandler
 	public void addShop(VillagerAddShopEvent ev){
 		if(ev.getItemStack().hasItemMeta()&&ev.getItemStack().getItemMeta().hasDisplayName()){
@@ -129,7 +129,7 @@ public class SheepWars extends CustomWars{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Explode (EntityExplodeEvent ev){
 		for(Block b : ev.blockList()){
@@ -138,13 +138,13 @@ public class SheepWars extends CustomWars{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
-	
+
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
 		if(UtilEvent.isAction(ev, ActionType.RIGHT)){
@@ -154,5 +154,5 @@ public class SheepWars extends CustomWars{
 			}
 		}
 	}
-	
+
 }

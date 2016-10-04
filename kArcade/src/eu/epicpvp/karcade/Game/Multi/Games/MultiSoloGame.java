@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Multi.MultiGames;
 import eu.epicpvp.kcore.Enum.GameStateChangeReason;
 import eu.epicpvp.kcore.Enum.PlayerState;
@@ -26,14 +26,14 @@ public class MultiSoloGame extends MultiGame{
 	public MultiSoloGame(MultiGames games, String Map, Location pasteLocation) {
 		super(games, Map, pasteLocation);
 	}
-	
+
 	@EventHandler
 	public void SpectaterAndRespawn(PlayerRespawnEvent ev){
 		if(getGameList().isPlayerState(ev.getPlayer())==PlayerState.SPECTATOR){
 			SetSpectator(ev,ev.getPlayer());
 		}
 	}
-	
+
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		if(isState(GameState.Restart)||isState(GameState.LobbyPhase))return;
@@ -42,7 +42,7 @@ public class MultiSoloGame extends MultiGame{
 			setState(GameState.Restart,GameStateChangeReason.LAST_PLAYER);
 		}
 	}
-	
+
 	public void SetSpectator(PlayerRespawnEvent ev,Player player){
 	    getGames().getManager().clear(player);
 	    List<Player> l = getGameList().getPlayers(PlayerState.INGAME);

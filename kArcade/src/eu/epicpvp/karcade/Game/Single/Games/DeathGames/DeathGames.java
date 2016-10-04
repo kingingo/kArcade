@@ -23,9 +23,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
-import dev.wolveringer.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.gamestats.StatsKey;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Events.RankingEvent;
@@ -105,12 +105,12 @@ public class DeathGames extends SoloGame{
 	private HashMap<Inventory,Location> chest1 = new HashMap<>();
 	private int chest_anzahl=120;
 	private int extra_chest_anzahl=0;
-	
+
 	private ArrayList<ItemStack> selten = new ArrayList<>();
 	private ArrayList<ItemStack> medium = new ArrayList<>();
 	private ArrayList<ItemStack> normal = new ArrayList<>();
 	private SingleKitShop kitShop;
-	
+
 	public DeathGames(ArcadeManager manager) {
 		super(manager);
 		long t = System.currentTimeMillis();
@@ -168,9 +168,9 @@ public class DeathGames extends SoloGame{
 		getWorldData().getMap().setMapName(((String)getWorldData().getBiomes().keySet().toArray()[UtilMath.randomInteger(getWorldData().getBiomes().size())]));
 		this.center=getWorldData().getBiomes().get(getWorldData().getMapName());
 		grenze=new AddonWorldBorder(this, getCenter(), (getMaxPlayers()*10));
-		
+
 		this.kitShop=new SingleKitShop(getManager().getInstance(),getMoney(), getManager().getPermManager(), "Kit-Shop", InventorySize._27, new Kit[]{
-			
+
 			new Kit( "§aBogensch§tze",new String[]{"Der Bogensch§tze startet mit ","einem Bogen und 4 Pfeilen.","30% Chance das der Pfeil brennt!"}, new ItemStack(Material.BOW),PermissionType.SHEEPWARS_KIT_STARTER,KitType.STARTER,2000,500,new Perk[]{
 				new PerkEquipment(new ItemStack[]{new ItemStack(Material.BOW),new ItemStack(Material.ARROW,4)}),
 				new PerkArrowFire(30)
@@ -261,7 +261,7 @@ public class DeathGames extends SoloGame{
 				new PerkWalkEffect(Effect.HEART,10)
 			}),
 		});
-		
+
 		setState(GameState.LobbyPhase);
 		manager.DebugLog(t, this.getClass().getName());
 	}
@@ -271,7 +271,7 @@ public class DeathGames extends SoloGame{
 //		this.chest_anzahl=UtilInterface.DG_Chest(ev.getSetting().getInfos());
 //		this.kits=UtilInterface.DG_Kits(ev.getSetting().getInfos());
 //	}
-	
+
 	@EventHandler
 	public void ShopOpen(PlayerInteractEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
@@ -281,16 +281,16 @@ public class DeathGames extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChatd(AsyncPlayerChatEvent event) {
 		if (!event.isCancelled()) {
-			
+
 			if((!event.getPlayer().hasPermission(PermissionType.CHAT_LINK.getPermissionToString()))&&UtilString.isBadWord(event.getMessage())||UtilString.checkForIP(event.getMessage())){
 				event.setMessage("Ich heul rum!");
 				event.getPlayer().sendMessage(TranslationHandler.getText(event.getPlayer(), "PREFIX")+TranslationHandler.getText(event.getPlayer(), "CHAT_MESSAGE_BLOCK"));
 			}
-			
+
 			Player p = event.getPlayer();
 			String msg = event.getMessage();
 			msg=msg.replaceAll("%","");
@@ -298,7 +298,7 @@ public class DeathGames extends SoloGame{
 			event.setFormat(getManager().getPermManager().getPrefix(p) + p.getName() + "§7: "+ msg);
 		}
 	}
-	
+
 	private void setupItems(){
 		selten.add(new ItemStack(Material.DIAMOND, 1));
 		selten.add(new ItemStack(Material.DIAMOND_CHESTPLATE,1));
@@ -326,7 +326,7 @@ public class DeathGames extends SoloGame{
 		selten.add(new ItemStack(Material.POTION, 2,(byte)16451));
 		selten.add(new ItemStack(Material.POTION, 2,(byte)16393));
 		selten.add(new ItemStack(Material.POTION, 2,(byte)16386));
-		
+
 		medium.add(new ItemStack(Material.IRON_INGOT, 3));
 		medium.add(new ItemStack(Material.IRON_INGOT, 5));
 		medium.add(new ItemStack(Material.IRON_INGOT, 3));
@@ -365,7 +365,7 @@ public class DeathGames extends SoloGame{
 		normal.add(new ItemStack(Material.STONE_AXE, 1));
 		normal.add(new ItemStack(Material.IRON_AXE, 1));
 		medium.add(new ItemStack(Material.STICK, 2));
-		
+
 		normal.add(new ItemStack(Material.APPLE, 1));
 		normal.add(new ItemStack(Material.WHEAT, 7));
 		normal.add(new ItemStack(Material.BAKED_POTATO, 3));
@@ -389,7 +389,7 @@ public class DeathGames extends SoloGame{
 		medium.add(new ItemStack(351,4,(byte) 4));
 		medium.add(new ItemStack(351,4,(byte) 4));
 	}
-	
+
 	public Inventory setupInv() {
 		Inventory inv = Bukkit.createInventory(null, 9 * 3, "DeathGames");
 		ItemStack[] is = new ItemStack[9 * 3];
@@ -410,7 +410,7 @@ public class DeathGames extends SoloGame{
 		}
 		return inv;
 	}
-	
+
 	@EventHandler
 	public void Death(PlayerDeathEvent ev){
 		if(ev.getEntity() instanceof Player){
@@ -431,7 +431,7 @@ public class DeathGames extends SoloGame{
 			}
 		}
 	}
-	
+
 	long time;
 	Location loc;
 	List<Player> gl;
@@ -441,7 +441,7 @@ public class DeathGames extends SoloGame{
 		if(getState()!=GameState.InGame)return;
 		if(getGrenze().getRadius() != (getGameList().getPlayers(PlayerState.INGAME).size()*10)){
 			getGrenze().setRadius(getGrenze().getRadius()-1);
-			
+
 			chest_anzahl=getGameList().getPlayers(PlayerState.INGAME).size()*10;
 			if(getState()==GameState.InGame||getState()==GameState.SchutzModus){
 				for(int i = 0; i < chest.size(); i++){
@@ -465,17 +465,17 @@ public class DeathGames extends SoloGame{
 					}
 				}
 			}
-			
+
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void kick(PlayerViolationEvent ev){
 		if(getState()==GameState.SchutzModus){
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void SpawnChest(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.FASTER)return;
@@ -489,7 +489,7 @@ public class DeathGames extends SoloGame{
 			}
 		}
 	}
-	
+
 	public void spawnExtraChest(){
 		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt((int)getGrenze().getMaxX(), (int)getGrenze().getMinX()), 200, UtilMath.RandomInt((int)getGrenze().getMaxZ(),(int) getGrenze().getMinZ()));
 		loc.getWorld().spawnFallingBlock(loc, Material.ENDER_CHEST, (byte)1);
@@ -508,11 +508,11 @@ public class DeathGames extends SoloGame{
 				is[ii] = added;
 			}
 		}
-		
+
 		chest.put(l,inv);
 		chest1.put(inv,l);
 	}
-	
+
 	public void spawnChest(){
 		Location loc = new Location(getWorldData().getWorld(), UtilMath.RandomInt((int)getGrenze().getMaxX(), (int)getGrenze().getMinX()), 200, UtilMath.RandomInt((int)getGrenze().getMaxZ(),(int) getGrenze().getMinZ()));
 		loc.getWorld().spawnFallingBlock(loc, Material.CHEST,(byte)1);
@@ -521,7 +521,7 @@ public class DeathGames extends SoloGame{
 		chest.put(l,inv);
 		chest1.put(inv,l);
 	}
-	
+
 	@EventHandler
 	public void InventoryCloseCCC(InventoryCloseEvent ev){
 		if(ev.getInventory().getTitle().equalsIgnoreCase("DeathGames")){
@@ -538,7 +538,7 @@ public class DeathGames extends SoloGame{
 			}
 		}
 	}
-	
+
 	Inventory inv;
 	@EventHandler
 	public void Open(PlayerInteractEvent ev){
@@ -546,7 +546,7 @@ public class DeathGames extends SoloGame{
 			if(getGameList().getPlayers(PlayerState.SPECTATOR).contains(ev.getPlayer()))return;
 			if(UtilEvent.isAction(ev, ActionType.RIGHT_BLOCK)){
 				if(ev.getClickedBlock().getType()==Material.ENDER_CHEST||ev.getClickedBlock().getType()==Material.CHEST){
-					
+
 					if(chest.containsKey(ev.getClickedBlock().getLocation())){
 						ev.getPlayer().openInventory(chest.get(ev.getClickedBlock().getLocation()));
 						ev.setCancelled(true);
@@ -555,12 +555,12 @@ public class DeathGames extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void Ranking(RankingEvent ev){
 		getManager().setRanking(StatsKey.WIN);
 	}
-	
+
 	@EventHandler
 	public void GameStateChange(GameStateChangeEvent ev){
 		if(ev.getTo()==GameState.Restart){
@@ -572,7 +572,7 @@ public class DeathGames extends SoloGame{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void Schutzzeit(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
@@ -596,13 +596,13 @@ public class DeathGames extends SoloGame{
 			break;
 		}
 	}
-	
+
 	@EventHandler
 	public void inGame(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC)return;
 		if(getState()!=GameState.InGame)return;
 		setStart(getStart()-1);
-		
+
 		for(Player p : UtilServer.getPlayers())UtilDisplay.displayTextBar(TranslationHandler.getText(p, "GAME_END_IN", UtilTime.formatSeconds(getStart())), p);
 		switch(getStart()){
 		case 30: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
@@ -614,7 +614,7 @@ public class DeathGames extends SoloGame{
 		case 2: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 1: broadcastWithPrefix("GAME_END_IN", UtilTime.formatSeconds(getStart()));break;
 		case 0:
-			
+
 			broadcastWithPrefixName("GAME_END");
 			setState(GameState.Restart);
 			break;
@@ -629,9 +629,9 @@ public class DeathGames extends SoloGame{
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
 			int win = getStats().getInt(StatsKey.WIN, player);
 			int lose = getStats().getInt(StatsKey.LOSE, player);
-			
+
 			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-				
+
 				@Override
 				public void run() {
 					getManager().getHologram().sendText(player,getManager().getLoc_stats(),new String[]{
@@ -651,19 +651,19 @@ public class DeathGames extends SoloGame{
 			});
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void JoinHologram(PlayerJoinEvent ev){
 		if(getState()!=GameState.LobbyPhase)return;
 		ev.getPlayer().getInventory().addItem(UtilItem.RenameItem(new ItemStack(Material.CHEST), "§bKitShop"));
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Start(GameStartEvent ev){
 		long time = System.currentTimeMillis();
 		getWorldData().getWorld().setStorm(false);
 		chest_anzahl=UtilServer.getPlayers().size()*10;
-		
+
 		double minZ=grenze.getMinZ()+20;
 		double maxZ=grenze.getMaxZ()-20;
 		double minX=grenze.getMinX()+20;
@@ -683,17 +683,17 @@ public class DeathGames extends SoloGame{
 		AddonTargetNextPlayer a = new AddonTargetNextPlayer(500,this);
 		a.setAktiv(true);
 		setDamage(false);
-		
+
 		if(getManager().getHoliday()!=null){
 			switch(getManager().getHoliday()){
 			case WEIHNACHTEN:
 				new kScheduler(getManager().getInstance(),new kScheduler.kSchedulerHandler() {
-					
+
 					@Override
 					public void onRun(kScheduler s) {
 						for(Player p : getGameList().getPlayers(PlayerState.INGAME))UtilParticle.FIREWORKS_SPARK.display(10F, 4F, 10F, 0, 60, p.getLocation(), 15);
 					}
-					
+
 				},UpdateType.FAST);
 				break;
 			case HALLOWEEN:
@@ -701,7 +701,7 @@ public class DeathGames extends SoloGame{
 				break;
 			}
 		}
-		
+
 		setStart(46);
 		setState(GameState.SchutzModus);
 		getManager().DebugLog(time, this.getClass().getName());

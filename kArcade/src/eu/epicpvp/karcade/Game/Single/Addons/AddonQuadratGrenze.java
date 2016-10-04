@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
-import dev.wolveringer.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.kcore.Enum.PlayerState;
 import eu.epicpvp.kcore.Translation.TranslationHandler;
@@ -42,7 +42,7 @@ public class AddonQuadratGrenze implements Listener{
 	private int MaxZ;
 	@Getter
 	private int MinZ;
-	
+
 	public AddonQuadratGrenze(SingleGame game,Location loc,int radius){
 		long time = System.currentTimeMillis();
 		Bukkit.getPluginManager().registerEvents(this, game.getManager().getInstance());
@@ -51,10 +51,10 @@ public class AddonQuadratGrenze implements Listener{
 		this.center=loc;
 		game.getManager().DebugLog(time, this.getClass().getName());
 	}
-	
+
 	public Vector calculateVector(Location from, Location to) {
 		Location a = from, b = to;
-		
+
 		double dX = a.getX() - b.getX();
 		double dY = a.getY() - b.getY();
 		double dZ = a.getZ() - b.getZ();
@@ -65,11 +65,11 @@ public class AddonQuadratGrenze implements Listener{
 		double x = Math.sin(pitch) * Math.cos(yaw);
 		double y = Math.sin(pitch) * Math.sin(yaw);
 		double z = Math.cos(pitch);
-		
+
 		Vector vector = new Vector(x, z, y);
 		return vector;
 	}
-	
+
 	@EventHandler
 	public void Update(UpdateEvent ev){
 		if(ev.getType()!=UpdateType.SEC){
@@ -88,7 +88,7 @@ public class AddonQuadratGrenze implements Listener{
 						}
 					}
 				}
-				
+
 			}
 		}else if(ev.getType()!=UpdateType.SEC_2){
 			if(game.getState()==GameState.InGame||game.getState()==GameState.SchutzModus){
@@ -98,17 +98,17 @@ public class AddonQuadratGrenze implements Listener{
 						UtilPlayer.health(p, -1);
 						p.sendMessage(TranslationHandler.getText(p, "PREFIX_GAME",game.getType().name())+"§c"+TranslationHandler.getText(p, "AU§ERHALB_DER_MAP"));
 					}
-				}	
+				}
 			}
 		}
-		
+
 	}
-	
+
 	public boolean isInGrenze(Location loc){
 		if(loc.getX() < MaxX && loc.getX() > MinX && loc.getZ() > MinZ && loc.getZ() < MaxZ)return true;
 		return false;
 	}
-	
+
 	@EventHandler
 	public void Teleport(PlayerTeleportEvent ev){
 		if(ev.getCause()==TeleportCause.ENDER_PEARL){
@@ -116,7 +116,7 @@ public class AddonQuadratGrenze implements Listener{
 			if(!isInGrenze(ev.getTo()))ev.setCancelled(true);
 		}
 	}
-	
+
 	public void setList(int radius,ArrayList<Location> list1){
 		setRadius(radius);
 		MaxX = MaxX();
@@ -128,7 +128,7 @@ public class AddonQuadratGrenze implements Listener{
 		list1.clear();
 		list1=null;
 	}
-	
+
 	public ArrayList<Location> scanWithLowestBlock(int radius,int wallUp,int wallDown) {
 		setRadius(radius);
 		ArrayList<Location> list1 = new ArrayList<Location>();
@@ -138,9 +138,9 @@ public class AddonQuadratGrenze implements Listener{
 		MinZ = MinZ();
 
 		Location l=null;
-		
+
 		int y=0;
-		
+
 		for (int x = MaxX; x > MinX; x--) {
 			l = new Location(center.getWorld(), x, MaxY(), MaxZ);
 			l = UtilLocation.getLowestBlock(l);
@@ -149,55 +149,55 @@ public class AddonQuadratGrenze implements Listener{
 				l.setY(up);
 				list1.add(l.clone());
 			}
-			
+
 			for(int down = y; down > y-wallDown; down--){
 				l.setY(down);
 				list1.add(l.clone());
 			}
 		}
-		
+
 		for (int x = MinX; x < MaxX; x++) {
 			l = new Location(center.getWorld(), x, MaxY(), MinZ);
 			l = UtilLocation.getLowestBlock(l);
 			y=l.getBlockY();
-			
+
 			for(int up = y; up < y+wallUp; up++){
 				l.setY(up);
 				list1.add(l.clone());
 			}
-			
+
 			for(int down = y; down > y-wallDown; down--){
 				l.setY(down);
 				list1.add(l.clone());
 			}
 		}
-		
+
 		for (int z = MaxZ; z > MinZ; z--) {
 			l = new Location(center.getWorld(), MinX, MaxY(), z);
 			l = UtilLocation.getLowestBlock(l);
 			y=l.getBlockY();
-			
+
 			for(int up = y; up < y+wallUp; up++){
 				l.setY(up);
 				list1.add(l.clone());
 			}
-			
+
 			for(int down = y; down > y-wallDown; down--){
 				l.setY(down);
 				list1.add(l.clone());
 			}
 		}
-		
+
 		for (int z = MinZ; z < MaxZ; z++) {
 			l = new Location(center.getWorld(), MaxX, MaxY(), z);
 			l = UtilLocation.getLowestBlock(l);
 			y=l.getBlockY();
-			
+
 			for(int up = y; up < y+wallUp; up++){
 				l.setY(up);
 				list1.add(l.clone());
 			}
-			
+
 			for(int down = y; down > y-wallDown; down--){
 				l.setY(down);
 				list1.add(l.clone());
@@ -205,7 +205,7 @@ public class AddonQuadratGrenze implements Listener{
 		}
 		return list1;
 	}
-	
+
 	public ArrayList<Location> scan(int radius) {
 		setRadius(radius);
 		ArrayList<Location> list1 = new ArrayList<Location>();
@@ -242,7 +242,7 @@ public class AddonQuadratGrenze implements Listener{
 		}
 		return list1;
 	}
-	
+
 	public void scan() {
 		ArrayList<Location> list1 = new ArrayList<Location>();
 		MaxX = MaxX();
@@ -280,15 +280,15 @@ public class AddonQuadratGrenze implements Listener{
 		list1.clear();
 		list1=null;
 	}
-	
+
 	public int MaxY(){
 		return 255;
 	}
-	
+
 	public int MinY(){
 		return center.getBlockY();
 	}
-	
+
 	public int MinZ() {
 		return center.getBlockZ() - (radius);
 	}
@@ -304,5 +304,5 @@ public class AddonQuadratGrenze implements Listener{
 	public int MaxX() {
 		return center.getBlockX() + (radius);
 	}
-	
+
 }
