@@ -5,7 +5,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.client.Callback;
+import eu.epicpvp.datenclient.client.Callback;
 import eu.epicpvp.kcore.Util.UtilItem;
 
 public class LuckyPack extends LuckyClickItem{
@@ -18,7 +18,7 @@ public class LuckyPack extends LuckyClickItem{
 				player.getLocation().getBlock().getRelative(BlockFace.NORTH).setType(Material.ENCHANTMENT_TABLE);
 				player.getLocation().getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST).setType(Material.ANVIL);
 			}
-			
+
 		});
 	}
 

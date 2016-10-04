@@ -28,9 +28,9 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
-import dev.wolveringer.client.Callback;
-import dev.wolveringer.client.ClientWrapper;
-import dev.wolveringer.client.ProgressFuture;
+import eu.epicpvp.datenclient.client.Callback;
+import eu.epicpvp.datenclient.client.ClientWrapper;
+import eu.epicpvp.datenclient.client.ProgressFuture;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;

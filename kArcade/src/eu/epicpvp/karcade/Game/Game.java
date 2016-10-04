@@ -15,11 +15,11 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.booster.NetworkBooster;
-import dev.wolveringer.client.Callback;
+import eu.epicpvp.datenclient.client.Callback;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
-import dev.wolveringer.event.EventListener;
+import eu.epicpvp.datenclient.event.EventListener;
 import dev.wolveringer.events.Event;
 import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;

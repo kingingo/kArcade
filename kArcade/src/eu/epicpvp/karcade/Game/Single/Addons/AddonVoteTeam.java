@@ -21,7 +21,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
 import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
@@ -155,7 +155,7 @@ public class AddonVoteTeam implements Listener {
 				for (Entry<Player, Team> e : vote.entrySet())
 					votes.put(e.getValue(), votes.get(e.getValue()) + 1);
 				int minVote = avariableTeams.length * maxPlayerPerTeam;
-				
+
 				for (Entry<Team, Integer> e : votes.entrySet())
 					if (e.getValue() < minVote)
 						minVote = e.getValue();
@@ -292,13 +292,13 @@ public class AddonVoteTeam implements Listener {
 		}
 		event.setCancelled(true);
 	}
-	
+
 	public Team getVotedTeam(Player player){
 		if(vote.containsKey(player))
 			return vote.get(player);
 		return null;
 	}
-	
+
 	public Set<Entry<Player, Team>> getAllVotes(){
 		return vote.entrySet();
 	}

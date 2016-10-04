@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import dev.wolveringer.client.connection.PacketListener;
+import eu.epicpvp.datenclient.client.connection.PacketListener;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.protocoll.packets.Packet;
@@ -75,7 +75,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class MultiGames extends Game{
-	
+
 	@Getter
 	private HashMap<String,MultiGame> games = new HashMap<>(); // Auflistung aller MutltiGame Arenas
 	@Getter
@@ -98,7 +98,7 @@ public class MultiGames extends Game{
 	private Team[] spielerTeams;
 	@Getter
 	private InventoryPageBase page;
-	
+
 	public MultiGames(ArcadeManager manager,String type){
 		super(manager);
 		setTyp(GameType.get(type));
@@ -110,12 +110,12 @@ public class MultiGames extends Game{
 		setApublic(false);
 		new MultiAddonChat(manager.getInstance());
 		manager.getCmd().register(CommandSpectate.class, new CommandSpectate(manager));
-		
+
 		PacketArenaSettings.register();
 		PacketArenaStatus.register();
 		PacketArenaWinner.register();
 		getManager().getClient().getHandle().getHandlerBoss().addListener(new PacketListener() {
-			
+
 			@Override
 			public void handle(Packet packet) {
 				if(packet instanceof PacketArenaSettings){
@@ -129,21 +129,21 @@ public class MultiGames extends Game{
 							System.out.println("PACKET: "+settings.getPlayer()+"("+UtilPlayer.isOnline(settings.getPlayer())+") to "+settings.getArena());
 							g.setSettings(settings);
 						}
-						
+
 					});
 				}
 			}
 		});
 	}
-	
+
 	@EventHandler
 	public void MulistatusUpdate(ServerStatusUpdateEvent ev){
 		ev.getPacket().setListed(false);
 	}
-	
+
 	public void createAdminPage(){
 		page=new InventoryPageBase(InventorySize._18, "§cTeam Interface");
-		
+
 		for(MultiGame game : getGames().values()){
 			game.setButton(new ButtonBase(new Click(){
 
@@ -153,22 +153,22 @@ public class MultiGames extends Game{
 					p.teleport(game.getPasteLocation().clone().add(0, 10, 0));
 					for(Player player : game.getGameList().getPlayers().keySet())p.showPlayer(player);
 				}
-				
+
 			}, UtilItem.Item(new ItemStack(Material.COMMAND,1), new String[]{""}, "§a"+getType().name()+" §7[§e"+(game.getArena().replaceAll("arena", ""))+"§7]")));
 			page.addButton(game.getButton());
 		}
-		
+
 		UtilInv.getBase().addPage(page);
 	}
-	
+
 	public boolean haveToRestart(){
 		return (getPlayed_games() > 50);
 	}
-	
+
 	public void updatePlayedGames(){
 		setPlayed_games(getPlayed_games()+1);
 	}
-	
+
 	public void createGames(GameType type){
 		setPacketServer("versushub");
 		new MultiAddonArenaRestore(getManager().getInstance());
@@ -181,7 +181,7 @@ public class MultiGames extends Game{
 			getWorldData().createCustomWorld("90,quartz_block","void");
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,120,0);
-			
+
 			Versus v;
 			File file;
 			int size = zips.size();
@@ -204,7 +204,7 @@ public class MultiGames extends Game{
 					break;
 				}
 			}
-			
+
 			loc=null;
 			size=0;
 			v=null;
@@ -216,7 +216,7 @@ public class MultiGames extends Game{
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);
-			
+
 			long time;
 			CustomWars1vs1 v;
 			File file;
@@ -242,7 +242,7 @@ public class MultiGames extends Game{
 					break;
 				}
 			}
-			
+
 			loc=null;
 			time=0;
 			v=null;
@@ -252,7 +252,7 @@ public class MultiGames extends Game{
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);
-			
+
 			long time;
 			SkyWars1vs1 v;
 			File file;
@@ -278,7 +278,7 @@ public class MultiGames extends Game{
 					break;
 				}
 			}
-			
+
 			loc=null;
 			time=0;
 			v=null;
@@ -288,7 +288,7 @@ public class MultiGames extends Game{
 			getWorldData().createCleanWorld();
 			ArrayList<File> zips = getWorldData().loadZips();
 			Location loc = new Location(getWorldData().getWorld(),0,90,0);
-			
+
 			long time;
 			SurvivalGames1vs1 v;
 			File file;
@@ -314,7 +314,7 @@ public class MultiGames extends Game{
 					break;
 				}
 			}
-			
+
 			loc=null;
 			time=0;
 			v=null;
@@ -332,14 +332,14 @@ public class MultiGames extends Game{
 		setState(GameState.LobbyPhase);
 		createAdminPage();
 	}
-	
+
 	@EventHandler
 	public void antiLagg(UpdateEvent ev){
 		if(ev.getType()==UpdateType.MIN_08&&!UtilServer.getPlayers().isEmpty()){
 			UtilServer.getLagMeter().unloadChunks(null, null);
 		}
 	}
-	
+
 	/**
 	 * Sendet vom Arcade Server Infos!
 	 * @param ev
@@ -355,7 +355,7 @@ public class MultiGames extends Game{
 			}
 		}
 	}
-	
+
 	/**
 	 * Restartet wenn 50 Spiele vorbei sind und keine Spieler mehr online sind!
 	 * @param ev
@@ -368,7 +368,7 @@ public class MultiGames extends Game{
 			}
 		}
 	}
-	
+
 	/**
 	 * Z§hlt die laufenden Spiele und sendet dies weiter zu den Daten Server
 	 * @param ev
@@ -376,15 +376,15 @@ public class MultiGames extends Game{
 	@EventHandler
 	public void arenaCounter(MultiGameStartEvent ev){
 		updatePlayedGames();
-		
+
 		if(haveToRestart()){
 			setState(GameState.Restart);
-			
+
 		}else if(setState( (getGames(GameState.InGame)>=getGames().size() ? GameState.InGame:GameState.LobbyPhase) )){
 			updateInfo();
 		}
 	}
-	
+
 	@EventHandler
 	public void MultiGameUpdateInfo(MultiGameUpdateInfoEvent ev){
 		if(!getManager().getClient().getHandle().isConnected()){
@@ -392,12 +392,12 @@ public class MultiGames extends Game{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void restartState(GameStateChangeEvent ev){
 		if(haveToRestart()&&ev.getFrom()==GameState.Restart)ev.setCancelled(true);
 	}
-	
+
 	public int getGames(GameState state){
 		if(state == GameState.NONE){
 			return getGames().size();
@@ -407,7 +407,7 @@ public class MultiGames extends Game{
 			return i;
 		}
 	}
-	
+
 	@EventHandler
 	  public void MobSpawn(CreatureSpawnEvent ev){
 	    if (!isCreatureSpawn()&&ev.getSpawnReason()!=SpawnReason.CUSTOM){
@@ -415,7 +415,7 @@ public class MultiGames extends Game{
 	    	ev.setCancelled(true);
 	    }
 	  }
-	
+
 	@EventHandler
 	public void PLACE(BlockPlaceEvent event) {
 		//LOBBY PLACE CHANGE CANCEL
@@ -423,7 +423,7 @@ public class MultiGames extends Game{
 			event.setCancelled(true);
 		}
     }
-	
+
 	@EventHandler
 	public void BREAK(BlockBreakEvent event) {
 		//LOBBY BREAK CHANGE CANCEL
@@ -431,7 +431,7 @@ public class MultiGames extends Game{
 			event.setCancelled(true);
 		}
     }
-	
+
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		//LOBBY INTERACT CHANGE CANCEL
@@ -439,7 +439,7 @@ public class MultiGames extends Game{
 			event.setCancelled(true);
 		}
     }
-	
+
 	@EventHandler
 	public void Food(FoodLevelChangeEvent ev){
 		//LOBBY FOOD CHANGE CANCEL
@@ -447,7 +447,7 @@ public class MultiGames extends Game{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void EntityDamageByEntity(EntityDamageByEntityEvent ev){
 		//LOBBY DAMAGE CANCEL
@@ -455,7 +455,7 @@ public class MultiGames extends Game{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void Quit(PlayerQuitEvent ev){
 		if(getKitManager() != null && getKitManager().getKits().containsKey(UtilPlayer.getPlayerId(ev.getPlayer()))){
@@ -463,7 +463,7 @@ public class MultiGames extends Game{
 		}
 		ev.setQuitMessage(null);
 	}
-	
+
 	@EventHandler
 	public void EntityDamage(EntityDamageEvent ev){
 		//LOBBY DAMAGE CANCEL
@@ -471,7 +471,7 @@ public class MultiGames extends Game{
 			ev.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void joinM(PlayerJoinEvent ev){
 		getManager().clear(ev.getPlayer());
@@ -482,15 +482,15 @@ public class MultiGames extends Game{
 		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eCLASHMC §7-§e "+getType().getTyp(), "§eShop.ClashMC.eu");
 //		join.add(ev.getPlayer().getName());
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void Joina(PlayerStatsLoadedEvent ev){
 		if(ev.getManager().getType() != GameType.Money)return;
 		if(UtilPlayer.isOnline(ev.getPlayerId())){
 			Player player = UtilPlayer.searchExact(ev.getPlayerId());
-			
+
 			Bukkit.getScheduler().runTask(getManager().getInstance(), new Runnable() {
-				
+
 				@Override
 				public void run() {
 					try{
@@ -500,7 +500,7 @@ public class MultiGames extends Game{
 							PacketArenaSettings settings = (PacketArenaSettings)warte_liste.get(player.getName());
 							System.out.println("FIRST1: "+player.getName()+" "+ev.getManager().getType().name()+" "+settings.getArena());
 							MultiGame g = games.get(settings.getArena());
-							
+
 							if(g instanceof Versus){
 								System.out.println("FIRST2: "+player.getName()+" "+ev.getManager().getType().name());
 								if(((Versus)g).getMax_type().getTeam().length>=settings.getType().getTeam().length&&settings.getArena().equalsIgnoreCase(g.getArena())&& (g.getState() == GameState.LobbyPhase||g.getState() == GameState.Laden) ){
@@ -521,7 +521,7 @@ public class MultiGames extends Game{
 									if(warte_liste.containsKey(settings.getPlayer())){
 										warte_liste.remove(settings.getPlayer());
 									}
-										
+
 									((MultiTeamGame)g).getTeamList().put(Bukkit.getPlayer(settings.getPlayer()), settings.getTeam());
 									g.getGameList().addPlayer(Bukkit.getPlayer(settings.getPlayer()), PlayerState.INGAME);
 									event=new MultiGamePlayerJoinEvent(Bukkit.getPlayer(settings.getPlayer()),g);
