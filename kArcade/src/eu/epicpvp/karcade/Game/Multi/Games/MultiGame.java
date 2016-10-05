@@ -2,7 +2,6 @@ package eu.epicpvp.karcade.Game.Multi.Games;
 
 import java.util.ArrayList;
 
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,6 +26,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.scoreboard.Scoreboard;
 
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.karcade.kArcade;

@@ -3,8 +3,8 @@ package eu.epicpvp.karcade.Game.Single.Addons;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

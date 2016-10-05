@@ -24,10 +24,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import eu.epicpvp.dataserver.protocoll.packets.Packet;
 import eu.epicpvp.datenclient.client.connection.PacketListener;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.protocoll.packets.Packet;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Command.CommandSpectate;
 import eu.epicpvp.karcade.Game.Game;

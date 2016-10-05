@@ -44,8 +44,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
-import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.ArcadeManager;
+import eu.epicpvp.karcade.kArcade;
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.GameList;
 import eu.epicpvp.karcade.Game.Events.GamePreStartEvent;

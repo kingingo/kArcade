@@ -1,13 +1,10 @@
 package eu.epicpvp.karcade.Game.Single.Addons.VoteHandler;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import eu.epicpvp.karcade.Game.Single.Games.Falldown.Brew.BrewItem;
 import lombok.Getter;
-import lombok.Setter;
 
 public class PlayerVoteEvent extends Event {
 	private static HandlerList handlers = new HandlerList();

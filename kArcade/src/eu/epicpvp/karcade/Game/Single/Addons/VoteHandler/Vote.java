@@ -2,7 +2,6 @@ package eu.epicpvp.karcade.Game.Single.Addons.VoteHandler;
 
 import org.bukkit.inventory.ItemStack;
 
-import eu.epicpvp.kcore.Inventory.Item.Buttons.ButtonBase;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,33 +2,6 @@ package eu.epicpvp.karcade.Game.Single.Games.JumpLeague;
 
 import java.util.ArrayList;
 
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
-import eu.epicpvp.karcade.ArcadeManager;
-import eu.epicpvp.karcade.Events.RankingEvent;
-import eu.epicpvp.karcade.Game.Events.GameStartEvent;
-import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
-import eu.epicpvp.karcade.Game.Single.Addons.AddonMove;
-import eu.epicpvp.karcade.Game.Single.Games.SoloGame;
-import eu.epicpvp.karcade.Game.Single.SingleWorldData;
-import eu.epicpvp.karcade.kArcade;
-import eu.epicpvp.kcore.Addons.AddonDay;
-import eu.epicpvp.kcore.Enum.PlayerState;
-import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Permission.PermissionType;
-import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
-import eu.epicpvp.kcore.Update.Event.UpdateEvent;
-import eu.epicpvp.kcore.Update.UpdateType;
-import eu.epicpvp.kcore.Util.Color;
-import eu.epicpvp.kcore.Util.Title;
-import eu.epicpvp.kcore.Util.UtilDisplay;
-import eu.epicpvp.kcore.Util.UtilMath;
-import eu.epicpvp.kcore.Util.UtilPlayer;
-import eu.epicpvp.kcore.Util.UtilScoreboard;
-import eu.epicpvp.kcore.Util.UtilServer;
-import eu.epicpvp.kcore.Util.UtilString;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -41,6 +14,34 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.DisplaySlot;
+
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
+import eu.epicpvp.karcade.ArcadeManager;
+import eu.epicpvp.karcade.kArcade;
+import eu.epicpvp.karcade.Events.RankingEvent;
+import eu.epicpvp.karcade.Game.Events.GameStartEvent;
+import eu.epicpvp.karcade.Game.Events.GameStateChangeEvent;
+import eu.epicpvp.karcade.Game.Single.SingleWorldData;
+import eu.epicpvp.karcade.Game.Single.Addons.AddonMove;
+import eu.epicpvp.karcade.Game.Single.Games.SoloGame;
+import eu.epicpvp.kcore.Addons.AddonDay;
+import eu.epicpvp.kcore.Enum.PlayerState;
+import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Permission.PermissionType;
+import eu.epicpvp.kcore.StatsManager.Event.PlayerStatsLoadedEvent;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
+import eu.epicpvp.kcore.Update.UpdateType;
+import eu.epicpvp.kcore.Update.Event.UpdateEvent;
+import eu.epicpvp.kcore.Util.Color;
+import eu.epicpvp.kcore.Util.Title;
+import eu.epicpvp.kcore.Util.UtilDisplay;
+import eu.epicpvp.kcore.Util.UtilMath;
+import eu.epicpvp.kcore.Util.UtilPlayer;
+import eu.epicpvp.kcore.Util.UtilScoreboard;
+import eu.epicpvp.kcore.Util.UtilServer;
+import eu.epicpvp.kcore.Util.UtilString;
 
 public class JumpLeague extends SoloGame {
 

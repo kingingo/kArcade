@@ -6,10 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import dev.wolveringer.bukkit.permissions.GroupTyp;
-import dev.wolveringer.client.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
+import eu.epicpvp.datenserver.definitions.permissions.GroupTyp;
 import eu.epicpvp.karcade.Command.CommandForceStart;
 import eu.epicpvp.karcade.Command.CommandScan;
 import eu.epicpvp.karcade.Command.CommandStart;

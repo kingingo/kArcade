@@ -1,6 +1,5 @@
 package eu.epicpvp.karcade.Game.Single.Games.SkyWars.LuckyWars.Items;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;

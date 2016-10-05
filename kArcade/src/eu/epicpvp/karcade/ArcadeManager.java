@@ -28,14 +28,14 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutTopTen;
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutTopTen.RankInformation;
 import eu.epicpvp.datenclient.client.Callback;
 import eu.epicpvp.datenclient.client.ClientWrapper;
 import eu.epicpvp.datenclient.client.ProgressFuture;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutTopTen;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutTopTen.RankInformation;
 import eu.epicpvp.karcade.Events.RankingEvent;
 import eu.epicpvp.karcade.Game.Game;
 import eu.epicpvp.karcade.Game.Events.GameStartEvent;
