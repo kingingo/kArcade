@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -201,8 +202,6 @@ public class CustomWars extends TeamGame {
 		}
 	}
 
-	String format;
-
 	@EventHandler
 	public void InGame(UpdateEvent ev) {
 		if (ev.getType() != UpdateType.SEC)
@@ -217,7 +216,7 @@ public class CustomWars extends TeamGame {
 			return;
 		}
 
-		format = UtilTime.formatSeconds(getStart());
+		String format = UtilTime.formatSeconds(getStart());
 
 		for (Player p : UtilServer.getPlayers())
 			UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_END_IN", format));
@@ -306,8 +305,8 @@ public class CustomWars extends TeamGame {
 			broadcastWithPrefixName("GAME_END");
 			return;
 		}
-
-		format = UtilTime.formatSeconds(getStart());
+		
+		String format = UtilTime.formatSeconds(getStart());
 
 		for (Player p : UtilServer.getPlayers())
 			UtilDisplay.displayTextBar(p, TranslationHandler.getText(p, "GAME_END_IN", format));
@@ -368,53 +367,53 @@ public class CustomWars extends TeamGame {
 
 	@EventHandler
 	public void Death(PlayerDeathEvent ev) {
-		String v;
-		String k = null;
-		if (ev.getEntity() instanceof Player) {
-			Player killer = null;
-			Player victim = ev.getEntity();
-			if (ev.getEntity().getKiller() != null && !ev.getEntity().getKiller().equals(ev.getEntity()))
-				killer = ev.getEntity().getKiller();
-			else if (ev.getEntity().getLastDamageCause() != null)
-				if (ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
-					if (((EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause()).getDamager() instanceof Player)
-						killer = (Player) ((EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause()).getDamager();
-					else if (((EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause()).getDamager() instanceof Projectile && ((Projectile) ((EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause()).getDamager()).getShooter() instanceof Player)
-						killer = (Player) ((Projectile) ((EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause()).getDamager()).getShooter();
-
-			Team t = getTeam(victim);
-			getStats().addInt(victim, 1, StatsKey.DEATHS);
-			v = t.getColor() + "{player_"+victim.getName()+"}";
-
-			if (killer != null) {
-				getMoney().add(killer, StatsKey.COINS, 4);
-				getStats().addInt(killer, 1, StatsKey.KILLS);
-				k = getTeam(killer).getColor() + "{player_"+killer.getName()+"}";
-				int ki = kills.get(killer.getName());
-				ki++;
-				kills.remove(killer.getName());
-				kills.put(killer.getName(), ki);
+		String broadcastPlayer;
+		String kit = null;
+		Player killer = null;
+		Player victim = ev.getEntity();
+		if (ev.getEntity().getKiller() != null && !ev.getEntity().getKiller().equals(ev.getEntity()))
+			killer = ev.getEntity().getKiller();
+		else if (ev.getEntity().getLastDamageCause() != null)
+			if (ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+				EntityDamageByEntityEvent lastDamageCause = (EntityDamageByEntityEvent) ev.getEntity().getLastDamageCause();
+				if (lastDamageCause.getDamager() instanceof Player)
+					killer = (Player) lastDamageCause.getDamager();
+				else if (lastDamageCause.getDamager() instanceof Projectile && ((Projectile) lastDamageCause.getDamager()).getShooter() instanceof Player)
+					killer = (Player) ((Projectile) lastDamageCause.getDamager()).getShooter();
 			}
-
-			if (this instanceof SheepWars) {
-				if (((SheepWars) this).getKits().containsKey(victim)) {
-					v = v + "§a[" + ((SheepWars) this).getKits().get(victim) + "§a]";
+		
+		Team t = getTeam(victim);
+		getStats().addInt(victim, 1, StatsKey.DEATHS);
+		broadcastPlayer = t.getColor() + "{player_"+victim.getName()+"}";
+		
+		if (killer != null) {
+			getMoney().add(killer, StatsKey.COINS, 4);
+			getStats().addInt(killer, 1, StatsKey.KILLS);
+			kit = getTeam(killer).getColor() + "{player_"+killer.getName()+"}";
+			int ki = kills.get(killer.getName());
+			ki++;
+			kills.remove(killer.getName());
+			kills.put(killer.getName(), ki);
+		}
+		
+		if (this instanceof SheepWars) {
+			if (((SheepWars) this).getKits().containsKey(victim)) {
+				broadcastPlayer = broadcastPlayer + "§a[" + ((SheepWars) this).getKits().get(victim) + "§a]";
+			}
+			if (killer != null)
+				if (((SheepWars) this).getKits().containsKey(killer)) {
+					kit = kit + "§a[" + ((SheepWars) this).getKits().get(killer) + "§a]";
 				}
-				if (killer != null)
-					if (((SheepWars) this).getKits().containsKey(killer)) {
-						k = k + "§a[" + ((SheepWars) this).getKits().get(killer) + "§a]";
-					}
-			}
-
-			if (k != null)
-				broadcastWithPrefix("KILL_BY", new String[]{ v, k });
-			else
-				broadcastWithPrefix("DEATH", v);
-
-			if (getTeams().get(t) == false) {
-				getGameList().addPlayer(victim, PlayerState.SPECTATOR);
-				getStats().addInt(victim, 1, StatsKey.LOSE);
-			}
+		}
+		
+		if (kit != null)
+			broadcastWithPrefix("KILL_BY", new String[]{ broadcastPlayer, kit });
+		else
+			broadcastWithPrefix("DEATH", broadcastPlayer);
+		
+		if (!getTeams().get(t)) {
+			getGameList().addPlayer(victim, PlayerState.SPECTATOR);
+			getStats().addInt(victim, 1, StatsKey.LOSE);
 		}
 	}
 
@@ -524,11 +523,12 @@ public class CustomWars extends TeamGame {
 		e.setCancelled(true);
 	}
 
+	@Override
 	@EventHandler
 	public void Start(GameStartEvent ev) {
 		long time = System.currentTimeMillis();
 
-		/**
+		/*
 		 * Settup world
 		 */
 		for (Entity e : getWorldData().getWorld().getEntities()) {
@@ -557,13 +557,13 @@ public class CustomWars extends TeamGame {
 			}
 		}
 
-		/**
+		/*
 		 * Setup scoreboard
 		 */
 		setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		UtilScoreboard.addBoard(getScoreboard(), DisplaySlot.SIDEBAR, "§e" + getType().getTyp());
 
-		/**
+		/*
 		 * Setup players
 		 */
 		ArrayList<Player> plist = new ArrayList<>();
@@ -603,9 +603,9 @@ public class CustomWars extends TeamGame {
 		if (getType() == GameType.SheepWars) {
 			addonEntityTeamKing = new AddonEntityTeamKing(teams, this, EntityType.SHEEP);
 
-			LivingEntity s;
-			for (Team t : addonEntityTeamKing.getTeams().keySet()) {
-				s = (LivingEntity) addonEntityTeamKing.getTeams().get(t);
+			for (Map.Entry<Team, Entity> entry : addonEntityTeamKing.getTeams().entrySet()) {
+				Team t = entry.getKey();
+				LivingEntity s = (LivingEntity) entry.getValue();
 				s.setCustomName(t.getColor() + getName(EntityType.SHEEP) + " ");
 				if (s instanceof Sheep) {
 					((Sheep) s).setColor(UtilCustomWars1vs1.getDyeColorFromTeamName(t.getColor()));
@@ -664,8 +664,8 @@ public class CustomWars extends TeamGame {
 					}
 				}
 
-				for (String name : this.kills.keySet()) {
-					this.ranking.add(new kSort<String>(name, this.kills.get(name)));
+				for (Map.Entry<String, Integer> entry : this.kills.entrySet()) {
+					this.ranking.add(new kSort<>(entry.getKey(), entry.getValue()));
 				}
 				Collections.sort(ranking, kSort.DESCENDING);
 
@@ -777,10 +777,18 @@ public class CustomWars extends TeamGame {
 				@Override
 				public void run() {
 					getManager().getHologram().sendText(player, getManager().getLoc_stats(), new String[]
-					{ Color.GREEN + getType().getTyp() + " " + getCustomType().name().replaceAll("_", "") + Color.ORANGE + "§l Info", TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER", getType().getTyp() + " §a" + kArcade.id), TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap() != null ? getWorldData().getMapName() : "Loading...")), " ", TranslationHandler.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
-							TranslationHandler.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)), TranslationHandler.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
-							(getType() == GameType.BedWars ? TranslationHandler.getText(player, "GAME_HOLOGRAM_BEDWARS", getStats().getInt(StatsKey.BEDWARS_ZERSTOERTE_BEDs, player)) : (getType() == GameType.SheepWars ? TranslationHandler.getText(player, "GAME_HOLOGRAM_SHEEP", getStats().getInt(StatsKey.SHEEPWARS_KILLED_SHEEPS, player)) : " ")), " ", TranslationHandler.getText(player, "GAME_HOLOGRAM_GAMES", (win + lose)), TranslationHandler.getText(player, "GAME_HOLOGRAM_WINS", win),
-							TranslationHandler.getText(player, "GAME_HOLOGRAM_LOSE", lose), });
+					{ Color.GREEN + getType().getTyp() + " " + getCustomType().name().replaceAll("_", "") + Color.ORANGE + "§l Info",
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_SERVER", getType().getTyp() + " §a" + kArcade.id),
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_MAP", (getWorldData().getMap() != null ? getWorldData().getMapName() : "Loading...")),
+					  " ",
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_STATS", getType().getTyp()),
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_KILLS", getStats().getInt(StatsKey.KILLS, player)),
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_DEATHS", getStats().getInt(StatsKey.DEATHS, player)),
+					  (getType() == GameType.BedWars ? TranslationHandler.getText(player, "GAME_HOLOGRAM_BEDWARS", getStats().getInt(StatsKey.BEDWARS_ZERSTOERTE_BEDs, player)) : (getType() == GameType.SheepWars ? TranslationHandler.getText(player, "GAME_HOLOGRAM_SHEEP", getStats().getInt(StatsKey.SHEEPWARS_KILLED_SHEEPS, player)) : " ")),
+					  " ",
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_GAMES", (win + lose)),
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_WINS", win),
+					  TranslationHandler.getText(player, "GAME_HOLOGRAM_LOSE", lose), });
 				}
 			});
 		}
