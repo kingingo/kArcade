@@ -1,12 +1,5 @@
 package eu.epicpvp.karcade.Command;
 
-import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
@@ -18,6 +11,12 @@ import eu.epicpvp.kcore.Util.AnvilGUI.AnvilClickEvent;
 import eu.epicpvp.kcore.Util.UtilItem;
 import eu.epicpvp.kcore.Util.UtilPlayer;
 import eu.epicpvp.kcore.Util.UtilServer;
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class CommandStart implements CommandExecutor{
 	static {
@@ -61,11 +60,16 @@ public class CommandStart implements CommandExecutor{
 
 					 gui.open();
 			}else{
-				if(((SingleGame)Manager.getGame()).getMinPlayers() <= UtilServer.getPlayers().size()){
-					((SingleGame)Manager.getGame()).setStart(15);
-		        	UtilPlayer.sendMessage(p,TranslationHandler.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationHandler.getText(p, "GAME_TIME_CHANGE",10));
+				SingleGame game = (SingleGame) Manager.getGame();
+				if(game.getMinPlayers() <= UtilServer.getPlayers().size()){
+					if (game.getStart() > 16) {
+						game.setStart(16);
+						UtilPlayer.sendMessage(p, TranslationHandler.getText(p, "PREFIX_GAME", game.getType().getTyp()) + TranslationHandler.getText(p, "GAME_TIME_CHANGE", 15));
+					} else {
+						p.sendMessage("§cDas Spiel startet bereits gleich.");
+					}
 				}else{
-		        	UtilPlayer.sendMessage(p,TranslationHandler.getText(p, "PREFIX_GAME", Manager.getGame().getType().getTyp())+TranslationHandler.getText(p, "arcade.command.start.minplayer",((SingleGame)Manager.getGame()).getMinPlayers()));
+		        	UtilPlayer.sendMessage(p,TranslationHandler.getText(p, "PREFIX_GAME", game.getType().getTyp())+TranslationHandler.getText(p, "arcade.command.start.minplayer",game.getMinPlayers()));
 				}
 			}
 		return false;
