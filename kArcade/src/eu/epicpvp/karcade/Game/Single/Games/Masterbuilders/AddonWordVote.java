@@ -53,7 +53,7 @@ public class AddonWordVote extends kListener{
 		this.buildings = Buildings.rdmArray(3);
 
 		this.scoreGER=Bukkit.getScoreboardManager().getNewScoreboard();
-		UtilScoreboard.addBoard(scoreGER, DisplaySlot.SIDEBAR, "§6§lClashMC.eu - Vote §e"+votetime+"sec");
+		UtilScoreboard.addBoard(scoreGER, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Vote §e"+votetime+"sec");
 		UtilScoreboard.setScore(scoreGER, " ", DisplaySlot.SIDEBAR, 64);
 		UtilScoreboard.setScore(scoreGER, "§e"+buildings[0].getGerman(), DisplaySlot.SIDEBAR, 0);
 		UtilScoreboard.setScore(scoreGER, "§e"+buildings[1].getGerman(), DisplaySlot.SIDEBAR, 0);
@@ -61,7 +61,7 @@ public class AddonWordVote extends kListener{
 		UtilScoreboard.setScore(scoreGER, "", DisplaySlot.SIDEBAR, -1);
 
 		this.scoreENG=Bukkit.getScoreboardManager().getNewScoreboard();
-		UtilScoreboard.addBoard(scoreENG, DisplaySlot.SIDEBAR, "§6§lClashMC.eu - Vote §e"+votetime+" ec");
+		UtilScoreboard.addBoard(scoreENG, DisplaySlot.SIDEBAR, "§6§lEpicPvP.eu - Vote §e"+votetime+" ec");
 		UtilScoreboard.setScore(scoreENG, " ", DisplaySlot.SIDEBAR, 64);
 		UtilScoreboard.setScore(scoreENG, "§e"+buildings[0].getEnglish(), DisplaySlot.SIDEBAR, 0);
 		UtilScoreboard.setScore(scoreENG, "§e"+buildings[1].getEnglish(), DisplaySlot.SIDEBAR, 0);
@@ -103,8 +103,8 @@ public class AddonWordVote extends kListener{
 				getMasterbuilders().setState(GameState.InGame,GameStateChangeReason.CUSTOM);
 			}else{
 				votetime--;
-				scoreENG.getObjective(DisplaySlot.SIDEBAR).setDisplayName("§6§lClashMC.eu - Vote §e"+votetime+"sec");
-				scoreGER.getObjective(DisplaySlot.SIDEBAR).setDisplayName("§6§lClashMC.eu - Vote §e"+votetime+"sec");
+				scoreENG.getObjective(DisplaySlot.SIDEBAR).setDisplayName("§6§lEpicPvP.eu - Vote §e"+votetime+"sec");
+				scoreGER.getObjective(DisplaySlot.SIDEBAR).setDisplayName("§6§lEpicPvP.eu - Vote §e"+votetime+"sec");
 			}
 		}
 	}

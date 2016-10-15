@@ -473,7 +473,7 @@ public class SingleGame extends Game {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void joinnow(PlayerJoinEvent ev) {
 		ev.setJoinMessage(null);
-		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX") + "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://ClashMc.eu/");
+		ev.getPlayer().sendMessage(TranslationHandler.getText(ev.getPlayer(), "PREFIX") + "§eDu hast eine Map für uns gebaut? Melde sie im Forum und wir nehmen sie!§b http://EpicPvP.eu/");
 		getManager().clear(ev.getPlayer());
 
 		if (isState(GameState.LobbyPhase)) {

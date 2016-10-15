@@ -135,7 +135,7 @@ public class LuckyAddon extends kListener {
 			if(item instanceof LuckyItemListener)
 				((LuckyItemListener)item).register();
 			
-		for(Player player : UtilServer.getPlayers())player.setResourcePack("http://luckywars.clashmc.de/LuckyWars.zip");
+		for(Player player : UtilServer.getPlayers())player.setResourcePack("http://luckywars.EpicPvP.de/LuckyWars.zip");
 		logMessage("Zeit " + (System.currentTimeMillis() - time) + "ms");
 	}
 

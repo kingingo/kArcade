@@ -1224,7 +1224,7 @@ public class SkyWars extends TeamGame {
 			UtilScoreboard.setScore(ps, "§7Kit: ", DisplaySlot.SIDEBAR, 3);
 			UtilScoreboard.setScore(ps, "§e" + (kits.containsKey(p) ? kits.get(p) : TranslationHandler.getText(p, "NO_KIT")), DisplaySlot.SIDEBAR, 2);
 			UtilScoreboard.setScore(ps, " ", DisplaySlot.SIDEBAR, 1);
-			UtilScoreboard.setScore(ps, "§ewww.ClashMC.eu", DisplaySlot.SIDEBAR, 0);
+			UtilScoreboard.setScore(ps, "§ewww.EpicPvP.eu", DisplaySlot.SIDEBAR, 0);
 			UtilScoreboard.addTeam(ps, "friend", Color.GREEN);
 			UtilScoreboard.addTeam(ps, "enemy", Color.RED);
 

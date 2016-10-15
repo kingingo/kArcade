@@ -479,7 +479,7 @@ public class MultiGames extends Game{
 			p.hidePlayer(ev.getPlayer());
 			ev.getPlayer().hidePlayer(p);
 		}
-		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eCLASHMC §7-§e "+getType().getTyp(), "§eShop.ClashMC.eu");
+		TabTitle.setHeaderAndFooter(ev.getPlayer(), "§eEpicPvP §7-§e "+getType().getTyp(), "§eShop.EpicPvP.eu");
 //		join.add(ev.getPlayer().getName());
 	}
 
