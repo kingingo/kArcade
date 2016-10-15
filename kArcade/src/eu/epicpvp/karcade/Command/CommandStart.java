@@ -1,5 +1,6 @@
 package eu.epicpvp.karcade.Command;
 
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.karcade.ArcadeManager;
 import eu.epicpvp.karcade.Game.Single.SingleGame;
@@ -61,6 +62,9 @@ public class CommandStart implements CommandExecutor{
 					 gui.open();
 			}else{
 				SingleGame game = (SingleGame) Manager.getGame();
+				if (game.getState() != GameState.LobbyPhase) {
+					p.sendMessage("§cDas Spiel ist nicht in der Lobby-Phase!");
+				}
 				if(game.getMinPlayers() <= UtilServer.getPlayers().size()){
 					if (game.getStart() > 16) {
 						game.setStart(16);
