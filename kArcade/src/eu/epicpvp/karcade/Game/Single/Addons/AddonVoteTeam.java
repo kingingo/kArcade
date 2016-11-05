@@ -6,6 +6,22 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
+import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
+import eu.epicpvp.karcade.Game.Single.SingleGame;
+import eu.epicpvp.kcore.Enum.PlayerState;
+import eu.epicpvp.kcore.Enum.Team;
+import eu.epicpvp.kcore.Permission.PermissionManager;
+import eu.epicpvp.kcore.Translation.TranslationHandler;
+import eu.epicpvp.kcore.Util.InventorySize;
+import eu.epicpvp.kcore.Util.UtilEvent;
+import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
+import eu.epicpvp.kcore.Util.UtilInv;
+import eu.epicpvp.kcore.Util.UtilItem;
+import eu.epicpvp.kcore.Util.UtilPlayer;
+import eu.epicpvp.kcore.Util.UtilServer;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,23 +36,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
-import eu.epicpvp.karcade.Game.Single.SingleGame;
-import eu.epicpvp.karcade.Game.Single.Events.AddonVoteTeamPlayerChooseEvent;
-import eu.epicpvp.kcore.Enum.PlayerState;
-import eu.epicpvp.kcore.Enum.Team;
-import eu.epicpvp.kcore.Permission.PermissionManager;
-import eu.epicpvp.kcore.Translation.TranslationHandler;
-import eu.epicpvp.kcore.Util.InventorySize;
-import eu.epicpvp.kcore.Util.UtilEvent;
-import eu.epicpvp.kcore.Util.UtilEvent.ActionType;
-import eu.epicpvp.kcore.Util.UtilInv;
-import eu.epicpvp.kcore.Util.UtilItem;
-import eu.epicpvp.kcore.Util.UtilPlayer;
-import eu.epicpvp.kcore.Util.UtilServer;
-import lombok.Getter;
 
 public class AddonVoteTeam implements Listener {
 
@@ -227,14 +226,15 @@ public class AddonVoteTeam implements Listener {
 		l.add("§7---------------");
 
 		int playerTeamIndex = 1;
-		for (Player p : vote.keySet()) {
-			if (vote.get(p) == t) {
+		for (Entry<Player, Team> entry : vote.entrySet()) {
+			if (entry.getValue() == t) {
+				Player p = entry.getKey();
 				LoadedPlayer lp = UtilServer.getClient().getPlayerAndLoad(p.getName());
 				if (p.equals(player)) {
 					is = UtilItem.setGlowing(is, true);
 					l.add("§6" + playerTeamIndex + ".§a " + p.getName());
 				} else
-					l.add("§6" + playerTeamIndex + ".§7 " + (lp.hasNickname() ? PermissionManager.getManager().hasPermission(player, "nick.showunnicked") ? p.getName() : lp.getNickname() : p.getName()));
+					l.add("§6" + playerTeamIndex + ".§7 " + (PermissionManager.getManager().hasPermission(player, "nick.showunnicked") ? p.getName() : lp.getFinalName()));
 				playerTeamIndex++;
 			}
 		}
